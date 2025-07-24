@@ -279,9 +279,9 @@ def results(result_id):
     live_mode = request.args.get('live', 'false').lower() == 'true'
     
     # Choose template based on mode and status
-    if scrape_result.status == 'pending':
-        # Show live analysis interface for pending results
-        template = 'live-analysis.html'
+    if scrape_result.status == 'pending' or scrape_result.status == 'processing':
+        # Show simple live analysis interface for pending results
+        template = 'simple-live.html'
         return render_template(template, result=scrape_result, loading=True)
     elif live_mode:
         template = 'live-results.html'
@@ -396,9 +396,9 @@ def api_live_progress(result_id):
     
     elapsed_time = int((time.time() - scrape_result.created_at.timestamp()) if scrape_result.created_at else 0)
     
-    if scrape_result.status == 'pending':
+    if scrape_result.status == 'pending' or scrape_result.status == 'processing':
         # Calculate progress based on elapsed time
-        progress = min(elapsed_time * 2, 95)  # 2% per second, max 95%
+        progress = min(elapsed_time * 1.5, 90)  # 1.5% per second, max 90%
         
         # Generate live stats
         pages_scanned = min(elapsed_time // 5, 50)  # New page every 5 seconds
@@ -407,7 +407,7 @@ def api_live_progress(result_id):
         ads_blocked = min(elapsed_time // 3, 30)  # Ad blocked every 3 seconds
         
         return jsonify({
-            'status': 'pending',
+            'status': scrape_result.status,
             'progress': progress,
             'elapsed_time': elapsed_time,
             'stats': {
@@ -416,8 +416,9 @@ def api_live_progress(result_id):
                 'tech_detected': tech_detected,
                 'ads_blocked': ads_blocked
             },
-            'current_step': min((elapsed_time // 20) + 1, 4),  # New step every 20 seconds
-            'latest_activity': generate_activity_message(elapsed_time)
+            'current_step': min((elapsed_time // 15) + 1, 4),  # New step every 15 seconds
+            'latest_activity': generate_activity_message(elapsed_time),
+            'completed': False
         })
     else:
         return jsonify({

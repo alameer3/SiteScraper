@@ -214,7 +214,7 @@ let livePagesCount = 0;
 let liveImagesCount = 0;
 let liveTechCount = 0;
 let liveAdsBlocked = 0;
-let resultId = {{ result.id }};
+let resultId = parseInt('{{ result.id }}');
 
 // Charts
 let liveAssetsChart, liveTechChart;
@@ -501,10 +501,21 @@ function startElapsedTimer() {
 
 // Simulate Live Analysis
 function simulateLiveAnalysis() {
-    // Simulate completion after 2 minutes
-    setTimeout(() => {
-        completeAnalysis();
-    }, 120000);
+    // Check for completion periodically
+    setInterval(() => {
+        if (!isAnalysisRunning) return;
+        
+        fetch(`/api/live-progress/${resultId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.completed || data.status === 'completed') {
+                    completeAnalysis();
+                }
+            })
+            .catch(error => {
+                console.error('خطأ في فحص الإكمال:', error);
+            });
+    }, 5000);
 }
 
 // Complete Analysis
