@@ -22,6 +22,11 @@ class ScrapeResult(db.Model):
     navigation_data = db.Column(db.Text) # Site navigation structure
     error_message = db.Column(db.Text)
     
+    # Advanced analysis fields
+    recreation_guide = db.Column(db.Text)  # Complete recreation guide
+    arabic_report = db.Column(db.Text)     # Arabic comprehensive report
+    ad_blocking_stats = db.Column(db.Text) # Ad blocking statistics
+    
     def set_structure_data(self, data):
         self.structure_data = json.dumps(data)
     
@@ -51,3 +56,21 @@ class ScrapeResult(db.Model):
     
     def get_navigation_data(self):
         return json.loads(self.navigation_data) if self.navigation_data else {}
+    
+    def set_recreation_guide(self, data):
+        self.recreation_guide = json.dumps(data)
+    
+    def get_recreation_guide(self):
+        return json.loads(self.recreation_guide) if self.recreation_guide else {}
+    
+    def set_arabic_report(self, data):
+        self.arabic_report = json.dumps(data)
+    
+    def get_arabic_report(self):
+        return json.loads(self.arabic_report) if self.arabic_report else {}
+    
+    def set_ad_blocking_stats(self, data):
+        self.ad_blocking_stats = json.dumps(data)
+    
+    def get_ad_blocking_stats(self):
+        return json.loads(self.ad_blocking_stats) if self.ad_blocking_stats else {}

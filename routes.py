@@ -3,6 +3,9 @@ from app import app, db
 from models import ScrapeResult
 from scraper import WebScraper
 from analyzer import WebsiteAnalyzer
+from advanced_analyzer import AdvancedWebsiteAnalyzer
+from technical_extractor import TechnicalExtractor
+from arabic_generator import ArabicGenerator
 from urllib.parse import urlparse
 import json
 import logging
@@ -68,9 +71,12 @@ def perform_analysis(result_id, url, max_depth, block_ads=True):
         try:
             logging.info(f"Starting analysis for {url} (ads blocking: {block_ads})")
             
-            # Initialize scraper and analyzer
+            # Initialize all analyzers
             scraper = WebScraper(url, max_depth=max_depth, delay=1.0, block_ads=block_ads)
             analyzer = WebsiteAnalyzer()
+            advanced_analyzer = AdvancedWebsiteAnalyzer()
+            technical_extractor = TechnicalExtractor()
+            arabic_generator = ArabicGenerator()
             
             # Crawl the website
             crawl_data = scraper.crawl_recursive(url)
@@ -122,18 +128,127 @@ def perform_analysis(result_id, url, max_depth, block_ads=True):
             nav_data = analyzer.generate_navigation_map(crawl_data)
             scrape_result.set_navigation_data(nav_data)
             
+            # Advanced comprehensive analysis
+            logging.info("Starting advanced analysis...")
+            
+            # Extract advanced structure
+            advanced_structure = advanced_analyzer.extract_complete_structure(crawl_data)
+            advanced_styles = advanced_analyzer.extract_all_styles(crawl_data)
+            advanced_scripts = advanced_analyzer.extract_all_scripts(crawl_data)
+            advanced_content = advanced_analyzer.extract_content_structure(crawl_data)
+            performance_data = advanced_analyzer.extract_performance_data(crawl_data)
+            
+            # Extract technical details
+            tech_stack = technical_extractor.extract_complete_technology_stack(crawl_data)
+            code_structure = technical_extractor.extract_complete_code_structure(crawl_data)
+            assets_details = technical_extractor.extract_assets_complete_details(crawl_data)
+            
+            # Generate code templates
+            code_templates = technical_extractor.generate_code_templates({
+                'structure': advanced_structure,
+                'styles': advanced_styles,
+                'scripts': advanced_scripts,
+                'tech_stack': tech_stack
+            })
+            
+            # Generate recreation guide
+            recreation_guide = advanced_analyzer.generate_recreation_guide({
+                'basic': {
+                    'structure': structure_data,
+                    'assets': all_assets,
+                    'technology': tech_data,
+                    'seo': seo_data,
+                    'navigation': nav_data
+                },
+                'advanced': {
+                    'structure': advanced_structure,
+                    'styles': advanced_styles,
+                    'scripts': advanced_scripts,
+                    'content': advanced_content,
+                    'performance': performance_data
+                },
+                'technical': {
+                    'tech_stack': tech_stack,
+                    'code_structure': code_structure,
+                    'assets_details': assets_details
+                },
+                'templates': code_templates
+            })
+            
+            # Generate comprehensive Arabic report
+            arabic_report = arabic_generator.generate_comprehensive_arabic_report({
+                'basic': {
+                    'structure': structure_data,
+                    'assets': all_assets,
+                    'technology': tech_data,
+                    'seo': seo_data,
+                    'navigation': nav_data
+                },
+                'advanced': {
+                    'structure': advanced_structure,
+                    'styles': advanced_styles,
+                    'scripts': advanced_scripts,
+                    'content': advanced_content,
+                    'performance': performance_data
+                },
+                'technical': {
+                    'tech_stack': tech_stack,
+                    'code_structure': code_structure,
+                    'assets_details': assets_details
+                },
+                'recreation_guide': recreation_guide
+            })
+            
+            # Store advanced analysis results
+            scrape_result.set_recreation_guide(recreation_guide)
+            scrape_result.set_arabic_report(arabic_report)
+            
             # Add ad blocking statistics if enabled
             if block_ads:
                 ad_stats = scraper.get_ad_blocking_stats()
+                scrape_result.set_ad_blocking_stats(ad_stats)
                 # Add to technology data
                 tech_data['ad_blocking_stats'] = ad_stats
                 scrape_result.set_technology_data(tech_data)
+            
+            # Update structure and assets with advanced data
+            enhanced_structure_data = {
+                'basic': structure_data,
+                'advanced': advanced_structure,
+                'code_structure': code_structure
+            }
+            scrape_result.set_structure_data(enhanced_structure_data)
+            
+            enhanced_assets_data = {
+                'basic': all_assets,
+                'detailed': assets_details
+            }
+            scrape_result.set_assets_data(enhanced_assets_data)
+            
+            enhanced_tech_data = {
+                'basic': tech_data,
+                'advanced': tech_stack,
+                'templates': code_templates
+            }
+            scrape_result.set_technology_data(enhanced_tech_data)
+            
+            enhanced_seo_data = {
+                'basic': seo_data,
+                'performance': performance_data
+            }
+            scrape_result.set_seo_data(enhanced_seo_data)
+            
+            enhanced_nav_data = {
+                'basic': nav_data,
+                'advanced_content': advanced_content
+            }
+            scrape_result.set_navigation_data(enhanced_nav_data)
             
             # Mark as completed
             scrape_result.status = 'completed'
             scrape_result.completed_at = datetime.utcnow()
             
-            logging.info(f"Analysis completed for {url}")
+            logging.info(f"Comprehensive analysis completed for {url}")
             
         except Exception as e:
             logging.error(f"Analysis failed for {url}: {str(e)}")
@@ -168,33 +283,74 @@ def download_results(result_id, format):
         flash('Analysis not completed yet', 'error')
         return redirect(url_for('results', result_id=result_id))
     
-    # Compile all data
-    report_data = {
-        'url': scrape_result.url,
-        'title': scrape_result.title,
-        'analyzed_at': scrape_result.completed_at.isoformat() if scrape_result.completed_at else None,
-        'structure_analysis': scrape_result.get_structure_data(),
-        'assets_analysis': scrape_result.get_assets_data(),
-        'technology_analysis': scrape_result.get_technology_data(),
-        'seo_analysis': scrape_result.get_seo_data(),
-        'navigation_analysis': scrape_result.get_navigation_data()
-    }
+    # Handle different download formats
+    if format == 'arabic_report':
+        arabic_report = scrape_result.get_arabic_report()
+        if arabic_report:
+            response = make_response(json.dumps(arabic_report, indent=2, ensure_ascii=False))
+            response.headers['Content-Type'] = 'application/json; charset=utf-8'
+            response.headers['Content-Disposition'] = f'attachment; filename=arabic_report_{result_id}.json'
+            return response
+        else:
+            flash('التقرير العربي غير متوفر', 'error')
+            return redirect(url_for('results', result_id=result_id))
     
-    if format == 'json':
-        response = make_response(json.dumps(report_data, indent=2))
-        response.headers['Content-Type'] = 'application/json'
-        response.headers['Content-Disposition'] = f'attachment; filename=website_analysis_{result_id}.json'
+    elif format == 'recreation_guide':
+        recreation_guide = scrape_result.get_recreation_guide()
+        if recreation_guide:
+            response = make_response(json.dumps(recreation_guide, indent=2, ensure_ascii=False))
+            response.headers['Content-Type'] = 'application/json; charset=utf-8'
+            response.headers['Content-Disposition'] = f'attachment; filename=recreation_guide_{result_id}.json'
+            return response
+        else:
+            flash('دليل إعادة الإنشاء غير متوفر', 'error')
+            return redirect(url_for('results', result_id=result_id))
+    
+    elif format == 'json':
+        # Compile comprehensive data
+        report_data = {
+            'url': scrape_result.url,
+            'title': scrape_result.title,
+            'analyzed_at': scrape_result.completed_at.isoformat() if scrape_result.completed_at else None,
+            'structure_analysis': scrape_result.get_structure_data(),
+            'assets_analysis': scrape_result.get_assets_data(),
+            'technology_analysis': scrape_result.get_technology_data(),
+            'seo_analysis': scrape_result.get_seo_data(),
+            'navigation_analysis': scrape_result.get_navigation_data(),
+            'recreation_guide': scrape_result.get_recreation_guide(),
+            'arabic_report': scrape_result.get_arabic_report(),
+            'ad_blocking_stats': scrape_result.get_ad_blocking_stats()
+        }
+        
+        response = make_response(json.dumps(report_data, indent=2, ensure_ascii=False))
+        response.headers['Content-Type'] = 'application/json; charset=utf-8'
+        response.headers['Content-Disposition'] = f'attachment; filename=comprehensive_analysis_{result_id}.json'
         return response
     
     elif format == 'html':
+        # Compile comprehensive data for HTML report
+        report_data = {
+            'url': scrape_result.url,
+            'title': scrape_result.title,
+            'analyzed_at': scrape_result.completed_at.isoformat() if scrape_result.completed_at else None,
+            'structure_analysis': scrape_result.get_structure_data(),
+            'assets_analysis': scrape_result.get_assets_data(),
+            'technology_analysis': scrape_result.get_technology_data(),
+            'seo_analysis': scrape_result.get_seo_data(),
+            'navigation_analysis': scrape_result.get_navigation_data(),
+            'recreation_guide': scrape_result.get_recreation_guide(),
+            'arabic_report': scrape_result.get_arabic_report(),
+            'ad_blocking_stats': scrape_result.get_ad_blocking_stats()
+        }
+        
         html_content = render_template('report.html', data=report_data)
         response = make_response(html_content)
-        response.headers['Content-Type'] = 'text/html'
-        response.headers['Content-Disposition'] = f'attachment; filename=website_analysis_{result_id}.html'
+        response.headers['Content-Type'] = 'text/html; charset=utf-8'
+        response.headers['Content-Disposition'] = f'attachment; filename=comprehensive_report_{result_id}.html'
         return response
     
     else:
-        flash('Invalid format requested', 'error')
+        flash('نموذج غير صحيح', 'error')
         return redirect(url_for('results', result_id=result_id))
 
 @app.route('/api/status/<int:result_id>')
