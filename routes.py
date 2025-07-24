@@ -70,13 +70,12 @@ def perform_analysis(result_id, url, max_depth, block_ads=True):
         
         try:
             logging.info(f"Starting analysis for {url} (ads blocking: {block_ads})")
+            scrape_result.status = 'processing'
+            db.session.commit()
             
-            # Initialize all analyzers
+            # Initialize basic analyzers first
             scraper = WebScraper(url, max_depth=max_depth, delay=1.0, block_ads=block_ads)
             analyzer = WebsiteAnalyzer()
-            advanced_analyzer = AdvancedWebsiteAnalyzer()
-            technical_extractor = TechnicalExtractor()
-            arabic_generator = ArabicGenerator()
             
             # Crawl the website
             crawl_data = scraper.crawl_recursive(url)
@@ -128,80 +127,126 @@ def perform_analysis(result_id, url, max_depth, block_ads=True):
             nav_data = analyzer.generate_navigation_map(crawl_data)
             scrape_result.set_navigation_data(nav_data)
             
-            # Advanced comprehensive analysis
-            logging.info("Starting advanced analysis...")
+            # Basic analysis completed successfully
+            logging.info("Basic analysis completed")
             
-            # Extract advanced structure
-            advanced_structure = advanced_analyzer.extract_complete_structure(crawl_data)
-            advanced_styles = advanced_analyzer.extract_all_styles(crawl_data)
-            advanced_scripts = advanced_analyzer.extract_all_scripts(crawl_data)
-            advanced_content = advanced_analyzer.extract_content_structure(crawl_data)
-            performance_data = advanced_analyzer.extract_performance_data(crawl_data)
-            
-            # Extract technical details
-            tech_stack = technical_extractor.extract_complete_technology_stack(crawl_data)
-            code_structure = technical_extractor.extract_complete_code_structure(crawl_data)
-            assets_details = technical_extractor.extract_assets_complete_details(crawl_data)
-            
-            # Generate code templates
-            code_templates = technical_extractor.generate_code_templates({
-                'structure': advanced_structure,
-                'styles': advanced_styles,
-                'scripts': advanced_scripts,
-                'tech_stack': tech_stack
-            })
-            
-            # Generate recreation guide
-            recreation_guide = advanced_analyzer.generate_recreation_guide({
-                'basic': {
-                    'structure': structure_data,
-                    'assets': all_assets,
-                    'technology': tech_data,
-                    'seo': seo_data,
-                    'navigation': nav_data
-                },
-                'advanced': {
+            # Add advanced analysis
+            try:
+                # Initialize advanced analyzers
+                advanced_analyzer = AdvancedWebsiteAnalyzer()
+                technical_extractor = TechnicalExtractor()
+                arabic_generator = ArabicGenerator()
+                
+                # Extract advanced structure
+                advanced_structure = advanced_analyzer.extract_complete_structure(crawl_data)
+                advanced_styles = advanced_analyzer.extract_all_styles(crawl_data)
+                advanced_scripts = advanced_analyzer.extract_all_scripts(crawl_data)
+                advanced_content = advanced_analyzer.extract_content_structure(crawl_data)
+                performance_data = advanced_analyzer.extract_performance_data(crawl_data)
+                
+                # Extract technical details
+                tech_stack = technical_extractor.extract_complete_technology_stack(crawl_data)
+                code_structure = technical_extractor.extract_complete_code_structure(crawl_data)
+                assets_details = technical_extractor.extract_assets_complete_details(crawl_data)
+                
+                # Generate code templates
+                code_templates = technical_extractor.generate_code_templates({
                     'structure': advanced_structure,
                     'styles': advanced_styles,
                     'scripts': advanced_scripts,
-                    'content': advanced_content,
+                    'tech_stack': tech_stack
+                })
+                
+                # Generate recreation guide
+                recreation_guide = advanced_analyzer.generate_recreation_guide({
+                    'basic': {
+                        'structure': structure_data,
+                        'assets': all_assets,
+                        'technology': tech_data,
+                        'seo': seo_data,
+                        'navigation': nav_data
+                    },
+                    'advanced': {
+                        'structure': advanced_structure,
+                        'styles': advanced_styles,
+                        'scripts': advanced_scripts,
+                        'content': advanced_content,
+                        'performance': performance_data
+                    },
+                    'technical': {
+                        'tech_stack': tech_stack,
+                        'code_structure': code_structure,
+                        'assets_details': assets_details
+                    },
+                    'templates': code_templates
+                })
+                
+                # Generate comprehensive Arabic report
+                arabic_report = arabic_generator.generate_comprehensive_arabic_report({
+                    'basic': {
+                        'structure': structure_data,
+                        'assets': all_assets,
+                        'technology': tech_data,
+                        'seo': seo_data,
+                        'navigation': nav_data
+                    },
+                    'advanced': {
+                        'structure': advanced_structure,
+                        'styles': advanced_styles,
+                        'scripts': advanced_scripts,
+                        'content': advanced_content,
+                        'performance': performance_data
+                    },
+                    'technical': {
+                        'tech_stack': tech_stack,
+                        'code_structure': code_structure,
+                        'assets_details': assets_details
+                    },
+                    'recreation_guide': recreation_guide
+                })
+                
+                # Store advanced analysis results
+                scrape_result.set_recreation_guide(recreation_guide)
+                scrape_result.set_arabic_report(arabic_report)
+                
+                # Update with enhanced data
+                enhanced_structure_data = {
+                    'basic': structure_data,
+                    'advanced': advanced_structure,
+                    'code_structure': code_structure
+                }
+                scrape_result.set_structure_data(enhanced_structure_data)
+                
+                enhanced_assets_data = {
+                    'basic': all_assets,
+                    'detailed': assets_details
+                }
+                scrape_result.set_assets_data(enhanced_assets_data)
+                
+                enhanced_tech_data = {
+                    'basic': tech_data,
+                    'advanced': tech_stack,
+                    'templates': code_templates
+                }
+                scrape_result.set_technology_data(enhanced_tech_data)
+                
+                enhanced_seo_data = {
+                    'basic': seo_data,
                     'performance': performance_data
-                },
-                'technical': {
-                    'tech_stack': tech_stack,
-                    'code_structure': code_structure,
-                    'assets_details': assets_details
-                },
-                'templates': code_templates
-            })
-            
-            # Generate comprehensive Arabic report
-            arabic_report = arabic_generator.generate_comprehensive_arabic_report({
-                'basic': {
-                    'structure': structure_data,
-                    'assets': all_assets,
-                    'technology': tech_data,
-                    'seo': seo_data,
-                    'navigation': nav_data
-                },
-                'advanced': {
-                    'structure': advanced_structure,
-                    'styles': advanced_styles,
-                    'scripts': advanced_scripts,
-                    'content': advanced_content,
-                    'performance': performance_data
-                },
-                'technical': {
-                    'tech_stack': tech_stack,
-                    'code_structure': code_structure,
-                    'assets_details': assets_details
-                },
-                'recreation_guide': recreation_guide
-            })
-            
-            # Store advanced analysis results
-            scrape_result.set_recreation_guide(recreation_guide)
-            scrape_result.set_arabic_report(arabic_report)
+                }
+                scrape_result.set_seo_data(enhanced_seo_data)
+                
+                enhanced_nav_data = {
+                    'basic': nav_data,
+                    'advanced_content': advanced_content
+                }
+                scrape_result.set_navigation_data(enhanced_nav_data)
+                
+                logging.info("Advanced analysis completed successfully")
+                
+            except Exception as e:
+                logging.warning(f"Advanced analysis failed, continuing with basic: {e}")
+                # Continue with basic analysis if advanced fails
             
             # Add ad blocking statistics if enabled
             if block_ads:
@@ -210,39 +255,6 @@ def perform_analysis(result_id, url, max_depth, block_ads=True):
                 # Add to technology data
                 tech_data['ad_blocking_stats'] = ad_stats
                 scrape_result.set_technology_data(tech_data)
-            
-            # Update structure and assets with advanced data
-            enhanced_structure_data = {
-                'basic': structure_data,
-                'advanced': advanced_structure,
-                'code_structure': code_structure
-            }
-            scrape_result.set_structure_data(enhanced_structure_data)
-            
-            enhanced_assets_data = {
-                'basic': all_assets,
-                'detailed': assets_details
-            }
-            scrape_result.set_assets_data(enhanced_assets_data)
-            
-            enhanced_tech_data = {
-                'basic': tech_data,
-                'advanced': tech_stack,
-                'templates': code_templates
-            }
-            scrape_result.set_technology_data(enhanced_tech_data)
-            
-            enhanced_seo_data = {
-                'basic': seo_data,
-                'performance': performance_data
-            }
-            scrape_result.set_seo_data(enhanced_seo_data)
-            
-            enhanced_nav_data = {
-                'basic': nav_data,
-                'advanced_content': advanced_content
-            }
-            scrape_result.set_navigation_data(enhanced_nav_data)
             
             # Mark as completed
             scrape_result.status = 'completed'
