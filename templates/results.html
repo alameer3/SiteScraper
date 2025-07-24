@@ -215,6 +215,24 @@
                             <span class="badge bg-success">{{ tech_data.get('cms').title() }}</span>
                         </div>
                         {% endif %}
+                        
+                        {% if tech_data.get('ad_blocking_stats') %}
+                        <div class="mt-4">
+                            <h6><i data-feather="shield" class="me-2"></i>Ad Blocking Statistics</h6>
+                            {% set ad_stats = tech_data.get('ad_blocking_stats') %}
+                            <ul class="list-unstyled">
+                                <li><strong>Ads Blocked:</strong> {{ ad_stats.get('total_ads_blocked', 0) }}</li>
+                                <li><strong>Pages Crawled:</strong> {{ ad_stats.get('pages_crawled', 0) }}</li>
+                                <li><strong>Blocking Rules:</strong> {{ ad_stats.get('pattern_rules_count', 0) }}</li>
+                            </ul>
+                            {% if ad_stats.get('total_ads_blocked', 0) > 0 %}
+                            <div class="alert alert-success">
+                                <i data-feather="check-circle" class="me-2"></i>
+                                Successfully filtered out advertisements for cleaner analysis
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

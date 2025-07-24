@@ -99,4 +99,24 @@ The system analyzes and stores five main categories of website data:
 - **Modular Architecture**: Separate concerns for easy horizontal scaling
 - **Session Management**: Stateless design for load balancer compatibility
 
+## Recent Changes (July 24, 2025)
+
+### Added Advanced Ad Blocking System
+- **New Feature**: Comprehensive advertisement filtering system
+- **AdBlocker Module**: Created dedicated `ad_blocker.py` with intelligent ad detection
+- **Filtering Capabilities**: 
+  - Removes common ad containers and promotional content
+  - Filters ad networks (Google Ads, Facebook, Amazon, etc.)
+  - Blocks tracking scripts and analytics
+  - Cleans promotional text content
+- **User Control**: Added toggle switch in analysis form to enable/disable ad blocking
+- **Statistics**: Real-time reporting of blocked advertisements and filtering effectiveness
+- **Clean Results**: Provides cleaner, more focused website analysis without advertising clutter
+
+### Technical Implementation
+- **Smart Detection**: Uses CSS selectors, domain patterns, and content analysis
+- **Performance**: Filters assets and content during crawling process
+- **Statistics**: Tracks and reports blocking effectiveness in analysis results
+- **User Interface**: Added shield icon and ad blocking statistics in results view
+
 The application is designed to be both development-friendly with SQLite defaults and production-ready with environment-based configuration for database connections and security settings.

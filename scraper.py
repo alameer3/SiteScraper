@@ -6,18 +6,24 @@ import time
 import logging
 from collections import defaultdict
 import re
+from ad_blocker import AdBlocker
 
 class WebScraper:
-    def __init__(self, base_url, max_depth=2, delay=1.0):
+    def __init__(self, base_url, max_depth=2, delay=1.0, block_ads=True):
         self.base_url = base_url
         self.domain = urlparse(base_url).netloc
         self.max_depth = max_depth
         self.delay = delay
+        self.block_ads = block_ads
         self.visited_urls = set()
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (compatible; WebAnalyzer/1.0; +http://example.com/bot)'
         })
+        
+        # Initialize ad blocker
+        self.ad_blocker = AdBlocker() if block_ads else None
+        self.blocked_ads_count = 0
         
         # Check robots.txt
         self.robots_allowed = self.check_robots_txt()
@@ -135,6 +141,12 @@ class WebScraper:
         
         soup = BeautifulSoup(response.content, 'html.parser')
         
+        # Remove advertisements if ad blocking is enabled
+        if self.ad_blocker:
+            soup, blocked_count = self.ad_blocker.remove_ads_from_soup(soup)
+            self.blocked_ads_count += blocked_count
+            logging.info(f"Blocked {blocked_count} ads on {url}")
+        
         # Extract page data
         page_data = {
             'url': url,
@@ -166,6 +178,10 @@ class WebScraper:
         page_data['links'] = self.extract_links(soup, url)
         page_data['assets'] = self.extract_assets(soup, url)
         
+        # Filter out ad-related assets if ad blocking is enabled
+        if self.ad_blocker:
+            page_data['assets'] = self.ad_blocker.filter_assets(page_data['assets'])
+        
         # Forms
         for form in soup.find_all('form'):
             form_data = {
@@ -181,6 +197,13 @@ class WebScraper:
                 })
             page_data['forms'].append(form_data)
         
+        # Add ad blocking statistics to page data
+        if self.ad_blocker:
+            page_data['ad_blocking_stats'] = {
+                'ads_blocked_on_page': blocked_count if 'blocked_count' in locals() else 0,
+                'total_ads_blocked': self.blocked_ads_count
+            }
+        
         # Recursive crawling for internal links
         result = {url: page_data}
         
@@ -192,3 +215,16 @@ class WebScraper:
                     result.update(child_results)
         
         return result
+    
+    def get_ad_blocking_stats(self):
+        """Get comprehensive ad blocking statistics"""
+        if not self.ad_blocker:
+            return {'ad_blocking_enabled': False}
+        
+        stats = self.ad_blocker.get_blocking_stats()
+        stats.update({
+            'ad_blocking_enabled': True,
+            'total_ads_blocked': self.blocked_ads_count,
+            'pages_crawled': len(self.visited_urls)
+        })
+        return stats

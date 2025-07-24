@@ -10,6 +10,10 @@ class ScrapeResult(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     completed_at = db.Column(db.DateTime)
     
+    def __init__(self, url, status='pending'):
+        self.url = url
+        self.status = status
+    
     # Analysis results stored as JSON
     structure_data = db.Column(db.Text)  # HTML structure analysis
     assets_data = db.Column(db.Text)     # Images, CSS, JS files

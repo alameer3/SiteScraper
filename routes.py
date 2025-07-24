@@ -19,6 +19,7 @@ def analyze_website():
     """Start website analysis"""
     url = request.form.get('url', '').strip()
     max_depth = int(request.form.get('max_depth', 2))
+    block_ads = request.form.get('block_ads', 'on') == 'on'
     
     if not url:
         flash('Please enter a valid URL', 'error')
@@ -49,7 +50,7 @@ def analyze_website():
     # Start analysis in background thread
     thread = threading.Thread(
         target=perform_analysis,
-        args=(scrape_result.id, url, max_depth)
+        args=(scrape_result.id, url, max_depth, block_ads)
     )
     thread.daemon = True
     thread.start()
@@ -57,7 +58,7 @@ def analyze_website():
     flash('Analysis started! You will be redirected to results when complete.', 'success')
     return redirect(url_for('results', result_id=scrape_result.id))
 
-def perform_analysis(result_id, url, max_depth):
+def perform_analysis(result_id, url, max_depth, block_ads=True):
     """Perform the actual website analysis in background"""
     with app.app_context():
         scrape_result = ScrapeResult.query.get(result_id)
@@ -65,10 +66,10 @@ def perform_analysis(result_id, url, max_depth):
             return
         
         try:
-            logging.info(f"Starting analysis for {url}")
+            logging.info(f"Starting analysis for {url} (ads blocking: {block_ads})")
             
             # Initialize scraper and analyzer
-            scraper = WebScraper(url, max_depth=max_depth, delay=1.0)
+            scraper = WebScraper(url, max_depth=max_depth, delay=1.0, block_ads=block_ads)
             analyzer = WebsiteAnalyzer()
             
             # Crawl the website
@@ -120,6 +121,13 @@ def perform_analysis(result_id, url, max_depth):
             # Generate navigation map
             nav_data = analyzer.generate_navigation_map(crawl_data)
             scrape_result.set_navigation_data(nav_data)
+            
+            # Add ad blocking statistics if enabled
+            if block_ads:
+                ad_stats = scraper.get_ad_blocking_stats()
+                # Add to technology data
+                tech_data['ad_blocking_stats'] = ad_stats
+                scrape_result.set_technology_data(tech_data)
             
             # Mark as completed
             scrape_result.status = 'completed'
