@@ -18,9 +18,13 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/advanced-ui.css') }}">
     
     <!-- Chart.js for analytics visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Advanced UI JavaScript -->
+    <script src="{{ url_for('static', filename='js/live-dashboard.js') }}" defer></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">

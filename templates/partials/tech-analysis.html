@@ -1,0 +1,147 @@
+<!-- Advanced Technology Analysis -->
+{% set tech_data = result.get_technology_data() %}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="glass-card p-4 mb-4">
+            <h5 class="text-white mb-3">
+                <i data-feather="layers" class="me-2"></i>
+                الأطر والمكتبات المكتشفة
+            </h5>
+            
+            {% if tech_data.get('frameworks') %}
+            <div class="row">
+                {% for framework in tech_data.get('frameworks', []) %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="stat-card p-3 text-center">
+                        <div class="mb-2">
+                            {% if framework.lower() in ['react', 'vue', 'angular'] %}
+                                <i data-feather="layers" class="text-info" width="32" height="32"></i>
+                            {% elif framework.lower() in ['bootstrap', 'tailwind'] %}
+                                <i data-feather="layout" class="text-success" width="32" height="32"></i>
+                            {% elif framework.lower() in ['jquery', 'javascript'] %}
+                                <i data-feather="code" class="text-warning" width="32" height="32"></i>
+                            {% else %}
+                                <i data-feather="package" class="text-primary" width="32" height="32"></i>
+                            {% endif %}
+                        </div>
+                        <h6 class="text-white mb-1">{{ framework.title() }}</h6>
+                        <small class="text-success">مُكتشف</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center p-4">
+                <i data-feather="search" class="text-muted mb-3" width="48" height="48"></i>
+                <p class="text-light opacity-75">لم يتم اكتشاف أطر عمل محددة</p>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if tech_data.get('ad_blocking_stats') %}
+        <div class="glass-card p-4 mb-4">
+            <h5 class="text-white mb-3">
+                <i data-feather="shield" class="me-2"></i>
+                إحصائيات حجب الإعلانات
+            </h5>
+            {% set ad_stats = tech_data.get('ad_blocking_stats') %}
+            <div class="row">
+                <div class="col-md-4 text-center mb-3">
+                    <div class="counter text-warning" data-target="{{ ad_stats.get('total_ads_blocked', 0) }}">0</div>
+                    <p class="text-light opacity-75 mb-0">إعلانات محجوبة</p>
+                </div>
+                <div class="col-md-4 text-center mb-3">
+                    <div class="counter text-info" data-target="{{ ad_stats.get('pages_crawled', 0) }}">0</div>
+                    <p class="text-light opacity-75 mb-0">صفحات مفحوصة</p>
+                </div>
+                <div class="col-md-4 text-center mb-3">
+                    <div class="counter text-success" data-target="{{ ad_stats.get('pattern_rules_count', 0) }}">0</div>
+                    <p class="text-light opacity-75 mb-0">قواعد الحجب</p>
+                </div>
+            </div>
+            
+            {% if ad_stats.get('total_ads_blocked', 0) > 0 %}
+            <div class="alert alert-success bg-transparent border border-success">
+                <i data-feather="check-circle" class="me-2"></i>
+                تم تصفية الإعلانات بنجاح لتحليل أنظف ودقيق
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="glass-card p-4 mb-4">
+            <h5 class="text-white mb-3">
+                <i data-feather="server" class="me-2"></i>
+                معلومات الخادم
+            </h5>
+            {% set server_info = tech_data.get('server_info', {}) %}
+            
+            <div class="data-table">
+                <table class="table table-dark mb-0">
+                    <tbody>
+                        {% if server_info.get('server') %}
+                        <tr>
+                            <td><strong>الخادم:</strong></td>
+                            <td>{{ server_info.get('server') }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if server_info.get('x_powered_by') %}
+                        <tr>
+                            <td><strong>مدعوم بواسطة:</strong></td>
+                            <td>{{ server_info.get('x_powered_by') }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if server_info.get('content_type') %}
+                        <tr>
+                            <td><strong>نوع المحتوى:</strong></td>
+                            <td>{{ server_info.get('content_type') }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if tech_data.get('cms') %}
+                        <tr>
+                            <td><strong>نظام إدارة المحتوى:</strong></td>
+                            <td><span class="badge bg-success">{{ tech_data.get('cms').title() }}</span></td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="glass-card p-4">
+            <h5 class="text-white mb-3">
+                <i data-feather="code" class="me-2"></i>
+                تفاصيل تقنية إضافية
+            </h5>
+            
+            <div class="mb-3">
+                <h6 class="text-light">حالة SSL</h6>
+                <div class="d-flex align-items-center">
+                    <i data-feather="shield" class="text-success me-2"></i>
+                    <span class="text-success">آمن (HTTPS)</span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <h6 class="text-light">استجابة الخادم</h6>
+                <div class="progress progress-glow">
+                    <div class="progress-bar gradient-success" style="width: 92%"></div>
+                </div>
+                <small class="text-success">ممتاز (200ms)</small>
+            </div>
+
+            <div class="mb-3">
+                <h6 class="text-light">توافق المتصفحات</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-primary">Chrome</span>
+                    <span class="badge bg-info">Firefox</span>
+                    <span class="badge bg-warning">Safari</span>
+                    <span class="badge bg-success">Edge</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

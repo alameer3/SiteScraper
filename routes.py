@@ -275,16 +275,22 @@ def results(result_id):
     """Display analysis results"""
     scrape_result = ScrapeResult.query.get_or_404(result_id)
     
+    # Check if live mode is requested
+    live_mode = request.args.get('live', 'false').lower() == 'true'
+    
+    # Choose template based on mode
+    template = 'live-results.html' if live_mode else 'results.html'
+    
     # If still pending, show loading page
     if scrape_result.status == 'pending':
-        return render_template('results.html', result=scrape_result, loading=True)
+        return render_template(template, result=scrape_result, loading=True)
     
     # If failed, show error
     if scrape_result.status == 'failed':
-        return render_template('results.html', result=scrape_result, error=True)
+        return render_template(template, result=scrape_result, error=True)
     
     # Show completed results
-    return render_template('results.html', result=scrape_result, completed=True)
+    return render_template(template, result=scrape_result, completed=True)
 
 @app.route('/download/<int:result_id>/<format>')
 def download_results(result_id, format):
