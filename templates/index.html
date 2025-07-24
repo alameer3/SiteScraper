@@ -21,7 +21,7 @@
                 <form action="{{ url_for('analyze_website') }}" method="POST" id="analyzeForm">
                     <div class="mb-4">
                         <label for="url" class="form-label h5">
-                            <i data-feather="link" class="me-2"></i>Website URL
+                            <i data-feather="link" class="me-2"></i>رابط الموقع
                         </label>
                         <input type="url" 
                                class="form-control form-control-lg" 
@@ -29,24 +29,24 @@
                                name="url" 
                                placeholder="https://example.com"
                                required
-                               pattern="https?://.+"
-                               title="Please enter a valid URL starting with http:// or https://">
+                               title="يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://"
+                               style="direction: ltr; text-align: left;">
                         <div class="form-text">
-                            Enter the complete URL of the website you want to analyze
+                            أدخل الرابط الكامل للموقع الذي تريد تحليله
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label for="max_depth" class="form-label h6">
-                            <i data-feather="layers" class="me-2"></i>Crawl Depth
+                            <i data-feather="layers" class="me-2"></i>عمق التحليل
                         </label>
                         <select class="form-select" id="max_depth" name="max_depth">
-                            <option value="1">Shallow (1 level) - Homepage only</option>
-                            <option value="2" selected>Medium (2 levels) - Recommended</option>
-                            <option value="3">Deep (3 levels) - May take longer</option>
+                            <option value="1">سطحي (مستوى واحد) - الصفحة الرئيسية فقط</option>
+                            <option value="2" selected>متوسط (مستويان) - مُوصى به</option>
+                            <option value="3">عميق (3 مستويات) - قد يستغرق وقتاً أطول</option>
                         </select>
                         <div class="form-text">
-                            Choose how deep to crawl the website. Higher levels provide more data but take longer.
+                            اختر عمق تحليل الموقع. المستويات الأعلى توفر بيانات أكثر لكن تستغرق وقتاً أطول.
                         </div>
                     </div>
 
@@ -54,18 +54,18 @@
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="block_ads" name="block_ads" checked>
                             <label class="form-check-label h6" for="block_ads">
-                                <i data-feather="shield" class="me-2"></i>Block Advertisements
+                                <i data-feather="shield" class="me-2"></i>حجب الإعلانات
                             </label>
                         </div>
                         <div class="form-text">
-                            Automatically remove advertisements and tracking elements for cleaner analysis results.
+                            إزالة تلقائية للإعلانات وعناصر التتبع للحصول على نتائج تحليل أنظف.
                         </div>
                     </div>
 
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg">
                             <i data-feather="play" class="me-2"></i>
-                            Start Analysis
+                            بدء التحليل
                         </button>
                     </div>
                 </form>
@@ -199,7 +199,7 @@ document.getElementById('analyzeForm').addEventListener('submit', function(e) {
     // Show loading state
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Starting Analysis...';
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>جاري التحليل...';
     submitBtn.disabled = true;
     
     // Re-enable after a delay in case of errors
