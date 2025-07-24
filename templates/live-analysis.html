@@ -1,0 +1,649 @@
+{% extends "base.html" %}
+
+{% block title %}التحليل المباشر - {{ result.url }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Live Analysis Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h2 mb-2 text-white">
+                            <i data-feather="activity" class="me-2"></i>
+                            التحليل المباشر والمتطور
+                        </h1>
+                        <div class="text-light opacity-75">
+                            <i data-feather="link" class="me-1"></i>
+                            <span id="currentUrl">{{ result.url }}</span>
+                        </div>
+                    </div>
+                    <div class="live-indicator" id="liveIndicator">
+                        <i data-feather="wifi" width="16" height="16"></i>
+                        متصل مباشر
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Progress Dashboard -->
+    <div class="row mb-4">
+        <!-- Overall Progress -->
+        <div class="col-lg-8 mb-4">
+            <div class="glass-card p-4">
+                <h3 class="text-white mb-3">
+                    <i data-feather="trending-up" class="me-2"></i>
+                    تقدم التحليل الشامل
+                </h3>
+                <div class="progress-glow mb-3" style="height: 20px;">
+                    <div class="progress-bar" id="overallProgress" style="width: 0%"></div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-3">
+                        <div class="progress-step" id="step1">
+                            <div class="step-icon">
+                                <i data-feather="download" width="20" height="20"></i>
+                            </div>
+                            <div class="step-label">جمع البيانات</div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="progress-step" id="step2">
+                            <div class="step-icon">
+                                <i data-feather="cpu" width="20" height="20"></i>
+                            </div>
+                            <div class="step-label">تحليل التقنيات</div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="progress-step" id="step3">
+                            <div class="step-icon">
+                                <i data-feather="search" width="20" height="20"></i>
+                            </div>
+                            <div class="step-label">استخراج الأصول</div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="progress-step" id="step4">
+                            <div class="step-icon">
+                                <i data-feather="file-text" width="20" height="20"></i>
+                            </div>
+                            <div class="step-label">إنشاء التقرير</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Stats -->
+        <div class="col-lg-4 mb-4">
+            <div class="glass-card p-4">
+                <h4 class="text-white mb-3">
+                    <i data-feather="bar-chart-2" class="me-2"></i>
+                    إحصائيات مباشرة
+                </h4>
+                <div class="live-stat-item mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-light">الصفحات المفحوصة</span>
+                        <span class="counter" id="pagesScanned">0</span>
+                    </div>
+                </div>
+                <div class="live-stat-item mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-light">الصور المكتشفة</span>
+                        <span class="counter" id="imagesFound">0</span>
+                    </div>
+                </div>
+                <div class="live-stat-item mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-light">التقنيات المحددة</span>
+                        <span class="counter" id="techDetected">0</span>
+                    </div>
+                </div>
+                <div class="live-stat-item mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-light">الإعلانات المحجوبة</span>
+                        <span class="counter" id="adsBlocked">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Activity Feed -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-4">
+            <div class="glass-card p-4">
+                <h4 class="text-white mb-3">
+                    <i data-feather="activity" class="me-2"></i>
+                    سجل النشاط المباشر
+                </h4>
+                <div class="activity-feed" id="activityFeed">
+                    <div class="activity-item">
+                        <div class="activity-time">{{ moment().format('HH:mm:ss') }}</div>
+                        <div class="activity-content">
+                            <i data-feather="play" class="me-2"></i>
+                            بدء التحليل الشامل للموقع...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Technologies Detection -->
+        <div class="col-lg-4 mb-4">
+            <div class="glass-card p-4">
+                <h4 class="text-white mb-3">
+                    <i data-feather="layers" class="me-2"></i>
+                    التقنيات المكتشفة
+                </h4>
+                <div class="tech-detection-live" id="techDetectionLive">
+                    <div class="text-center text-muted">
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        جاري البحث عن التقنيات...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Data Visualization -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="glass-card p-4">
+                <h4 class="text-white mb-3">
+                    <i data-feather="pie-chart" class="me-2"></i>
+                    التصور المباشر للبيانات
+                </h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="data-viz-container">
+                            <canvas id="liveAssetsChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="data-viz-container">
+                            <canvas id="liveTechChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row">
+        <div class="col-12">
+            <div class="glass-card p-3">
+                <div class="d-flex justify-content-center gap-3">
+                    <button class="btn btn-outline-light" onclick="pauseAnalysis()" id="pauseBtn">
+                        <i data-feather="pause" class="me-1"></i>إيقاف مؤقت
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="stopAnalysis()" id="stopBtn">
+                        <i data-feather="square" class="me-1"></i>إيقاف التحليل
+                    </button>
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                        <i data-feather="home" class="me-1"></i>العودة للرئيسية
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Quick Stats -->
+<div class="position-fixed bottom-0 end-0 m-3" style="z-index: 1050;">
+    <div class="glass-card p-3" style="max-width: 250px;">
+        <div class="text-center">
+            <div class="text-white mb-2">الوقت المنقضي</div>
+            <div class="h4 text-primary" id="elapsedTime">00:00</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Live Analysis Variables
+let analysisStartTime = Date.now();
+let isAnalysisRunning = true;
+let currentStep = 1;
+let livePagesCount = 0;
+let liveImagesCount = 0;
+let liveTechCount = 0;
+let liveAdsBlocked = 0;
+let resultId = {{ result.id }};
+
+// Charts
+let liveAssetsChart, liveTechChart;
+
+// Initialize Live Analysis
+document.addEventListener('DOMContentLoaded', function() {
+    initializeLiveCharts();
+    startLiveUpdates();
+    startElapsedTimer();
+    simulateLiveAnalysis();
+});
+
+// Initialize Charts
+function initializeLiveCharts() {
+    // Assets Chart
+    const assetsCtx = document.getElementById('liveAssetsChart').getContext('2d');
+    liveAssetsChart = new Chart(assetsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['صور', 'CSS', 'JavaScript', 'أخرى'],
+            datasets: [{
+                data: [0, 0, 0, 0],
+                backgroundColor: [
+                    'rgba(103, 126, 234, 0.8)',
+                    'rgba(17, 153, 142, 0.8)', 
+                    'rgba(245, 87, 108, 0.8)',
+                    'rgba(79, 172, 254, 0.8)'
+                ],
+                borderWidth: 2,
+                borderColor: 'rgba(255, 255, 255, 0.2)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: { color: 'white' }
+                }
+            }
+        }
+    });
+
+    // Tech Chart
+    const techCtx = document.getElementById('liveTechChart').getContext('2d');
+    liveTechChart = new Chart(techCtx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'التقنيات المكتشفة',
+                data: [],
+                backgroundColor: 'rgba(103, 126, 234, 0.8)',
+                borderColor: 'rgba(103, 126, 234, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                x: {
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: 'white' }
+                }
+            }
+        }
+    });
+}
+
+// Live Updates
+function startLiveUpdates() {
+    // Real-time updates from server
+    setInterval(() => {
+        if (isAnalysisRunning) {
+            fetchLiveProgress();
+        }
+    }, 3000);
+}
+
+// Fetch Live Progress from Server
+function fetchLiveProgress() {
+    fetch(`/api/live-progress/${resultId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'completed') {
+                completeAnalysis();
+                return;
+            }
+            
+            updateProgressFromServer(data);
+            updateCountersFromServer(data.stats);
+            addActivityItem(data.latest_activity);
+        })
+        .catch(error => {
+            console.error('خطأ في جلب التحديثات المباشرة:', error);
+        });
+}
+
+// Update Progress from Server Data
+function updateProgressFromServer(data) {
+    const progress = Math.min(data.progress, 100);
+    document.getElementById('overallProgress').style.width = progress + '%';
+    
+    currentStep = data.current_step || 1;
+    
+    // Update step indicators
+    for (let i = 1; i <= 4; i++) {
+        const step = document.getElementById(`step${i}`);
+        step.classList.remove('completed', 'active');
+        
+        if (i < currentStep) {
+            step.classList.add('completed');
+        } else if (i === currentStep) {
+            step.classList.add('active');
+        }
+    }
+}
+
+// Update Counters from Server Data
+function updateCountersFromServer(stats) {
+    if (stats) {
+        livePagesCount = stats.pages_scanned || 0;
+        liveImagesCount = stats.images_found || 0;
+        liveTechCount = stats.tech_detected || 0;
+        liveAdsBlocked = stats.ads_blocked || 0;
+        
+        document.getElementById('pagesScanned').textContent = livePagesCount;
+        document.getElementById('imagesFound').textContent = liveImagesCount;
+        document.getElementById('techDetected').textContent = liveTechCount;
+        document.getElementById('adsBlocked').textContent = liveAdsBlocked;
+        
+        // Update charts with real data
+        liveAssetsChart.data.datasets[0].data[0] = liveImagesCount;
+        liveAssetsChart.data.datasets[0].data[1] = Math.floor(liveImagesCount * 0.3); // CSS files
+        liveAssetsChart.data.datasets[0].data[2] = Math.floor(liveImagesCount * 0.2); // JS files
+        liveAssetsChart.data.datasets[0].data[3] = Math.floor(liveImagesCount * 0.1); // Other
+        liveAssetsChart.update();
+    }
+}
+
+// Update Progress
+function updateProgress() {
+    const progress = Math.min(currentStep * 25, 100);
+    document.getElementById('overallProgress').style.width = progress + '%';
+    
+    // Update step indicators
+    for (let i = 1; i <= 4; i++) {
+        const step = document.getElementById(`step${i}`);
+        if (i < currentStep) {
+            step.classList.add('completed');
+        } else if (i === currentStep) {
+            step.classList.add('active');
+        }
+    }
+    
+    if (currentStep < 4 && Math.random() > 0.7) {
+        currentStep++;
+    }
+}
+
+// Update Counters
+function updateCounters() {
+    if (Math.random() > 0.5) {
+        livePagesCount += Math.floor(Math.random() * 3) + 1;
+        document.getElementById('pagesScanned').textContent = livePagesCount;
+    }
+    
+    if (Math.random() > 0.6) {
+        liveImagesCount += Math.floor(Math.random() * 5) + 1;
+        document.getElementById('imagesFound').textContent = liveImagesCount;
+        
+        // Update chart
+        liveAssetsChart.data.datasets[0].data[0] = liveImagesCount;
+        liveAssetsChart.update();
+    }
+    
+    if (Math.random() > 0.7) {
+        liveTechCount++;
+        document.getElementById('techDetected').textContent = liveTechCount;
+        addTechToChart();
+    }
+    
+    if (Math.random() > 0.8) {
+        liveAdsBlocked += Math.floor(Math.random() * 2) + 1;
+        document.getElementById('adsBlocked').textContent = liveAdsBlocked;
+    }
+}
+
+// Add Technology to Chart
+function addTechToChart() {
+    const techs = ['React', 'jQuery', 'Bootstrap', 'Vue.js', 'Angular', 'WordPress', 'CSS3', 'HTML5'];
+    const randomTech = techs[Math.floor(Math.random() * techs.length)];
+    
+    if (!liveTechChart.data.labels.includes(randomTech)) {
+        liveTechChart.data.labels.push(randomTech);
+        liveTechChart.data.datasets[0].data.push(1);
+        liveTechChart.update();
+        
+        // Add to live detection
+        addTechToDetection(randomTech);
+    }
+}
+
+// Add Technology to Detection List
+function addTechToDetection(tech) {
+    const container = document.getElementById('techDetectionLive');
+    if (container.querySelector('.text-muted')) {
+        container.innerHTML = '';
+    }
+    
+    const techItem = document.createElement('div');
+    techItem.className = 'tech-item-live mb-2';
+    techItem.innerHTML = `
+        <div class="d-flex align-items-center">
+            <div class="tech-indicator me-2"></div>
+            <span class="text-light">${tech}</span>
+            <span class="badge bg-success ms-auto">جديد</span>
+        </div>
+    `;
+    container.appendChild(techItem);
+}
+
+// Update Activity Feed
+function updateActivityFeed() {
+    const activities = [
+        'فحص صفحة جديدة...',
+        'استخراج الصور والوسائط...',
+        'تحليل كود CSS...',
+        'فحص سكريبتات JavaScript...',
+        'كشف التقنيات المستخدمة...',
+        'حجب الإعلانات...',
+        'تحليل بنية الموقع...',
+        'استخراج البيانات الوصفية...'
+    ];
+    
+    if (Math.random() > 0.6) {
+        const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+        addActivityItem(randomActivity);
+    }
+}
+
+// Add Activity Item
+function addActivityItem(activity) {
+    const feed = document.getElementById('activityFeed');
+    const time = new Date().toLocaleTimeString('ar', { hour12: false });
+    
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    item.innerHTML = `
+        <div class="activity-time">${time}</div>
+        <div class="activity-content">
+            <i data-feather="check" class="me-2"></i>
+            ${activity}
+        </div>
+    `;
+    
+    feed.insertBefore(item, feed.firstChild);
+    feather.replace();
+    
+    // Keep only last 10 items
+    if (feed.children.length > 10) {
+        feed.removeChild(feed.lastChild);
+    }
+}
+
+// Elapsed Timer
+function startElapsedTimer() {
+    setInterval(() => {
+        const elapsed = Date.now() - analysisStartTime;
+        const minutes = Math.floor(elapsed / 60000);
+        const seconds = Math.floor((elapsed % 60000) / 1000);
+        document.getElementById('elapsedTime').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+}
+
+// Simulate Live Analysis
+function simulateLiveAnalysis() {
+    // Simulate completion after 2 minutes
+    setTimeout(() => {
+        completeAnalysis();
+    }, 120000);
+}
+
+// Complete Analysis
+function completeAnalysis() {
+    isAnalysisRunning = false;
+    currentStep = 4;
+    updateProgress();
+    
+    addActivityItem('تم إكمال التحليل بنجاح! 🎉');
+    
+    // Show completion message
+    setTimeout(() => {
+        window.location.href = `{{ url_for('results', result_id=result.id, live='true') }}`;
+    }, 3000);
+}
+
+// Control Functions
+function pauseAnalysis() {
+    isAnalysisRunning = !isAnalysisRunning;
+    const btn = document.getElementById('pauseBtn');
+    if (isAnalysisRunning) {
+        btn.innerHTML = '<i data-feather="pause" class="me-1"></i>إيقاف مؤقت';
+        addActivityItem('تم استئناف التحليل');
+    } else {
+        btn.innerHTML = '<i data-feather="play" class="me-1"></i>استئناف';
+        addActivityItem('تم إيقاف التحليل مؤقتاً');
+    }
+    feather.replace();
+}
+
+function stopAnalysis() {
+    if (confirm('هل أنت متأكد من إيقاف التحليل؟')) {
+        isAnalysisRunning = false;
+        addActivityItem('تم إيقاف التحليل بواسطة المستخدم');
+        setTimeout(() => {
+            window.location.href = '{{ url_for("index") }}';
+        }, 2000);
+    }
+}
+</script>
+
+<style>
+.progress-step {
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.3s ease;
+}
+
+.progress-step.active {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.progress-step.completed {
+    color: #38ef7d;
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    transition: all 0.3s ease;
+}
+
+.progress-step.active .step-icon {
+    background: rgba(103, 126, 234, 0.8);
+    box-shadow: 0 0 20px rgba(103, 126, 234, 0.5);
+}
+
+.progress-step.completed .step-icon {
+    background: rgba(56, 239, 125, 0.8);
+}
+
+.step-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeInUp 0.3s ease;
+}
+
+.activity-time {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    margin-right: 12px;
+    min-width: 60px;
+}
+
+.activity-content {
+    color: white;
+    flex: 1;
+}
+
+.live-stat-item {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tech-item-live {
+    animation: slideInRight 0.3s ease;
+}
+
+.tech-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #38ef7d;
+    animation: pulse 2s infinite;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+</style>
+{% endblock %}

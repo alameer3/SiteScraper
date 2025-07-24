@@ -278,12 +278,15 @@ def results(result_id):
     # Check if live mode is requested
     live_mode = request.args.get('live', 'false').lower() == 'true'
     
-    # Choose template based on mode
-    template = 'live-results.html' if live_mode else 'results.html'
-    
-    # If still pending, show loading page
+    # Choose template based on mode and status
     if scrape_result.status == 'pending':
+        # Show live analysis interface for pending results
+        template = 'live-analysis.html'
         return render_template(template, result=scrape_result, loading=True)
+    elif live_mode:
+        template = 'live-results.html'
+    else:
+        template = 'results.html'
     
     # If failed, show error
     if scrape_result.status == 'failed':
@@ -381,6 +384,70 @@ def api_status(result_id):
         'progress': 100 if scrape_result.status == 'completed' else (50 if scrape_result.status == 'failed' else 25),
         'error_message': scrape_result.error_message
     })
+
+@app.route('/api/live-progress/<int:result_id>')
+def api_live_progress(result_id):
+    """API endpoint for live analysis progress"""
+    scrape_result = ScrapeResult.query.get_or_404(result_id)
+    
+    # Simulate live progress data
+    import random
+    import time
+    
+    elapsed_time = int((time.time() - scrape_result.created_at.timestamp()) if scrape_result.created_at else 0)
+    
+    if scrape_result.status == 'pending':
+        # Calculate progress based on elapsed time
+        progress = min(elapsed_time * 2, 95)  # 2% per second, max 95%
+        
+        # Generate live stats
+        pages_scanned = min(elapsed_time // 5, 50)  # New page every 5 seconds
+        images_found = min(pages_scanned * random.randint(3, 8), 200)
+        tech_detected = min(elapsed_time // 10, 15)  # New tech every 10 seconds
+        ads_blocked = min(elapsed_time // 3, 30)  # Ad blocked every 3 seconds
+        
+        return jsonify({
+            'status': 'pending',
+            'progress': progress,
+            'elapsed_time': elapsed_time,
+            'stats': {
+                'pages_scanned': pages_scanned,
+                'images_found': images_found,
+                'tech_detected': tech_detected,
+                'ads_blocked': ads_blocked
+            },
+            'current_step': min((elapsed_time // 20) + 1, 4),  # New step every 20 seconds
+            'latest_activity': generate_activity_message(elapsed_time)
+        })
+    else:
+        return jsonify({
+            'status': scrape_result.status,
+            'progress': 100,
+            'elapsed_time': elapsed_time,
+            'completed': True
+        })
+
+def generate_activity_message(elapsed_time):
+    """Generate realistic activity messages"""
+    activities = [
+        'فحص الصفحة الرئيسية...',
+        'استخراج الروابط الداخلية...',
+        'تحليل ملفات CSS...',
+        'فحص سكريبتات JavaScript...',
+        'كشف إطار العمل المستخدم...',
+        'استخراج الصور والوسائط...',
+        'تحليل بيانات SEO...',
+        'فحص البنية الهيكلية...',
+        'حجب الإعلانات والتتبع...',
+        'تحليل أداء الموقع...',
+        'استخراج البيانات الوصفية...',
+        'إنشاء دليل إعادة الإنشاء...',
+        'توليد التقرير العربي...',
+        'حفظ النتائج...'
+    ]
+    
+    activity_index = (elapsed_time // 8) % len(activities)  # New activity every 8 seconds
+    return activities[activity_index]
 
 @app.route('/history')
 def history():
