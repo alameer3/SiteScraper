@@ -1,0 +1,194 @@
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse, parse_qs
+from urllib.robotparser import RobotFileParser
+import time
+import logging
+from collections import defaultdict
+import re
+
+class WebScraper:
+    def __init__(self, base_url, max_depth=2, delay=1.0):
+        self.base_url = base_url
+        self.domain = urlparse(base_url).netloc
+        self.max_depth = max_depth
+        self.delay = delay
+        self.visited_urls = set()
+        self.session = requests.Session()
+        self.session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (compatible; WebAnalyzer/1.0; +http://example.com/bot)'
+        })
+        
+        # Check robots.txt
+        self.robots_allowed = self.check_robots_txt()
+        
+    def check_robots_txt(self):
+        """Check robots.txt to respect website policies"""
+        try:
+            robots_url = urljoin(self.base_url, '/robots.txt')
+            rp = RobotFileParser()
+            rp.set_url(robots_url)
+            rp.read()
+            return rp.can_fetch('*', self.base_url)
+        except Exception as e:
+            logging.warning(f"Could not check robots.txt: {e}")
+            return True
+    
+    def is_valid_url(self, url):
+        """Check if URL is valid and belongs to the same domain"""
+        try:
+            parsed = urlparse(url)
+            return (parsed.netloc == self.domain and 
+                   parsed.scheme in ['http', 'https'] and
+                   url not in self.visited_urls)
+        except Exception:
+            return False
+    
+    def get_page_content(self, url):
+        """Fetch page content with error handling"""
+        try:
+            if not self.robots_allowed:
+                logging.warning("Robots.txt disallows crawling this site")
+                return None
+            
+            response = self.session.get(url, timeout=10)
+            response.raise_for_status()
+            
+            # Rate limiting
+            time.sleep(self.delay)
+            
+            return response
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Error fetching {url}: {e}")
+            return None
+    
+    def extract_links(self, soup, base_url):
+        """Extract all links from the page"""
+        links = []
+        for link in soup.find_all('a', href=True):
+            href = link['href']
+            full_url = urljoin(base_url, href)
+            if self.is_valid_url(full_url):
+                links.append({
+                    'url': full_url,
+                    'text': link.get_text(strip=True),
+                    'title': link.get('title', '')
+                })
+        return links
+    
+    def extract_assets(self, soup, base_url):
+        """Extract all assets (images, CSS, JS, etc.)"""
+        assets = {
+            'images': [],
+            'css': [],
+            'javascript': [],
+            'fonts': [],
+            'other': []
+        }
+        
+        # Images
+        for img in soup.find_all('img', src=True):
+            assets['images'].append({
+                'src': urljoin(base_url, img['src']),
+                'alt': img.get('alt', ''),
+                'title': img.get('title', '')
+            })
+        
+        # CSS files
+        for link in soup.find_all('link', rel='stylesheet'):
+            if link.get('href'):
+                assets['css'].append({
+                    'href': urljoin(base_url, link['href']),
+                    'media': link.get('media', 'all')
+                })
+        
+        # JavaScript files
+        for script in soup.find_all('script', src=True):
+            assets['javascript'].append({
+                'src': urljoin(base_url, script['src']),
+                'type': script.get('type', 'text/javascript')
+            })
+        
+        # Font files (from CSS @font-face or link tags)
+        font_extensions = ['.woff', '.woff2', '.ttf', '.otf', '.eot']
+        for link in soup.find_all('link'):
+            href = link.get('href', '')
+            if any(ext in href.lower() for ext in font_extensions):
+                assets['fonts'].append({
+                    'href': urljoin(base_url, href),
+                    'type': link.get('type', '')
+                })
+        
+        return assets
+    
+    def crawl_recursive(self, url, depth=0):
+        """Recursively crawl the website"""
+        if depth > self.max_depth or url in self.visited_urls:
+            return {}
+        
+        self.visited_urls.add(url)
+        logging.info(f"Crawling: {url} (depth: {depth})")
+        
+        response = self.get_page_content(url)
+        if not response:
+            return {}
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Extract page data
+        page_data = {
+            'url': url,
+            'title': soup.title.string if soup.title else '',
+            'meta_description': '',
+            'meta_keywords': '',
+            'headers': {},
+            'links': [],
+            'assets': {},
+            'forms': [],
+            'depth': depth
+        }
+        
+        # Meta tags
+        meta_desc = soup.find('meta', attrs={'name': 'description'})
+        if meta_desc:
+            page_data['meta_description'] = meta_desc.get('content', '')
+        
+        meta_keywords = soup.find('meta', attrs={'name': 'keywords'})
+        if meta_keywords:
+            page_data['meta_keywords'] = meta_keywords.get('content', '')
+        
+        # Headers (h1-h6)
+        for i in range(1, 7):
+            headers = soup.find_all(f'h{i}')
+            page_data['headers'][f'h{i}'] = [h.get_text(strip=True) for h in headers]
+        
+        # Extract links and assets
+        page_data['links'] = self.extract_links(soup, url)
+        page_data['assets'] = self.extract_assets(soup, url)
+        
+        # Forms
+        for form in soup.find_all('form'):
+            form_data = {
+                'action': form.get('action', ''),
+                'method': form.get('method', 'get'),
+                'inputs': []
+            }
+            for input_tag in form.find_all(['input', 'select', 'textarea']):
+                form_data['inputs'].append({
+                    'type': input_tag.get('type', ''),
+                    'name': input_tag.get('name', ''),
+                    'id': input_tag.get('id', '')
+                })
+            page_data['forms'].append(form_data)
+        
+        # Recursive crawling for internal links
+        result = {url: page_data}
+        
+        if depth < self.max_depth:
+            for link_data in page_data['links'][:10]:  # Limit to first 10 links per page
+                link_url = link_data['url']
+                if link_url not in self.visited_urls:
+                    child_results = self.crawl_recursive(link_url, depth + 1)
+                    result.update(child_results)
+        
+        return result

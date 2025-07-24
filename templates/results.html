@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Results - {{ result.title or result.url }}{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1 class="h2 mb-2">
+                    <i data-feather="bar-chart-2" class="me-2"></i>
+                    Analysis Results
+                </h1>
+                <div class="text-muted">
+                    <i data-feather="link" class="me-1"></i>
+                    <a href="{{ result.url }}" target="_blank" class="text-decoration-none">{{ result.url }}</a>
+                </div>
+                {% if result.title %}
+                <div class="text-muted mt-1">
+                    <i data-feather="file-text" class="me-1"></i>
+                    {{ result.title }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="text-end">
+                <small class="text-muted">
+                    Started: {{ result.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    {% if result.completed_at %}
+                    <br>Completed: {{ result.completed_at.strftime('%Y-%m-%d %H:%M') }}
+                    {% endif %}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if loading %}
+<!-- Loading State -->
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5>Analyzing Website...</h5>
+                <p class="text-muted">This may take a few minutes depending on the website size.</p>
+                <div class="progress mt-3" style="height: 8px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         id="progressBar" 
+                         style="width: 25%"></div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-outline-secondary" onclick="location.reload()">
+                        <i data-feather="refresh-cw" class="me-1"></i>Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% elif error %}
+<!-- Error State -->
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="alert alert-danger">
+            <h5 class="alert-heading">
+                <i data-feather="alert-circle" class="me-2"></i>Analysis Failed
+            </h5>
+            <p class="mb-0">{{ result.error_message or 'An unexpected error occurred during analysis.' }}</p>
+            <hr>
+            <div class="mb-0">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-danger">
+                    <i data-feather="arrow-left" class="me-1"></i>Try Another URL
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% elif completed %}
+<!-- Completed Results -->
+<div class="row mb-3">
+    <div class="col">
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('download_results', result_id=result.id, format='json') }}" 
+               class="btn btn-outline-primary">
+                <i data-feather="download" class="me-1"></i>Download JSON
+            </a>
+            <a href="{{ url_for('download_results', result_id=result.id, format='html') }}" 
+               class="btn btn-outline-secondary">
+                <i data-feather="file-text" class="me-1"></i>Download HTML Report
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Overview Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="text-primary mb-2">
+                    <i data-feather="globe" width="32" height="32"></i>
+                </div>
+                <h5 class="card-title mb-1">{{ result.get_navigation_data().get('pages', [])|length }}</h5>
+                <p class="card-text text-muted small mb-0">Pages Analyzed</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="text-success mb-2">
+                    <i data-feather="image" width="32" height="32"></i>
+                </div>
+                <h5 class="card-title mb-1">{{ result.get_assets_data().get('images', [])|length }}</h5>
+                <p class="card-text text-muted small mb-0">Images Found</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="text-info mb-2">
+                    <i data-feather="code" width="32" height="32"></i>
+                </div>
+                <h5 class="card-title mb-1">{{ result.get_technology_data().get('frameworks', [])|length }}</h5>
+                <p class="card-text text-muted small mb-0">Technologies</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="text-warning mb-2">
+                    <i data-feather="alert-triangle" width="32" height="32"></i>
+                </div>
+                <h5 class="card-title mb-1">{{ result.get_seo_data().get('issues', [])|length }}</h5>
+                <p class="card-text text-muted small mb-0">SEO Issues</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Analysis Tabs -->
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="analysisTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="technology-tab" data-bs-toggle="tab" data-bs-target="#technology" type="button">
+                    <i data-feather="cpu" class="me-1"></i>Technology Stack
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="assets-tab" data-bs-toggle="tab" data-bs-target="#assets" type="button">
+                    <i data-feather="folder" class="me-1"></i>Assets
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button">
+                    <i data-feather="trending-up" class="me-1"></i>SEO Analysis
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="structure-tab" data-bs-toggle="tab" data-bs-target="#structure" type="button">
+                    <i data-feather="map" class="me-1"></i>Site Structure
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content" id="analysisTabContent">
+            <!-- Technology Stack Tab -->
+            <div class="tab-pane fade show active" id="technology" role="tabpanel">
+                {% set tech_data = result.get_technology_data() %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i data-feather="layers" class="me-2"></i>Frameworks & Libraries</h5>
+                        {% if tech_data.get('frameworks') %}
+                            <ul class="list-group list-group-flush">
+                                {% for framework in tech_data.get('frameworks', []) %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ framework.title() }}
+                                    <span class="badge bg-primary rounded-pill">Detected</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted">No specific frameworks detected</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5><i data-feather="server" class="me-2"></i>Server Information</h5>
+                        {% set server_info = tech_data.get('server_info', {}) %}
+                        <ul class="list-unstyled">
+                            {% if server_info.get('server') %}
+                            <li><strong>Server:</strong> {{ server_info.get('server') }}</li>
+                            {% endif %}
+                            {% if server_info.get('x_powered_by') %}
+                            <li><strong>Powered By:</strong> {{ server_info.get('x_powered_by') }}</li>
+                            {% endif %}
+                            {% if server_info.get('content_type') %}
+                            <li><strong>Content Type:</strong> {{ server_info.get('content_type') }}</li>
+                            {% endif %}
+                        </ul>
+                        
+                        {% if tech_data.get('cms') %}
+                        <div class="mt-3">
+                            <h6>Content Management System</h6>
+                            <span class="badge bg-success">{{ tech_data.get('cms').title() }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assets Tab -->
+            <div class="tab-pane fade" id="assets" role="tabpanel">
+                {% set assets_data = result.get_assets_data() %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i data-feather="image" class="me-2"></i>Images ({{ assets_data.get('images', [])|length }})</h5>
+                        {% if assets_data.get('images') %}
+                            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Alt Text</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for image in assets_data.get('images', [])[:20] %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ image.src }}" target="_blank" class="text-truncate d-block" style="max-width: 200px;">
+                                                    {{ image.src.split('/')[-1] }}
+                                                </a>
+                                            </td>
+                                            <td>{{ image.alt or 'No alt text' }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% if assets_data.get('images')|length > 20 %}
+                                        <tr>
+                                            <td colspan="2" class="text-muted">... and {{ assets_data.get('images')|length - 20 }} more</td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No images found</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5><i data-feather="file-text" class="me-2"></i>Stylesheets ({{ assets_data.get('css', [])|length }})</h5>
+                        {% if assets_data.get('css') %}
+                            <div style="max-height: 150px; overflow-y: auto;">
+                                {% for css in assets_data.get('css', [])[:10] %}
+                                <div class="mb-1">
+                                    <a href="{{ css.href }}" target="_blank" class="text-truncate d-block small">
+                                        {{ css.href.split('/')[-1] }}
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No CSS files found</p>
+                        {% endif %}
+                        
+                        <h5 class="mt-3"><i data-feather="code" class="me-2"></i>JavaScript ({{ assets_data.get('javascript', [])|length }})</h5>
+                        {% if assets_data.get('javascript') %}
+                            <div style="max-height: 150px; overflow-y: auto;">
+                                {% for js in assets_data.get('javascript', [])[:10] %}
+                                <div class="mb-1">
+                                    <a href="{{ js.src }}" target="_blank" class="text-truncate d-block small">
+                                        {{ js.src.split('/')[-1] }}
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No JavaScript files found</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEO Analysis Tab -->
+            <div class="tab-pane fade" id="seo" role="tabpanel">
+                {% set seo_data = result.get_seo_data() %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i data-feather="alert-triangle" class="me-2"></i>SEO Issues</h5>
+                        {% if seo_data.get('issues') %}
+                            <div class="alert alert-warning">
+                                <ul class="mb-0">
+                                    {% for issue in seo_data.get('issues', [])[:10] %}
+                                    <li>{{ issue }}</li>
+                                    {% endfor %}
+                                    {% if seo_data.get('issues')|length > 10 %}
+                                    <li>... and {{ seo_data.get('issues')|length - 10 }} more issues</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                <i data-feather="check-circle" class="me-2"></i>No major SEO issues detected!
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5><i data-feather="bar-chart" class="me-2"></i>SEO Metrics</h5>
+                        {% set title_analysis = seo_data.get('title_analysis', {}) %}
+                        {% set image_analysis = seo_data.get('image_alt_analysis', {}) %}
+                        
+                        <ul class="list-unstyled">
+                            <li><strong>Average Title Length:</strong> {{ "%.1f"|format(title_analysis.get('average_length', 0)) }} characters</li>
+                            <li><strong>Unique Titles:</strong> {{ title_analysis.get('unique_titles', 0) }}/{{ title_analysis.get('total_titles', 0) }}</li>
+                            <li><strong>Image Alt Coverage:</strong> {{ "%.1f"|format(image_analysis.get('alt_coverage', 0)) }}%</li>
+                            <li><strong>Total Pages:</strong> {{ seo_data.get('page_count', 0) }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Site Structure Tab -->
+            <div class="tab-pane fade" id="structure" role="tabpanel">
+                {% set nav_data = result.get_navigation_data() %}
+                {% set structure_data = result.get_structure_data() %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i data-feather="layers" class="me-2"></i>Page Types</h5>
+                        {% if structure_data.get('page_types') %}
+                            <div class="row">
+                                {% for page_type, count in structure_data.get('page_types', {}).items() %}
+                                <div class="col-6 mb-2">
+                                    <div class="card">
+                                        <div class="card-body text-center py-2">
+                                            <h6 class="card-title mb-1">{{ count }}</h6>
+                                            <small class="text-muted">{{ page_type.title() }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5><i data-feather="link" class="me-2"></i>Most Linked Pages</h5>
+                        {% set most_linked = nav_data.get('most_linked_pages', {}) %}
+                        {% if most_linked %}
+                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Page</th>
+                                            <th>Links</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for url, count in most_linked.items() %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ url }}" target="_blank" class="text-truncate d-block" style="max-width: 200px;">
+                                                    {{ url.split('/')[-1] or 'Homepage' }}
+                                                </a>
+                                            </td>
+                                            <td>{{ count }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No linking data available</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5><i data-feather="map" class="me-2"></i>Site Navigation</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Page</th>
+                                        <th>Title</th>
+                                        <th>Depth</th>
+                                        <th>Outbound Links</th>
+                                        <th>Forms</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for page in nav_data.get('pages', [])[:20] %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ page.url }}" target="_blank" class="text-truncate d-block" style="max-width: 200px;">
+                                                {{ page.url.split('/')[-1] or 'Homepage' }}
+                                            </a>
+                                        </td>
+                                        <td class="text-truncate" style="max-width: 200px;">{{ page.title or 'No title' }}</td>
+                                        <td>{{ page.depth }}</td>
+                                        <td>{{ page.outbound_links }}</td>
+                                        <td>{{ page.forms }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if loading %}
+<script>
+// Auto-refresh for loading state
+function checkStatus() {
+    fetch('{{ url_for("api_status", result_id=result.id) }}')
+        .then(response => response.json())
+        .then(data => {
+            const progressBar = document.getElementById('progressBar');
+            if (progressBar) {
+                progressBar.style.width = data.progress + '%';
+            }
+            
+            if (data.status === 'completed' || data.status === 'failed') {
+                location.reload();
+            }
+        })
+        .catch(error => console.error('Error checking status:', error));
+}
+
+// Check status every 5 seconds
+setInterval(checkStatus, 5000);
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Website Analyzer - Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <div class="display-1 text-primary mb-3">
+                        <i data-feather="search"></i>
+                    </div>
+                    <h1 class="card-title h2 mb-3">Website Analyzer</h1>
+                    <p class="card-text text-muted lead">
+                        Comprehensively analyze any website to extract all useful information for creating similar sites. 
+                        Get detailed insights into structure, technology stack, SEO, and more.
+                    </p>
+                </div>
+
+                <form action="{{ url_for('analyze_website') }}" method="POST" id="analyzeForm">
+                    <div class="mb-4">
+                        <label for="url" class="form-label h5">
+                            <i data-feather="link" class="me-2"></i>Website URL
+                        </label>
+                        <input type="url" 
+                               class="form-control form-control-lg" 
+                               id="url" 
+                               name="url" 
+                               placeholder="https://example.com"
+                               required
+                               pattern="https?://.+"
+                               title="Please enter a valid URL starting with http:// or https://">
+                        <div class="form-text">
+                            Enter the complete URL of the website you want to analyze
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="max_depth" class="form-label h6">
+                            <i data-feather="layers" class="me-2"></i>Crawl Depth
+                        </label>
+                        <select class="form-select" id="max_depth" name="max_depth">
+                            <option value="1">Shallow (1 level) - Homepage only</option>
+                            <option value="2" selected>Medium (2 levels) - Recommended</option>
+                            <option value="3">Deep (3 levels) - May take longer</option>
+                        </select>
+                        <div class="form-text">
+                            Choose how deep to crawl the website. Higher levels provide more data but take longer.
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i data-feather="play" class="me-2"></i>
+                            Start Analysis
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row mt-5">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="text-primary mb-3">
+                            <i data-feather="cpu" width="48" height="48"></i>
+                        </div>
+                        <h5 class="card-title">Technology Detection</h5>
+                        <p class="card-text">Identify frameworks, libraries, CMS, and server technologies used.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="text-success mb-3">
+                            <i data-feather="image" width="48" height="48"></i>
+                        </div>
+                        <h5 class="card-title">Asset Catalog</h5>
+                        <p class="card-text">Extract and catalog all images, CSS, JavaScript, and font files.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="text-info mb-3">
+                            <i data-feather="trending-up" width="48" height="48"></i>
+                        </div>
+                        <h5 class="card-title">SEO Analysis</h5>
+                        <p class="card-text">Analyze meta tags, headers, and SEO optimization opportunities.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="text-warning mb-3">
+                            <i data-feather="map" width="48" height="48"></i>
+                        </div>
+                        <h5 class="card-title">Site Structure</h5>
+                        <p class="card-text">Map navigation structure and page hierarchy for insights.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('analyzeForm').addEventListener('submit', function(e) {
+    const urlInput = document.getElementById('url');
+    let url = urlInput.value.trim();
+    
+    // Auto-add protocol if missing
+    if (url && !url.match(/^https?:\/\//)) {
+        url = 'https://' + url;
+        urlInput.value = url;
+    }
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Starting Analysis...';
+    submitBtn.disabled = true;
+    
+    // Re-enable after a delay in case of errors
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 5000);
+});
+</script>
+{% endblock %}
