@@ -75,6 +75,19 @@
     animation: pulse 2s infinite;
 }
 
+/* Fix text visibility issues */
+.form-label, .form-text, .card-text, p, h1, h2, h3, h4, h5, h6, span, div {
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: inherit !important;
+}
+
+/* Ensure form elements are visible */
+.form-control, .form-select, .btn {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.8; }

@@ -186,6 +186,18 @@ body {
     transform: translateY(-2px);
 }
 
+/* Ensure text visibility */
+.form-label, .form-text, .card-text, p, h1, h2, h3, h4, h5, h6, span, div {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Prevent text hiding */
+.form-control, .form-select, .btn {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
 /* Status badges */
 .badge {
     font-size: 0.75em;
