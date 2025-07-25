@@ -17,6 +17,11 @@ from collections import defaultdict
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import shutil
+import re
+from typing import Dict, List, Optional, Tuple
+import zipfile
+import base64
+from datetime import datetime
 
 class AdvancedExtractor:
     def __init__(self, base_url, output_dir="extracted_sites", max_depth=3, max_threads=5):
