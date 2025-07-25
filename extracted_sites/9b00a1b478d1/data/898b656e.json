@@ -1,5 +1,5 @@
 {
-  "url": "https://ak.sv/login",
+  "url": "https://ak.sv/favorite/movies",
   "title": "تسجيل الدخول | اكوام",
   "meta_data": {
     "title": "تسجيل الدخول | اكوام",
@@ -27,5 +27,5 @@
     "schema_org": []
   },
   "word_count": 4,
-  "extraction_time": 1753411906.9664147
+  "extraction_time": 1753413573.5916455
 }
