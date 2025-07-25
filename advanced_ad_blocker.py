@@ -30,67 +30,153 @@ class AdvancedAdBlocker:
             'cleaned_urls': 0
         }
         
-        # قواعد متقدمة لكشف الإعلانات
+        # قواعد متقدمة جداً لكشف الإعلانات والمحتوى المخفي
         self.advanced_ad_patterns = {
-            # CSS Selectors for common ad containers
+            # CSS Selectors for common ad containers - شامل جداً
             'css_selectors': [
-                # Google Ads
+                # Google Ads - جميع الأنواع
                 '[data-google-av-cxn]', '[data-google-av-cmp]', '.google-auto-placed',
-                '.adsbygoogle', '[data-ad-client]', '[data-ad-slot]',
+                '.adsbygoogle', '[data-ad-client]', '[data-ad-slot]', '.google-ads',
+                '[data-google-query-id]', '.google-ad-unit', '.gpt-ad',
                 
-                # Facebook Ads
+                # Facebook Ads - جميع الأنواع
                 '[data-testid*="ad"]', '[aria-label*="Sponsored"]', '[data-pagelet*="ad"]',
+                '.fb-ad', '[data-ft*="ei"]', '[data-ad-preview]',
                 
-                # Generic ad patterns
-                '[class*="advertisement"]', '[id*="advertisement"]',
-                '[class*="banner"]', '[id*="banner"]',
-                '[class*="popup"]', '[id*="popup"]',
-                '[class*="overlay"]', '[id*="overlay"]',
-                '[class*="modal"]', '[id*="modal"]',
-                '[data-ad]', '[data-ads]', '[data-advertising]',
+                # أنماط إعلانية عامة - شاملة
+                '[class*="advertisement"]', '[id*="advertisement"]', '[class*="ads"]', '[id*="ads"]',
+                '[class*="banner"]', '[id*="banner"]', '[class*="ad-"]', '[id*="ad-"]',
+                '[class*="popup"]', '[id*="popup"]', '[class*="popover"]', '[id*="popover"]',
+                '[class*="overlay"]', '[id*="overlay"]', '[class*="lightbox"]', '[id*="lightbox"]',
+                '[class*="modal"]', '[id*="modal"]', '[class*="dialog"]', '[id*="dialog"]',
+                '[data-ad]', '[data-ads]', '[data-advertising]', '[data-ad-unit]',
                 
-                # Affiliate and promotional content
-                '[class*="affiliate"]', '[id*="affiliate"]',
-                '[class*="promo"]', '[id*="promo"]',
-                '[class*="sponsor"]', '[id*="sponsor"]',
+                # محتوى ترويجي وأفلييت
+                '[class*="affiliate"]', '[id*="affiliate"]', '[class*="referral"]', '[id*="referral"]',
+                '[class*="promo"]', '[id*="promo"]', '[class*="promotion"]', '[id*="promotion"]',
+                '[class*="sponsor"]', '[id*="sponsor"]', '[class*="sponsored"]', '[id*="sponsored"]',
+                '[class*="partnership"]', '[id*="partnership"]', '[class*="commercial"]', '[id*="commercial"]',
                 
-                # Video ads
-                '[class*="video-ad"]', '[id*="video-ad"]',
-                '[class*="preroll"]', '[id*="preroll"]',
+                # إعلانات فيديو وصوت
+                '[class*="video-ad"]', '[id*="video-ad"]', '[class*="preroll"]', '[id*="preroll"]',
+                '[class*="midroll"]', '[id*="midroll"]', '[class*="postroll"]', '[id*="postroll"]',
+                '[class*="vast"]', '[id*="vast"]', '[class*="vpaid"]', '[id*="vpaid"]',
                 
-                # Mobile ads
-                '[class*="mobile-ad"]', '[id*="mobile-ad"]',
-                '[class*="interstitial"]', '[id*="interstitial"]'
+                # إعلانات موبايل ومتجاوبة
+                '[class*="mobile-ad"]', '[id*="mobile-ad"]', '[class*="responsive-ad"]', '[id*="responsive-ad"]',
+                '[class*="interstitial"]', '[id*="interstitial"]', '[class*="fullscreen"]', '[id*="fullscreen"]',
+                
+                # شبكات إعلانية محددة
+                '.outbrain', '.taboola', '.revcontent', '.mgid', '.criteo', '.adskeeper',
+                '.adnxs', '.pubmatic', '.rubiconproject', '.smartadserver', '.media-net',
+                
+                # عناصر تتبع وتحليلات مخفية
+                '[class*="tracking"]', '[id*="tracking"]', '[class*="analytics"]', '[id*="analytics"]',
+                '[class*="pixel"]', '[id*="pixel"]', '[class*="beacon"]', '[id*="beacon"]',
+                '[class*="tag"]', '[id*="tag"]', '[class*="gtm"]', '[id*="gtm"]',
+                
+                # عناصر اجتماعية ترويجية
+                '[class*="social-share"]', '[id*="social-share"]', '[class*="like-button"]', '[id*="like-button"]',
+                '[class*="follow-button"]', '[id*="follow-button"]', '[class*="widget"]', '[id*="widget"]',
+                
+                # نماذج تسويقية
+                '[class*="newsletter"]', '[id*="newsletter"]', '[class*="signup"]', '[id*="signup"]',
+                '[class*="subscribe"]', '[id*="subscribe"]', '[class*="email-capture"]', '[id*="email-capture"]',
+                '[class*="lead-gen"]', '[id*="lead-gen"]', '[class*="conversion"]', '[id*="conversion"]',
+                
+                # عناصر مخفية وضارة
+                '[style*="display:none"]', '[style*="visibility:hidden"]', '[style*="opacity:0"]',
+                '[style*="position:absolute"][style*="left:-"]', '[style*="position:fixed"][style*="left:-"]',
+                '[style*="width:1px"]', '[style*="height:1px"]', '[style*="font-size:0"]'
             ],
             
-            # Text patterns that indicate ads
+            # Text patterns that indicate ads - شامل ومتطور
             'text_patterns': [
-                r'sponsored\s+content',
-                r'advertisement',
-                r'promoted\s+post',
-                r'affiliate\s+link',
-                r'click\s+here\s+to\s+buy',
-                r'special\s+offer',
-                r'limited\s+time',
-                r'act\s+now',
-                r'call\s+now',
-                r'free\s+trial'
+                # إعلانات مباشرة
+                r'sponsored\s+content', r'advertisement', r'promoted\s+post', r'paid\s+content',
+                r'affiliate\s+link', r'referral\s+link', r'partnership\s+content',
+                
+                # دعوات للعمل
+                r'click\s+here\s+to\s+buy', r'buy\s+now', r'order\s+now', r'purchase\s+now',
+                r'special\s+offer', r'limited\s+time', r'limited\s+offer', r'exclusive\s+deal',
+                r'act\s+now', r'act\s+fast', r'hurry\s+up', r'don\'t\s+miss',
+                r'call\s+now', r'contact\s+us\s+now', r'get\s+quote',
+                
+                # عروض مجانية وتجريبية
+                r'free\s+trial', r'free\s+download', r'free\s+shipping', r'no\s+cost',
+                r'risk\s+free', r'money\s+back', r'guarantee', r'satisfaction\s+guaranteed',
+                
+                # كلمات تسويقية
+                r'best\s+deal', r'lowest\s+price', r'discount', r'sale\s+now',
+                r'save\s+money', r'cheap', r'affordable', r'bargain',
+                
+                # محتوى عربي إعلاني
+                r'الإعلان\s+المدفوع', r'محتوى\s+مُمول', r'رعاية\s+تجارية',
+                r'اشتري\s+الآن', r'اطلب\s+الآن', r'عرض\s+خاص', r'عرض\s+محدود',
+                r'مجاناً\s+لفترة', r'تجربة\s+مجانية', r'خصم\s+خاص',
+                r'اتصل\s+الآن', r'لا\s+تفوت', r'سارع\s+بالطلب',
+                
+                # تتبع وتحليلات
+                r'google\s+analytics', r'facebook\s+pixel', r'conversion\s+tracking',
+                r'utm_source', r'utm_campaign', r'tracking\s+code',
+                
+                # شبكات اجتماعية ترويجية
+                r'like\s+and\s+share', r'follow\s+us', r'subscribe\s+now',
+                r'join\s+our\s+newsletter', r'email\s+updates', r'notification\s+settings'
             ],
             
-            # URL patterns for ad networks
+            # URL patterns for ad networks - قائمة شاملة ومحدثة
             'url_patterns': [
-                r'doubleclick\.net',
-                r'googleadservices\.com',
-                r'googlesyndication\.com',
-                r'amazon-adsystem\.com',
-                r'facebook\.com/tr',
-                r'analytics\.google\.com',
-                r'google-analytics\.com',
-                r'googletagmanager\.com',
-                r'hotjar\.com',
-                r'crazyegg\.com',
-                r'mixpanel\.com',
-                r'segment\.com'
+                # Google - جميع الخدمات الإعلانية
+                r'doubleclick\.net', r'googleadservices\.com', r'googlesyndication\.com',
+                r'googletagservices\.com', r'google-analytics\.com', r'analytics\.google\.com',
+                r'googletagmanager\.com', r'googleoptimize\.com', r'google\.com/adsense',
+                
+                # Facebook & Meta
+                r'facebook\.com/tr', r'connect\.facebook\.net', r'fbcdn\.net/tr',
+                r'instagram\.com/logging', r'whatsapp\.com/tr',
+                
+                # Amazon
+                r'amazon-adsystem\.com', r'adsystem\.amazon\.com', r'amazon\.com/gp/aw/cr',
+                
+                # شبكات إعلانية كبرى
+                r'outbrain\.com', r'taboola\.com', r'revcontent\.com', r'mgid\.com',
+                r'criteo\.com', r'adskeeper\.com', r'adnxs\.com', r'adsystem\.com',
+                r'pubmatic\.com', r'rubiconproject\.com', r'smartadserver\.com',
+                r'media\.net', r'bidswitch\.net', r'turn\.com', r'rlcdn\.com',
+                
+                # تحليلات وتتبع
+                r'hotjar\.com', r'crazyegg\.com', r'mixpanel\.com', r'segment\.com',
+                r'amplitude\.com', r'fullstory\.com', r'logrocket\.com',
+                r'mouseflow\.com', r'clicktale\.com', r'inspectlet\.com',
+                
+                # أدوات تسويقية
+                r'mailchimp\.com/track', r'constantcontact\.com/track',
+                r'aweber\.com/track', r'getresponse\.com/track',
+                r'klaviyo\.com/track', r'drip\.com/track',
+                
+                # شبكات اجتماعية للتتبع
+                r'twitter\.com/i/adsct', r'linkedin\.com/li/track',
+                r'pinterest\.com/ct', r'snapchat\.com/tr',
+                r'tiktok\.com/i18n/pixel', r'reddit\.com/api/jail',
+                
+                # أنظمة دفع وتتبع
+                r'paypal\.com/webapps/hermes', r'stripe\.com/v1/m',
+                r'visa\.com/track', r'mastercard\.com/track',
+                
+                # شبكات إعلانية إقليمية
+                r'yandex\.ru/clck', r'baidu\.com/rp', r'naver\.com/track',
+                r'bing\.com/api/v1/impression', r'yahoo\.com/p',
+                
+                # أدوات A/B testing
+                r'optimizely\.com', r'vwo\.com', r'unbounce\.com/track',
+                r'leadpages\.com/track', r'clickfunnels\.com/track',
+                
+                # برامج ضارة وتتبع خفي
+                r'track\.php', r'pixel\.php', r'beacon\.php', r'collect\.php',
+                r'impression\.php', r'click\.php', r'redirect\.php',
+                r'/track/', r'/pixel/', r'/beacon/', r'/collect/',
+                r'/analytics/', r'/metrics/', r'/stats/', r'/log/'
             ]
         }
         
@@ -182,7 +268,14 @@ class AdvancedAdBlocker:
             try:
                 elements = soup.select(selector)
                 for element in elements:
-                    element_info = f"{element.name}#{element.get('id', '')}.{' '.join(element.get('class', []))}"
+                    element_id = element.get('id', '') if hasattr(element, 'get') else ''
+                    element_classes = element.get('class', []) if hasattr(element, 'get') else []
+                    if isinstance(element_classes, list):
+                        class_str = ' '.join(element_classes)
+                    else:
+                        class_str = str(element_classes) if element_classes else ''
+                    element_name = element.name if hasattr(element, 'name') else 'unknown'
+                    element_info = f"{element_name}#{element_id}.{class_str}"
                     removed_elements.append(f"CSS: {element_info}")
                     element.decompose()
             except Exception as e:
@@ -195,8 +288,11 @@ class AdvancedAdBlocker:
         scripts_cleaned = 0
         
         for script in soup.find_all('script'):
-            script_content = script.string or ""
-            script_src = script.get('src', '')
+            script_content = ""
+            if hasattr(script, 'string') and script.string:
+                script_content = str(script.string)
+            script_src = script.get('src', '') if hasattr(script, 'get') else ''
+            script_src = str(script_src) if script_src else ''
             
             # فحص محتوى السكريبت
             is_suspicious = False
@@ -253,21 +349,24 @@ class AdvancedAdBlocker:
         
         # تنظيف روابط CSS
         for link in soup.find_all('link', rel='stylesheet'):
-            href = link.get('href', '')
+            href = link.get('href', '') if hasattr(link, 'get') else ''
+            href = str(href) if href else ''
             if self._is_suspicious_url(href):
                 link.decompose()
                 blocked_requests += 1
         
         # تنظيف الصور المشبوهة
         for img in soup.find_all('img'):
-            src = img.get('src', '')
+            src = img.get('src', '') if hasattr(img, 'get') else ''
+            src = str(src) if src else ''
             if self._is_suspicious_url(src):
                 img.decompose()
                 blocked_requests += 1
         
         # تنظيف iframes
         for iframe in soup.find_all('iframe'):
-            src = iframe.get('src', '')
+            src = iframe.get('src', '') if hasattr(iframe, 'get') else ''
+            src = str(src) if src else ''
             if self._is_suspicious_url(src) or self._is_ad_iframe(iframe):
                 iframe.decompose()
                 blocked_requests += 1
@@ -327,15 +426,17 @@ class AdvancedAdBlocker:
         
         # البحث عن العناصر مع display: none أو visibility: hidden
         for element in soup.find_all(style=True):
-            style = element.get('style', '')
+            style = element.get('style', '') if hasattr(element, 'get') else ''
+            style = str(style) if style else ''
             if ('display:none' in style.replace(' ', '') or 
                 'visibility:hidden' in style.replace(' ', '') or
                 'opacity:0' in style.replace(' ', '')):
                 
                 # فحص محتوى العنصر للتأكد من أنه إعلاني
-                element_text = element.get_text(strip=True)
+                element_text = element.get_text(strip=True) if hasattr(element, 'get_text') else ''
                 if self._contains_ad_keywords(element_text):
-                    removed_elements.append(f"Hidden: {element.name}")
+                    element_name = element.name if hasattr(element, 'name') else 'unknown'
+                    removed_elements.append(f"Hidden: {element_name}")
                     element.decompose()
         
         return removed_elements
@@ -354,8 +455,10 @@ class AdvancedAdBlocker:
         ]
         
         for meta in soup.find_all('meta'):
-            name = meta.get('name', '')
-            property_attr = meta.get('property', '')
+            name = meta.get('name', '') if hasattr(meta, 'get') else ''
+            property_attr = meta.get('property', '') if hasattr(meta, 'get') else ''
+            name = str(name) if name else ''
+            property_attr = str(property_attr) if property_attr else ''
             
             for pattern in ad_meta_patterns:
                 if (re.search(pattern, name, re.IGNORECASE) or 
@@ -383,10 +486,11 @@ class AdvancedAdBlocker:
         
         # فلتر العناصر بناءً على النسبة والحجم (مع استثناءات للمحتوى)
         for element in soup.find_all():
+            element_name = element.name if hasattr(element, 'name') else 'unknown'
             if (self._is_likely_ad_element(element) and 
                 not self._is_main_content(element) and
-                element.name not in ['html', 'body', 'head', 'main', 'article', 'section']):
-                removed_elements.append(f"Smart: {element.name}")
+                element_name not in ['html', 'body', 'head', 'main', 'article', 'section']):
+                removed_elements.append(f"Smart: {element_name}")
                 element.decompose()
         
         return removed_elements

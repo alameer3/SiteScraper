@@ -425,9 +425,9 @@ class WebsiteExtractor:
             return None
 
     def download_and_clean_css(self, url: str) -> Optional[str]:
-        """تحميل وتنظيف ملفات CSS"""
+        """تحميل وتنظيف ملفات CSS مع حماية من الأخطاء"""
         try:
-            response = self.session.get(url, timeout=30)
+            response = self.session.get(url, timeout=10)
             response.raise_for_status()
             
             css_content = response.text
@@ -446,7 +446,7 @@ class WebsiteExtractor:
             return str(save_path.relative_to(self.output_dir))
             
         except Exception as e:
-            logger.error(f"خطأ في تحميل CSS {url}: {e}")
+            logger.warning(f"تخطي ملف CSS {url}: {e}")
             return None
 
     def find_internal_links(self, url: str) -> List[str]:

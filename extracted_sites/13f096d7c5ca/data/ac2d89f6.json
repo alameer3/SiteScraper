@@ -1,0 +1,63 @@
+{
+  "url": "https://ak.sv/shows",
+  "title": "تلفزيون | اكوام",
+  "meta_data": {
+    "title": "تلفزيون | اكوام",
+    "description": "شمس المواقع، الموقع العربي الاول لتحميل و مشاهدة الافلام, المسلسلات, الالعاب, البرامج و التطبيقات, التلفزيون, المسرحيات, المصارعة, الرياضة, تحميل و مشاهدة مباشرة",
+    "keywords": "أفلام,مسلسلات,حلقات,مصارعة,برامج,العاب,مشاهدة مباشرة,تحميل مباشر,مشاهدة,تحميل,نتفلكس,اون لاين,مباشر,مدبلج,مترجم,رمضان,مصري,خليجي,سوري,او اس ان,ام بي سي,تركي,برامج تلفزيونية,توك شو,تبع كلو,akwam,akoam",
+    "author": "AKWAM",
+    "lang": "",
+    "charset": ""
+  },
+  "structured_data": {
+    "json_ld": [],
+    "meta_tags": {
+      "viewport": "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+      "og:title": "تلفزيون | اكوام",
+      "twitter:title": "تلفزيون | اكوام",
+      "robots": "ALL",
+      "og:type": "article",
+      "og:description": "شمس المواقع، الموقع العربي الاول لتحميل و مشاهدة الافلام, المسلسلات, الالعاب, البرامج و التطبيقات, التلفزيون, المسرحيات, المصارعة, الرياضة, تحميل و مشاهدة مباشرة",
+      "og:image": "https://akw.to/files/social_logo.png",
+      "og:image:width": "573",
+      "og:image:height": "300",
+      "og:url": "https://ak.sv/shows",
+      "og:site_name": "اكوام",
+      "twitter:card": "summary_large_image",
+      "twitter:domain": "https://ak.sv/shows",
+      "twitter:site": "@AKOAMsocial",
+      "twitter:image": "https://akw.to/files/social_logo.png",
+      "twitter:description": "شمس المواقع، الموقع العربي الاول لتحميل و مشاهدة الافلام, المسلسلات, الالعاب, البرامج و التطبيقات, التلفزيون, المسرحيات, المصارعة, الرياضة, تحميل و مشاهدة مباشرة",
+      "twitter:url": "https://ak.sv/shows",
+      "description": "شمس المواقع، الموقع العربي الاول لتحميل و مشاهدة الافلام, المسلسلات, الالعاب, البرامج و التطبيقات, التلفزيون, المسرحيات, المصارعة, الرياضة, تحميل و مشاهدة مباشرة",
+      "keywords": "أفلام,مسلسلات,حلقات,مصارعة,برامج,العاب,مشاهدة مباشرة,تحميل مباشر,مشاهدة,تحميل,نتفلكس,اون لاين,مباشر,مدبلج,مترجم,رمضان,مصري,خليجي,سوري,او اس ان,ام بي سي,تركي,برامج تلفزيونية,توك شو,تبع كلو,akwam,akoam",
+      "author": "AKWAM",
+      "rating": "General",
+      "copyright": "جميع الحقوق محفوظة لـ شبكة اكوام © 2025",
+      "msapplication-TileColor": "#222222",
+      "theme-color": "#222222"
+    },
+    "open_graph": {
+      "title": "تلفزيون | اكوام",
+      "type": "article",
+      "description": "شمس المواقع، الموقع العربي الاول لتحميل و مشاهدة الافلام, المسلسلات, الالعاب, البرامج و التطبيقات, التلفزيون, المسرحيات, المصارعة, الرياضة, تحميل و مشاهدة مباشرة",
+      "image": "https://akw.to/files/social_logo.png",
+      "image:width": "573",
+      "image:height": "300",
+      "url": "https://ak.sv/shows",
+      "site_name": "اكوام"
+    },
+    "twitter_card": {
+      "title": "تلفزيون | اكوام",
+      "card": "summary_large_image",
+      "domain": "https://ak.sv/shows",
+      "site": "@AKOAMsocial",
+      "image": "https://akw.to/files/social_logo.png",
+      "description": "شمس المواقع، الموقع العربي الاول لتحميل و مشاهدة الافلام, المسلسلات, الالعاب, البرامج و التطبيقات, التلفزيون, المسرحيات, المصارعة, الرياضة, تحميل و مشاهدة مباشرة",
+      "url": "https://ak.sv/shows"
+    },
+    "schema_org": []
+  },
+  "word_count": 3,
+  "extraction_time": 1753411914.1390676
+}
