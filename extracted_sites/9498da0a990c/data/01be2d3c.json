@@ -1,0 +1,62 @@
+{
+  "url": "https://ak.sv/ad-policy",
+  "title": "السياسة الإعلانات | اكوام",
+  "meta_data": {
+    "title": "السياسة الإعلانات | اكوام",
+    "description": "",
+    "keywords": "",
+    "author": "AKWAM",
+    "lang": "",
+    "charset": ""
+  },
+  "structured_data": {
+    "json_ld": [],
+    "meta_tags": {
+      "viewport": "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+      "og:title": "السياسة الإعلانات | اكوام",
+      "twitter:title": "السياسة الإعلانات | اكوام",
+      "robots": "ALL",
+      "og:type": "article",
+      "og:image": "https://img.downet.net/thumb/830x506/uploads/EuUuP.png",
+      "og:image:width": "573",
+      "og:image:height": "300",
+      "og:url": "https://ak.sv/ad-policy",
+      "og:site_name": "اكوام",
+      "twitter:card": "summary_large_image",
+      "twitter:domain": "https://ak.sv/ad-policy",
+      "twitter:site": "@AKOAMsocial",
+      "twitter:creator": "@AKOAMsocial",
+      "twitter:image": "https://img.downet.net/thumb/830x506/uploads/EuUuP.png",
+      "twitter:url": "https://ak.sv/ad-policy",
+      "author": "AKWAM",
+      "rating": "General",
+      "fb:app_id": "437560843555258",
+      "copyright": "جميع الحقوق محفوظة لـ شبكة اكوام © 2025",
+      "article:published_time": "2021-09-26T16:37:10+03:00",
+      "article:modified_time": "2023-04-06T14:27:35+02:00",
+      "msapplication-TileColor": "#222222",
+      "theme-color": "#222222"
+    },
+    "open_graph": {
+      "title": "السياسة الإعلانات | اكوام",
+      "type": "article",
+      "image": "https://img.downet.net/thumb/830x506/uploads/EuUuP.png",
+      "image:width": "573",
+      "image:height": "300",
+      "url": "https://ak.sv/ad-policy",
+      "site_name": "اكوام"
+    },
+    "twitter_card": {
+      "title": "السياسة الإعلانات | اكوام",
+      "card": "summary_large_image",
+      "domain": "https://ak.sv/ad-policy",
+      "site": "@AKOAMsocial",
+      "creator": "@AKOAMsocial",
+      "image": "https://img.downet.net/thumb/830x506/uploads/EuUuP.png",
+      "url": "https://ak.sv/ad-policy"
+    },
+    "schema_org": []
+  },
+  "word_count": 4,
+  "extraction_time": 1753410727.5035064
+}
