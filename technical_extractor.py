@@ -326,34 +326,6 @@ class TechnicalExtractor:
             'total_count': len(videos),
             'formats': list(set([video.get('format', 'unknown') for video in videos]))
         }
-        
-        for url, page_data in crawl_data.items():
-            try:
-                response = self.session.get(url, timeout=10)
-                soup = BeautifulSoup(response.content, 'html.parser')
-                
-                # تحليل تفصيلي للصور
-                assets_details['images_analysis'][url] = self._analyze_images_detailed(soup, url)
-                
-                # تحليل الخطوط
-                assets_details['fonts_details'][url] = self._analyze_fonts(soup)
-                
-                # تحليل الأيقونات
-                assets_details['icons_analysis'][url] = self._analyze_icons(soup)
-                
-                # تحليل ملفات الفيديو
-                assets_details['videos_details'][url] = self._analyze_videos(soup, url)
-                
-                # تحليل استراتيجيات التحميل
-                assets_details['loading_strategies'][url] = self._analyze_loading_strategies(soup)
-                
-                # تحليل التحسين
-                assets_details['optimization_analysis'][url] = self._analyze_optimization(soup)
-                
-            except Exception as e:
-                logging.error(f"خطأ في تحليل الأصول لـ {url}: {e}")
-        
-        return assets_details
     
     def generate_code_templates(self, analysis_data):
         """إنشاء قوالب كود للتطبيق"""

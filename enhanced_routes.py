@@ -298,7 +298,7 @@ def api_search_analyses():
         
         # فلتر النص
         if query:
-            base_query = base_query.filter(ScrapeResult.url.like(f'%{query}%'))
+            base_query = base_query.filter(ScrapeResult.url.contains(query))
         
         # فلتر نوع التحليل
         if analysis_type:

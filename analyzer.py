@@ -52,6 +52,7 @@ class WebsiteAnalyzer:
         # Use builtwith if available
         if BUILTWITH_AVAILABLE:
             try:
+                import builtwith
                 tech_info['builtwith_data'] = builtwith.parse(url)
             except Exception as e:
                 logging.error(f"Error using builtwith: {e}")
