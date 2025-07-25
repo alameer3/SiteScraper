@@ -1,0 +1,38 @@
+{
+  "original_html_length": 1351,
+  "cleaned_html_length": 527,
+  "cleaning_report": {
+    "original_elements": 22,
+    "removed_elements": [
+      "CSS: div#.advertisement",
+      "CSS: div#.sponsored-content",
+      "Meta: google-adsense-account"
+    ],
+    "cleaned_scripts": 2,
+    "blocked_requests": 2,
+    "final_elements": 13
+  },
+  "blocking_report": {
+    "summary": {
+      "total_ads_blocked": 2,
+      "total_trackers_blocked": 2,
+      "malicious_scripts_removed": 0,
+      "suspicious_elements_removed": 0,
+      "urls_cleaned": 0
+    },
+    "categories_blocked": {
+      "google_ads": "جوجل أدز وخدمات الإعلان",
+      "facebook_trackers": "تتبع فيسبوك ووسائل التواصل",
+      "analytics_scripts": "سكريبت التحليلات والإحصائيات",
+      "affiliate_links": "روابط الأفلييت والعمولة",
+      "popup_overlays": "النوافذ المنبثقة والأغطية"
+    },
+    "protection_features": [
+      "حجب الإعلانات المرئية والمخفية",
+      "إزالة سكريبت التتبع والتحليلات",
+      "تنظيف الروابط المشبوهة",
+      "حماية من البرامج الضارة",
+      "تحسين سرعة التحميل"
+    ]
+  }
+}

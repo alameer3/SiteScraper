@@ -42,7 +42,11 @@ class WebsiteExtractor:
         # إنشاء مجلدات الإخراج
         self.create_directories()
         
-        # قوائم التنظيف
+        # تفعيل نظام حجب الإعلانات المتطور
+        from advanced_ad_blocker import AdvancedAdBlocker
+        self.ad_blocker = AdvancedAdBlocker()
+        
+        # قوائم التنظيف التقليدية (احتياطية)
         self.ad_selectors = [
             '[class*="ad"]', '[id*="ad"]', '[class*="advertisement"]',
             '[class*="banner"]', '[class*="popup"]', '[class*="modal"]',
@@ -199,46 +203,76 @@ class WebsiteExtractor:
             return None
 
     def clean_page(self, soup: BeautifulSoup) -> BeautifulSoup:
-        """تنظيف الصفحة من الإعلانات والتتبع"""
-        # إزالة الإعلانات
-        ads_removed = 0
+        """تنظيف متطور للصفحة من الإعلانات والتتبع باستخدام AI"""
+        
+        # استخدام النظام المتطور لحجب الإعلانات
+        html_content = str(soup)
+        cleaned_html, cleaning_report = self.ad_blocker.clean_html_content(html_content)
+        
+        # تحديث الإحصائيات من التقرير المتطور
+        ads_blocked = len([x for x in cleaning_report.get('removed_elements', []) if 'CSS:' in x or 'Smart:' in x])
+        tracking_blocked = cleaning_report.get('cleaned_scripts', 0)
+        
+        self.stats['ads_removed'] += ads_blocked
+        self.stats['tracking_removed'] += tracking_blocked
+        
+        # إعادة تحويل HTML المنظف إلى BeautifulSoup
+        cleaned_soup = BeautifulSoup(cleaned_html, 'html.parser')
+        
+        # تطبيق طبقة تنظيف إضافية تقليدية
+        cleaned_soup = self._apply_traditional_cleaning(cleaned_soup)
+        
+        logger.info(f"🛡️ تم تنظيف {ads_blocked} إعلان متطور و {tracking_blocked} عنصر تتبع ذكي")
+        
+        return cleaned_soup
+    
+    def _apply_traditional_cleaning(self, soup: BeautifulSoup) -> BeautifulSoup:
+        """تطبيق تنظيف تقليدي كطبقة إضافية"""
+        
+        # إزالة الإعلانات التقليدية المتبقية
+        traditional_ads = 0
         for selector in self.ad_selectors:
-            elements = soup.select(selector)
-            for element in elements:
-                element.decompose()
-                ads_removed += 1
+            try:
+                elements = soup.select(selector)
+                for element in elements:
+                    element.decompose()
+                    traditional_ads += 1
+            except Exception as e:
+                logger.debug(f"تحذير في selector {selector}: {e}")
         
-        self.stats['ads_removed'] += ads_removed
-        
-        # إزالة سكريبت التتبع
-        tracking_removed = 0
+        # إزالة سكريپت التتبع التقليدي المتبقي
+        traditional_tracking = 0
         scripts = soup.find_all('script')
         for script in scripts:
             if script.get('src'):
                 src = script.get('src')
                 if any(domain in src for domain in self.tracking_domains):
                     script.decompose()
-                    tracking_removed += 1
+                    traditional_tracking += 1
             elif script.string:
                 script_content = script.string.lower()
                 if any(domain in script_content for domain in self.tracking_domains):
                     script.decompose()
-                    tracking_removed += 1
+                    traditional_tracking += 1
         
-        self.stats['tracking_removed'] += tracking_removed
-        
-        # إزالة التعليقات
-        comments = soup.find_all(string=lambda text: isinstance(text, str) and text.strip().startswith('<!--'))
+        # تنظيف التعليقات المشبوهة
+        from bs4 import Comment
+        comments = soup.find_all(string=lambda text: isinstance(text, Comment))
         for comment in comments:
-            if comment.parent:
+            comment_text = str(comment).lower()
+            if any(keyword in comment_text for keyword in ['ad', 'track', 'analytics', 'google']):
                 comment.extract()
         
-        # إزالة العناصر المخفية
+        # إزالة العناصر المخفية المشبوهة
         hidden_elements = soup.find_all(attrs={'style': re.compile(r'display\s*:\s*none|visibility\s*:\s*hidden')})
         for element in hidden_elements:
-            element.decompose()
+            element_text = element.get_text(strip=True).lower()
+            if any(keyword in element_text for keyword in ['ad', 'advertisement', 'sponsor', 'promo']):
+                element.decompose()
         
-        logger.info(f"تم تنظيف {ads_removed} إعلان و {tracking_removed} عنصر تتبع")
+        if traditional_ads > 0 or traditional_tracking > 0:
+            logger.info(f"➕ طبقة إضافية: {traditional_ads} إعلان تقليدي و {traditional_tracking} تتبع تقليدي")
+        
         return soup
 
     def extract_text_content(self, url: str, soup: BeautifulSoup) -> str:
