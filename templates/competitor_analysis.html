@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}تحليل المنافسين - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i data-feather="trending-up" class="me-2"></i>
+                        تحليل المنافسين المتقدم
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <form id="competitorForm">
+                        <div class="mb-4">
+                            <label for="main_url" class="form-label fw-bold">موقعك الإلكتروني</label>
+                            <input type="url" class="form-control form-control-lg" id="main_url" 
+                                   placeholder="https://example.com" required>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">مواقع المنافسين</label>
+                            <div id="competitor-urls">
+                                <div class="input-group mb-2">
+                                    <input type="url" class="form-control competitor-url" 
+                                           placeholder="https://competitor1.com">
+                                    <button type="button" class="btn btn-outline-danger remove-competitor">
+                                        <i data-feather="x"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-primary" id="add-competitor">
+                                <i data-feather="plus" class="me-2"></i>إضافة منافس
+                            </button>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i data-feather="search" class="me-2"></i>
+                            بدء التحليل
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Progress Section -->
+            <div id="progress-section" class="card shadow-lg border-0 mb-4" style="display: none;">
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">جاري التحليل...</span>
+                        </div>
+                        <h5>جاري تحليل المنافسين...</h5>
+                        <p class="text-muted">قد تستغرق هذه العملية بضع دقائق</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div id="results-section" style="display: none;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    feather.replace();
+    
+    // Add competitor URL input
+    document.getElementById('add-competitor').addEventListener('click', function() {
+        const container = document.getElementById('competitor-urls');
+        const newInput = document.createElement('div');
+        newInput.className = 'input-group mb-2';
+        newInput.innerHTML = `
+            <input type="url" class="form-control competitor-url" placeholder="https://competitor.com">
+            <button type="button" class="btn btn-outline-danger remove-competitor">
+                <i data-feather="x"></i>
+            </button>
+        `;
+        container.appendChild(newInput);
+        feather.replace();
+    });
+    
+    // Remove competitor URL
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-competitor')) {
+            e.target.closest('.input-group').remove();
+        }
+    });
+    
+    // Form submission
+    document.getElementById('competitorForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const mainUrl = document.getElementById('main_url').value;
+        const competitorInputs = document.querySelectorAll('.competitor-url');
+        const competitorUrls = Array.from(competitorInputs)
+            .map(input => input.value)
+            .filter(url => url.trim() !== '');
+        
+        if (!mainUrl) {
+            alert('يرجى إدخال رابط موقعك');
+            return;
+        }
+        
+        // Show progress
+        document.getElementById('progress-section').style.display = 'block';
+        document.getElementById('results-section').style.display = 'none';
+        
+        // Send analysis request
+        fetch('/api/competitor-analyze', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                main_url: mainUrl,
+                competitor_urls: competitorUrls
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('progress-section').style.display = 'none';
+            displayResults(data);
+        })
+        .catch(error => {
+            document.getElementById('progress-section').style.display = 'none';
+            alert('حدث خطأ أثناء التحليل: ' + error.message);
+        });
+    });
+    
+    function displayResults(data) {
+        const resultsSection = document.getElementById('results-section');
+        resultsSection.innerHTML = `
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        <i data-feather="bar-chart-2" class="me-2"></i>
+                        نتائج تحليل المنافسين
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <pre class="bg-light p-3 rounded">${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            </div>
+        `;
+        resultsSection.style.display = 'block';
+        feather.replace();
+    }
+});
+</script>
+{% endblock %}

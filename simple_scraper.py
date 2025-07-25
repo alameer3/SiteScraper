@@ -147,8 +147,9 @@ class SimpleScraper:
         try:
             # Title
             title_tag = soup.find('title')
-            if title_tag and hasattr(title_tag, 'string') and title_tag.string:
-                page_data['title'] = str(title_tag.string).strip()
+            if title_tag:
+                title_text = title_tag.get_text(strip=True) if title_tag else ''
+                page_data['title'] = title_text
             
             # Meta tags
             meta_desc = soup.find('meta', attrs={'name': 'description'})

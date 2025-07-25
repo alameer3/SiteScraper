@@ -55,25 +55,22 @@ def analyze_website():
         # Start analysis in background
         def analyze_in_background():
             try:
-                scraper = SimpleScraper()
+                scraper = SimpleScraper(url, max_depth=max_depth)
                 analyzer = AdvancedWebsiteAnalyzer()
                 
                 # Scrape the website
-                scrape_data = scraper.scrape_website(url, max_depth=max_depth)
+                scrape_data = scraper.crawl_recursive(url, 0)
                 
                 # Analyze the scraped data
-                analysis_result = analyzer.analyze_comprehensive(url, scrape_data)
+                analysis_result = analyzer.extract_complete_structure(scrape_data)
                 
                 # Store in database
-                result = ScrapeResult(
-                    url=url,
-                    structure_data=json.dumps(analysis_result.get('structure', {})),
-                    assets_data=json.dumps(analysis_result.get('assets', {})),
-                    technology_data=json.dumps(analysis_result.get('technology', {})),
-                    seo_data=json.dumps(analysis_result.get('seo', {})),
-                    navigation_data=json.dumps(analysis_result.get('navigation', {})),
-                    status='completed'
-                )
+                result = ScrapeResult(url=url, status='completed')
+                result.set_structure_data(analysis_result.get('html_structure', {}))
+                result.set_assets_data(scrape_data)
+                result.set_technology_data(analysis_result.get('semantic_structure', {}))
+                result.set_seo_data({'analyzed': True, 'data': scrape_data})
+                result.set_navigation_data(analysis_result.get('interactive_elements', {}))
                 db.session.add(result)
                 db.session.commit()
                 

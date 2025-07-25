@@ -286,12 +286,12 @@ document.addEventListener('DOMContentLoaded', function() {
             labels: ['أساسي', 'الأمان', 'الأداء', 'SEO', 'المنافسين', 'شامل'],
             datasets: [{
                 data: [
-                    {{ analysis_stats.get('basic', 0) }},
-                    {{ analysis_stats.get('security', 0) }},
-                    {{ analysis_stats.get('performance', 0) }},
-                    {{ analysis_stats.get('seo', 0) }},
-                    {{ analysis_stats.get('competitor', 0) }},
-                    {{ analysis_stats.get('comprehensive', 0) }}
+                    {{ analysis_stats.get('basic', 0) or 0 }},
+                    {{ analysis_stats.get('security', 0) or 0 }},
+                    {{ analysis_stats.get('performance', 0) or 0 }},
+                    {{ analysis_stats.get('seo', 0) or 0 }},
+                    {{ analysis_stats.get('competitor', 0) or 0 }},
+                    {{ analysis_stats.get('comprehensive', 0) or 0 }}
                 ],
                 backgroundColor: [
                     '#0d6efd',
@@ -371,10 +371,14 @@ document.getElementById('confirmDelete').addEventListener('click', function() {
             console.error('Error:', error);
             alert('حدث خطأ أثناء الحذف');
         });
+        
+        // Hide modal after delete
+        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+        if (modal) modal.hide();
     }
-    
-    const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-    modal.hide();
 });
+
+// Initialize feather icons
+feather.replace();
 </script>
 {% endblock %}
