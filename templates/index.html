@@ -1,216 +1,246 @@
 {% extends "base.html" %}
 
-{% block title %}Website Analyzer - Home{% endblock %}
+{% block title %}محلل المواقع الذكي{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8 col-xl-6">
-        <div class="card shadow">
-            <div class="card-body p-5">
-                <div class="text-center mb-4">
-                    <div class="display-1 text-primary mb-3">
-                        <i data-feather="search"></i>
-                    </div>
-                    <h1 class="card-title h2 mb-3">محلل المواقع الشامل</h1>
-                    <p class="card-text text-muted lead">
-                        أداة تحليل متقدمة وشاملة لاستخراج جميع تفاصيل المواقع لإنشاء مواقع مطابقة تماماً.
-                        احصل على تحليل عميق للبنية، التقنيات، التصميم، والمحتوى مع دليل إعادة إنشاء مفصل.
-                    </p>
-                </div>
-
-                <form action="{{ url_for('analyze_website') }}" method="POST" id="analyzeForm">
-                    <div class="mb-4">
-                        <label for="url" class="form-label h5">
-                            <i data-feather="link" class="me-2"></i>رابط الموقع
-                        </label>
-                        <input type="url" 
-                               class="form-control form-control-lg" 
-                               id="url" 
-                               name="url" 
-                               placeholder="https://example.com"
-                               required
-                               title="يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://"
-                               style="direction: ltr; text-align: left;">
-                        <div class="form-text">
-                            أدخل الرابط الكامل للموقع الذي تريد تحليله
+<div class="container-fluid">
+    <!-- Hero Section -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <div class="glass-card p-5">
+                <h1 class="display-4 text-white mb-4">
+                    <i data-feather="search" class="me-3 text-primary"></i>
+                    محلل المواقع الذكي
+                </h1>
+                <p class="lead text-light opacity-75 mb-4">
+                    اكتشف أسرار أي موقع ويب بتحليل شامل ومتطور للتقنيات والبنية والأداء
+                </p>
+                
+                <!-- Analysis Form -->
+                <form method="POST" action="{{ url_for('analyze_website') }}" class="analysis-form">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-8">
+                            <label for="url" class="form-label text-light">رابط الموقع</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary">
+                                    <i data-feather="globe" class="text-primary" width="20" height="20"></i>
+                                </span>
+                                <input type="url" 
+                                       class="form-control form-control-lg bg-dark border-secondary text-white" 
+                                       id="url" 
+                                       name="url" 
+                                       placeholder="https://example.com" 
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <label for="max_depth" class="form-label text-light">عمق التحليل</label>
+                            <select class="form-select form-select-lg bg-dark border-secondary text-white" 
+                                    id="max_depth" 
+                                    name="max_depth">
+                                <option value="1">سريع (1)</option>
+                                <option value="2" selected>متوسط (2)</option>
+                                <option value="3">عميق (3)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 gradient-btn">
+                                <i data-feather="play" class="me-2" width="20" height="20"></i>
+                                تحليل
+                            </button>
                         </div>
                     </div>
-
-                    <div class="mb-4">
-                        <label for="max_depth" class="form-label h6">
-                            <i data-feather="layers" class="me-2"></i>عمق التحليل
-                        </label>
-                        <select class="form-select" id="max_depth" name="max_depth">
-                            <option value="1">سطحي (مستوى واحد) - الصفحة الرئيسية فقط</option>
-                            <option value="2" selected>متوسط (مستويان) - مُوصى به</option>
-                            <option value="3">عميق (3 مستويات) - قد يستغرق وقتاً أطول</option>
-                        </select>
-                        <div class="form-text">
-                            اختر عمق تحليل الموقع. المستويات الأعلى توفر بيانات أكثر لكن تستغرق وقتاً أطول.
+                    
+                    <!-- Advanced Options -->
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="block_ads" name="block_ads" checked>
+                                <label class="form-check-label text-light" for="block_ads">
+                                    <i data-feather="shield" class="me-2 text-warning" width="16" height="16"></i>
+                                    حظر الإعلانات أثناء التحليل
+                                </label>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="block_ads" name="block_ads" checked>
-                            <label class="form-check-label h6" for="block_ads">
-                                <i data-feather="shield" class="me-2"></i>حجب الإعلانات
-                            </label>
-                        </div>
-                        <div class="form-text">
-                            إزالة تلقائية للإعلانات وعناصر التتبع للحصول على نتائج تحليل أنظف.
-                        </div>
-                    </div>
-
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i data-feather="play" class="me-2"></i>
-                            بدء التحليل المباشر
-                        </button>
-                        <small class="text-center text-muted">
-                            <i data-feather="monitor" class="me-1"></i>
-                            ستتمكن من مراقبة التحليل مباشرة أثناء تنفيذه
-                        </small>
                     </div>
                 </form>
             </div>
         </div>
+    </div>
 
-        <!-- Features Section -->
-        <div class="row mt-5">
-            <div class="col-12 mb-4">
-                <h2 class="text-center h3 mb-4">الميزات المتقدمة - كل ما تحتاجه لإنشاء موقع طبق الأصل</h2>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <div class="text-primary mb-3">
-                            <i data-feather="cpu" width="48" height="48"></i>
-                        </div>
-                        <h5 class="card-title">كشف التقنيات الشامل</h5>
-                        <p class="card-text">تحديد جميع الأطر، المكتبات، أنظمة إدارة المحتوى، وتقنيات الخادم</p>
-                    </div>
+    <!-- Features Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-4 text-center h-100">
+                <div class="feature-icon mb-3">
+                    <i data-feather="code" class="text-primary" width="40" height="40"></i>
                 </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <div class="text-success mb-3">
-                            <i data-feather="image" width="48" height="48"></i>
-                        </div>
-                        <h5 class="card-title">استخراج كامل للأصول</h5>
-                        <p class="card-text">جمع وتصنيف جميع الصور، ملفات CSS، JavaScript، والخطوط</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <div class="text-info mb-3">
-                            <i data-feather="code" width="48" height="48"></i>
-                        </div>
-                        <h5 class="card-title">تحليل الكود المتقدم</h5>
-                        <p class="card-text">استخراج بنية الكود، الأنماط، والمكونات البرمجية</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <div class="text-danger mb-3">
-                            <i data-feather="shield" width="48" height="48"></i>
-                        </div>
-                        <h5 class="card-title">حجب الإعلانات الذكي</h5>
-                        <p class="card-text">إزالة تلقائية للإعلانات وعناصر التتبع للحصول على محتوى نظيف</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <div class="text-warning mb-3">
-                            <i data-feather="book-open" width="48" height="48"></i>
-                        </div>
-                        <h5 class="card-title">دليل إعادة الإنشاء</h5>
-                        <p class="card-text">تعليمات مفصلة خطوة بخطوة لإعادة بناء الموقع بالكامل</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <div class="text-purple mb-3">
-                            <i data-feather="file-text" width="48" height="48"></i>
-                        </div>
-                        <h5 class="card-title">التقرير العربي الشامل</h5>
-                        <p class="card-text">توثيق كامل باللغة العربية مع التفسيرات والأمثلة العملية</p>
-                    </div>
-                </div>
+                <h5 class="text-white mb-2">تحليل التقنيات</h5>
+                <p class="text-light opacity-75 small">
+                    اكتشاف الإطارات والمكتبات والتقنيات المستخدمة
+                </p>
             </div>
         </div>
         
-        <!-- Advanced Features Details -->
-        <div class="card mt-5">
-            <div class="card-header">
-                <h3 class="card-title mb-0">ما تحصل عليه من التحليل الشامل</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5><i data-feather="check-circle" class="text-success me-2"></i>التحليل التقني</h5>
-                        <ul class="list-unstyled ps-4">
-                            <li>• بنية HTML الكاملة مع التسلسل الهرمي</li>
-                            <li>• جميع ملفات CSS مع المتغيرات والفئات</li>
-                            <li>• سكريبتات JavaScript والوظائف التفاعلية</li>
-                            <li>• كشف الإطارات والمكتبات المستخدمة</li>
-                            <li>• تحليل الأداء وسرعة التحميل</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <h5><i data-feather="check-circle" class="text-success me-2"></i>المحتوى والأصول</h5>
-                        <ul class="list-unstyled ps-4">
-                            <li>• جميع الصور مع التفاصيل والأبعاد</li>
-                            <li>• الخطوط والنصوص المستخدمة</li>
-                            <li>• ملفات الفيديو والصوت</li>
-                            <li>• الأيقونات والرموز</li>
-                            <li>• تحليل SEO وتحسين محركات البحث</li>
-                        </ul>
-                    </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-4 text-center h-100">
+                <div class="feature-icon mb-3">
+                    <i data-feather="layers" class="text-success" width="40" height="40"></i>
                 </div>
-                <hr>
-                <div class="text-center">
-                    <p class="lead mb-3">🎯 <strong>الهدف:</strong> إنشاء موقع مطابق تماماً للأصل</p>
-                    <p class="text-muted">تحصل على كل ما تحتاجه لإعادة بناء الموقع من الصفر بنفس الخصائص والمميزات</p>
+                <h5 class="text-white mb-2">بنية الموقع</h5>
+                <p class="text-light opacity-75 small">
+                    تحليل هيكل HTML والعناصر والتنظيم
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-4 text-center h-100">
+                <div class="feature-icon mb-3">
+                    <i data-feather="trending-up" class="text-info" width="40" height="40"></i>
+                </div>
+                <h5 class="text-white mb-2">تحسين SEO</h5>
+                <p class="text-light opacity-75 small">
+                    فحص عوامل تحسين محركات البحث والأداء
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-4 text-center h-100">
+                <div class="feature-icon mb-3">
+                    <i data-feather="image" class="text-warning" width="40" height="40"></i>
+                </div>
+                <h5 class="text-white mb-2">الأصول والملفات</h5>
+                <p class="text-light opacity-75 small">
+                    تحليل الصور والخطوط والملفات المستخدمة
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Analysis -->
+    <div class="row">
+        <div class="col-12">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-white mb-0">
+                        <i data-feather="clock" class="me-2 text-primary"></i>
+                        التحليلات الأخيرة
+                    </h4>
+                    <a href="{{ url_for('history') }}" class="btn btn-outline-primary btn-sm">
+                        عرض الكل
+                        <i data-feather="arrow-left" class="ms-2" width="16" height="16"></i>
+                    </a>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>الموقع</th>
+                                <th>الحالة</th>
+                                <th>التاريخ</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sample data - will be replaced with real data -->
+                            <tr>
+                                <td class="text-truncate" style="max-width: 300px;">
+                                    <i data-feather="globe" class="me-2 text-primary" width="16" height="16"></i>
+                                    https://ak.sv/
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">مكتمل</span>
+                                </td>
+                                <td class="text-muted">منذ دقائق</td>
+                                <td>
+                                    <a href="/results/9" class="btn btn-primary btn-sm">
+                                        <i data-feather="eye" width="14" height="14"></i>
+                                        عرض
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
+<style>
+.analysis-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.gradient-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.gradient-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.feature-icon {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    margin: 0 auto;
+    width: 80px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+.table-dark {
+    --bs-table-bg: rgba(255, 255, 255, 0.02);
+}
+
+.table-hover > tbody > tr:hover > td {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+</style>
+
 <script>
-document.getElementById('analyzeForm').addEventListener('submit', function(e) {
+// Form validation
+document.querySelector('.analysis-form').addEventListener('submit', function(e) {
     const urlInput = document.getElementById('url');
-    let url = urlInput.value.trim();
+    const url = urlInput.value.trim();
     
-    // Auto-add protocol if missing
-    if (url && !url.match(/^https?:\/\//)) {
-        url = 'https://' + url;
-        urlInput.value = url;
+    if (!url) {
+        e.preventDefault();
+        urlInput.focus();
+        return;
+    }
+    
+    // Add protocol if missing
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        urlInput.value = 'https://' + url;
     }
     
     // Show loading state
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>جاري التحليل...';
     submitBtn.disabled = true;
-    
-    // Re-enable after a delay in case of errors
-    setTimeout(() => {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    }, 5000);
 });
+
+// Initialize Feather icons
+if (typeof feather !== 'undefined') {
+    feather.replace();
+}
 </script>
 {% endblock %}
