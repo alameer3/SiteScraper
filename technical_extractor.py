@@ -207,8 +207,8 @@ class TechnicalExtractor:
                 tech_stack['performance_tools'][url] = performance_tools
                 
                 # تحليل الخدمات الخارجية
-                third_party = self._detect_third_party_services(soup)
-                tech_stack['third_party_services'].update(third_party)
+                third_party = self._detect_third_party_services(soup, page_content)
+                tech_stack['third_party_services'][url] = third_party
                 
             except Exception as e:
                 logging.error(f"خطأ في تحليل التقنيات لـ {url}: {e}")
