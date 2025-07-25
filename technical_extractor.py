@@ -843,3 +843,27 @@ body {
             }
         }
         return css
+    
+    def _detect_third_party_services(self, soup, content):
+        """كشف الخدمات الخارجية"""
+        services = []
+        patterns = {
+            'Google Analytics': r'google-analytics|gtag',
+            'Facebook Pixel': r'facebook\.net|fbq\(',
+            'Twitter': r'twitter\.com/widgets',
+            'LinkedIn': r'linkedin\.com'
+        }
+        
+        for service, pattern in patterns.items():
+            if re.search(pattern, content, re.IGNORECASE):
+                services.append(service)
+        return services
+    
+    def _analyze_design_patterns(self, soup):
+        """تحليل أنماط التصميم"""
+        patterns = {
+            'grid_system': len(soup.find_all(class_=re.compile(r'grid|row|col'))),
+            'flexbox': len(soup.find_all(style=re.compile(r'display:\s*flex'))),
+            'responsive_images': len(soup.find_all('img', srcset=True))
+        }
+        return patterns

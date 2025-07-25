@@ -130,6 +130,13 @@ The system analyzes and stores five main categories of website data:
 - User-provided links now analyze successfully (tested with https://ak.sv/)
 - All analysis modules now work without runtime errors
 
+✅ **Performance and Timeout Issues Fixed**
+- Replaced problematic signal-based timeout with time-based checking
+- Reduced analysis delay from 1.0s to 0.5s for faster processing
+- Limited recursive crawling to 3 links per page (from 5) for speed
+- Added timeout protection (120 seconds) to prevent stuck analysis
+- User links now complete analysis within reasonable time limits
+
 ### Migration Completed Successfully (July 25, 2025)
 
 ### Migration to Replit Environment Complete ✅

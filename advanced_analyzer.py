@@ -557,3 +557,46 @@ class AdvancedWebsiteAnalyzer:
             'last_modified': headers.get('Last-Modified', '')
         }
         return cache_info
+    
+    def _analyze_accessibility(self, soup):
+        """تحليل إمكانية الوصول"""
+        accessibility = {
+            'alt_missing': len([img for img in soup.find_all('img') if not img.get('alt')]),
+            'heading_structure': len(soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])),
+            'aria_labels': len(soup.find_all(attrs={'aria-label': True}))
+        }
+        return accessibility
+    
+    def _extract_event_handlers(self, soup):
+        """استخراج معالجات الأحداث"""
+        handlers = []
+        for element in soup.find_all(attrs={'onclick': True}):
+            handlers.append('onclick')
+        return handlers
+    
+    def _extract_audio(self, soup):
+        """استخراج ملفات الصوت"""
+        audio_files = []
+        for audio in soup.find_all('audio'):
+            src = audio.get('src')
+            if src:
+                audio_files.append(src)
+        return audio_files
+    
+    def _analyze_optimization_opportunities(self, soup):
+        """تحليل فرص التحسين"""
+        opportunities = {
+            'images_without_dimensions': len([img for img in soup.find_all('img') if not img.get('width') or not img.get('height')]),
+            'external_scripts': len([script for script in soup.find_all('script', src=True) if 'http' in script.get('src', '')]),
+            'inline_styles': len(soup.find_all(style=True))
+        }
+        return opportunities
+    
+    def _generate_html_templates(self, analysis_data):
+        """إنشاء قوالب HTML"""
+        templates = {
+            'basic_structure': '<html><head><title>Template</title></head><body></body></html>',
+            'responsive_layout': 'Bootstrap responsive template',
+            'accessibility_enhanced': 'ARIA enhanced template'
+        }
+        return templates

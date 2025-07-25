@@ -77,8 +77,12 @@ def perform_analysis(result_id, url, max_depth, block_ads=True):
             scraper = SimpleScraper(url, max_depth=max_depth, delay=1.0)
             analyzer = WebsiteAnalyzer()
             
-            # Crawl the website
-            crawl_data = scraper.crawl_recursive(url)
+            # Crawl the website with timeout tracking
+            import time
+            start_time = time.time()
+            timeout_limit = 120  # 2 minutes
+            
+            crawl_data = scraper.crawl_recursive(url, timeout_limit=timeout_limit, start_time=start_time)
             
             if not crawl_data:
                 scrape_result.status = 'failed'

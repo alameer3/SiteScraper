@@ -7,7 +7,7 @@ from collections import defaultdict
 
 
 class SimpleScraper:
-    def __init__(self, base_url, max_depth=2, delay=1.0):
+    def __init__(self, base_url, max_depth=2, delay=0.5):
         self.base_url = base_url
         self.domain = urlparse(base_url).netloc
         self.max_depth = max_depth
@@ -105,8 +105,16 @@ class SimpleScraper:
             
         return assets
     
-    def crawl_recursive(self, url, depth=0):
-        """Recursively crawl the website"""
+    def crawl_recursive(self, url, depth=0, timeout_limit=120, start_time=None):
+        """Recursively crawl the website with timeout protection"""
+        if start_time is None:
+            start_time = time.time()
+        
+        # Check timeout
+        if time.time() - start_time > timeout_limit:
+            logging.warning(f"Analysis timeout reached after {timeout_limit} seconds")
+            return {}
+            
         if depth > self.max_depth or url in self.visited_urls:
             return {}
         
@@ -196,11 +204,15 @@ class SimpleScraper:
         result = {url: page_data}
         
         if depth < self.max_depth:
-            for link_data in page_data['links'][:5]:  # Limit to first 5 links per page
+            for link_data in page_data['links'][:3]:  # Limit to first 3 links per page
+                # Check timeout before each recursive call
+                if time.time() - start_time > timeout_limit:
+                    break
+                    
                 link_url = link_data['url']
                 if link_url not in self.visited_urls:
                     try:
-                        child_results = self.crawl_recursive(link_url, depth + 1)
+                        child_results = self.crawl_recursive(link_url, depth + 1, timeout_limit, start_time)
                         result.update(child_results)
                     except Exception as e:
                         logging.warning(f"Error crawling child URL {link_url}: {e}")
