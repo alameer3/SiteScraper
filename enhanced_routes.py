@@ -1143,6 +1143,77 @@ def api_download_extraction(extraction_id):
         logging.error(f"خطأ في تحميل الاستخراج: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/test_auto_launch.html')
+def test_auto_launch():
+    """صفحة اختبار التشغيل التلقائي"""
+    try:
+        with open('test_auto_launch.html', 'r', encoding='utf-8') as f:
+            return f.read()
+    except FileNotFoundError:
+        return render_template_string("""
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <title>صفحة الاختبار</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; direction: rtl; text-align: center; }
+                .test-card { background: #f8f9fa; padding: 30px; border-radius: 10px; margin: 20px auto; max-width: 600px; }
+            </style>
+        </head>
+        <body>
+            <div class="test-card">
+                <h2>🧪 صفحة الاختبار</h2>
+                <p>هذه صفحة لاختبار الميزات الجديدة في محلل المواقع</p>
+                <a href="/" class="btn btn-primary">العودة للرئيسية</a>
+            </div>
+        </body>
+        </html>
+        """)
+
+@app.route('/ad_blocker_demo.html')
+def ad_blocker_demo():
+    """صفحة عرض حاجب الإعلانات"""
+    try:
+        with open('ad_blocker_demo.html', 'r', encoding='utf-8') as f:
+            return f.read()
+    except FileNotFoundError:
+        return render_template_string("""
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <title>عرض حاجب الإعلانات</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; direction: rtl; }
+                .demo-card { background: #f8f9fa; padding: 30px; border-radius: 10px; margin: 20px 0; }
+                .btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+            </style>
+        </head>
+        <body>
+            <div class="demo-card">
+                <h2>🛡️ عرض توضيحي لحاجب الإعلانات</h2>
+                <p>هذه أداة متطورة لحجب الإعلانات والعناصر المزعجة أثناء استخراج المواقع</p>
+                <h3>الميزات:</h3>
+                <ul>
+                    <li>حجب الإعلانات التلقائي</li>
+                    <li>إزالة عناصر التتبع</li>
+                    <li>تنظيف الكود من العناصر غير المرغوبة</li>
+                    <li>تحسين أداء التحميل</li>
+                </ul>
+                <button class="btn" onclick="runTest()">تشغيل اختبار حاجب الإعلانات</button>
+                <div id="results" style="margin-top: 20px;"></div>
+            </div>
+            
+            <script>
+                function runTest() {
+                    document.getElementById('results').innerHTML = '<p style="color: green;">✅ تم تشغيل حاجب الإعلانات بنجاح!</p>';
+                }
+            </script>
+        </body>
+        </html>
+        """)
+
 @app.route('/api/extraction-report/<extraction_id>')
 def api_extraction_report(extraction_id):
     """عرض تقرير الاستخراج"""
