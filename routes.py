@@ -58,8 +58,8 @@ def analyze_website():
     thread.daemon = True
     thread.start()
     
-    flash('Analysis started! You will be redirected to results when complete.', 'success')
-    return redirect(url_for('results', result_id=scrape_result.id))
+    flash('تم بدء التحليل! يرجى الانتظار...', 'success')
+    return redirect(url_for('live_analysis', result_id=scrape_result.id))
 
 def perform_analysis(result_id, url, max_depth, block_ads=True):
     """Perform the actual website analysis in background"""
@@ -269,6 +269,14 @@ def perform_analysis(result_id, url, max_depth, block_ads=True):
         
         finally:
             db.session.commit()
+
+@app.route('/live-analysis/<int:result_id>')
+def live_analysis(result_id):
+    """Display live analysis progress"""
+    scrape_result = ScrapeResult.query.get_or_404(result_id)
+    return render_template('simple-live.html', result=scrape_result)
+
+
 
 @app.route('/results/<int:result_id>')
 def results(result_id):
