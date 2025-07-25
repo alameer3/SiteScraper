@@ -630,12 +630,13 @@ def website_extractor_page():
 
 @app.route('/extract-website', methods=['POST'])
 def extract_website():
-    """استخراج موقع جديد مع تشغيل تلقائي"""
+    """استخراج موقع جديد مع تشغيل تلقائي وتحليل شامل"""
     try:
         data = request.get_json()
         url = data.get('url')
         max_pages = int(data.get('max_pages', 10))
-        auto_launch = data.get('auto_launch', True)
+        analyses = data.get('analyses', {})
+        options = data.get('options', {})
         
         if not url:
             return jsonify({'error': 'الرجاء إدخال رابط صحيح'}), 400
@@ -653,20 +654,66 @@ def extract_website():
         result = extractor.extract_complete_website(max_pages)
         
         if result and result.get('pages'):
-            # إنشاء صفحة البداية التلقائية
-            create_auto_launch_page(extraction_id, result)
+            # إنشاء صفحة البداية التلقائية المحسنة
+            create_enhanced_auto_launch_page(extraction_id, result, analyses)
             
-            # إنشاء رابط المعاينة
-            preview_url = f"/preview-extracted/{extraction_id}"
+            # تشغيل التحليلات المطلوبة
+            analysis_results = {}
+            if analyses.get('security'):
+                try:
+                    security_analyzer = SecurityAnalyzer()
+                    analysis_results['security'] = security_analyzer.analyze_security(url)
+                except Exception as e:
+                    logging.warning(f"خطأ في تحليل الأمان: {e}")
+            
+            if analyses.get('performance'):
+                try:
+                    performance_analyzer = PerformanceAnalyzer()
+                    analysis_results['performance'] = performance_analyzer.analyze_performance(url)
+                except Exception as e:
+                    logging.warning(f"خطأ في تحليل الأداء: {e}")
+            
+            if analyses.get('seo'):
+                try:
+                    seo_analyzer = SEOAnalyzer()
+                    analysis_results['seo'] = seo_analyzer.analyze_seo(url)
+                except Exception as e:
+                    logging.warning(f"خطأ في تحليل SEO: {e}")
+            
+            # حفظ نتائج شاملة
+            comprehensive_result = {
+                **result,
+                'analysis_results': analysis_results,
+                'extraction_id': extraction_id,
+                'options_used': options
+            }
+            
+            # حفظ في قاعدة البيانات
+            scrape_result = ScrapeResult(
+                url=url,
+                analysis_type='comprehensive_extraction',
+                status='completed',
+                data=json.dumps(comprehensive_result, ensure_ascii=False),
+                timestamp=datetime.now()
+            )
+            db.session.add(scrape_result)
+            db.session.commit()
             
             return jsonify({
                 'success': True,
                 'extraction_id': extraction_id,
                 'pages_extracted': len(result.get('pages', [])),
-                'preview_url': preview_url,
+                'images_downloaded': result.get('stats', {}).get('images_downloaded', 0),
+                'css_files': result.get('stats', {}).get('css_files', 0),
+                'js_files': result.get('stats', {}).get('js_files', 0),
+                'ads_removed': result.get('stats', {}).get('ads_removed', 0),
+                'tracking_removed': result.get('stats', {}).get('tracking_removed', 0),
+                'preview_url': f"/preview-extracted/{extraction_id}",
                 'auto_launch_url': f"/launch-extracted/{extraction_id}",
+                'download_url': f"/api/download-extraction/{extraction_id}",
+                'analysis_results': analysis_results,
                 'stats': result.get('stats', {}),
-                'message': 'تم الاستخراج بنجاح!'
+                'message': 'تم الاستخراج والتحليل بنجاح!'
             })
         else:
             return jsonify({'error': 'فشل في استخراج الموقع'}), 500
@@ -742,8 +789,8 @@ def serve_extracted_assets(extraction_id, filename):
     
     return send_from_directory(str(site_path), filename)
 
-def create_auto_launch_page(extraction_id, result):
-    """إنشاء صفحة البداية التلقائية"""
+def create_enhanced_auto_launch_page(extraction_id, result, analyses):
+    """إنشاء صفحة البداية التلقائية المحسنة مع جميع المزايا"""
     from pathlib import Path
     import json
     
@@ -756,6 +803,10 @@ def create_auto_launch_page(extraction_id, result):
     page_files = []
     if pages_dir.exists():
         page_files = list(pages_dir.glob("*.html"))
+
+def create_auto_launch_page(extraction_id, result):
+    """إنشاء صفحة البداية التلقائية التقليدية (للتوافق)"""
+    create_enhanced_auto_launch_page(extraction_id, result, {})
     
     html_content = f'''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
