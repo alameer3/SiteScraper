@@ -1,0 +1,646 @@
+{% extends 'base.html' %}
+
+{% block title %}محلل المواقع الموحد - تحليل شامل ومتطور{% endblock %}
+
+{% block head %}
+<style>
+/* تصميم متطور مع تأثيرات ثلاثية الأبعاد */
+.unified-analyzer {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.analyzer-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    transform: translateY(0);
+}
+
+.analyzer-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 35px 65px rgba(0, 0, 0, 0.15);
+}
+
+.analysis-tab {
+    background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+    padding: 12px 24px;
+    margin: 0 8px;
+    transition: all 0.3s ease;
+    transform: perspective(1000px) rotateX(0deg);
+}
+
+.analysis-tab:hover {
+    transform: perspective(1000px) rotateX(-5deg) scale(1.05);
+    box-shadow: 0 15px 25px rgba(255, 107, 107, 0.3);
+}
+
+.analysis-tab.active {
+    background: linear-gradient(45deg, #11998e, #38ef7d);
+    transform: perspective(1000px) rotateX(-3deg) scale(1.1);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.feature-card:hover::before {
+    left: 100%;
+}
+
+.feature-card:hover {
+    transform: translateZ(20px) rotateY(5deg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.progress-ring {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FFEAA7, #DDA0DD, #FF6B6B);
+    padding: 8px;
+    position: relative;
+    animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.progress-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(30, 30, 60, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.metric-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px 20px;
+    border-radius: 15px;
+    margin: 10px 0;
+    transition: all 0.3s ease;
+}
+
+.metric-display:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(10px);
+}
+
+.btn-analyze {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-analyze:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(45deg, #764ba2, #667eea);
+}
+
+.floating-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.floating-element {
+    position: absolute;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.analysis-result {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 25px;
+    margin: 20px 0;
+    border-left: 5px solid #4ECDC4;
+    animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(78, 205, 196, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0); }
+}
+
+.status-indicator.success { background-color: #4ECDC4; }
+.status-indicator.warning { background-color: #FFEAA7; }
+.status-indicator.error { background-color: #FF6B6B; }
+.status-indicator.processing { background-color: #45B7D1; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="unified-analyzer">
+    <!-- عناصر خلفية متحركة -->
+    <div class="floating-elements">
+        <div class="floating-element" style="width: 60px; height: 60px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-element" style="width: 80px; height: 80px; top: 20%; right: 15%; animation-delay: 2s;"></div>
+        <div class="floating-element" style="width: 40px; height: 40px; bottom: 30%; left: 20%; animation-delay: 4s;"></div>
+        <div class="floating-element" style="width: 100px; height: 100px; bottom: 20%; right: 10%; animation-delay: 6s;"></div>
+    </div>
+
+    <div class="container">
+        <!-- العنوان الرئيسي -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-white fw-bold mb-3">🔍 محلل المواقع الموحد</h1>
+            <p class="lead text-white-50">تحليل شامل ومتطور للمواقع الإلكترونية مع ذكاء اصطناعي متقدم</p>
+        </div>
+
+        <!-- نموذج إدخال الرابط -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8">
+                <div class="analyzer-card p-4">
+                    <form id="unifiedAnalysisForm">
+                        <div class="mb-4">
+                            <label for="websiteUrl" class="form-label text-white fw-bold">🌐 رابط الموقع المراد تحليله</label>
+                            <input type="url" class="form-control form-control-lg" id="websiteUrl" 
+                                   placeholder="https://example.com" required
+                                   style="border-radius: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;">
+                        </div>
+
+                        <!-- اختيار نوع التحليل -->
+                        <div class="mb-4">
+                            <label class="form-label text-white fw-bold mb-3">🎯 نوع التحليل المطلوب</label>
+                            <div class="d-flex flex-wrap justify-content-center">
+                                <input type="checkbox" id="security" name="analysisType" value="security" class="d-none">
+                                <label for="security" class="analysis-tab">🔒 الأمان</label>
+
+                                <input type="checkbox" id="performance" name="analysisType" value="performance" class="d-none">
+                                <label for="performance" class="analysis-tab">⚡ الأداء</label>
+
+                                <input type="checkbox" id="seo" name="analysisType" value="seo" class="d-none">
+                                <label for="seo" class="analysis-tab">📈 SEO</label>
+
+                                <input type="checkbox" id="technology" name="analysisType" value="technology" class="d-none">
+                                <label for="technology" class="analysis-tab">💻 التقنيات</label>
+
+                                <input type="checkbox" id="competitor" name="analysisType" value="competitor" class="d-none">
+                                <label for="competitor" class="analysis-tab">🏆 المنافسين</label>
+
+                                <input type="checkbox" id="comprehensive" name="analysisType" value="comprehensive" class="d-none">
+                                <label for="comprehensive" class="analysis-tab">🔄 شامل</label>
+                            </div>
+                        </div>
+
+                        <!-- خيارات متقدمة -->
+                        <div class="mb-4">
+                            <button type="button" class="btn btn-outline-light btn-sm" data-bs-toggle="collapse" data-bs-target="#advancedOptions">
+                                ⚙️ خيارات متقدمة
+                            </button>
+                            <div class="collapse mt-3" id="advancedOptions">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="depth" class="form-label text-white">عمق التحليل</label>
+                                        <select class="form-select" id="depth" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;">
+                                            <option value="1">سطحي (1 مستوى)</option>
+                                            <option value="2" selected>عادي (2 مستوى)</option>
+                                            <option value="3">عميق (3 مستوى)</option>
+                                            <option value="5">شامل (5 مستوى)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="threads" class="form-label text-white">عدد المعالجات</label>
+                                        <select class="form-select" id="threads" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;">
+                                            <option value="1">1 معالج</option>
+                                            <option value="3" selected>3 معالجات</option>
+                                            <option value="5">5 معالجات</option>
+                                            <option value="10">10 معالجات</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="blockAds" checked>
+                                        <label class="form-check-label text-white" for="blockAds">
+                                            🛡️ حجب الإعلانات والمتتبعات
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="respectRobots" checked>
+                                        <label class="form-check-label text-white" for="respectRobots">
+                                            🤖 احترام ملف robots.txt
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn-analyze">
+                                🚀 بدء التحليل الشامل
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- منطقة عرض النتائج -->
+        <div id="analysisResults" class="d-none">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="analyzer-card p-4">
+                        <h3 class="text-center text-white mb-4">📊 نتائج التحليل الشامل</h3>
+                        
+                        <!-- شريط التقدم -->
+                        <div class="text-center mb-4">
+                            <div class="progress-ring">
+                                <div class="progress-inner">
+                                    <span id="progressText">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- معلومات الحالة -->
+                        <div class="text-center mb-4">
+                            <p class="text-white mb-2">
+                                <span class="status-indicator processing"></span>
+                                <span id="statusText">جاري التحليل...</span>
+                            </p>
+                            <small class="text-white-50" id="detailText">يرجى الانتظار، هذا قد يستغرق بضع ثوانٍ</small>
+                        </div>
+
+                        <!-- نتائج التحليلات المختلفة -->
+                        <div id="resultsContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- شبكة الميزات -->
+        <div class="feature-grid mt-5">
+            <div class="feature-card">
+                <div class="text-center">
+                    <div class="fs-1 mb-3">🔒</div>
+                    <h5 class="text-white fw-bold">تحليل الأمان المتقدم</h5>
+                    <p class="text-white-50">فحص شامل للثغرات الأمنية وشهادات SSL واختبار الحماية</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="text-center">
+                    <div class="fs-1 mb-3">⚡</div>
+                    <h5 class="text-white fw-bold">تحليل الأداء والسرعة</h5>
+                    <p class="text-white-50">قياس سرعة التحميل وتحليل الموارد واقتراح التحسينات</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="text-center">
+                    <div class="fs-1 mb-3">📈</div>
+                    <h5 class="text-white fw-bold">تحسين محركات البحث</h5>
+                    <p class="text-white-50">تحليل SEO شامل مع اقتراحات التحسين وتقييم الكلمات المفتاحية</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="text-center">
+                    <div class="fs-1 mb-3">💻</div>
+                    <h5 class="text-white fw-bold">كشف التقنيات المستخدمة</h5>
+                    <p class="text-white-50">تحديد جميع التقنيات والمكتبات والأطر المستخدمة في الموقع</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="text-center">
+                    <div class="fs-1 mb-3">🏆</div>
+                    <h5 class="text-white fw-bold">تحليل المنافسين</h5>
+                    <p class="text-white-50">مقارنة شاملة مع المنافسين وتحليل نقاط القوة والضعف</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="text-center">
+                    <div class="fs-1 mb-3">🤖</div>
+                    <h5 class="text-white fw-bold">ذكاء اصطناعي متقدم</h5>
+                    <p class="text-white-50">تحليل ذكي باستخدام خوارزميات متطورة وتعلم آلي</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+class UnifiedAnalyzer {
+    constructor() {
+        this.isAnalyzing = false;
+        this.analysisProgress = 0;
+        this.selectedAnalyses = new Set();
+        this.results = {};
+        
+        this.initializeEventListeners();
+    }
+    
+    initializeEventListeners() {
+        // معالج إرسال النموذج
+        document.getElementById('unifiedAnalysisForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.startAnalysis();
+        });
+        
+        // معالج اختيار نوع التحليل
+        document.querySelectorAll('input[name="analysisType"]').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const label = document.querySelector(`label[for="${e.target.id}"]`);
+                if (e.target.checked) {
+                    label.classList.add('active');
+                    this.selectedAnalyses.add(e.target.value);
+                } else {
+                    label.classList.remove('active');
+                    this.selectedAnalyses.delete(e.target.value);
+                }
+            });
+        });
+    }
+    
+    async startAnalysis() {
+        if (this.isAnalyzing) return;
+        
+        const url = document.getElementById('websiteUrl').value;
+        if (!url) {
+            alert('يرجى إدخال رابط صحيح');
+            return;
+        }
+        
+        if (this.selectedAnalyses.size === 0) {
+            alert('يرجى اختيار نوع تحليل واحد على الأقل');
+            return;
+        }
+        
+        this.isAnalyzing = true;
+        this.showAnalysisUI();
+        
+        try {
+            // تشغيل التحليلات المختارة بشكل متوازي
+            const analysisPromises = Array.from(this.selectedAnalyses).map(type => 
+                this.runSpecificAnalysis(type, url)
+            );
+            
+            // انتظار اكتمال جميع التحليلات
+            const results = await Promise.all(analysisPromises);
+            
+            // عرض النتائج
+            this.displayResults(results);
+            
+        } catch (error) {
+            console.error('خطأ في التحليل:', error);
+            this.showError('حدث خطأ أثناء التحليل: ' + error.message);
+        } finally {
+            this.isAnalyzing = false;
+        }
+    }
+    
+    showAnalysisUI() {
+        document.getElementById('analysisResults').classList.remove('d-none');
+        document.getElementById('statusText').textContent = 'جاري التحليل...';
+        document.getElementById('detailText').textContent = 'يرجى الانتظار، هذا قد يستغرق بضع ثوانٍ';
+        
+        // تحديث شريط التقدم
+        this.updateProgress(0);
+        this.startProgressAnimation();
+    }
+    
+    startProgressAnimation() {
+        const progressInterval = setInterval(() => {
+            if (this.analysisProgress < 90) {
+                this.analysisProgress += Math.random() * 10;
+                this.updateProgress(Math.min(this.analysisProgress, 90));
+            }
+            
+            if (!this.isAnalyzing) {
+                clearInterval(progressInterval);
+                this.updateProgress(100);
+            }
+        }, 500);
+    }
+    
+    updateProgress(progress) {
+        document.getElementById('progressText').textContent = Math.round(progress) + '%';
+    }
+    
+    async runSpecificAnalysis(type, url) {
+        const config = this.getAnalysisConfig();
+        
+        const response = await fetch('/api/unified-analyze', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url: url,
+                analysis_type: type,
+                config: config
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`فشل تحليل ${type}: ${response.statusText}`);
+        }
+        
+        return await response.json();
+    }
+    
+    getAnalysisConfig() {
+        return {
+            depth: parseInt(document.getElementById('depth').value),
+            threads: parseInt(document.getElementById('threads').value),
+            block_ads: document.getElementById('blockAds').checked,
+            respect_robots: document.getElementById('respectRobots').checked
+        };
+    }
+    
+    displayResults(results) {
+        const container = document.getElementById('resultsContainer');
+        container.innerHTML = '';
+        
+        results.forEach(result => {
+            if (result.status === 'success') {
+                container.appendChild(this.createResultCard(result));
+            }
+        });
+        
+        // تحديث الحالة
+        document.getElementById('statusText').textContent = 'اكتمل التحليل بنجاح!';
+        document.getElementById('detailText').textContent = `تم إجراء ${results.length} تحليل بنجاح`;
+        document.querySelector('.status-indicator').className = 'status-indicator success';
+    }
+    
+    createResultCard(result) {
+        const card = document.createElement('div');
+        card.className = 'analysis-result';
+        
+        const typeNames = {
+            security: '🔒 تحليل الأمان',
+            performance: '⚡ تحليل الأداء',
+            seo: '📈 تحليل SEO',
+            technology: '💻 التقنيات المستخدمة',
+            competitor: '🏆 تحليل المنافسين',
+            comprehensive: '🔄 التحليل الشامل'
+        };
+        
+        const typeName = typeNames[result.analysis_type] || result.analysis_type;
+        const score = result.data.overall_score || result.data.score || 0;
+        const scoreClass = score >= 80 ? 'success' : score >= 60 ? 'warning' : 'error';
+        
+        card.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-white fw-bold mb-0">${typeName}</h5>
+                <div class="text-white fw-bold fs-4">
+                    <span class="status-indicator ${scoreClass}"></span>
+                    ${Math.round(score)}/100
+                </div>
+            </div>
+            <div class="row">
+                ${this.generateMetrics(result.data)}
+            </div>
+            <div class="mt-3">
+                <button class="btn btn-outline-light btn-sm" onclick="this.showDetailedResults('${result.analysis_type}')">
+                    عرض التفاصيل الكاملة
+                </button>
+            </div>
+        `;
+        
+        return card;
+    }
+    
+    generateMetrics(data) {
+        let html = '';
+        
+        // عرض المقاييس حسب نوع التحليل
+        if (data.metrics) {
+            Object.entries(data.metrics).forEach(([key, value]) => {
+                html += `
+                    <div class="col-md-6 mb-2">
+                        <div class="metric-display">
+                            <span class="text-white-50">${this.translateMetric(key)}</span>
+                            <span class="text-white fw-bold">${this.formatMetricValue(value)}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        return html;
+    }
+    
+    translateMetric(key) {
+        const translations = {
+            'loading_time': 'وقت التحميل',
+            'security_score': 'درجة الأمان',
+            'seo_issues': 'مشاكل SEO',
+            'technologies_found': 'التقنيات المكتشفة',
+            'vulnerabilities': 'الثغرات المكتشفة',
+            'performance_grade': 'تقدير الأداء'
+        };
+        
+        return translations[key] || key;
+    }
+    
+    formatMetricValue(value) {
+        if (typeof value === 'number') {
+            return value.toLocaleString();
+        }
+        return value;
+    }
+    
+    showError(message) {
+        document.getElementById('statusText').textContent = 'فشل التحليل';
+        document.getElementById('detailText').textContent = message;
+        document.querySelector('.status-indicator').className = 'status-indicator error';
+    }
+}
+
+// تهيئة المحلل عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+    new UnifiedAnalyzer();
+    
+    // تفعيل أيقونات Feather
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}مستخرج المواقع الموحد - استخراج ذكي ومتطور{% endblock %}
+
+{% block content %}
+<style>
+.extractor-hero {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    padding: 4rem 0;
+    color: white;
+}
+
+.extraction-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.mode-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.mode-option {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.mode-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+}
+
+.mode-option.active {
+    background: linear-gradient(45deg, #11998e, #38ef7d);
+    transform: scale(1.05);
+}
+
+.progress-dashboard {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+</style>
+
+<div class="extractor-hero">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">🎯 مستخرج المواقع الموحد</h1>
+        <p class="lead">استخراج ذكي ومتطور للمواقع الإلكترونية مع تقنيات الذكاء الاصطناعي</p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="extraction-card p-4">
+                <form id="extractionForm">
+                    <div class="mb-4">
+                        <label for="websiteUrl" class="form-label fw-bold">🌐 الموقع المراد استخراجه</label>
+                        <input type="url" class="form-control form-control-lg" id="websiteUrl" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">⚙️ نمط الاستخراج</label>
+                        <div class="mode-selector">
+                            <div class="mode-option" data-mode="basic">
+                                <h6>🔍 أساسي</h6>
+                                <small>استخراج المحتوى الأساسي</small>
+                            </div>
+                            <div class="mode-option active" data-mode="standard">
+                                <h6>⭐ عادي</h6>
+                                <small>استخراج شامل مع الأصول</small>
+                            </div>
+                            <div class="mode-option" data-mode="advanced">
+                                <h6>🚀 متقدم</h6>
+                                <small>استخراج متطور مع تحليل</small>
+                            </div>
+                            <div class="mode-option" data-mode="ultra">
+                                <h6>🤖 فائق</h6>
+                                <small>ذكاء اصطناعي متطور</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            🚀 بدء الاستخراج
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="extractionProgress" class="d-none">
+        <div class="progress-dashboard">
+            <h4 class="text-center mb-4">📊 لوحة متابعة الاستخراج</h4>
+            <div class="progress mb-3">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h6>الصفحات</h6>
+                    <span id="pagesCount">0</span>
+                </div>
+                <div class="stat-card">
+                    <h6>الصور</h6>
+                    <span id="imagesCount">0</span>
+                </div>
+                <div class="stat-card">
+                    <h6>ملفات CSS</h6>
+                    <span id="cssCount">0</span>
+                </div>
+                <div class="stat-card">
+                    <h6>ملفات JS</h6>
+                    <span id="jsCount">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+class UnifiedExtractor {
+    constructor() {
+        this.selectedMode = 'standard';
+        this.isExtracting = false;
+        this.initializeEventListeners();
+    }
+
+    initializeEventListeners() {
+        // معالج اختيار النمط
+        document.querySelectorAll('.mode-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                document.querySelectorAll('.mode-option').forEach(opt => opt.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                this.selectedMode = e.currentTarget.dataset.mode;
+            });
+        });
+
+        // معالج إرسال النموذج
+        document.getElementById('extractionForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.startExtraction();
+        });
+    }
+
+    async startExtraction() {
+        if (this.isExtracting) return;
+
+        const url = document.getElementById('websiteUrl').value;
+        if (!url) return;
+
+        this.isExtracting = true;
+        this.showProgress();
+
+        try {
+            const response = await fetch('/api/unified-extract', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: url,
+                    mode: this.selectedMode
+                })
+            });
+
+            const result = await response.json();
+            this.handleExtractionResult(result);
+
+        } catch (error) {
+            console.error('خطأ في الاستخراج:', error);
+        } finally {
+            this.isExtracting = false;
+        }
+    }
+
+    showProgress() {
+        document.getElementById('extractionProgress').classList.remove('d-none');
+        // محاكاة التقدم
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 10;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+            }
+            document.querySelector('.progress-bar').style.width = progress + '%';
+        }, 300);
+    }
+
+    handleExtractionResult(result) {
+        if (result.status === 'success') {
+            // عرض النتائج
+            console.log('اكتمل الاستخراج:', result);
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    new UnifiedExtractor();
+});
+</script>
+{% endblock %}
