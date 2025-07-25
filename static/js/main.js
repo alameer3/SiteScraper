@@ -105,9 +105,13 @@ function showAlert(message, type = 'info') {
     `;
 
     // Find container to insert alert
-    const container = document.querySelector('.flash-messages') || document.querySelector('.container-fluid');
-    if (container) {
-        container.insertBefore(alertDiv, container.firstChild);
+    const container = document.querySelector('.flash-messages') || document.querySelector('.container-fluid') || document.querySelector('main') || document.body;
+    if (container && container.appendChild) {
+        if (container.firstChild) {
+            container.insertBefore(alertDiv, container.firstChild);
+        } else {
+            container.appendChild(alertDiv);
+        }
 
         // Auto-dismiss after 5 seconds
         setTimeout(() => {

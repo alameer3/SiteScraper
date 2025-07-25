@@ -27,11 +27,16 @@ def analyze_website():
     try:
         url = request.form.get('url', '').strip()
         max_depth = int(request.form.get('max_depth', 2))
-        block_ads = request.form.get('block_ads', 'on') == 'on'
+        block_ads = request.form.get('block_ads') == 'on'
         
         if not url:
             flash('يرجى إدخال رابط صحيح', 'error')
             return redirect(url_for('index'))
+            
+        # التحقق من صحة الرابط
+        if not url.startswith(('http://', 'https://')):
+            url = 'https://' + url
+            
     except ValueError as e:
         flash('خطأ في قيم النموذج', 'error')
         return redirect(url_for('index'))
@@ -484,3 +489,20 @@ def history():
     """Show analysis history"""
     results = ScrapeResult.query.order_by(ScrapeResult.created_at.desc()).limit(50).all()
     return render_template('history.html', results=results)
+
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    """معالج خطأ 404"""
+    return render_template('error.html', 
+                         error_code=404, 
+                         error_message="الصفحة غير موجودة"), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    """معالج خطأ 500"""
+    db.session.rollback()
+    return render_template('error.html', 
+                         error_code=500, 
+                         error_message="خطأ داخلي في الخادم"), 500

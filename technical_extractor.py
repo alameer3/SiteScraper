@@ -270,6 +270,64 @@ class TechnicalExtractor:
             'images_analysis': {},
             'fonts_details': {},
             'icons_analysis': {},
+            'videos_analysis': {},
+            'performance_metrics': {},
+            'loading_optimization': {}
+        }
+        
+        for url, page_data in crawl_data.items():
+            try:
+                # تحليل الصور
+                images = page_data.get('assets', {}).get('images', [])
+                assets_details['images_analysis'][url] = self._analyze_images_details(images)
+                
+                # تحليل الخطوط
+                fonts = page_data.get('assets', {}).get('fonts', [])
+                assets_details['fonts_details'][url] = self._analyze_fonts_details(fonts)
+                
+                # تحليل الأيقونات
+                icons = page_data.get('assets', {}).get('icons', [])
+                assets_details['icons_analysis'][url] = self._analyze_icons_details(icons)
+                
+                # تحليل الفيديوهات
+                videos = page_data.get('assets', {}).get('videos', [])
+                assets_details['videos_analysis'][url] = self._analyze_videos_details(videos)
+                
+            except Exception as e:
+                logging.error(f"خطأ في تحليل الأصول لـ {url}: {e}")
+        
+        return assets_details
+    
+    def _analyze_images_details(self, images):
+        """تحليل تفاصيل الصور"""
+        return {
+            'total_count': len(images),
+            'formats': list(set([img.get('format', 'unknown') for img in images])),
+            'average_size': sum([img.get('size', 0) for img in images]) / len(images) if images else 0,
+            'lazy_loading': sum([1 for img in images if img.get('loading') == 'lazy'])
+        }
+    
+    def _analyze_fonts_details(self, fonts):
+        """تحليل تفاصيل الخطوط"""
+        return {
+            'total_count': len(fonts),
+            'families': list(set([font.get('family', 'unknown') for font in fonts])),
+            'formats': list(set([font.get('format', 'unknown') for font in fonts]))
+        }
+    
+    def _analyze_icons_details(self, icons):
+        """تحليل تفاصيل الأيقونات"""
+        return {
+            'total_count': len(icons),
+            'types': list(set([icon.get('type', 'unknown') for icon in icons]))
+        }
+    
+    def _analyze_videos_details(self, videos):
+        """تحليل تفاصيل الفيديوهات"""
+        return {
+            'total_count': len(videos),
+            'formats': list(set([video.get('format', 'unknown') for video in videos]))
+        }
             'videos_details': {},
             'documents_analysis': {},
             'optimization_analysis': {},

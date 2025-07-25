@@ -554,7 +554,21 @@ class AdvancedWebsiteAnalyzer:
             'cache_control': headers.get('Cache-Control', ''),
             'expires': headers.get('Expires', ''),
             'etag': headers.get('ETag', ''),
-            'last_modified': headers.get('Last-Modified', '')
+            'last_modified': headers.get('Last-Modified', ''),
+            'cache_score': 0
+        }
+        
+        # تقييم جودة التخزين المؤقت
+        if cache_info['cache_control']:
+            cache_info['cache_score'] += 25
+        if cache_info['expires']:
+            cache_info['cache_score'] += 25
+        if cache_info['etag']:
+            cache_info['cache_score'] += 25
+        if cache_info['last_modified']:
+            cache_info['cache_score'] += 25
+            
+        return cache_info
         }
         return cache_info
     
