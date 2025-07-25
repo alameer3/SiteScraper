@@ -3,7 +3,7 @@
 طرق متطورة لجميع الميزات الجديدة
 """
 
-from flask import render_template, request, jsonify, redirect, url_for, flash, make_response
+from flask import render_template, request, jsonify, redirect, url_for, flash, make_response, render_template_string, send_file
 from app import app, db
 from models import ScrapeResult
 from simple_scraper import SimpleScraper
@@ -16,6 +16,7 @@ import json
 import logging
 from datetime import datetime
 import threading
+import time
 
 @app.route('/')
 def index():
@@ -116,14 +117,8 @@ def view_results(result_id):
         flash('خطأ في تحميل النتائج', 'error')
         return redirect(url_for('history'))
 
-from flask import render_template, request, jsonify, redirect, url_for, flash, send_file
-from app import app, db
-from models import ScrapeResult
-import json
-import logging
-from datetime import datetime
-import io
 import base64
+import io
 from sqlalchemy import desc
 
 # استيراد المحللات الجديدة
@@ -303,7 +298,7 @@ def api_search_analyses():
         
         # فلتر النص
         if query:
-            base_query = base_query.filter(ScrapeResult.url.contains(query))
+            base_query = base_query.filter(ScrapeResult.url.like(f'%{query}%'))
         
         # فلتر نوع التحليل
         if analysis_type:
@@ -337,7 +332,7 @@ def api_search_analyses():
         elif sort_by == 'date_asc':
             base_query = base_query.order_by(ScrapeResult.created_at.asc())
         elif sort_by == 'url_asc':
-            base_query = base_query.order_by(ScrapeResult.url.asc())
+            base_query = base_query.order_by(ScrapeResult.url)
         
         # الحصول على النتائج مع التنقل
         pagination = base_query.paginate(
@@ -371,14 +366,14 @@ def api_search_analyses():
         # إحصائيات
         total_query = ScrapeResult.query
         if query:
-            total_query = total_query.filter(ScrapeResult.url.contains(query))
+            total_query = total_query.filter(ScrapeResult.url.like(f'%{query}%'))
         if analysis_type:
             total_query = total_query.filter(ScrapeResult.analysis_type == analysis_type)
             
         stats = {
             'total': pagination.total,
-            'completed': total_query.filter(ScrapeResult.status == 'completed').count(),
-            'running': total_query.filter(ScrapeResult.status == 'running').count(),
+            'completed': ScrapeResult.query.filter_by(status='completed').count(),
+            'running': ScrapeResult.query.filter_by(status='running').count(),
             'avg_score': 75  # قيمة افتراضية، يمكن حسابها لاحقاً
         }
         
@@ -715,9 +710,17 @@ def api_extract_website():
                     logging.info(f"اكتمل الاستخراج للموقع: {url}")
                     
                 except Exception as e:
-                    extraction_status['status'] = 'failed'
-                    extraction_status['error'] = str(e)
-                    extraction_status['progress'] = 0
+                    # تحديد متغيرات الحالة في حال فشل العملية
+                    extraction_status = {
+                        'id': extraction_id,
+                        'url': url,
+                        'status': 'failed',
+                        'error': str(e),
+                        'progress': 0
+                    }
+                    
+                    cache_file = Path(f"temp/extraction_{extraction_id}.json")
+                    cache_file.parent.mkdir(exist_ok=True)
                     
                     with open(cache_file, 'w', encoding='utf-8') as f:
                         json.dump(extraction_status, f, ensure_ascii=False)
