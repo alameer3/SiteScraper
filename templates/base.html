@@ -1,3 +1,7 @@
+Adding security analysis link to the navigation menu.
+```
+
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-bs-theme="dark">
 <head>
@@ -89,6 +93,11 @@
                                 <i data-feather="settings" class="me-2"></i>الإعدادات
                             </a></li>
                         </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('security_analysis_form') }}">
+                            <i data-feather="shield"></i> تحليل الأمان
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/history">
