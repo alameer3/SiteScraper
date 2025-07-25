@@ -5,15 +5,12 @@ from scraper import WebScraper
 from analyzer import WebsiteAnalyzer
 from security_analyzer import SecurityAnalyzer
 from models import db, ScrapeResult
+from flask import render_template, request, redirect, url_for, flash, make_response
 import threading
 import time
 import json
 
-@app.route('/history')
-def history():
-    """Display analysis history"""
-    results = ScrapeResult.query.order_by(ScrapeResult.created_at.desc()).limit(20).all()
-    return render_template('history.html', results=results)
+
 
 @app.route('/security_analysis')
 def security_analysis_form():
