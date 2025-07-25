@@ -1,10 +1,14 @@
 // Advanced Live Dashboard JavaScript
 class LiveDashboard {
     constructor() {
-        this.init();
-        this.setupAnimations();
-        this.initializeCharts();
-        this.startLiveUpdates();
+        try {
+            this.init();
+            this.setupAnimations();
+            this.initializeCharts();
+            this.startLiveUpdates();
+        } catch (error) {
+            console.warn('LiveDashboard initialization error:', error);
+        }
     }
 
     init() {
@@ -13,14 +17,20 @@ class LiveDashboard {
             feather.replace();
         }
 
-        // Setup scroll reveal animations
-        this.setupScrollReveal();
+        // Setup scroll reveal animations only if elements exist
+        if (document.querySelectorAll('.scroll-reveal').length > 0) {
+            this.setupScrollReveal();
+        }
         
-        // Initialize counters
-        this.animateCounters();
+        // Initialize counters only if they exist
+        if (document.querySelectorAll('.counter').length > 0) {
+            this.animateCounters();
+        }
         
-        // Setup live indicators
-        this.setupLiveIndicators();
+        // Setup live indicators only if they exist
+        if (document.querySelectorAll('[data-live="true"]').length > 0) {
+            this.setupLiveIndicators();
+        }
     }
 
     setupAnimations() {
@@ -96,14 +106,21 @@ class LiveDashboard {
         // Add live indicators where appropriate
         const liveElements = document.querySelectorAll('[data-live="true"]');
         liveElements.forEach(element => {
-            const indicator = document.createElement('span');
-            indicator.className = 'live-indicator';
-            indicator.innerHTML = '<span>🔴</span> Live';
-            element.appendChild(indicator);
+            if (element && element.appendChild) {
+                const indicator = document.createElement('span');
+                indicator.className = 'live-indicator';
+                indicator.innerHTML = '<span>🔴</span> Live';
+                element.appendChild(indicator);
+            }
         });
     }
 
     initializeCharts() {
+        // Only initialize charts if Chart.js is available
+        if (typeof Chart === 'undefined') {
+            return;
+        }
+        
         // Technology Distribution Chart
         this.createTechChart();
         
@@ -330,16 +347,22 @@ class LiveDashboard {
     }
 
     startLiveUpdates() {
-        // Simulate live data updates
-        setInterval(() => {
-            this.updateLiveElements();
-        }, 5000);
+        // Only start live updates if elements exist
+        if (document.querySelectorAll('[data-live-update="true"]').length > 0) {
+            setInterval(() => {
+                this.updateLiveElements();
+            }, 5000);
+        }
 
-        // Update progress bars
-        this.updateProgressBars();
+        // Update progress bars if they exist
+        if (document.querySelectorAll('.progress-bar').length > 0) {
+            this.updateProgressBars();
+        }
         
-        // Start matrix effect for loading states
-        this.startMatrixEffect();
+        // Start matrix effect for loading states if they exist
+        if (document.querySelectorAll('.matrix-loading').length > 0) {
+            this.startMatrixEffect();
+        }
     }
 
     updateLiveElements() {
@@ -372,8 +395,10 @@ class LiveDashboard {
     }
 
     createMatrixRain(container) {
+        if (!container || !container.appendChild) return;
+        
         const chars = '0123456789ABCDEF';
-        const columns = Math.floor(container.offsetWidth / 10);
+        const columns = Math.floor(container.offsetWidth / 10) || 10;
         
         setInterval(() => {
             let text = '';
@@ -384,11 +409,16 @@ class LiveDashboard {
             const span = document.createElement('span');
             span.className = 'matrix-text';
             span.textContent = text;
-            container.appendChild(span);
             
-            // Remove old spans
-            if (container.children.length > 20) {
-                container.removeChild(container.firstChild);
+            try {
+                container.appendChild(span);
+                
+                // Remove old spans
+                if (container.children.length > 20) {
+                    container.removeChild(container.firstChild);
+                }
+            } catch (error) {
+                console.warn('Matrix effect error:', error);
             }
         }, 100);
     }
