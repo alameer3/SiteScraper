@@ -788,3 +788,58 @@ body {
             'interactive_elements': []
         }
         return components
+    
+    def _analyze_fonts(self, soup):
+        """تحليل الخطوط المستخدمة"""
+        fonts = []
+        for link in soup.find_all('link', rel='stylesheet'):
+            href = link.get('href', '')
+            if 'font' in href.lower():
+                fonts.append(href)
+        return fonts
+    
+    def _analyze_icons(self, soup):
+        """تحليل الأيقونات"""
+        icons = []
+        for link in soup.find_all('link', rel=['icon', 'shortcut icon']):
+            icons.append(link.get('href', ''))
+        return icons
+    
+    def _analyze_videos(self, soup, url):
+        """تحليل ملفات الفيديو"""
+        videos = []
+        for video in soup.find_all('video'):
+            videos.append({
+                'src': video.get('src', ''),
+                'poster': video.get('poster', '')
+            })
+        return videos
+    
+    def _analyze_loading_strategies(self, soup):
+        """تحليل استراتيجيات التحميل"""
+        strategies = {
+            'lazy_loading': len(soup.find_all(attrs={'loading': 'lazy'})),
+            'preload': len(soup.find_all('link', rel='preload')),
+            'prefetch': len(soup.find_all('link', rel='prefetch'))
+        }
+        return strategies
+    
+    def _analyze_optimization(self, soup):
+        """تحليل التحسين"""
+        optimization = {
+            'minified_css': len([l for l in soup.find_all('link') if 'min.css' in l.get('href', '')]),
+            'minified_js': len([s for s in soup.find_all('script') if 'min.js' in s.get('src', '')]),
+            'compressed': False
+        }
+        return optimization
+    
+    def _generate_responsive_css(self, analysis_data):
+        """إنشاء CSS متجاوب"""
+        css = {
+            'breakpoints': {
+                'mobile': '768px',
+                'tablet': '1024px',
+                'desktop': '1200px'
+            }
+        }
+        return css

@@ -547,3 +547,13 @@ class AdvancedWebsiteAnalyzer:
         }
         
         return guide
+    
+    def _analyze_caching_headers(self, headers):
+        """تحليل headers التخزين المؤقت"""
+        cache_info = {
+            'cache_control': headers.get('Cache-Control', ''),
+            'expires': headers.get('Expires', ''),
+            'etag': headers.get('ETag', ''),
+            'last_modified': headers.get('Last-Modified', '')
+        }
+        return cache_info
