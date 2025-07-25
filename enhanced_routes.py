@@ -219,7 +219,7 @@ def dashboard():
     try:
         # إحصائيات عامة
         total_analyses = ScrapeResult.query.count()
-        recent_analyses = ScrapeResult.query.order_by(desc(ScrapeResult.timestamp)).limit(10).all()
+        recent_analyses = ScrapeResult.query.order_by(ScrapeResult.created_at.desc()).limit(10).all()
         
         # إحصائيات حسب النوع
         analysis_stats = {}
@@ -242,7 +242,7 @@ def reports_page():
     """صفحة التقارير"""
     try:
         # جلب جميع التحليلات للتقارير
-        analyses = ScrapeResult.query.order_by(desc(ScrapeResult.timestamp)).all()
+        analyses = ScrapeResult.query.order_by(ScrapeResult.created_at.desc()).all()
         
         return render_template('reports.html', analyses=analyses)
     
@@ -300,7 +300,7 @@ def api_analysis_history():
         if analysis_type:
             query = query.filter_by(analysis_type=analysis_type)
         
-        analyses = query.order_by(desc(ScrapeResult.timestamp)).paginate(
+        analyses = query.order_by(ScrapeResult.created_at.desc()).paginate(
             page=page, per_page=per_page, error_out=False
         )
         

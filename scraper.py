@@ -75,15 +75,15 @@ class WebScraper:
         """Extract all links from the page"""
         links = []
         for link in soup.find_all('a', href=True):
-            if hasattr(link, 'get'):
-                href = link.get('href', '')
+            if hasattr(link, 'attrs') and link.attrs:
+                href = link.attrs.get('href', '')
                 if href:
                     full_url = urljoin(base_url, str(href))
                     if self.is_valid_url(full_url):
                         links.append({
                             'url': full_url,
                             'text': link.get_text(strip=True) if hasattr(link, 'get_text') else '',
-                            'title': str(link.get('title', '') or '') if hasattr(link, 'get') else ''
+                            'title': str(link.attrs.get('title', '') or '') if link.attrs else ''
                         })
         return links
     
@@ -99,33 +99,33 @@ class WebScraper:
         
         # Images
         for img in soup.find_all('img', src=True):
-            if hasattr(img, 'get'):
-                src = img.get('src', '')
+            if hasattr(img, 'attrs') and img.attrs:
+                src = img.attrs.get('src', '')
                 if src:
                     assets['images'].append({
                         'src': urljoin(base_url, str(src)),
-                        'alt': str(img.get('alt', '') or '') if hasattr(img, 'get') else '',
-                        'title': str(img.get('title', '') or '') if hasattr(img, 'get') else ''
+                        'alt': str(img.attrs.get('alt', '') or '') if img.attrs else '',
+                        'title': str(img.attrs.get('title', '') or '') if img.attrs else ''
                     })
         
         # CSS files
         for link in soup.find_all('link', rel='stylesheet'):
-            if hasattr(link, 'get'):
-                href = link.get('href', '')
+            if hasattr(link, 'attrs') and link.attrs:
+                href = link.attrs.get('href', '')
                 if href:
                     assets['css'].append({
                         'href': urljoin(base_url, str(href)),
-                        'media': str(link.get('media', 'all') or 'all') if hasattr(link, 'get') else 'all'
-                })
+                        'media': str(link.attrs.get('media', 'all') or 'all') if link.attrs else 'all'
+                    })
         
         # JavaScript files
         for script in soup.find_all('script', src=True):
-            if hasattr(script, 'get'):
-                src = script.get('src', '')
+            if hasattr(script, 'attrs') and script.attrs:
+                src = script.attrs.get('src', '')
                 if src:
                     assets['javascript'].append({
                         'src': urljoin(base_url, str(src)),
-                        'type': str(script.get('type', 'text/javascript') or 'text/javascript') if hasattr(script, 'get') else 'text/javascript'
+                        'type': str(script.attrs.get('type', 'text/javascript') or 'text/javascript') if script.attrs else 'text/javascript'
                     })
         
         # Font files (from CSS @font-face or link tags)
@@ -177,19 +177,19 @@ class WebScraper:
             'depth': depth
         }
         
-        # Meta tags
+        # Meta tags - improved error handling
         try:
             meta_desc = soup.find('meta', attrs={'name': 'description'})
-            if meta_desc and hasattr(meta_desc, 'get'):
-                page_data['meta_description'] = str(meta_desc.get('content', '') or '')
-        except (AttributeError, TypeError):
+            if meta_desc and hasattr(meta_desc, 'attrs') and meta_desc.attrs:
+                page_data['meta_description'] = str(meta_desc.attrs.get('content', '') or '')
+        except (AttributeError, TypeError, KeyError):
             page_data['meta_description'] = ''
         
         try:
             meta_keywords = soup.find('meta', attrs={'name': 'keywords'})
-            if meta_keywords and hasattr(meta_keywords, 'get'):
-                page_data['meta_keywords'] = str(meta_keywords.get('content', '') or '')
-        except (AttributeError, TypeError):
+            if meta_keywords and hasattr(meta_keywords, 'attrs') and meta_keywords.attrs:
+                page_data['meta_keywords'] = str(meta_keywords.attrs.get('content', '') or '')
+        except (AttributeError, TypeError, KeyError):
             page_data['meta_keywords'] = ''
         
         # Headers (h1-h6)
@@ -205,24 +205,24 @@ class WebScraper:
         if self.ad_blocker:
             page_data['assets'] = self.ad_blocker.filter_assets(page_data['assets'])
         
-        # Forms
+        # Forms - improved error handling
         try:
             for form in soup.find_all('form'):
-                if hasattr(form, 'get') and hasattr(form, 'find_all'):
+                if hasattr(form, 'attrs') and hasattr(form, 'find_all'):
                     form_data = {
-                        'action': str(form.get('action', '') or '') if hasattr(form, 'get') else '',
-                        'method': str(form.get('method', 'get') or 'get') if hasattr(form, 'get') else 'get',
+                        'action': str(form.attrs.get('action', '') or '') if form.attrs else '',
+                        'method': str(form.attrs.get('method', 'get') or 'get') if form.attrs else 'get',
                         'inputs': []
                     }
                     for input_tag in form.find_all(['input', 'select', 'textarea']):
-                        if hasattr(input_tag, 'get'):
+                        if hasattr(input_tag, 'attrs') and input_tag.attrs:
                             form_data['inputs'].append({
-                                'type': str(input_tag.get('type', '') or '') if hasattr(input_tag, 'get') else '',
-                                'name': str(input_tag.get('name', '') or '') if hasattr(input_tag, 'get') else '',
-                                'id': str(input_tag.get('id', '') or '') if hasattr(input_tag, 'get') else ''
+                                'type': str(input_tag.attrs.get('type', '') or ''),
+                                'name': str(input_tag.attrs.get('name', '') or ''),
+                                'id': str(input_tag.attrs.get('id', '') or '')
                             })
                     page_data['forms'].append(form_data)
-        except (AttributeError, TypeError) as e:
+        except (AttributeError, TypeError, KeyError) as e:
             logging.warning(f"خطأ في استخراج النماذج: {e}")
             page_data['forms'] = []
         

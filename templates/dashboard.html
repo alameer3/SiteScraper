@@ -191,7 +191,7 @@
                                     </td>
                                     <td>
                                         <small class="text-muted">
-                                            {{ analysis.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                                            {{ analysis.created_at.strftime('%Y-%m-%d %H:%M') }}
                                         </small>
                                     </td>
                                     <td>
@@ -199,10 +199,10 @@
                                             <a href="/results/{{ analysis.id }}" class="btn btn-outline-primary btn-sm">
                                                 <i data-feather="eye" size="14"></i>
                                             </a>
-                                            <button class="btn btn-outline-success btn-sm" onclick="exportReport({{ analysis.id }})">
+                                            <button class="btn btn-outline-success btn-sm" onclick="exportReport('{{ analysis.id }}')">
                                                 <i data-feather="download" size="14"></i>
                                             </button>
-                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteAnalysis({{ analysis.id }})">
+                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteAnalysis('{{ analysis.id }}')">
                                                 <i data-feather="trash-2" size="14"></i>
                                             </button>
                                         </div>
@@ -286,12 +286,12 @@ document.addEventListener('DOMContentLoaded', function() {
             labels: ['أساسي', 'الأمان', 'الأداء', 'SEO', 'المنافسين', 'شامل'],
             datasets: [{
                 data: [
-                    {{ analysis_stats.basic or 0 }},
-                    {{ analysis_stats.security or 0 }},
-                    {{ analysis_stats.performance or 0 }},
-                    {{ analysis_stats.seo or 0 }},
-                    {{ analysis_stats.competitor or 0 }},
-                    {{ analysis_stats.comprehensive or 0 }}
+                    {{ analysis_stats.get('basic', 0) }},
+                    {{ analysis_stats.get('security', 0) }},
+                    {{ analysis_stats.get('performance', 0) }},
+                    {{ analysis_stats.get('seo', 0) }},
+                    {{ analysis_stats.get('competitor', 0) }},
+                    {{ analysis_stats.get('comprehensive', 0) }}
                 ],
                 backgroundColor: [
                     '#0d6efd',
