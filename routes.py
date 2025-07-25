@@ -40,6 +40,15 @@ AdvancedAdBlocker = None
 # الأدوات المساعدة
 extraction_engine = None
 
+# تهيئة محرك الاستخراج المدمج
+if CONSOLIDATED_TOOLS_AVAILABLE:
+    try:
+        from extractors.master_extractor import ExtractionEngine
+        extraction_engine = ExtractionEngine()
+        logging.info("تم تحميل محرك الاستخراج المدمج")
+    except ImportError as e:
+        logging.warning(f"محرك الاستخراج المدمج غير متوفر: {e}")
+
 @app.route('/')
 def index():
     """الصفحة الرئيسية مع نموذج إدخال الرابط"""

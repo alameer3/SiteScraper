@@ -273,6 +273,136 @@ class MasterExtractor:
                 'stats': self.stats
             }
 
+    # ================ ExtractionEngine المدمج ================
+    
+class ExtractionEngine:
+    """محرك الاستخراج الشامل المدمج"""
+    
+    def __init__(self, output_directory: str = "extractions"):
+        self.output_dir = Path(output_directory)
+        self.output_dir.mkdir(exist_ok=True)
+        
+        # قائمة الوظائف والحالات
+        self.jobs: Dict[str, Any] = {}
+        self.active_jobs: Dict[str, threading.Thread] = {}
+        self.job_counter = 0
+        
+        # إحصائيات النظام
+        self.system_stats = {
+            'total_jobs_created': 0,
+            'jobs_completed': 0,
+            'jobs_failed': 0,
+            'jobs_running': 0,
+            'jobs_pending': 0,
+            'average_completion_time': 0.0,
+        }
+        
+        logger.info("تم تهيئة محرك الاستخراج الشامل")
+
+    def create_extraction_job(self, url: str, extraction_type: str = "content", 
+                            priority: int = 2, config: Dict[str, Any] = None) -> str:
+        """إنشاء وظيفة استخراج جديدة"""
+        self.job_counter += 1
+        job_id = f"job_{self.job_counter}_{int(time.time())}"
+        
+        job = {
+            'job_id': job_id,
+            'url': url,
+            'extraction_type': extraction_type,
+            'priority': priority,
+            'config': config or {},
+            'created_at': datetime.now().isoformat(),
+            'status': 'pending',
+            'progress': 0.0,
+            'result': None,
+            'error': None
+        }
+        
+        self.jobs[job_id] = job
+        self.system_stats['total_jobs_created'] += 1
+        self.system_stats['jobs_pending'] += 1
+        
+        logger.info(f"تم إنشاء وظيفة استخراج: {job_id} للرابط: {url}")
+        return job_id
+    
+    def start_extraction_job(self, job_id: str) -> bool:
+        """بدء تنفيذ وظيفة الاستخراج"""
+        if job_id not in self.jobs:
+            logger.error(f"الوظيفة غير موجودة: {job_id}")
+            return False
+        
+        job = self.jobs[job_id]
+        if job['status'] != 'pending':
+            logger.warning(f"الوظيفة {job_id} ليست في حالة انتظار")
+            return False
+        
+        # بدء الوظيفة في خيط منفصل
+        thread = threading.Thread(target=self._execute_job, args=(job_id,))
+        thread.daemon = True
+        thread.start()
+        
+        self.active_jobs[job_id] = thread
+        job['status'] = 'running'
+        job['started_at'] = datetime.now().isoformat()
+        
+        self.system_stats['jobs_pending'] -= 1
+        self.system_stats['jobs_running'] += 1
+        
+        logger.info(f"تم بدء تنفيذ الوظيفة: {job_id}")
+        return True
+    
+    def _execute_job(self, job_id: str):
+        """تنفيذ وظيفة الاستخراج"""
+        job = self.jobs[job_id]
+        
+        try:
+            # إنشاء مستخرج للوظيفة
+            config = ExtractionConfig()
+            extractor = MasterExtractor(job['url'], config)
+            
+            # تحديث التقدم
+            job['progress'] = 0.25
+            
+            # تنفيذ الاستخراج
+            result = extractor.extract_website()
+            
+            # تحديث النتائج
+            job['result'] = result
+            job['status'] = 'completed'
+            job['progress'] = 1.0
+            job['completed_at'] = datetime.now().isoformat()
+            
+            self.system_stats['jobs_running'] -= 1
+            self.system_stats['jobs_completed'] += 1
+            
+            logger.info(f"اكتملت الوظيفة بنجاح: {job_id}")
+            
+        except Exception as e:
+            job['error'] = str(e)
+            job['status'] = 'failed'
+            job['completed_at'] = datetime.now().isoformat()
+            
+            self.system_stats['jobs_running'] -= 1
+            self.system_stats['jobs_failed'] += 1
+            
+            logger.error(f"فشلت الوظيفة {job_id}: {e}")
+        
+        finally:
+            # إزالة من الوظائف النشطة
+            if job_id in self.active_jobs:
+                del self.active_jobs[job_id]
+    
+    def get_job_status(self, job_id: str) -> Dict[str, Any]:
+        """الحصول على حالة الوظيفة"""
+        if job_id not in self.jobs:
+            return {'error': 'الوظيفة غير موجودة'}
+        
+        return self.jobs[job_id]
+    
+    def get_system_stats(self) -> Dict[str, Any]:
+        """الحصول على إحصائيات النظام"""
+        return self.system_stats.copy()
+
     # Placeholder methods for complete functionality  
     def _extract_basic(self): return {'mode': 'basic', 'extracted_files': []}
     def _extract_standard(self): return {'mode': 'standard', 'extracted_files': []}
