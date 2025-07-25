@@ -20,36 +20,51 @@ import time
 from pathlib import Path
 import os
 
-# استيراد الأدوات المدمجة الجديدة
+# استيراد الأدوات المتوفرة
+UltraSmartExtractor = None
+AdvancedAdBlocker = None
+
+try:
+    from security_analyzer import SecurityAnalyzer
+    from performance_analyzer import PerformanceAnalyzer
+    from seo_analyzer import SEOAnalyzer
+    from competitor_analyzer import CompetitorAnalyzer
+    from website_extractor import WebsiteExtractor
+    from enhanced_website_extractor import EnhancedWebsiteExtractor
+    logging.info("تم تحميل الأدوات الأساسية بنجاح")
+except ImportError as e:
+    logging.warning(f"بعض الأدوات الأساسية غير متاح: {e}")
+
+try:
+    from ultra_extractor import UltraSmartExtractor
+    logging.info("تم تحميل المستخرج الفائق")
+except ImportError as e:
+    logging.warning(f"المستخرج الفائق غير متاح: {e}")
+    UltraSmartExtractor = None
+
+try:
+    from advanced_ad_blocker import AdvancedAdBlocker
+    logging.info("تم تحميل حاجب الإعلانات المتطور")
+except ImportError as e:
+    logging.warning(f"حاجب الإعلانات المتطور غير متاح: {e}")
+    AdvancedAdBlocker = None
+
+# استيراد الأدوات المدمجة إذا كانت متوفرة
+extraction_engine = None
 try:
     from analyzers.comprehensive_analyzer import ComprehensiveAnalyzer
     from extractors.master_extractor import MasterExtractor, ExtractionConfig, ExtractionMode
     from blockers.advanced_blocker import AdvancedBlocker, BlockingMode
     from scrapers.smart_scraper import SmartScraper, ScrapingConfig, ScrapingMode
-    from tools.extraction_engine import ExtractionEngine, ExtractionType, Priority
-    
-    # تهيئة محرك الاستخراج الشامل
-    extraction_engine = ExtractionEngine()
-    
-    logging.info("تم تحميل جميع الأدوات المدمجة الجديدة بنجاح")
-    
-except ImportError as e:
-    logging.warning(f"بعض الأدوات المدمجة غير متوفرة، استخدام أدوات احتياطية: {e}")
-    
-    # استيراد الأدوات القديمة كاحتياط
     try:
-        from security_analyzer import SecurityAnalyzer
-        from performance_analyzer import PerformanceAnalyzer
-        from seo_analyzer import SEOAnalyzer
-        from competitor_analyzer import CompetitorAnalyzer
-        from website_extractor import WebsiteExtractor
-        from enhanced_website_extractor import EnhancedWebsiteExtractor
-        from ultra_extractor import UltraSmartExtractor
-        from advanced_ad_blocker import AdvancedAdBlocker
+        from tools.extraction_engine import ExtractionEngine, ExtractionType, Priority
+        extraction_engine = ExtractionEngine()
+        logging.info("تم تحميل محرك الاستخراج المتقدم")
+    except ImportError:
         extraction_engine = None
-    except ImportError as e2:
-        logging.error(f"فشل في تحميل الأدوات الاحتياطية أيضاً: {e2}")
-        extraction_engine = None
+        logging.info("محرك الاستخراج المتقدم غير متوفر")
+except ImportError as e:
+    logging.info(f"الأدوات المتقدمة غير متوفرة، استخدام الأدوات الأساسية: {e}")
 
 @app.route('/')
 def index():
@@ -340,8 +355,11 @@ def api_ultra_extract():
         if not url:
             return jsonify({'error': 'الرابط مطلوب'}), 400
             
-        extractor = UltraSmartExtractor(url, config)
-        result = extractor.extract_ultra_smart()
+        if UltraSmartExtractor:
+            extractor = UltraSmartExtractor(url, config)
+            result = extractor.extract_ultra_smart()
+        else:
+            result = {'error': 'المستخرج الفائق غير متوفر في هذا الإصدار'}
         
         return jsonify({
             'status': 'success',
@@ -404,8 +422,11 @@ def api_advanced_ad_block():
         if not url:
             return jsonify({'error': 'الرابط مطلوب'}), 400
             
-        blocker = AdvancedAdBlocker()
-        result = {'message': 'Advanced ad blocking functionality available', 'stats': blocker.blocked_stats}
+        if AdvancedAdBlocker:
+            blocker = AdvancedAdBlocker()
+            result = {'message': 'Advanced ad blocking functionality available', 'stats': getattr(blocker, 'blocked_stats', {})}
+        else:
+            result = {'error': 'حاجب الإعلانات المتطور غير متوفر في هذا الإصدار'}
         
         return jsonify({
             'status': 'success',

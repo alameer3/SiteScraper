@@ -1,4 +1,8 @@
-from app import app  # noqa: F401
+from app import app
 
 # Import routes after app is created
-import routes  # noqa: F401
+try:
+    import routes
+    print("✅ Routes loaded successfully")
+except ImportError as e:
+    print(f"❌ Error loading routes: {e}")
