@@ -1,7 +1,7 @@
 from flask import render_template, request, jsonify, redirect, url_for, flash, make_response
 from app import app, db
 from models import ScrapeResult
-from scraper import WebScraper
+from simple_scraper import SimpleScraper
 from analyzer import WebsiteAnalyzer
 from advanced_analyzer import AdvancedWebsiteAnalyzer
 from technical_extractor import TechnicalExtractor
@@ -73,8 +73,8 @@ def perform_analysis(result_id, url, max_depth, block_ads=True):
             scrape_result.status = 'processing'
             db.session.commit()
             
-            # Initialize basic analyzers first
-            scraper = WebScraper(url, max_depth=max_depth, delay=1.0, block_ads=block_ads)
+            # Initialize basic analyzers first  
+            scraper = SimpleScraper(url, max_depth=max_depth, delay=1.0)
             analyzer = WebsiteAnalyzer()
             
             # Crawl the website

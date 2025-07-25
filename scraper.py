@@ -148,7 +148,10 @@ class WebScraper:
         if self.ad_blocker:
             soup, blocked_count = self.ad_blocker.remove_ads_from_soup(soup)
             self.blocked_ads_count += blocked_count
+            self._current_page_blocked_count = blocked_count
             logging.info(f"Blocked {blocked_count} ads on {url}")
+        else:
+            self._current_page_blocked_count = 0
         
         # Extract page data
         page_data = {
@@ -165,11 +168,11 @@ class WebScraper:
         
         # Meta tags
         meta_desc = soup.find('meta', attrs={'name': 'description'})
-        if meta_desc:
+        if meta_desc and hasattr(meta_desc, 'get'):
             page_data['meta_description'] = meta_desc.get('content', '')
         
         meta_keywords = soup.find('meta', attrs={'name': 'keywords'})
-        if meta_keywords:
+        if meta_keywords and hasattr(meta_keywords, 'get'):
             page_data['meta_keywords'] = meta_keywords.get('content', '')
         
         # Headers (h1-h6)
@@ -187,23 +190,27 @@ class WebScraper:
         
         # Forms
         for form in soup.find_all('form'):
-            form_data = {
-                'action': form.get('action', ''),
-                'method': form.get('method', 'get'),
-                'inputs': []
-            }
-            for input_tag in form.find_all(['input', 'select', 'textarea']):
-                form_data['inputs'].append({
-                    'type': input_tag.get('type', ''),
-                    'name': input_tag.get('name', ''),
-                    'id': input_tag.get('id', '')
-                })
-            page_data['forms'].append(form_data)
+            if hasattr(form, 'get'):
+                form_data = {
+                    'action': form.get('action', ''),
+                    'method': form.get('method', 'get'),
+                    'inputs': []
+                }
+                if hasattr(form, 'find_all'):
+                    for input_tag in form.find_all(['input', 'select', 'textarea']):
+                        if hasattr(input_tag, 'get'):
+                            form_data['inputs'].append({
+                                'type': input_tag.get('type', ''),
+                                'name': input_tag.get('name', ''),
+                                'id': input_tag.get('id', '')
+                            })
+                page_data['forms'].append(form_data)
         
         # Add ad blocking statistics to page data
         if self.ad_blocker:
+            blocked_count = getattr(self, '_current_page_blocked_count', 0)
             page_data['ad_blocking_stats'] = {
-                'ads_blocked_on_page': blocked_count if 'blocked_count' in locals() else 0,
+                'ads_blocked_on_page': blocked_count,
                 'total_ads_blocked': self.blocked_ads_count
             }
         
