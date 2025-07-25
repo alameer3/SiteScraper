@@ -27,8 +27,11 @@ try:
     from seo_analyzer import SEOAnalyzer
     from competitor_analyzer import CompetitorAnalyzer
     from website_extractor import WebsiteExtractor
+    from enhanced_website_extractor import EnhancedWebsiteExtractor
+    from ultra_extractor import UltraSmartExtractor
+    from advanced_ad_blocker import AdvancedAdBlocker
 except ImportError as e:
-    logging.warning(f"Some analyzers not available: {e}")
+    logging.warning(f"Some advanced tools not available: {e}")
 
 @app.route('/')
 def index():
@@ -300,6 +303,99 @@ def api_extraction_status(url):
 def reports_page():
     """صفحة التقارير"""
     return render_template('reports.html')
+
+# ============== مسارات الأدوات المتطورة ==============
+
+@app.route('/ultra-extractor')
+def ultra_extractor_page():
+    """صفحة المستخرج الفائق"""
+    return render_template('ultra_extractor.html')
+
+@app.route('/api/ultra-extract', methods=['POST'])
+def api_ultra_extract():
+    """واجهة برمجية للمستخرج الفائق"""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        config = data.get('config', {})
+        
+        if not url:
+            return jsonify({'error': 'الرابط مطلوب'}), 400
+            
+        extractor = UltraSmartExtractor(url, config)
+        result = extractor.extract_full_website()
+        
+        return jsonify({
+            'status': 'success',
+            'result': result
+        })
+        
+    except Exception as e:
+        logging.error(f"خطأ في الاستخراج الفائق: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/enhanced-extractor')  
+def enhanced_extractor_page():
+    """صفحة المستخرج المتطور والآمن"""
+    return render_template('enhanced_extractor.html')
+
+@app.route('/api/enhanced-extract', methods=['POST'])
+def api_enhanced_extract():
+    """واجهة برمجية للمستخرج المتطور"""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        level = data.get('level', 'standard')
+        permissions = data.get('permissions', {})
+        
+        if not url:
+            return jsonify({'error': 'الرابط مطلوب'}), 400
+            
+        # إنشاء إعدادات الاستخراج
+        from enhanced_website_extractor import ExtractionConfig, ExtractionLevel
+        config = ExtractionConfig(
+            url=url,
+            extraction_level=ExtractionLevel(level)
+        )
+        
+        extractor = EnhancedWebsiteExtractor(config)
+        result = extractor.extract_with_permissions()
+        
+        return jsonify({
+            'status': 'success',
+            'result': result
+        })
+        
+    except Exception as e:
+        logging.error(f"خطأ في الاستخراج المتطور: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/advanced-ad-blocker')
+def advanced_ad_blocker_page():
+    """صفحة حاجب الإعلانات المتطور"""
+    return render_template('advanced_ad_blocker.html')
+
+@app.route('/api/advanced-ad-block', methods=['POST'])
+def api_advanced_ad_block():
+    """واجهة برمجية لحاجب الإعلانات المتطور"""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        
+        if not url:
+            return jsonify({'error': 'الرابط مطلوب'}), 400
+            
+        blocker = AdvancedAdBlocker()
+        result = blocker.process_website(url)
+        
+        return jsonify({
+            'status': 'success',
+            'result': result
+        })
+        
+    except Exception as e:
+        logging.error(f"خطأ في حجب الإعلانات المتطور: {e}")
+        return jsonify({'error': str(e)}), 500
 
 
 

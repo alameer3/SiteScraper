@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}المستخرج الفائق - Ultra Extractor{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="glass-card p-4">
+                <h1 class="h2 text-primary mb-3">
+                    <i data-feather="zap" class="me-2"></i>
+                    المستخرج الفائق - Ultra Smart Extractor
+                </h1>
+                <p class="text-muted">
+                    استخراج ذكي ومتطور للمواقع مع تحليل AI وميزات فائقة
+                </p>
+                
+                <div class="alert alert-success border-0 bg-success bg-opacity-10">
+                    <div class="d-flex align-items-center">
+                        <i data-feather="star" class="text-success me-2"></i>
+                        <strong>مميزات فائقة:</strong> 
+                        استخراج متوازي، تحليل AI، كشف التقنيات، تحسين الأداء
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- نموذج الاستخراج الفائق -->
+            <div class="glass-card p-4 mb-4">
+                <h3 class="h4 mb-3">
+                    <i data-feather="settings" class="me-2"></i>
+                    إعدادات الاستخراج الفائق
+                </h3>
+                
+                <form id="ultraExtractionForm">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label for="targetUrl" class="form-label">رابط الموقع</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">
+                                    <i data-feather="link" width="16"></i>
+                                </span>
+                                <input type="url" class="form-control" id="targetUrl" 
+                                       placeholder="https://example.com" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="extractionQuality" class="form-label">جودة الاستخراج</label>
+                            <select class="form-select" id="extractionQuality">
+                                <option value="ultra">فائق - معالجة AI كاملة</option>
+                                <option value="high" selected>عالي - تحليل متقدم</option>
+                                <option value="fast">سريع - استخراج أساسي</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-3">
+                            <label for="maxThreads" class="form-label">عدد الخيوط</label>
+                            <input type="number" class="form-control" id="maxThreads" 
+                                   value="4" min="1" max="8">
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="maxDepth" class="form-label">عمق الاستخراج</label>
+                            <input type="number" class="form-control" id="maxDepth" 
+                                   value="3" min="1" max="5">
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" id="enableAI" checked>
+                                <label class="form-check-label" for="enableAI">
+                                    تحليل AI
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" id="parallelProcessing" checked>
+                                <label class="form-check-label" for="parallelProcessing">
+                                    معالجة متوازية
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i data-feather="zap" width="16" class="me-1"></i>
+                            بدء الاستخراج الفائق
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- تقدم الاستخراج -->
+                <div id="ultraProgress" class="mt-4" style="display: none;">
+                    <div class="card bg-dark border-primary">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">جاري الاستخراج الفائق...</h5>
+                            <div class="progress mb-3">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                     id="ultraProgressBar" style="width: 0%"></div>
+                            </div>
+                            
+                            <!-- إحصائيات مباشرة -->
+                            <div class="row g-3">
+                                <div class="col-md-2">
+                                    <div class="text-center">
+                                        <div class="h5 text-primary" id="extractedPages">0</div>
+                                        <small class="text-muted">صفحات</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="text-center">
+                                        <div class="h5 text-success" id="downloadedAssets">0</div>
+                                        <small class="text-muted">أصول</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="text-center">
+                                        <div class="h5 text-warning" id="detectedTech">0</div>
+                                        <small class="text-muted">تقنيات</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="text-center">
+                                        <div class="h5 text-info" id="processedSize">0 MB</div>
+                                        <small class="text-muted">حجم</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="text-center">
+                                        <div class="h5 text-secondary" id="processingSpeed">0/s</div>
+                                        <small class="text-muted">سرعة</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="text-center">
+                                        <div class="h5 text-primary" id="aiAnalysis">0%</div>
+                                        <small class="text-muted">تحليل AI</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- النتائج -->
+                <div id="ultraResults" class="mt-4" style="display: none;">
+                    <div class="card bg-success bg-opacity-10 border-success">
+                        <div class="card-body">
+                            <h5 class="card-title text-success">
+                                <i data-feather="check-circle" class="me-2"></i>
+                                تم الاستخراج الفائق بنجاح!
+                            </h5>
+                            <div id="ultraResultsContent">
+                                <!-- سيتم ملؤها ديناميكياً -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- الشريط الجانبي -->
+        <div class="col-lg-4">
+            <!-- مميزات المستخرج الفائق -->
+            <div class="glass-card p-4 mb-4">
+                <h5 class="h6 mb-3">
+                    <i data-feather="star" class="me-2"></i>
+                    المميزات الفائقة
+                </h5>
+                
+                <div class="small text-light">
+                    <div class="mb-2">
+                        <i data-feather="zap" width="14" class="me-1 text-warning"></i>
+                        معالجة متوازية فائقة السرعة
+                    </div>
+                    <div class="mb-2">
+                        <i data-feather="brain" width="14" class="me-1 text-info"></i>
+                        تحليل ذكي بالذكاء الاصطناعي
+                    </div>
+                    <div class="mb-2">
+                        <i data-feather="layers" width="14" class="me-1 text-success"></i>
+                        استخراج متعدد المستويات
+                    </div>
+                    <div class="mb-2">
+                        <i data-feather="shield" width="14" class="me-1 text-primary"></i>
+                        حماية وأمان متقدم
+                    </div>
+                    <div>
+                        <i data-feather="download" width="14" class="me-1 text-secondary"></i>
+                        تنسيقات متعددة للتصدير
+                    </div>
+                </div>
+            </div>
+
+            <!-- إعدادات متقدمة -->
+            <div class="glass-card p-4">
+                <h5 class="h6 mb-3">
+                    <i data-feather="sliders" class="me-2"></i>
+                    إعدادات متقدمة
+                </h5>
+                
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label for="outputFormat" class="form-label small">تنسيق الإخراج</label>
+                        <select class="form-select form-select-sm" id="outputFormat">
+                            <option value="zip">ملف مضغوط ZIP</option>
+                            <option value="folder">مجلد منظم</option>
+                            <option value="json">بيانات JSON</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="compression" class="form-label small">ضغط الصور</label>
+                        <select class="form-select form-select-sm" id="compression">
+                            <option value="none">بدون ضغط</option>
+                            <option value="light" selected>خفيف</option>
+                            <option value="heavy">مكثف</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="aiLevel" class="form-label small">مستوى AI</label>
+                        <select class="form-select form-select-sm" id="aiLevel">
+                            <option value="basic">أساسي</option>
+                            <option value="advanced" selected>متقدم</option>
+                            <option value="expert">خبير</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('ultraExtractionForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const url = document.getElementById('targetUrl').value;
+    const quality = document.getElementById('extractionQuality').value;
+    const maxThreads = parseInt(document.getElementById('maxThreads').value);
+    const maxDepth = parseInt(document.getElementById('maxDepth').value);
+    const enableAI = document.getElementById('enableAI').checked;
+    const parallelProcessing = document.getElementById('parallelProcessing').checked;
+    
+    const config = {
+        quality: quality,
+        max_threads: maxThreads,
+        max_depth: maxDepth,
+        enable_ai: enableAI,
+        parallel_processing: parallelProcessing,
+        output_format: document.getElementById('outputFormat').value,
+        compression: document.getElementById('compression').value,
+        ai_level: document.getElementById('aiLevel').value
+    };
+    
+    // إظهار تقدم الاستخراج
+    document.getElementById('ultraProgress').style.display = 'block';
+    document.getElementById('ultraResults').style.display = 'none';
+    
+    try {
+        const response = await fetch('/api/ultra-extract', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                url: url,
+                config: config
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            document.getElementById('ultraProgress').style.display = 'none';
+            document.getElementById('ultraResults').style.display = 'block';
+            
+            document.getElementById('ultraResultsContent').innerHTML = `
+                <p><strong>تم استخراج ${data.result.pages_count} صفحة بنجاح</strong></p>
+                <p>التقنيات المكتشفة: ${data.result.technologies_count}</p>
+                <p>الحجم الإجمالي: ${data.result.total_size_mb} MB</p>
+                <p>وقت المعالجة: ${data.result.processing_time} ثانية</p>
+            `;
+        } else {
+            alert('خطأ: ' + data.error);
+        }
+    } catch (error) {
+        alert('خطأ في الاتصال: ' + error.message);
+        document.getElementById('ultraProgress').style.display = 'none';
+    }
+});
+
+// Initialize Feather icons
+if (typeof feather !== 'undefined') {
+    feather.replace();
+}
+</script>
+{% endblock %}

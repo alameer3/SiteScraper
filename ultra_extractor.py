@@ -5,7 +5,8 @@
 
 import os
 import requests
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup
+from bs4.element import NavigableString
 from urllib.parse import urljoin, urlparse, unquote
 from pathlib import Path
 import time
@@ -31,7 +32,7 @@ class UltraSmartExtractor:
     def __init__(self, base_url: str, config: Dict[str, Any] = None):
         self.base_url = base_url
         self.domain = urlparse(base_url).netloc
-        self.config = config or self._default_config()
+        self.config = config if config is not None else self._default_config()
         
         # إعداد المجلدات
         self.output_dir = Path("extracted_sites")
@@ -125,7 +126,7 @@ class UltraSmartExtractor:
         retry_strategy = Retry(
             total=3,
             status_forcelist=[429, 500, 502, 503, 504],
-            method_whitelist=["HEAD", "GET", "OPTIONS"]
+            allowed_methods=["HEAD", "GET", "OPTIONS"]  # Updated parameter name
         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self.session.mount("http://", adapter)
