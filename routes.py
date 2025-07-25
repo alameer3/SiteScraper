@@ -179,7 +179,102 @@ def settings_page():
 @app.route('/website-extractor')
 def website_extractor_page():
     """صفحة استخراج المواقع"""
-    return render_template('website_extractor.html')
+    return render_template('advanced_extractor.html')
+
+@app.route('/api/extract-website', methods=['POST'])
+def api_extract_website():
+    """API استخراج المواقع المتقدم"""
+    try:
+        from advanced_extractor import extract_website_advanced
+        
+        data = request.get_json()
+        url = data.get('url', '').strip()
+        max_depth = int(data.get('max_depth', 2))
+        max_threads = int(data.get('max_threads', 3))
+        
+        if not url:
+            return jsonify({'error': 'URL مطلوب'}), 400
+        
+        # التحقق من صحة الرابط
+        if not url.startswith(('http://', 'https://')):
+            url = 'https://' + url
+        
+        def extract_in_background():
+            with app.app_context():
+                try:
+                    site_dir, stats = extract_website_advanced(url, max_depth, max_threads)
+                    
+                    # حفظ معلومات الاستخراج في قاعدة البيانات
+                    extraction_result = ScrapeResult(
+                        url=url,
+                        analysis_type='extraction',
+                        status='completed',
+                        data=json.dumps({
+                            'site_directory': str(site_dir),
+                            'statistics': stats,
+                            'extraction_time': datetime.now().isoformat()
+                        }, ensure_ascii=False),
+                        timestamp=datetime.now()
+                    )
+                    db.session.add(extraction_result)
+                    db.session.commit()
+                    
+                    logging.info(f"استخراج مكتمل للموقع: {url}")
+                    
+                except Exception as e:
+                    logging.error(f"خطأ في الاستخراج: {e}")
+                    # حفظ الخطأ
+                    error_result = ScrapeResult(
+                        url=url,
+                        analysis_type='extraction',
+                        status='error',
+                        data=json.dumps({'error': str(e)}, ensure_ascii=False),
+                        timestamp=datetime.now()
+                    )
+                    db.session.add(error_result)
+                    db.session.commit()
+        
+        # بدء الاستخراج في الخلفية
+        thread = threading.Thread(target=extract_in_background)
+        thread.daemon = True
+        thread.start()
+        
+        return jsonify({
+            'message': 'تم بدء عملية الاستخراج بنجاح',
+            'url': url,
+            'status': 'processing'
+        })
+        
+    except Exception as e:
+        logging.error(f"خطأ في API الاستخراج: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/extraction-status/<path:url>')
+def api_extraction_status(url):
+    """فحص حالة الاستخراج"""
+    try:
+        latest_result = ScrapeResult.query.filter_by(
+            url=url,
+            analysis_type='extraction'
+        ).order_by(ScrapeResult.created_at.desc()).first()
+        
+        if not latest_result:
+            return jsonify({'status': 'not_found'})
+        
+        response_data = {
+            'status': latest_result.status,
+            'created_at': latest_result.created_at.isoformat()
+        }
+        
+        if latest_result.data:
+            data = json.loads(latest_result.data)
+            response_data.update(data)
+        
+        return jsonify(response_data)
+        
+    except Exception as e:
+        logging.error(f"خطأ في فحص حالة الاستخراج: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/reports')
 def reports_page():
