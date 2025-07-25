@@ -15,17 +15,29 @@ import threading
 @app.route('/')
 def index():
     """Main page with URL input form"""
-    return render_template('index.html')
+    try:
+        return render_template('index.html')
+    except Exception as e:
+        logging.error(f"Error rendering index page: {e}")
+        return f"خطأ في تحميل الصفحة الرئيسية: {str(e)}", 500
 
 @app.route('/analyze', methods=['POST'])
 def analyze_website():
     """Start website analysis"""
-    url = request.form.get('url', '').strip()
-    max_depth = int(request.form.get('max_depth', 2))
-    block_ads = request.form.get('block_ads', 'on') == 'on'
-    
-    if not url:
-        flash('Please enter a valid URL', 'error')
+    try:
+        url = request.form.get('url', '').strip()
+        max_depth = int(request.form.get('max_depth', 2))
+        block_ads = request.form.get('block_ads', 'on') == 'on'
+        
+        if not url:
+            flash('يرجى إدخال رابط صحيح', 'error')
+            return redirect(url_for('index'))
+    except ValueError as e:
+        flash('خطأ في قيم النموذج', 'error')
+        return redirect(url_for('index'))
+    except Exception as e:
+        logging.error(f"Error processing form: {e}")
+        flash('حدث خطأ في معالجة النموذج', 'error')
         return redirect(url_for('index'))
     
     # Add protocol if missing

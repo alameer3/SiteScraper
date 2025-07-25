@@ -244,3 +244,143 @@ if (typeof feather !== 'undefined') {
 }
 </script>
 {% endblock %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محلل المواقع الذكي</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔍 محلل المواقع الذكي</h1>
+            <p>تحليل شامل ومتقدم للمواقع الإلكترونية</p>
+        </header>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                            <button type="button" class="close-btn" onclick="this.parentElement.remove()">×</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <main class="main-content">
+            <div class="analysis-form">
+                <form action="{{ url_for('analyze_website') }}" method="POST" id="analyzeForm">
+                    <div class="form-group">
+                        <label for="url">🌐 رابط الموقع المراد تحليله:</label>
+                        <input type="url" 
+                               id="url" 
+                               name="url" 
+                               placeholder="https://example.com" 
+                               required
+                               class="url-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max_depth">📊 عمق التحليل:</label>
+                        <select id="max_depth" name="max_depth" class="depth-select">
+                            <option value="1">سطحي (صفحة واحدة)</option>
+                            <option value="2" selected>متوسط (صفحتان)</option>
+                            <option value="3">عميق (3 صفحات)</option>
+                            <option value="4">شامل (4 صفحات)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="block_ads" name="block_ads" checked>
+                            <span class="checkmark"></span>
+                            🚫 حجب الإعلانات أثناء التحليل
+                        </label>
+                    </div>
+
+                    <button type="submit" class="analyze-btn" id="submitBtn">
+                        <span class="btn-text">🚀 بدء التحليل</span>
+                        <div class="loading-spinner" style="display: none;"></div>
+                    </button>
+                </form>
+            </div>
+
+            <div class="features">
+                <h2>✨ مميزات المحلل</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>🏗️ تحليل البنية</h3>
+                        <p>تحليل عميق لبنية HTML وتنظيم المحتوى</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🎨 تحليل الأصول</h3>
+                        <p>فحص الصور، CSS، JavaScript والخطوط</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>⚙️ تحليل التقنيات</h3>
+                        <p>اكتشاف إطارات العمل والمكتبات المستخدمة</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📈 تحليل SEO</h3>
+                        <p>تقييم تحسين محركات البحث والأداء</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🗺️ خريطة التنقل</h3>
+                        <p>تحليل بنية الروابط وخريطة الموقع</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📋 تقرير عربي</h3>
+                        <p>تقرير شامل باللغة العربية</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 محلل المواقع الذكي. جميع الحقوق محفوظة.</p>
+            <a href="{{ url_for('history') }}" class="history-link">📚 سجل التحليلات</a>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('analyzeForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const spinner = submitBtn.querySelector('.loading-spinner');
+            
+            if (submitBtn && btnText && spinner) {
+                submitBtn.disabled = true;
+                btnText.style.display = 'none';
+                spinner.style.display = 'inline-block';
+                btnText.textContent = '⏳ جاري التحليل...';
+                
+                setTimeout(function() {
+                    btnText.style.display = 'inline-block';
+                }, 100);
+            }
+        });
+
+        // تنظيف رسائل التنبيه تلقائياً
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                if (alert) {
+                    alert.style.opacity = '0';
+                    setTimeout(function() {
+                        if (alert.parentElement) {
+                            alert.remove();
+                        }
+                    }, 300);
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
