@@ -13,7 +13,9 @@ from datetime import datetime
 import threading
 import time
 import requests
-from bs4 import BeautifulSoup
+import hashlib
+from bs4 import BeautifulSoup, Tag
+from bs4.element import NavigableString
 
 @app.route('/')
 def index():
@@ -71,8 +73,8 @@ def analyze_website():
                     
                     # Get meta description
                     meta_desc = soup.find('meta', attrs={'name': 'description'})
-                    if meta_desc and hasattr(meta_desc, 'attrs') and 'content' in meta_desc.attrs:
-                        analysis_data['meta_description'] = meta_desc.attrs['content']
+                    if meta_desc and isinstance(meta_desc, Tag) and 'content' in meta_desc.attrs:
+                        analysis_data['meta_description'] = meta_desc.get('content', '')
                     
                     # Save results to database
                     result = ScrapeResult(url=url, status='completed')
@@ -101,7 +103,7 @@ def analyze_website():
         thread.start()
         
         flash('Website analysis started, results will appear soon', 'success')
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('index'))
         
     except ValueError as e:
         flash('Error in form values', 'error')
@@ -151,6 +153,17 @@ def history():
         logging.error(f"Error loading history: {e}")
         return render_template('history.html', results=[])
 
+@app.route('/result/<int:result_id>')
+def view_result(result_id):
+    """View specific analysis result"""
+    try:
+        result = ScrapeResult.query.get_or_404(result_id)
+        return render_template('results.html', result=result)
+    except Exception as e:
+        logging.error(f"Error loading result: {e}")
+        flash('Result not found', 'error')
+        return redirect(url_for('index'))
+
 @app.route('/results/<int:result_id>')
 def view_results(result_id):
     """View analysis results"""
@@ -198,30 +211,10 @@ def settings_page():
     """Settings page"""
     return render_template('settings.html')
 
-@app.route('/website-extractor')
-def website_extractor_page():
-    """Website extractor page"""
-    return render_template('advanced_extractor.html')
-
 @app.route('/reports')
 def reports_page():
     """Reports page"""
     return render_template('reports.html')
-
-@app.route('/ultra-extractor')
-def ultra_extractor_page():
-    """Ultra extractor page"""
-    return render_template('ultra_extractor.html')
-
-@app.route('/enhanced-extractor')  
-def enhanced_extractor_page():
-    """Enhanced extractor page"""
-    return render_template('enhanced_extractor.html')
-
-@app.route('/advanced-ad-blocker')
-def advanced_ad_blocker_page():
-    """Advanced ad blocker page"""
-    return render_template('advanced_ad_blocker.html')
 
 # الصفحات الموحدة الجديدة
 @app.route('/unified-analyzer')
