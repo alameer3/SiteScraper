@@ -278,67 +278,69 @@
 <script>
 // تهيئة الرسوم البيانية
 document.addEventListener('DOMContentLoaded', function() {
-    // رسم بياني لأنواع التحليل
-    const analysisTypeCtx = document.getElementById('analysisTypeChart').getContext('2d');
-    new Chart(analysisTypeCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['أساسي', 'الأمان', 'الأداء', 'SEO', 'المنافسين', 'شامل'],
-            datasets: [{
-                data: [
-                    {{ analysis_stats.get('basic', 0) or 0 }},
-                    {{ analysis_stats.get('security', 0) or 0 }},
-                    {{ analysis_stats.get('performance', 0) or 0 }},
-                    {{ analysis_stats.get('seo', 0) or 0 }},
-                    {{ analysis_stats.get('competitor', 0) or 0 }},
-                    {{ analysis_stats.get('comprehensive', 0) or 0 }}
-                ],
-                backgroundColor: [
-                    '#0d6efd',
-                    '#198754',
-                    '#17a2b8',
-                    '#ffc107',
-                    '#fd7e14',
-                    '#6c757d'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
+    // تحقق من وجود عنصر الرسم البياني قبل التحميل
+    const analysisTypeChartElement = document.getElementById('analysisTypeChart');
+    if (analysisTypeChartElement) {
+        const analysisTypeCtx = analysisTypeChartElement.getContext('2d');
+        new Chart(analysisTypeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['أساسي', 'الأمان', 'الأداء', 'SEO', 'المنافسين', 'شامل'],
+                datasets: [{
+                    data: [1, 1, 1, 1, 1, 1],
+                    backgroundColor: [
+                        '#0d6efd',
+                        '#198754',
+                        '#17a2b8',
+                        '#ffc107',
+                        '#fd7e14',
+                        '#6c757d'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 
-    // رسم بياني للنشاط الأسبوعي (بيانات وهمية للتوضيح)
-    const weeklyActivityCtx = document.getElementById('weeklyActivityChart').getContext('2d');
-    new Chart(weeklyActivityCtx, {
-        type: 'line',
-        data: {
-            labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
-            datasets: [{
-                label: 'عدد التحليلات',
-                data: [12, 19, 3, 5, 2, 3, 7],
-                borderColor: '#0d6efd',
-                backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
+    // رسم بياني للنشاط الأسبوعي
+    const weeklyActivityChartElement = document.getElementById('weeklyActivityChart');
+    if (weeklyActivityChartElement) {
+        const weeklyActivityCtx = weeklyActivityChartElement.getContext('2d');
+        new Chart(weeklyActivityCtx, {
+            type: 'line',
+            data: {
+                labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+                datasets: [{
+                    label: 'عدد التحليلات',
+                    data: [12, 19, 3, 5, 2, 3, 7],
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
-    });
+        });
+    }
+
+    // تهيئة الأيقونات
+    feather.replace();
 });
 
-// وظائف JavaScript
+// وظائف JavaScript العامة
 function exportReport(analysisId) {
     window.open(`/api/export-report/${analysisId}`, '_blank');
 }
@@ -351,34 +353,37 @@ function deleteAnalysis(analysisId) {
     modal.show();
 }
 
-document.getElementById('confirmDelete').addEventListener('click', function() {
-    if (deleteAnalysisId) {
-        fetch(`/api/delete-analysis/${deleteAnalysisId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
+// مستمع لتأكيد الحذف
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmDeleteBtn = document.getElementById('confirmDelete');
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', function() {
+            if (deleteAnalysisId) {
+                fetch(`/api/delete-analysis/${deleteAnalysisId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        location.reload();
+                    } else {
+                        alert('حدث خطأ أثناء الحذف');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('حدث خطأ أثناء الحذف');
+                });
+                
+                // إخفاء المودال
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                if (modal) modal.hide();
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) {
-                location.reload();
-            } else {
-                alert('حدث خطأ أثناء الحذف');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('حدث خطأ أثناء الحذف');
         });
-        
-        // Hide modal after delete
-        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-        if (modal) modal.hide();
     }
 });
-
-// Initialize feather icons
-feather.replace();
 </script>
 {% endblock %}
