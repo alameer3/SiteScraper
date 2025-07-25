@@ -278,6 +278,122 @@ def comprehensive_analysis_page():
     """صفحة التحليل الشامل"""
     return render_template('comprehensive_analysis.html')
 
+@app.route('/live-search')
+def live_search_page():
+    """صفحة البحث المباشر"""
+    return render_template('live_search.html')
+
+@app.route('/api/search-analyses', methods=['POST'])
+def api_search_analyses():
+    """API البحث في التحليلات"""
+    try:
+        data = request.get_json()
+        query = data.get('query', '').strip()
+        analysis_type = data.get('analysis_type', '')
+        date_range = data.get('date_range', '')
+        status = data.get('status', '')
+        score_range = data.get('score_range', '')
+        sort_by = data.get('sort_by', 'date_desc')
+        page = int(data.get('page', 1))
+        per_page = int(data.get('per_page', 10))
+        
+        # بناء الاستعلام
+        base_query = ScrapeResult.query
+        
+        # فلتر النص
+        if query:
+            base_query = base_query.filter(ScrapeResult.url.contains(query))
+        
+        # فلتر نوع التحليل
+        if analysis_type:
+            base_query = base_query.filter(ScrapeResult.analysis_type == analysis_type)
+        
+        # فلتر الحالة
+        if status:
+            base_query = base_query.filter(ScrapeResult.status == status)
+        
+        # فلتر التاريخ
+        if date_range:
+            from datetime import datetime, timedelta
+            now = datetime.now()
+            if date_range == 'today':
+                start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            elif date_range == 'week':
+                start_date = now - timedelta(days=7)
+            elif date_range == 'month':
+                start_date = now - timedelta(days=30)
+            elif date_range == 'year':
+                start_date = now - timedelta(days=365)
+            else:
+                start_date = None
+                
+            if start_date:
+                base_query = base_query.filter(ScrapeResult.created_at >= start_date)
+        
+        # ترتيب النتائج
+        if sort_by == 'date_desc':
+            base_query = base_query.order_by(ScrapeResult.created_at.desc())
+        elif sort_by == 'date_asc':
+            base_query = base_query.order_by(ScrapeResult.created_at.asc())
+        elif sort_by == 'url_asc':
+            base_query = base_query.order_by(ScrapeResult.url.asc())
+        
+        # الحصول على النتائج مع التنقل
+        pagination = base_query.paginate(
+            page=page, 
+            per_page=per_page, 
+            error_out=False
+        )
+        
+        results = []
+        for item in pagination.items:
+            result_data = {
+                'id': item.id,
+                'url': item.url,
+                'analysis_type': item.analysis_type or 'basic',
+                'status': item.status,
+                'created_at': item.created_at.isoformat(),
+                'score': None
+            }
+            
+            # محاولة استخراج النقاط من البيانات
+            try:
+                if item.data:
+                    data_json = json.loads(item.data)
+                    if isinstance(data_json, dict):
+                        result_data['score'] = data_json.get('score', data_json.get('overall_score'))
+            except:
+                pass
+                
+            results.append(result_data)
+        
+        # إحصائيات
+        total_query = ScrapeResult.query
+        if query:
+            total_query = total_query.filter(ScrapeResult.url.contains(query))
+        if analysis_type:
+            total_query = total_query.filter(ScrapeResult.analysis_type == analysis_type)
+            
+        stats = {
+            'total': pagination.total,
+            'completed': total_query.filter(ScrapeResult.status == 'completed').count(),
+            'running': total_query.filter(ScrapeResult.status == 'running').count(),
+            'avg_score': 75  # قيمة افتراضية، يمكن حسابها لاحقاً
+        }
+        
+        return jsonify({
+            'results': results,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'current_page': page,
+            'per_page': per_page,
+            'stats': stats
+        })
+        
+    except Exception as e:
+        logging.error(f"خطأ في البحث: {e}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/comprehensive-analyze', methods=['POST'])
 def api_comprehensive_analyze():
     """API التحليل الشامل"""

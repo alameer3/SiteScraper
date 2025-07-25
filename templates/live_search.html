@@ -1,0 +1,626 @@
+{% extends "base.html" %}
+
+{% block title %}البحث المباشر - محلل المواقع{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- عنوان البحث المباشر -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2 text-primary">
+                <i data-feather="search" class="me-2"></i>
+                البحث المباشر
+            </h1>
+            <p class="text-muted">ابحث في التحليلات والنتائج بسرعة</p>
+        </div>
+    </div>
+
+    <!-- شريط البحث المتقدم -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="searchQuery" class="form-label">البحث في التحليلات</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchQuery" placeholder="ابحث عن موقع أو نوع تحليل...">
+                                <button class="btn btn-primary" type="button" id="searchBtn">
+                                    <i data-feather="search" size="16"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="analysisType" class="form-label">نوع التحليل</label>
+                            <select class="form-select" id="analysisType">
+                                <option value="">جميع الأنواع</option>
+                                <option value="basic">أساسي</option>
+                                <option value="security">الأمان</option>
+                                <option value="performance">الأداء</option>
+                                <option value="seo">SEO</option>
+                                <option value="competitor">المنافسين</option>
+                                <option value="comprehensive">شامل</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="dateRange" class="form-label">الفترة الزمنية</label>
+                            <select class="form-select" id="dateRange">
+                                <option value="">جميع الأوقات</option>
+                                <option value="today">اليوم</option>
+                                <option value="week">هذا الأسبوع</option>
+                                <option value="month">هذا الشهر</option>
+                                <option value="year">هذا العام</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- فلاتر متقدمة -->
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
+                                <i data-feather="filter" size="14" class="me-1"></i>
+                                فلاتر متقدمة
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="collapse mt-3" id="advancedFilters">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="statusFilter" class="form-label">حالة التحليل</label>
+                                <select class="form-select" id="statusFilter">
+                                    <option value="">جميع الحالات</option>
+                                    <option value="completed">مكتمل</option>
+                                    <option value="running">قيد التشغيل</option>
+                                    <option value="failed">فشل</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="scoreRange" class="form-label">نطاق النقاط</label>
+                                <select class="form-select" id="scoreRange">
+                                    <option value="">جميع النقاط</option>
+                                    <option value="90-100">90-100 ممتاز</option>
+                                    <option value="75-89">75-89 جيد جداً</option>
+                                    <option value="60-74">60-74 جيد</option>
+                                    <option value="0-59">أقل من 60 يحتاج تحسين</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="sortBy" class="form-label">ترتيب حسب</label>
+                                <select class="form-select" id="sortBy">
+                                    <option value="date_desc">الأحدث أولاً</option>
+                                    <option value="date_asc">الأقدم أولاً</option>
+                                    <option value="url_asc">اسم الموقع (أ-ي)</option>
+                                    <option value="score_desc">أعلى نقاط</option>
+                                    <option value="score_asc">أقل نقاط</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مؤشر التحميل -->
+    <div id="loadingIndicator" class="row mb-4" style="display: none;">
+        <div class="col-12">
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">جاري البحث...</span>
+                </div>
+                <p class="mt-2 text-muted">جاري البحث في التحليلات...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- نتائج البحث -->
+    <div class="row" id="searchResults">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="list" class="me-2"></i>
+                        نتائج البحث
+                        <span id="resultsCount" class="badge bg-secondary ms-2">0</span>
+                    </h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary" id="gridView">
+                            <i data-feather="grid" size="14"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary active" id="listView">
+                            <i data-feather="list" size="14"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body" id="resultsContainer">
+                    <!-- رسالة البداية -->
+                    <div class="text-center py-5" id="noSearchMessage">
+                        <i data-feather="search" size="64" class="text-muted mb-3"></i>
+                        <h5 class="text-muted">ابدأ البحث للعثور على التحليلات</h5>
+                        <p class="text-muted">استخدم شريط البحث أعلاه للعثور على التحليلات المطلوبة</p>
+                    </div>
+                    
+                    <!-- رسالة عدم وجود نتائج -->
+                    <div class="text-center py-5" id="noResultsMessage" style="display: none;">
+                        <i data-feather="inbox" size="64" class="text-muted mb-3"></i>
+                        <h5 class="text-muted">لا توجد نتائج</h5>
+                        <p class="text-muted">جرب تعديل معايير البحث أو الفلاتر</p>
+                    </div>
+                    
+                    <!-- نتائج البحث (عرض جدول) -->
+                    <div id="tableResults" class="table-responsive" style="display: none;">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>الموقع</th>
+                                    <th>نوع التحليل</th>
+                                    <th>النقاط</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableResultsBody">
+                                <!-- النتائج ستظهر هنا -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- نتائج البحث (عرض شبكة) -->
+                    <div id="gridResults" class="row" style="display: none;">
+                        <!-- النتائج ستظهر هنا -->
+                    </div>
+                </div>
+                
+                <!-- التنقل بين الصفحات -->
+                <div class="card-footer" id="paginationContainer" style="display: none;">
+                    <nav aria-label="تنقل بين صفحات النتائج">
+                        <ul class="pagination justify-content-center mb-0" id="pagination">
+                            <!-- أزرار التنقل ستظهر هنا -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- إحصائيات البحث -->
+    <div class="row mt-4" id="searchStats" style="display: none;">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h4 id="totalFound">0</h4>
+                    <small>إجمالي النتائج</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h4 id="completedCount">0</h4>
+                    <small>مكتمل</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h4 id="runningCount">0</h4>
+                    <small>قيد التشغيل</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h4 id="avgScore">0</h4>
+                    <small>متوسط النقاط</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript للبحث المباشر -->
+<script>
+class LiveSearch {
+    constructor() {
+        this.currentPage = 1;
+        this.resultsPerPage = 10;
+        this.totalResults = 0;
+        this.currentView = 'list';
+        this.searchTimeout = null;
+        
+        this.init();
+    }
+    
+    init() {
+        // إعداد مستمعي الأحداث
+        document.getElementById('searchQuery').addEventListener('input', (e) => {
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                this.performSearch();
+            }, 500); // البحث بعد توقف الكتابة لـ 500ms
+        });
+        
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            this.performSearch();
+        });
+        
+        // مستمعي الفلاتر
+        ['analysisType', 'dateRange', 'statusFilter', 'scoreRange', 'sortBy'].forEach(id => {
+            document.getElementById(id).addEventListener('change', () => {
+                this.performSearch();
+            });
+        });
+        
+        // مستمعي عرض النتائج
+        document.getElementById('gridView').addEventListener('click', () => {
+            this.switchView('grid');
+        });
+        
+        document.getElementById('listView').addEventListener('click', () => {
+            this.switchView('list');
+        });
+        
+        // البحث عند الضغط على Enter
+        document.getElementById('searchQuery').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.performSearch();
+            }
+        });
+        
+        // تهيئة الأيقونات
+        feather.replace();
+    }
+    
+    async performSearch() {
+        this.showLoading(true);
+        
+        const searchParams = this.getSearchParams();
+        
+        try {
+            const response = await fetch('/api/search-analyses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(searchParams)
+            });
+            
+            const data = await response.json();
+            this.displayResults(data);
+            this.updateStats(data);
+            
+        } catch (error) {
+            console.error('خطأ في البحث:', error);
+            this.showError('حدث خطأ أثناء البحث');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+    
+    getSearchParams() {
+        return {
+            query: document.getElementById('searchQuery').value.trim(),
+            analysis_type: document.getElementById('analysisType').value,
+            date_range: document.getElementById('dateRange').value,
+            status: document.getElementById('statusFilter').value,
+            score_range: document.getElementById('scoreRange').value,
+            sort_by: document.getElementById('sortBy').value,
+            page: this.currentPage,
+            per_page: this.resultsPerPage
+        };
+    }
+    
+    displayResults(data) {
+        const results = data.results || [];
+        this.totalResults = data.total || 0;
+        
+        document.getElementById('resultsCount').textContent = this.totalResults;
+        
+        if (results.length === 0) {
+            this.showNoResults();
+            return;
+        }
+        
+        this.hideMessages();
+        
+        if (this.currentView === 'list') {
+            this.displayTableResults(results);
+        } else {
+            this.displayGridResults(results);
+        }
+        
+        this.setupPagination(data.total_pages || 1);
+    }
+    
+    displayTableResults(results) {
+        const tbody = document.getElementById('tableResultsBody');
+        tbody.innerHTML = '';
+        
+        results.forEach(result => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <div class="text-truncate" style="max-width: 200px;" title="${result.url}">
+                        ${result.url}
+                    </div>
+                </td>
+                <td>
+                    <span class="badge bg-${this.getTypeColor(result.analysis_type)}">
+                        ${this.getTypeLabel(result.analysis_type)}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge bg-${this.getScoreColor(result.score)}">
+                        ${result.score || 'N/A'}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge bg-${this.getStatusColor(result.status)}">
+                        ${this.getStatusLabel(result.status)}
+                    </span>
+                </td>
+                <td>
+                    <small class="text-muted">
+                        ${new Date(result.created_at).toLocaleString('ar-EG')}
+                    </small>
+                </td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="/results/${result.id}" class="btn btn-outline-primary btn-sm" title="عرض">
+                            <i data-feather="eye" size="14"></i>
+                        </a>
+                        <button class="btn btn-outline-success btn-sm" onclick="exportReport('${result.id}')" title="تصدير">
+                            <i data-feather="download" size="14"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteAnalysis('${result.id}')" title="حذف">
+                            <i data-feather="trash-2" size="14"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+        
+        document.getElementById('tableResults').style.display = 'block';
+        document.getElementById('gridResults').style.display = 'none';
+        
+        // إعادة تهيئة الأيقونات
+        feather.replace();
+    }
+    
+    displayGridResults(results) {
+        const container = document.getElementById('gridResults');
+        container.innerHTML = '';
+        
+        results.forEach(result => {
+            const card = document.createElement('div');
+            card.className = 'col-md-6 col-lg-4 mb-3';
+            card.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-${this.getTypeColor(result.analysis_type)}">
+                                ${this.getTypeLabel(result.analysis_type)}
+                            </span>
+                            <span class="badge bg-${this.getStatusColor(result.status)}">
+                                ${this.getStatusLabel(result.status)}
+                            </span>
+                        </div>
+                        <h6 class="card-title text-truncate" title="${result.url}">
+                            ${result.url}
+                        </h6>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                ${new Date(result.created_at).toLocaleString('ar-EG')}
+                            </small>
+                        </p>
+                        ${result.score ? `
+                        <div class="mb-2">
+                            <span class="badge bg-${this.getScoreColor(result.score)} fs-6">
+                                النقاط: ${result.score}
+                            </span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-group w-100" role="group">
+                            <a href="/results/${result.id}" class="btn btn-outline-primary btn-sm">عرض</a>
+                            <button class="btn btn-outline-success btn-sm" onclick="exportReport('${result.id}')">تصدير</button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="deleteAnalysis('${result.id}')">حذف</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        
+        document.getElementById('tableResults').style.display = 'none';
+        document.getElementById('gridResults').style.display = 'block';
+    }
+    
+    setupPagination(totalPages) {
+        if (totalPages <= 1) {
+            document.getElementById('paginationContainer').style.display = 'none';
+            return;
+        }
+        
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+        
+        // زر السابق
+        const prevLi = document.createElement('li');
+        prevLi.className = `page-item ${this.currentPage <= 1 ? 'disabled' : ''}`;
+        prevLi.innerHTML = `
+            <a class="page-link" href="#" data-page="${this.currentPage - 1}">السابق</a>
+        `;
+        pagination.appendChild(prevLi);
+        
+        // أرقام الصفحات
+        const startPage = Math.max(1, this.currentPage - 2);
+        const endPage = Math.min(totalPages, this.currentPage + 2);
+        
+        for (let i = startPage; i <= endPage; i++) {
+            const li = document.createElement('li');
+            li.className = `page-item ${i === this.currentPage ? 'active' : ''}`;
+            li.innerHTML = `
+                <a class="page-link" href="#" data-page="${i}">${i}</a>
+            `;
+            pagination.appendChild(li);
+        }
+        
+        // زر التالي
+        const nextLi = document.createElement('li');
+        nextLi.className = `page-item ${this.currentPage >= totalPages ? 'disabled' : ''}`;
+        nextLi.innerHTML = `
+            <a class="page-link" href="#" data-page="${this.currentPage + 1}">التالي</a>
+        `;
+        pagination.appendChild(nextLi);
+        
+        // مستمعي أحداث التنقل
+        pagination.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (e.target.tagName === 'A' && !e.target.parentElement.classList.contains('disabled')) {
+                const page = parseInt(e.target.dataset.page);
+                if (page && page !== this.currentPage) {
+                    this.currentPage = page;
+                    this.performSearch();
+                }
+            }
+        });
+        
+        document.getElementById('paginationContainer').style.display = 'block';
+    }
+    
+    updateStats(data) {
+        if (data.stats) {
+            document.getElementById('totalFound').textContent = data.stats.total || 0;
+            document.getElementById('completedCount').textContent = data.stats.completed || 0;
+            document.getElementById('runningCount').textContent = data.stats.running || 0;
+            document.getElementById('avgScore').textContent = data.stats.avg_score || 0;
+            
+            document.getElementById('searchStats').style.display = 'block';
+        }
+    }
+    
+    switchView(viewType) {
+        this.currentView = viewType;
+        
+        // تحديث الأزرار
+        document.getElementById('gridView').classList.toggle('active', viewType === 'grid');
+        document.getElementById('listView').classList.toggle('active', viewType === 'list');
+        
+        // إعادة عرض النتائج
+        if (this.totalResults > 0) {
+            this.performSearch();
+        }
+    }
+    
+    showLoading(show) {
+        document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
+    }
+    
+    showNoResults() {
+        this.hideMessages();
+        document.getElementById('noResultsMessage').style.display = 'block';
+        document.getElementById('paginationContainer').style.display = 'none';
+        document.getElementById('searchStats').style.display = 'none';
+    }
+    
+    hideMessages() {
+        document.getElementById('noSearchMessage').style.display = 'none';
+        document.getElementById('noResultsMessage').style.display = 'none';
+    }
+    
+    showError(message) {
+        alert(message); // يمكن تحسينها لاحقاً
+    }
+    
+    // دوال مساعدة للألوان والتسميات
+    getTypeColor(type) {
+        const colors = {
+            'basic': 'primary',
+            'security': 'success',
+            'performance': 'info',
+            'seo': 'warning',
+            'competitor': 'secondary',
+            'comprehensive': 'dark'
+        };
+        return colors[type] || 'secondary';
+    }
+    
+    getTypeLabel(type) {
+        const labels = {
+            'basic': 'أساسي',
+            'security': 'الأمان',
+            'performance': 'الأداء',
+            'seo': 'SEO',
+            'competitor': 'المنافسين',
+            'comprehensive': 'شامل'
+        };
+        return labels[type] || type;
+    }
+    
+    getStatusColor(status) {
+        const colors = {
+            'completed': 'success',
+            'running': 'warning',
+            'failed': 'danger'
+        };
+        return colors[status] || 'secondary';
+    }
+    
+    getStatusLabel(status) {
+        const labels = {
+            'completed': 'مكتمل',
+            'running': 'قيد التشغيل',
+            'failed': 'فشل'
+        };
+        return labels[status] || status;
+    }
+    
+    getScoreColor(score) {
+        if (score >= 90) return 'success';
+        if (score >= 75) return 'info';
+        if (score >= 60) return 'warning';
+        return 'danger';
+    }
+}
+
+// تهيئة البحث المباشر
+document.addEventListener('DOMContentLoaded', function() {
+    const liveSearch = new LiveSearch();
+    
+    // دوال عامة للتصدير والحذف
+    window.exportReport = function(analysisId) {
+        window.open(`/api/export-report/${analysisId}`, '_blank');
+    };
+    
+    window.deleteAnalysis = function(analysisId) {
+        if (confirm('هل أنت متأكد من حذف هذا التحليل؟')) {
+            fetch(`/api/delete-analysis/${analysisId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    liveSearch.performSearch(); // إعادة تحديث النتائج
+                } else {
+                    alert('حدث خطأ أثناء الحذف');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء الحذف');
+            });
+        }
+    };
+});
+</script>
+{% endblock %}
