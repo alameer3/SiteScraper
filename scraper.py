@@ -75,14 +75,15 @@ class WebScraper:
         """Extract all links from the page"""
         links = []
         for link in soup.find_all('a', href=True):
-            href = link['href']
-            full_url = urljoin(base_url, href)
-            if self.is_valid_url(full_url):
-                links.append({
-                    'url': full_url,
-                    'text': link.get_text(strip=True),
-                    'title': link.get('title', '')
-                })
+            href = link.get('href', '')
+            if href:
+                full_url = urljoin(base_url, str(href))
+                if self.is_valid_url(full_url):
+                    links.append({
+                        'url': full_url,
+                        'text': link.get_text(strip=True) if hasattr(link, 'get_text') else '',
+                        'title': str(link.get('title', '') or '')
+                    })
         return links
     
     def extract_assets(self, soup, base_url):
@@ -97,35 +98,40 @@ class WebScraper:
         
         # Images
         for img in soup.find_all('img', src=True):
-            assets['images'].append({
-                'src': urljoin(base_url, img['src']),
-                'alt': img.get('alt', ''),
-                'title': img.get('title', '')
-            })
+            src = img.get('src', '')
+            if src:
+                assets['images'].append({
+                    'src': urljoin(base_url, str(src)),
+                    'alt': str(img.get('alt', '') or ''),
+                    'title': str(img.get('title', '') or '')
+                })
         
         # CSS files
         for link in soup.find_all('link', rel='stylesheet'):
-            if link.get('href'):
+            href = link.get('href', '')
+            if href:
                 assets['css'].append({
-                    'href': urljoin(base_url, link['href']),
-                    'media': link.get('media', 'all')
+                    'href': urljoin(base_url, str(href)),
+                    'media': str(link.get('media', 'all') or 'all')
                 })
         
         # JavaScript files
         for script in soup.find_all('script', src=True):
-            assets['javascript'].append({
-                'src': urljoin(base_url, script['src']),
-                'type': script.get('type', 'text/javascript')
-            })
+            src = script.get('src', '')
+            if src:
+                assets['javascript'].append({
+                    'src': urljoin(base_url, str(src)),
+                    'type': str(script.get('type', 'text/javascript') or 'text/javascript')
+                })
         
         # Font files (from CSS @font-face or link tags)
         font_extensions = ['.woff', '.woff2', '.ttf', '.otf', '.eot']
         for link in soup.find_all('link'):
             href = link.get('href', '')
-            if any(ext in href.lower() for ext in font_extensions):
+            if href and any(ext in str(href).lower() for ext in font_extensions):
                 assets['fonts'].append({
-                    'href': urljoin(base_url, href),
-                    'type': link.get('type', '')
+                    'href': urljoin(base_url, str(href)),
+                    'type': str(link.get('type', '') or '')
                 })
         
         return assets
@@ -169,11 +175,11 @@ class WebScraper:
         # Meta tags
         meta_desc = soup.find('meta', attrs={'name': 'description'})
         if meta_desc and hasattr(meta_desc, 'get'):
-            page_data['meta_description'] = meta_desc.get('content', '')
+            page_data['meta_description'] = str(meta_desc.get('content', '') or '')
         
         meta_keywords = soup.find('meta', attrs={'name': 'keywords'})
         if meta_keywords and hasattr(meta_keywords, 'get'):
-            page_data['meta_keywords'] = meta_keywords.get('content', '')
+            page_data['meta_keywords'] = str(meta_keywords.get('content', '') or '')
         
         # Headers (h1-h6)
         for i in range(1, 7):
@@ -192,17 +198,17 @@ class WebScraper:
         for form in soup.find_all('form'):
             if hasattr(form, 'get'):
                 form_data = {
-                    'action': form.get('action', ''),
-                    'method': form.get('method', 'get'),
+                    'action': str(form.get('action', '') or ''),
+                    'method': str(form.get('method', 'get') or 'get'),
                     'inputs': []
                 }
                 if hasattr(form, 'find_all'):
                     for input_tag in form.find_all(['input', 'select', 'textarea']):
                         if hasattr(input_tag, 'get'):
                             form_data['inputs'].append({
-                                'type': input_tag.get('type', ''),
-                                'name': input_tag.get('name', ''),
-                                'id': input_tag.get('id', '')
+                                'type': str(input_tag.get('type', '') or ''),
+                                'name': str(input_tag.get('name', '') or ''),
+                                'id': str(input_tag.get('id', '') or '')
                             })
                 page_data['forms'].append(form_data)
         

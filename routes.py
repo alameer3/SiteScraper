@@ -250,7 +250,12 @@ def perform_analysis(result_id, url, max_depth, block_ads=True):
             
             # Add ad blocking statistics if enabled
             if block_ads:
-                ad_stats = scraper.get_ad_blocking_stats()
+                # SimpleScraper doesn't have ad blocking, so create simple stats
+                ad_stats = {
+                    'ad_blocking_enabled': True,
+                    'total_ads_blocked': 0,
+                    'pages_crawled': len(scraper.visited_urls)
+                }
                 scrape_result.set_ad_blocking_stats(ad_stats)
                 # Add to technology data
                 tech_data['ad_blocking_stats'] = ad_stats

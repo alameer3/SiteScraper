@@ -110,7 +110,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const resultId = {{ result.id }};
+    const resultId = {{ result.id | tojson }};
     let currentStep = 1;
     let progress = 0;
     

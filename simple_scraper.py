@@ -47,7 +47,7 @@ class SimpleScraper:
                 if isinstance(link, Tag):
                     href = link.get('href', '')
                     if href:
-                        full_url = urljoin(base_url, href)
+                        full_url = urljoin(base_url, str(href))
                         if self.is_valid_url(full_url):
                             links.append({
                                 'url': full_url,
@@ -75,7 +75,7 @@ class SimpleScraper:
                     src = img.get('src', '')
                     if src:
                         assets['images'].append({
-                            'src': urljoin(base_url, src),
+                            'src': urljoin(base_url, str(src)),
                             'alt': img.get('alt', ''),
                             'title': img.get('title', '')
                         })
@@ -86,7 +86,7 @@ class SimpleScraper:
                     href = link.get('href', '')
                     if href:
                         assets['css'].append({
-                            'href': urljoin(base_url, href),
+                            'href': urljoin(base_url, str(href)),
                             'media': link.get('media', 'all')
                         })
             
@@ -96,7 +96,7 @@ class SimpleScraper:
                     src = script.get('src', '')
                     if src:
                         assets['javascript'].append({
-                            'src': urljoin(base_url, src),
+                            'src': urljoin(base_url, str(src)),
                             'type': script.get('type', 'text/javascript')
                         })
                         
@@ -139,7 +139,7 @@ class SimpleScraper:
         try:
             # Title
             title_tag = soup.find('title')
-            if title_tag and title_tag.string:
+            if title_tag and hasattr(title_tag, 'string') and title_tag.string:
                 page_data['title'] = str(title_tag.string).strip()
             
             # Meta tags
