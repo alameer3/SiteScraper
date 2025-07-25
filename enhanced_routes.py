@@ -11,6 +11,7 @@ import logging
 from datetime import datetime
 import io
 import base64
+from sqlalchemy import desc
 
 # استيراد المحللات الجديدة
 from security_analyzer import SecurityAnalyzer
@@ -218,7 +219,7 @@ def dashboard():
     try:
         # إحصائيات عامة
         total_analyses = ScrapeResult.query.count()
-        recent_analyses = ScrapeResult.query.order_by(ScrapeResult.timestamp.desc()).limit(10).all()
+        recent_analyses = ScrapeResult.query.order_by(desc(ScrapeResult.timestamp)).limit(10).all()
         
         # إحصائيات حسب النوع
         analysis_stats = {}
@@ -241,7 +242,7 @@ def reports_page():
     """صفحة التقارير"""
     try:
         # جلب جميع التحليلات للتقارير
-        analyses = ScrapeResult.query.order_by(ScrapeResult.timestamp.desc()).all()
+        analyses = ScrapeResult.query.order_by(desc(ScrapeResult.timestamp)).all()
         
         return render_template('reports.html', analyses=analyses)
     
@@ -299,7 +300,7 @@ def api_analysis_history():
         if analysis_type:
             query = query.filter_by(analysis_type=analysis_type)
         
-        analyses = query.order_by(ScrapeResult.timestamp.desc()).paginate(
+        analyses = query.order_by(desc(ScrapeResult.timestamp)).paginate(
             page=page, per_page=per_page, error_out=False
         )
         
@@ -420,8 +421,8 @@ def _generate_comparison_insights(results):
                     break
     
     if scores:
-        best_url = max(scores, key=scores.get)
-        worst_url = min(scores, key=scores.get)
+        best_url = max(scores.keys(), key=lambda x: scores[x])
+        worst_url = min(scores.keys(), key=lambda x: scores[x])
         
         insights['best_performing'] = {
             'url': best_url,

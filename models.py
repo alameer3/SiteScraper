@@ -11,9 +11,12 @@ class ScrapeResult(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     completed_at = db.Column(db.DateTime)
 
-    def __init__(self, url, status='pending'):
+    def __init__(self, url, status='pending', analysis_type='basic', data=None, timestamp=None):
         self.url = url
         self.status = status
+        self.analysis_type = analysis_type
+        self.data = data
+        self.timestamp = timestamp or datetime.utcnow()
 
     # Analysis results stored as JSON
     structure_data = db.Column(db.Text)  # HTML structure analysis
@@ -27,6 +30,11 @@ class ScrapeResult(db.Model):
     recreation_guide = db.Column(db.Text)  # Complete recreation guide
     arabic_report = db.Column(db.Text)     # Arabic comprehensive report
     ad_blocking_stats = db.Column(db.Text) # Ad blocking statistics
+    
+    # Additional fields for enhanced routes
+    analysis_type = db.Column(db.String(50), default='basic')  # Type of analysis
+    data = db.Column(db.Text)  # Additional data storage
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)  # Analysis timestamp
 
     def set_structure_data(self, data):
         try:

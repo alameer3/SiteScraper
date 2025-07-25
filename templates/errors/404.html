@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}صفحة غير موجودة - Website Analyzer{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="error-page">
+                <h1 class="display-1 text-warning">404</h1>
+                <h2 class="mb-4">الصفحة غير موجودة</h2>
+                <p class="lead mb-4">عذراً، لا يمكن العثور على الصفحة التي تبحث عنها.</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary me-3">
+                        <i data-feather="home"></i>
+                        العودة للصفحة الرئيسية
+                    </a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light">
+                        <i data-feather="activity"></i>
+                        لوحة التحكم
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-page {
+    padding: 50px 0;
+}
+.error-page h1 {
+    font-size: 8rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.error-page h2 {
+    color: #f8f9fa;
+    font-weight: 300;
+}
+</style>
+{% endblock %}
