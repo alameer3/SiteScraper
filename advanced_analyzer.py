@@ -273,6 +273,61 @@ class AdvancedWebsiteAnalyzer:
         
         return hierarchy
     
+    def _analyze_semantic_elements(self, soup):
+        """تحليل العناصر الدلالية"""
+        semantic = {
+            'html5_elements': [],
+            'headings_structure': {},
+            'landmarks': [],
+            'microdata': {}
+        }
+        
+        # عناصر HTML5 الدلالية
+        semantic_tags = ['header', 'nav', 'main', 'article', 'section', 'aside', 'footer']
+        for tag in semantic_tags:
+            elements = soup.find_all(tag)
+            semantic['html5_elements'].extend([{
+                'tag': tag,
+                'id': el.get('id', ''),
+                'class': el.get('class', []),
+                'content_length': len(el.get_text(strip=True))
+            } for el in elements])
+        
+        return semantic
+    
+    def _extract_inline_scripts(self, soup):
+        """استخراج السكريبتات المضمنة"""
+        scripts = []
+        for script in soup.find_all('script'):
+            if script.string and not script.get('src'):
+                scripts.append({
+                    'content': script.string.strip(),
+                    'type': script.get('type', 'text/javascript'),
+                    'length': len(script.string.strip())
+                })
+        return scripts
+    
+    def _extract_videos(self, soup, url):
+        """استخراج مقاطع الفيديو"""
+        videos = []
+        for video in soup.find_all('video'):
+            video_data = {
+                'src': video.get('src', ''),
+                'poster': video.get('poster', ''),
+                'controls': video.has_attr('controls'),
+                'autoplay': video.has_attr('autoplay')
+            }
+            videos.append(video_data)
+        return videos
+    
+    def _analyze_loading_performance(self, response):
+        """تحليل أداء التحميل"""
+        return {
+            'response_time': response.elapsed.total_seconds(),
+            'content_length': len(response.content),
+            'headers': dict(response.headers)
+        }
+    
     def _extract_css_layouts(self, soup, layout_type):
         """استخراج تخطيطات CSS"""
         layouts = []

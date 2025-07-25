@@ -184,7 +184,7 @@
                 {% for issue in seo_data.get('issues', [])[:10] %}
                 <div class="d-flex align-items-start p-3 border-bottom border-secondary">
                     <div class="me-3">
-                        {% if issue.get('severity') == 'high' %}
+                        {% if issue is mapping and issue.get('severity') == 'high' %}
                             <i data-feather="alert-circle" class="text-danger" width="20" height="20"></i>
                         {% elif issue.get('severity') == 'medium' %}
                             <i data-feather="alert-triangle" class="text-warning" width="20" height="20"></i>
