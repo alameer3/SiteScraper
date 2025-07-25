@@ -372,7 +372,7 @@ class WebsiteExtractor {
         try {
             this.showProgress();
             
-            const response = await fetch('/api/extract-website', {
+            const response = await fetch('/extract-website', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -382,9 +382,9 @@ class WebsiteExtractor {
             
             const result = await response.json();
             
-            if (result.extraction_id) {
-                this.extractionId = result.extraction_id;
-                this.startStatusUpdates();
+            if (result.success) {
+                this.hideProgress();
+                this.showAutoLaunchResults(result);
             } else {
                 throw new Error(result.error || 'فشل في بدء الاستخراج');
             }
@@ -503,9 +503,30 @@ class WebsiteExtractor {
     }
 }
 
+// دوال التشغيل التلقائي
+window.autoLaunchSite = function(launchUrl) {
+    if (launchUrl && launchUrl !== 'undefined') {
+        window.open(launchUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        setTimeout(() => {
+            alert('✅ تم فتح الموقع المستخرج في نافذة جديدة!');
+        }, 1000);
+    } else {
+        alert('❌ رابط التشغيل غير متاح');
+    }
+}
+
+window.previewSite = function(previewUrl) {
+    if (previewUrl && previewUrl !== 'undefined') {
+        window.open(previewUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    } else {
+        alert('❌ رابط المعاينة غير متاح');
+    }
+}
+
 // تهيئة الأداة
 document.addEventListener('DOMContentLoaded', function() {
     const extractor = new WebsiteExtractor();
+    feather.replace();
 });
 </script>
 {% endblock %}

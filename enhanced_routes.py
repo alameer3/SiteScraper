@@ -628,6 +628,353 @@ def website_extractor_page():
     """صفحة أداة استخراج المواقع"""
     return render_template('website_extractor.html')
 
+@app.route('/extract-website', methods=['POST'])
+def extract_website():
+    """استخراج موقع جديد مع تشغيل تلقائي"""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        max_pages = int(data.get('max_pages', 10))
+        auto_launch = data.get('auto_launch', True)
+        
+        if not url:
+            return jsonify({'error': 'الرجاء إدخال رابط صحيح'}), 400
+        
+        # بدء عملية الاستخراج
+        from website_extractor import WebsiteExtractor
+        import hashlib
+        import time
+        
+        # إنشاء معرف فريد للاستخراج
+        extraction_id = hashlib.md5(f"{url}_{time.time()}".encode()).hexdigest()[:12]
+        output_dir = f"extracted_sites/{extraction_id}"
+        
+        extractor = WebsiteExtractor(url, output_dir)
+        result = extractor.extract_complete_website(max_pages)
+        
+        if result and result.get('pages'):
+            # إنشاء صفحة البداية التلقائية
+            create_auto_launch_page(extraction_id, result)
+            
+            # إنشاء رابط المعاينة
+            preview_url = f"/preview-extracted/{extraction_id}"
+            
+            return jsonify({
+                'success': True,
+                'extraction_id': extraction_id,
+                'pages_extracted': len(result.get('pages', [])),
+                'preview_url': preview_url,
+                'auto_launch_url': f"/launch-extracted/{extraction_id}",
+                'stats': result.get('stats', {}),
+                'message': 'تم الاستخراج بنجاح!'
+            })
+        else:
+            return jsonify({'error': 'فشل في استخراج الموقع'}), 500
+            
+    except Exception as e:
+        logging.error(f"خطأ في استخراج الموقع: {e}")
+        return jsonify({'error': f'خطأ: {str(e)}'}), 500
+
+@app.route('/preview-extracted/<extraction_id>')
+def preview_extracted(extraction_id):
+    """معاينة الموقع المستخرج"""
+    from pathlib import Path
+    
+    site_path = Path(f"extracted_sites/{extraction_id}")
+    if not site_path.exists():
+        abort(404, description="الموقع المستخرج غير موجود")
+    
+    # البحث عن صفحة البداية
+    start_file = site_path / "start_here.html"
+    if start_file.exists():
+        with open(start_file, 'r', encoding='utf-8') as f:
+            return f.read()
+    
+    # إذا لم توجد، إنشاؤها
+    create_auto_launch_page(extraction_id, {})
+    with open(start_file, 'r', encoding='utf-8') as f:
+        return f.read()
+
+@app.route('/launch-extracted/<extraction_id>')
+def launch_extracted(extraction_id):
+    """تشغيل الموقع المستخرج في نافذة جديدة"""
+    return f"""
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+        <meta charset="UTF-8">
+        <title>تشغيل الموقع المستخرج</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; text-align: center; padding: 50px; }}
+            .launch-message {{ font-size: 1.2rem; color: #333; }}
+            .btn {{ background: #007bff; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }}
+        </style>
+        <script>
+            setTimeout(() => {{
+                window.open('/preview-extracted/{extraction_id}', '_blank', 'width=1200,height=800');
+            }}, 1000);
+        </script>
+    </head>
+    <body>
+        <div class="launch-message">
+            <h2>🚀 جاري تشغيل الموقع المستخرج...</h2>
+            <p>سيتم فتح الموقع في نافذة جديدة خلال ثانية واحدة</p>
+            <button class="btn" onclick="window.open('/preview-extracted/{extraction_id}', '_blank')">
+                فتح الموقع الآن
+            </button>
+        </div>
+    </body>
+    </html>
+    """
+
+@app.route('/extracted-assets/<extraction_id>/<path:filename>')
+def serve_extracted_assets(extraction_id, filename):
+    """تقديم ملفات الموقع المستخرج"""
+    from pathlib import Path
+    
+    site_path = Path(f"extracted_sites/{extraction_id}")
+    if not site_path.exists():
+        abort(404)
+    
+    file_path = site_path / filename
+    if not file_path.exists():
+        abort(404)
+    
+    return send_from_directory(str(site_path), filename)
+
+def create_auto_launch_page(extraction_id, result):
+    """إنشاء صفحة البداية التلقائية"""
+    from pathlib import Path
+    import json
+    
+    site_path = Path(f"extracted_sites/{extraction_id}")
+    pages = result.get('pages', [])
+    stats = result.get('stats', {})
+    
+    # قراءة قائمة الصفحات المستخرجة
+    pages_dir = site_path / "pages"
+    page_files = []
+    if pages_dir.exists():
+        page_files = list(pages_dir.glob("*.html"))
+    
+    html_content = f'''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 الموقع المستخرج - جاهز للتشغيل</title>
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }}
+        .header {{
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }}
+        .header h1 {{
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }}
+        .main-card {{
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }}
+        .success-banner {{
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 25px;
+        }}
+        .auto-launch-section {{
+            background: #e7f3ff;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }}
+        .launch-btn {{
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }}
+        .launch-btn:hover {{
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,123,255,0.3);
+        }}
+        .launch-btn.secondary {{
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }}
+        .pages-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }}
+        .page-card {{
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }}
+        .page-card:hover {{
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }}
+        .page-title {{
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }}
+        .page-link {{
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }}
+        .stats-row {{
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            text-align: center;
+        }}
+        .stat-item {{
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 100px;
+        }}
+        .stat-number {{
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #007bff;
+        }}
+        .stat-label {{
+            color: #6c757d;
+            font-size: 0.85rem;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 تم الاستخراج بنجاح!</h1>
+            <p>الموقع جاهز للتشغيل والتصفح</p>
+        </div>
+
+        <div class="main-card">
+            <div class="success-banner">
+                <h3>✅ اكتمال عملية الاستخراج</h3>
+                <p>تم حفظ {len(page_files)} صفحة مع جميع الملفات والأصول</p>
+            </div>
+
+            <div class="auto-launch-section">
+                <h4>🚀 تشغيل الموقع تلقائياً</h4>
+                <p>اضغط على الزر أدناه لفتح الموقع المستخرج في نافذة جديدة</p>
+                <br>
+                <button class="launch-btn" onclick="openExtracted()">
+                    🌐 فتح الموقع الآن
+                </button>
+                <button class="launch-btn secondary" onclick="browsePages()">
+                    📁 تصفح الصفحات
+                </button>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-number">{len(page_files)}</div>
+                    <div class="stat-label">صفحة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{stats.get("css_files", 0)}</div>
+                    <div class="stat-label">ملف CSS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{stats.get("images_downloaded", 0)}</div>
+                    <div class="stat-label">صورة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{stats.get("ads_removed", 0)}</div>
+                    <div class="stat-label">إعلان محذوف</div>
+                </div>
+            </div>
+
+            <div class="pages-grid">'''
+    
+    # إضافة بطاقات الصفحات  
+    for i, page_file in enumerate(page_files[:8]):  # أول 8 صفحات
+        html_content += f'''
+                <div class="page-card">
+                    <div class="page-title">صفحة {i+1}</div>
+                    <a href="pages/{page_file.name}" target="_blank" class="page-link">
+                        {page_file.name}
+                    </a>
+                </div>'''
+    
+    html_content += f'''
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openExtracted() {{
+            // فتح الصفحة الرئيسية المستخرجة
+            const pages = {json.dumps([f.name for f in page_files])};
+            if (pages.length > 0) {{
+                window.open('pages/' + pages[0], '_blank', 'width=1200,height=800');
+            }}
+        }}
+        
+        function browsePages() {{
+            // عرض قائمة بجميع الصفحات
+            const pages = {json.dumps([f.name for f in page_files])};
+            let pagesList = 'الصفحات المتاحة:\\n\\n';
+            pages.forEach((page, index) => {{
+                pagesList += `${{index + 1}}. ${{page}}\\n`;
+            }});
+            alert(pagesList);
+        }}
+        
+        // تشغيل تلقائي عند التحميل (اختياري)
+        window.addEventListener('load', function() {{
+            setTimeout(() => {{
+                // يمكن تفعيل التشغيل التلقائي هنا
+                // openExtracted();
+            }}, 2000);
+        }});
+    </script>
+</body>
+</html>'''
+    
+    # حفظ الملف
+    start_file = site_path / "start_here.html"
+    with open(start_file, 'w', encoding='utf-8') as f:
+        f.write(html_content)
+
 @app.route('/api/extract-website', methods=['POST'])
 def api_extract_website():
     """API لاستخراج المواقع الشامل"""
