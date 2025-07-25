@@ -293,26 +293,24 @@ def api_security_analyze():
             return jsonify({'error': 'URL مطلوب'}), 400
         
         try:
-            if 'SecurityAnalyzer' in globals():
-                analyzer = SecurityAnalyzer()
-                results = analyzer.analyze_security(url)
-            else:
-                results = {'error': 'محلل الأمان غير متوفر'}
-            
-            # حفظ النتائج في قاعدة البيانات
-            scrape_result = ScrapeResult(
-                url=url,
-                analysis_type='security',
-                status='completed',
-                data=json.dumps(results, ensure_ascii=False),
-                timestamp=datetime.now()
-            )
-            db.session.add(scrape_result)
-            db.session.commit()
-            
-            return jsonify(results)
-        except Exception as e:
-            return jsonify({'error': f'خطأ في تحليل الأمان: {str(e)}'}), 500
+            from security_analyzer import SecurityAnalyzer
+            analyzer = SecurityAnalyzer()
+            results = analyzer.analyze_security(url)
+        except ImportError:
+            results = {'error': 'محلل الأمان غير متوفر'}
+        
+        # حفظ النتائج في قاعدة البيانات
+        scrape_result = ScrapeResult(
+            url=url,
+            analysis_type='security',
+            status='completed',
+            data=json.dumps(results, ensure_ascii=False),
+            timestamp=datetime.now()
+        )
+        db.session.add(scrape_result)
+        db.session.commit()
+        
+        return jsonify(results)
         
     except Exception as e:
         logging.error(f"خطأ في API تحليل الأمان: {e}")
@@ -329,26 +327,24 @@ def api_performance_analyze():
             return jsonify({'error': 'URL مطلوب'}), 400
         
         try:
-            if 'PerformanceAnalyzer' in globals():
-                analyzer = PerformanceAnalyzer()
-                results = analyzer.analyze_performance(url)
-            else:
-                results = {'error': 'محلل الأداء غير متوفر'}
-            
-            # حفظ النتائج
-            scrape_result = ScrapeResult(
-                url=url,
-                analysis_type='performance',
-                status='completed',
-                data=json.dumps(results, ensure_ascii=False),
-                timestamp=datetime.now()
-            )
-            db.session.add(scrape_result)
-            db.session.commit()
-            
-            return jsonify(results)
-        except Exception as e:
-            return jsonify({'error': f'خطأ في تحليل الأداء: {str(e)}'}), 500
+            from performance_analyzer import PerformanceAnalyzer
+            analyzer = PerformanceAnalyzer()
+            results = analyzer.analyze_performance(url)
+        except ImportError:
+            results = {'error': 'محلل الأداء غير متوفر'}
+        
+        # حفظ النتائج
+        scrape_result = ScrapeResult(
+            url=url,
+            analysis_type='performance',
+            status='completed',
+            data=json.dumps(results, ensure_ascii=False),
+            timestamp=datetime.now()
+        )
+        db.session.add(scrape_result)
+        db.session.commit()
+        
+        return jsonify(results)
         
     except Exception as e:
         logging.error(f"خطأ في API تحليل الأداء: {e}")
@@ -365,26 +361,24 @@ def api_seo_analyze():
             return jsonify({'error': 'URL مطلوب'}), 400
         
         try:
-            if 'SEOAnalyzer' in globals():
-                analyzer = SEOAnalyzer()
-                results = analyzer.analyze_seo(url)
-            else:
-                results = {'error': 'محلل SEO غير متوفر'}
-            
-            # حفظ النتائج
-            scrape_result = ScrapeResult(
-                url=url,
-                analysis_type='seo',
-                status='completed',
-                data=json.dumps(results, ensure_ascii=False),
-                timestamp=datetime.now()
-            )
-            db.session.add(scrape_result)
-            db.session.commit()
-            
-            return jsonify(results)
-        except Exception as e:
-            return jsonify({'error': f'خطأ في تحليل SEO: {str(e)}'}), 500
+            from seo_analyzer import SEOAnalyzer
+            analyzer = SEOAnalyzer()
+            results = analyzer.analyze_seo(url)
+        except ImportError:
+            results = {'error': 'محلل SEO غير متوفر'}
+        
+        # حفظ النتائج
+        scrape_result = ScrapeResult(
+            url=url,
+            analysis_type='seo',
+            status='completed',
+            data=json.dumps(results, ensure_ascii=False),
+            timestamp=datetime.now()
+        )
+        db.session.add(scrape_result)
+        db.session.commit()
+        
+        return jsonify(results)
         
     except Exception as e:
         logging.error(f"خطأ في API تحليل SEO: {e}")

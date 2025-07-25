@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from urllib.parse import urljoin, urlparse, parse_qs
 from urllib.robotparser import RobotFileParser
 import time
@@ -180,15 +180,15 @@ class WebScraper:
         # Meta tags - improved error handling
         try:
             meta_desc = soup.find('meta', attrs={'name': 'description'})
-            if meta_desc and hasattr(meta_desc, 'attrs') and meta_desc.attrs:
-                page_data['meta_description'] = str(meta_desc.attrs.get('content', '') or '')
+            if meta_desc and isinstance(meta_desc, Tag):
+                page_data['meta_description'] = str(meta_desc.get('content', '') or '')
         except (AttributeError, TypeError, KeyError):
             page_data['meta_description'] = ''
         
         try:
             meta_keywords = soup.find('meta', attrs={'name': 'keywords'})
-            if meta_keywords and hasattr(meta_keywords, 'attrs') and meta_keywords.attrs:
-                page_data['meta_keywords'] = str(meta_keywords.attrs.get('content', '') or '')
+            if meta_keywords and isinstance(meta_keywords, Tag):
+                page_data['meta_keywords'] = str(meta_keywords.get('content', '') or '')
         except (AttributeError, TypeError, KeyError):
             page_data['meta_keywords'] = ''
         
@@ -208,18 +208,18 @@ class WebScraper:
         # Forms - improved error handling
         try:
             for form in soup.find_all('form'):
-                if hasattr(form, 'attrs') and hasattr(form, 'find_all'):
+                if isinstance(form, Tag):
                     form_data = {
-                        'action': str(form.attrs.get('action', '') or '') if form.attrs else '',
-                        'method': str(form.attrs.get('method', 'get') or 'get') if form.attrs else 'get',
+                        'action': str(form.get('action', '') or ''),
+                        'method': str(form.get('method', 'get') or 'get'),
                         'inputs': []
                     }
                     for input_tag in form.find_all(['input', 'select', 'textarea']):
-                        if hasattr(input_tag, 'attrs') and input_tag.attrs:
+                        if isinstance(input_tag, Tag):
                             form_data['inputs'].append({
-                                'type': str(input_tag.attrs.get('type', '') or ''),
-                                'name': str(input_tag.attrs.get('name', '') or ''),
-                                'id': str(input_tag.attrs.get('id', '') or '')
+                                'type': str(input_tag.get('type', '') or ''),
+                                'name': str(input_tag.get('name', '') or ''),
+                                'id': str(input_tag.get('id', '') or '')
                             })
                     page_data['forms'].append(form_data)
         except (AttributeError, TypeError, KeyError) as e:

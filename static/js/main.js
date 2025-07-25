@@ -122,6 +122,21 @@ function showAlert(message, type = 'info') {
     }
 }
 
+function showAdvancedPreview() {
+    // Implementation for showing advanced preview
+    console.log('Advanced preview functionality activated');
+    
+    // If there's a modal or preview container, show it
+    const previewModal = document.getElementById('advancedPreviewModal');
+    if (previewModal && typeof bootstrap !== 'undefined') {
+        const modal = new bootstrap.Modal(previewModal);
+        modal.show();
+    } else {
+        // Fallback: redirect to advanced extractor page
+        window.location.href = '/website-extractor';
+    }
+}
+
 function initializeAnimations() {
     // Counter animation for stats
     const counters = document.querySelectorAll('.counter');
