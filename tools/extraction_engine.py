@@ -1,661 +1,568 @@
 """
 محرك الاستخراج الشامل - Comprehensive Extraction Engine
-دمج جميع أدوات الاستخراج في ملف واحد متطور
+أداة متقدمة تدمج جميع قدرات التحليل والاستخراج في نظام واحد
 """
 
 import os
-import re
 import json
-import requests
 import time
-import hashlib
-import mimetypes
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
-from urllib.parse import urljoin, urlparse, parse_qs, unquote
-from bs4 import BeautifulSoup, Tag, NavigableString
 import logging
+from datetime import datetime
+from typing import Dict, List, Any, Optional, Union
+from pathlib import Path
 from dataclasses import dataclass, asdict
 from enum import Enum
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
-from collections import defaultdict
-import shutil
-import zipfile
-import base64
-import csv
-import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
+# تكوين المسجل
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-class ExtractionLevel(Enum):
-    """مستويات الاستخراج المختلفة"""
-    BASIC = "basic"           # HTML ونصوص أساسية فقط
-    STANDARD = "standard"     # HTML، CSS، وصور أساسية
-    ADVANCED = "advanced"     # جميع الأصول مع JavaScript
-    COMPLETE = "complete"     # استخراج شامل مع جميع الملفات
-    ULTRA = "ultra"          # استخراج فائق مع AI
+class ExtractionType(Enum):
+    """أنواع الاستخراج المختلفة"""
+    ANALYSIS_ONLY = "analysis_only"           # تحليل فقط بدون استخراج
+    CONTENT_EXTRACTION = "content_extraction" # استخراج المحتوى النصي
+    ASSET_EXTRACTION = "asset_extraction"     # استخراج الأصول والملفات
+    FULL_WEBSITE_CLONE = "full_website_clone" # نسخ كامل للموقع
+    SECURITY_AUDIT = "security_audit"         # تدقيق أمني شامل
+    PERFORMANCE_ANALYSIS = "performance_analysis" # تحليل الأداء
+    SEO_ANALYSIS = "seo_analysis"            # تحليل SEO
+    COMPETITOR_RESEARCH = "competitor_research" # بحث المنافسين
 
-class PermissionType(Enum):
-    """أنواع الأذونات المطلوبة"""
-    READ_CONTENT = "read_content"
-    DOWNLOAD_IMAGES = "download_images"
-    EXTRACT_CSS = "extract_css"
-    EXTRACT_JS = "extract_js"
-    MODIFY_CODE = "modify_code"
-    REMOVE_ADS = "remove_ads"
-    SAVE_TO_DISK = "save_to_disk"
+class Priority(Enum):
+    """مستويات الأولوية"""
+    LOW = 1
+    MEDIUM = 2
+    HIGH = 3
+    CRITICAL = 4
 
 @dataclass
-class ExtractionConfig:
-    """إعدادات الاستخراج"""
+class ExtractionJob:
+    """وظيفة استخراج"""
+    job_id: str
     url: str
-    extraction_level: ExtractionLevel = ExtractionLevel.STANDARD
-    max_pages: int = 5
-    max_depth: int = 2
-    include_external_assets: bool = False
-    remove_ads: bool = True
-    respect_robots: bool = True
-    user_agent: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-    delay_between_requests: float = 1.0
-    timeout: int = 30
-    permissions: Dict[str, bool] = None
+    extraction_type: ExtractionType
+    priority: Priority
+    config: Dict[str, Any]
+    created_at: str
+    status: str = "pending"
+    progress: float = 0.0
+    result: Optional[Dict[str, Any]] = None
+    error: Optional[str] = None
+    started_at: Optional[str] = None
+    completed_at: Optional[str] = None
 
-    def __post_init__(self):
-        if self.permissions is None:
-            self.permissions = {perm.value: True for perm in PermissionType}
-
-class SimpleWebsiteExtractor:
-    """أداة الاستخراج البسيطة"""
+class ExtractionEngine:
+    """محرك الاستخراج الشامل"""
     
-    def __init__(self, config: ExtractionConfig):
-        self.config = config
-        self.base_url = config.url
-        self.domain = urlparse(config.url).netloc
-        self.session = requests.Session()
-        self.session.headers.update({'User-Agent': config.user_agent})
+    def __init__(self, output_directory: str = "extractions"):
+        self.output_dir = Path(output_directory)
+        self.output_dir.mkdir(exist_ok=True)
         
-        # إعداد المجلدات
-        self.output_dir = Path("extracted_sites")
-        self.site_id = self._generate_site_id()
-        self.site_dir = self.output_dir / self.site_id
-        self._setup_directories()
+        # قائمة الوظائف والحالات
+        self.jobs: Dict[str, ExtractionJob] = {}
+        self.active_jobs: Dict[str, threading.Thread] = {}
+        self.job_counter = 0
         
-        # إحصائيات
-        self.stats = {
-            'pages_extracted': 0,
-            'images_downloaded': 0,
-            'css_files': 0,
-            'js_files': 0,
-            'total_size_bytes': 0,
-            'extraction_start': datetime.now().isoformat(),
-            'errors': []
+        # إحصائيات النظام
+        self.system_stats = {
+            'total_jobs_created': 0,
+            'jobs_completed': 0,
+            'jobs_failed': 0,
+            'jobs_running': 0,
+            'jobs_pending': 0,
+            'average_completion_time': 0.0,
+            'total_processing_time': 0.0,
+            'system_uptime': time.time()
         }
+        
+        # تهيئة الأدوات المدمجة
+        self._init_integrated_tools()
+        
+        logger.info("تم تهيئة محرك الاستخراج الشامل")
 
-    def _generate_site_id(self) -> str:
-        """توليد معرف فريد للموقع"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        domain_hash = hashlib.md5(self.domain.encode()).hexdigest()[:8]
-        return f"{self.domain}_{timestamp}_{domain_hash}"
-
-    def _setup_directories(self):
-        """إعداد مجلدات الاستخراج"""
-        dirs = ['html', 'css', 'js', 'images', 'fonts', 'videos', 'documents']
-        for dir_name in dirs:
-            (self.site_dir / dir_name).mkdir(parents=True, exist_ok=True)
-
-    def extract_website(self) -> Tuple[Path, Dict[str, Any]]:
-        """استخراج الموقع الأساسي"""
+    def _init_integrated_tools(self):
+        """تهيئة الأدوات المدمجة"""
         try:
-            # تحميل الصفحة الرئيسية
-            response = self.session.get(self.base_url, timeout=self.config.timeout)
-            response.raise_for_status()
+            # محاولة استيراد الأدوات المدمجة
+            from analyzers.comprehensive_analyzer import ComprehensiveAnalyzer
+            from extractors.master_extractor import MasterExtractor
+            from blockers.advanced_blocker import AdvancedBlocker
+            from scrapers.smart_scraper import SmartScraper
             
-            soup = BeautifulSoup(response.content, 'html.parser')
+            self.analyzer = ComprehensiveAnalyzer
+            self.extractor = MasterExtractor
+            self.blocker = AdvancedBlocker
+            self.scraper = SmartScraper
             
-            # استخراج الأصول حسب المستوى
-            if self.config.extraction_level in [ExtractionLevel.STANDARD, ExtractionLevel.ADVANCED, ExtractionLevel.COMPLETE]:
-                self._extract_css_files(soup)
-                self._extract_images(soup)
-                
-            if self.config.extraction_level in [ExtractionLevel.ADVANCED, ExtractionLevel.COMPLETE]:
-                self._extract_js_files(soup)
-                
-            # حفظ HTML الرئيسي
-            self._save_html(soup, 'index.html')
-            self.stats['pages_extracted'] += 1
+            logger.info("تم تحميل جميع الأدوات المدمجة بنجاح")
             
-            # إنشاء تقرير الاستخراج
-            self._generate_report()
-            
-            return self.site_dir, self.stats
-            
-        except Exception as e:
-            self.stats['errors'].append(f"خطأ في الاستخراج: {str(e)}")
-            logger.error(f"خطأ في استخراج الموقع: {e}")
-            raise
+        except ImportError as e:
+            logger.warning(f"لا يمكن تحميل بعض الأدوات المدمجة: {e}")
+            # استخدام أدوات احتياطية
+            self._init_fallback_tools()
 
-    def _extract_css_files(self, soup: BeautifulSoup):
-        """استخراج ملفات CSS"""
-        css_links = soup.find_all('link', {'rel': 'stylesheet'})
+    def _init_fallback_tools(self):
+        """تهيئة أدوات احتياطية"""
+        logger.info("استخدام أدوات احتياطية...")
         
-        for link in css_links:
-            href = link.get('href')
-            if href:
-                css_url = urljoin(self.base_url, href)
-                self._download_asset(css_url, 'css')
-                self.stats['css_files'] += 1
+        # يمكن إضافة أدوات احتياطية هنا
+        self.analyzer = None
+        self.extractor = None
+        self.blocker = None
+        self.scraper = None
 
-    def _extract_js_files(self, soup: BeautifulSoup):
-        """استخراج ملفات JavaScript"""
-        js_scripts = soup.find_all('script', src=True)
+    def create_job(self, 
+                   url: str, 
+                   extraction_type: ExtractionType, 
+                   priority: Priority = Priority.MEDIUM,
+                   config: Dict[str, Any] = None) -> str:
+        """إنشاء وظيفة استخراج جديدة"""
         
-        for script in js_scripts:
-            src = script.get('src')
-            if src:
-                js_url = urljoin(self.base_url, src)
-                self._download_asset(js_url, 'js')
-                self.stats['js_files'] += 1
-
-    def _extract_images(self, soup: BeautifulSoup):
-        """استخراج الصور"""
-        images = soup.find_all('img', src=True)
+        self.job_counter += 1
+        job_id = f"job_{self.job_counter}_{int(time.time())}"
         
-        for img in images:
-            src = img.get('src')
-            if src:
-                img_url = urljoin(self.base_url, src)
-                self._download_asset(img_url, 'images')
-                self.stats['images_downloaded'] += 1
-
-    def _download_asset(self, url: str, asset_type: str):
-        """تحميل الأصول"""
-        try:
-            response = self.session.get(url, timeout=self.config.timeout)
-            response.raise_for_status()
-            
-            # تحديد اسم الملف
-            parsed_url = urlparse(url)
-            filename = os.path.basename(parsed_url.path) or 'index'
-            
-            if not os.path.splitext(filename)[1]:
-                # إضافة امتداد مناسب
-                content_type = response.headers.get('content-type', '')
-                ext = mimetypes.guess_extension(content_type.split(';')[0])
-                if ext:
-                    filename += ext
-            
-            # حفظ الملف
-            file_path = self.site_dir / asset_type / filename
-            file_path.write_bytes(response.content)
-            self.stats['total_size_bytes'] += len(response.content)
-            
-            time.sleep(self.config.delay_between_requests)
-            
-        except Exception as e:
-            self.stats['errors'].append(f"فشل تحميل {url}: {str(e)}")
-            logger.warning(f"فشل تحميل الأصل {url}: {e}")
-
-    def _save_html(self, soup: BeautifulSoup, filename: str):
-        """حفظ HTML مع التعديلات"""
-        # تحديث الروابط لتصبح محلية
-        self._update_local_links(soup)
+        if config is None:
+            config = self._get_default_config(extraction_type)
         
-        html_path = self.site_dir / 'html' / filename
-        html_path.write_text(str(soup), encoding='utf-8')
-
-    def _update_local_links(self, soup: BeautifulSoup):
-        """تحديث الروابط لتصبح محلية"""
-        # تحديث CSS links
-        for link in soup.find_all('link', {'rel': 'stylesheet'}):
-            href = link.get('href')
-            if href:
-                filename = os.path.basename(urlparse(href).path)
-                link['href'] = f'../css/{filename}'
+        job = ExtractionJob(
+            job_id=job_id,
+            url=url,
+            extraction_type=extraction_type,
+            priority=priority,
+            config=config,
+            created_at=datetime.now().isoformat()
+        )
         
-        # تحديث JS links
-        for script in soup.find_all('script', src=True):
-            src = script.get('src')
-            if src:
-                filename = os.path.basename(urlparse(src).path)
-                script['src'] = f'../js/{filename}'
+        self.jobs[job_id] = job
+        self.system_stats['total_jobs_created'] += 1
+        self.system_stats['jobs_pending'] += 1
         
-        # تحديث الصور
-        for img in soup.find_all('img', src=True):
-            src = img.get('src')
-            if src:
-                filename = os.path.basename(urlparse(src).path)
-                img['src'] = f'../images/{filename}'
+        logger.info(f"تم إنشاء وظيفة جديدة: {job_id} للموقع {url}")
+        
+        return job_id
 
-    def _generate_report(self):
-        """إنشاء تقرير الاستخراج"""
-        report = {
-            'extraction_info': {
-                'url': self.base_url,
-                'domain': self.domain,
-                'extraction_level': self.config.extraction_level.value,
-                'timestamp': datetime.now().isoformat()
-            },
-            'statistics': self.stats,
-            'config': asdict(self.config)
+    def _get_default_config(self, extraction_type: ExtractionType) -> Dict[str, Any]:
+        """الحصول على إعدادات افتراضية حسب نوع الاستخراج"""
+        base_config = {
+            'timeout': 30,
+            'max_pages': 50,
+            'delay_between_requests': 1.0,
+            'respect_robots_txt': True,
+            'user_agent': 'Website-Analyzer-Tool/1.0'
         }
         
-        report_path = self.site_dir / 'extraction_report.json'
-        report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+        if extraction_type == ExtractionType.ANALYSIS_ONLY:
+            return {**base_config, 'max_pages': 5, 'extract_assets': False}
+        
+        elif extraction_type == ExtractionType.CONTENT_EXTRACTION:
+            return {**base_config, 'max_pages': 20, 'extract_images': False}
+        
+        elif extraction_type == ExtractionType.ASSET_EXTRACTION:
+            return {**base_config, 'extract_images': True, 'extract_css': True, 'extract_js': True}
+        
+        elif extraction_type == ExtractionType.FULL_WEBSITE_CLONE:
+            return {**base_config, 'max_pages': 100, 'extract_all': True, 'create_local_copy': True}
+        
+        elif extraction_type == ExtractionType.SECURITY_AUDIT:
+            return {**base_config, 'max_pages': 10, 'deep_security_scan': True}
+        
+        elif extraction_type == ExtractionType.PERFORMANCE_ANALYSIS:
+            return {**base_config, 'max_pages': 10, 'measure_performance': True}
+        
+        elif extraction_type == ExtractionType.SEO_ANALYSIS:
+            return {**base_config, 'max_pages': 20, 'analyze_seo': True}
+        
+        elif extraction_type == ExtractionType.COMPETITOR_RESEARCH:
+            return {**base_config, 'max_pages': 15, 'compare_competitors': True}
+        
+        return base_config
 
-class UltraWebsiteExtractor(SimpleWebsiteExtractor):
-    """أداة الاستخراج الفائقة مع ميزات AI متقدمة"""
-    
-    def __init__(self, config: ExtractionConfig):
-        super().__init__(config)
-        self.ai_analysis = {
-            'content_classification': {},
-            'seo_analysis': {},
-            'performance_metrics': {},
-            'security_assessment': {}
-        }
-
-    def extract_ultra_smart(self) -> Tuple[Path, Dict[str, Any]]:
-        """استخراج فائق مع تحليل AI"""
-        try:
-            # تحميل الصفحة الرئيسية
-            response = self.session.get(self.base_url, timeout=self.config.timeout)
-            response.raise_for_status()
-            
-            soup = BeautifulSoup(response.content, 'html.parser')
-            
-            # تحليل AI للمحتوى
-            self._analyze_content_structure(soup)
-            self._extract_seo_data(soup)
-            self._analyze_performance_metrics(response)
-            
-            # استخراج الأصول مع معالجة ذكية
-            self._smart_asset_extraction(soup)
-            
-            # معالجة متقدمة للمحتوى
-            processed_soup = self._process_content_intelligently(soup)
-            
-            # حفظ النتائج
-            self._save_html(processed_soup, 'index.html')
-            self._save_ai_analysis()
-            
-            self.stats['ai_analysis'] = self.ai_analysis
-            self.stats['pages_extracted'] += 1
-            
-            return self.site_dir, self.stats
-            
-        except Exception as e:
-            self.stats['errors'].append(f"خطأ في الاستخراج الفائق: {str(e)}")
-            logger.error(f"خطأ في الاستخراج الفائق: {e}")
-            raise
-
-    def _analyze_content_structure(self, soup: BeautifulSoup):
-        """تحليل بنية المحتوى بذكاء اصطناعي"""
-        self.ai_analysis['content_classification'] = {
-            'main_content_areas': self._identify_content_areas(soup),
-            'navigation_structure': self._analyze_navigation(soup),
-            'media_content': self._classify_media_content(soup),
-            'interactive_elements': self._find_interactive_elements(soup)
-        }
-
-    def _identify_content_areas(self, soup: BeautifulSoup) -> List[Dict]:
-        """تحديد مناطق المحتوى الرئيسية"""
-        content_areas = []
-        
-        # البحث عن المناطق الرئيسية
-        main_selectors = ['main', 'article', '[role="main"]', '.main-content', '#main']
-        
-        for selector in main_selectors:
-            elements = soup.select(selector)
-            for element in elements:
-                if element and len(element.get_text().strip()) > 100:
-                    content_areas.append({
-                        'type': 'main_content',
-                        'selector': selector,
-                        'text_length': len(element.get_text()),
-                        'has_images': bool(element.find_all('img')),
-                        'has_links': bool(element.find_all('a'))
-                    })
-        
-        return content_areas
-
-    def _analyze_navigation(self, soup: BeautifulSoup) -> Dict:
-        """تحليل بنية التنقل"""
-        nav_elements = soup.find_all('nav') + soup.select('[role="navigation"]')
-        
-        navigation = {
-            'nav_count': len(nav_elements),
-            'menu_items': [],
-            'breadcrumbs': bool(soup.select('.breadcrumb, .breadcrumbs')),
-            'search_form': bool(soup.find('form', {'role': 'search'}))
-        }
-        
-        for nav in nav_elements:
-            links = nav.find_all('a')
-            navigation['menu_items'].extend([{
-                'text': link.get_text().strip(),
-                'href': link.get('href', ''),
-                'is_external': self._is_external_link(link.get('href', ''))
-            } for link in links if link.get_text().strip()])
-        
-        return navigation
-
-    def _classify_media_content(self, soup: BeautifulSoup) -> Dict:
-        """تصنيف المحتوى الإعلامي"""
-        return {
-            'images': {
-                'total': len(soup.find_all('img')),
-                'with_alt': len(soup.find_all('img', alt=True)),
-                'types': self._classify_image_types(soup)
-            },
-            'videos': {
-                'total': len(soup.find_all('video')),
-                'embedded': len(soup.select('iframe[src*="youtube"], iframe[src*="vimeo"]'))
-            },
-            'audio': len(soup.find_all('audio'))
-        }
-
-    def _classify_image_types(self, soup: BeautifulSoup) -> Dict:
-        """تصنيف أنواع الصور"""
-        images = soup.find_all('img')
-        types = {'logos': 0, 'content': 0, 'decorative': 0, 'avatars': 0}
-        
-        for img in images:
-            src = img.get('src', '').lower()
-            alt = img.get('alt', '').lower()
-            class_name = ' '.join(img.get('class', [])).lower()
-            
-            if any(word in src or word in alt or word in class_name 
-                   for word in ['logo', 'brand']):
-                types['logos'] += 1
-            elif any(word in src or word in alt or word in class_name 
-                     for word in ['avatar', 'profile', 'user']):
-                types['avatars'] += 1
-            elif any(word in src or word in alt or word in class_name 
-                     for word in ['icon', 'decoration', 'bg']):
-                types['decorative'] += 1
-            else:
-                types['content'] += 1
-        
-        return types
-
-    def _find_interactive_elements(self, soup: BeautifulSoup) -> Dict:
-        """العثور على العناصر التفاعلية"""
-        return {
-            'forms': len(soup.find_all('form')),
-            'buttons': len(soup.find_all('button')),
-            'inputs': len(soup.find_all('input')),
-            'dropdowns': len(soup.find_all('select')),
-            'modals': len(soup.select('[data-toggle="modal"], .modal')),
-            'tabs': len(soup.select('[role="tab"], .tab')),
-            'accordions': len(soup.select('.accordion, [data-toggle="collapse"]'))
-        }
-
-    def _extract_seo_data(self, soup: BeautifulSoup):
-        """استخراج بيانات SEO"""
-        self.ai_analysis['seo_analysis'] = {
-            'title': soup.find('title').get_text() if soup.find('title') else '',
-            'meta_description': self._get_meta_content(soup, 'description'),
-            'meta_keywords': self._get_meta_content(soup, 'keywords'),
-            'headings': self._analyze_headings(soup),
-            'open_graph': self._extract_open_graph(soup),
-            'twitter_cards': self._extract_twitter_cards(soup),
-            'structured_data': self._find_structured_data(soup)
-        }
-
-    def _get_meta_content(self, soup: BeautifulSoup, name: str) -> str:
-        """الحصول على محتوى meta tag"""
-        meta = soup.find('meta', {'name': name}) or soup.find('meta', {'property': name})
-        return meta.get('content', '') if meta else ''
-
-    def _analyze_headings(self, soup: BeautifulSoup) -> Dict:
-        """تحليل العناوين"""
-        headings = {}
-        for i in range(1, 7):
-            h_tags = soup.find_all(f'h{i}')
-            headings[f'h{i}'] = {
-                'count': len(h_tags),
-                'texts': [h.get_text().strip() for h in h_tags[:5]]  # أول 5 عناوين فقط
-            }
-        return headings
-
-    def _extract_open_graph(self, soup: BeautifulSoup) -> Dict:
-        """استخراج بيانات Open Graph"""
-        og_data = {}
-        og_tags = soup.find_all('meta', {'property': lambda x: x and x.startswith('og:')})
-        
-        for tag in og_tags:
-            property_name = tag.get('property', '').replace('og:', '')
-            content = tag.get('content', '')
-            if property_name and content:
-                og_data[property_name] = content
-        
-        return og_data
-
-    def _extract_twitter_cards(self, soup: BeautifulSoup) -> Dict:
-        """استخراج بيانات Twitter Cards"""
-        twitter_data = {}
-        twitter_tags = soup.find_all('meta', {'name': lambda x: x and x.startswith('twitter:')})
-        
-        for tag in twitter_tags:
-            name = tag.get('name', '').replace('twitter:', '')
-            content = tag.get('content', '')
-            if name and content:
-                twitter_data[name] = content
-        
-        return twitter_data
-
-    def _find_structured_data(self, soup: BeautifulSoup) -> List[Dict]:
-        """البحث عن البيانات المنظمة"""
-        structured_data = []
-        
-        # JSON-LD
-        json_ld_scripts = soup.find_all('script', {'type': 'application/ld+json'})
-        for script in json_ld_scripts:
-            try:
-                data = json.loads(script.string)
-                structured_data.append({'type': 'json-ld', 'data': data})
-            except (json.JSONDecodeError, TypeError):
-                pass
-        
-        # Microdata
-        microdata_items = soup.find_all(attrs={'itemscope': True})
-        for item in microdata_items:
-            item_type = item.get('itemtype', '')
-            if item_type:
-                structured_data.append({'type': 'microdata', 'itemtype': item_type})
-        
-        return structured_data
-
-    def _analyze_performance_metrics(self, response: requests.Response):
-        """تحليل مقاييس الأداء"""
-        self.ai_analysis['performance_metrics'] = {
-            'response_time': getattr(response, 'elapsed', None),
-            'content_size': len(response.content),
-            'compression': 'gzip' in response.headers.get('content-encoding', ''),
-            'cache_headers': {
-                'cache_control': response.headers.get('cache-control', ''),
-                'expires': response.headers.get('expires', ''),
-                'etag': response.headers.get('etag', '')
-            },
-            'security_headers': {
-                'https': response.url.startswith('https://'),
-                'hsts': 'strict-transport-security' in response.headers,
-                'content_security_policy': 'content-security-policy' in response.headers,
-                'x_frame_options': response.headers.get('x-frame-options', '')
-            }
-        }
-
-    def _smart_asset_extraction(self, soup: BeautifulSoup):
-        """استخراج الأصول بذكاء"""
-        # تحديد الأصول الأساسية vs الثانوية
-        critical_assets = self._identify_critical_assets(soup)
-        
-        # استخراج متوازي للأصول الحيوية
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            futures = []
-            
-            for asset_type, assets in critical_assets.items():
-                for asset_url in assets:
-                    future = executor.submit(self._download_asset, asset_url, asset_type)
-                    futures.append(future)
-            
-            # انتظار انتهاء جميع التحميلات
-            for future in as_completed(futures):
-                try:
-                    future.result()
-                except Exception as e:
-                    logger.warning(f"فشل تحميل أصل: {e}")
-
-    def _identify_critical_assets(self, soup: BeautifulSoup) -> Dict[str, List[str]]:
-        """تحديد الأصول الحيوية"""
-        critical_assets = {
-            'css': [],
-            'js': [],
-            'images': []
-        }
-        
-        # CSS حيوي
-        css_links = soup.find_all('link', {'rel': 'stylesheet'})
-        for link in css_links:
-            href = link.get('href')
-            if href and not any(skip in href.lower() for skip in ['print', 'alternate']):
-                critical_assets['css'].append(urljoin(self.base_url, href))
-        
-        # JavaScript حيوي (استثناء Analytics وTracking)
-        js_scripts = soup.find_all('script', src=True)
-        for script in js_scripts:
-            src = script.get('src')
-            if src and not any(skip in src.lower() for skip in ['analytics', 'tracking', 'ads']):
-                critical_assets['js'].append(urljoin(self.base_url, src))
-        
-        # الصور الأساسية (logos، hero images)
-        images = soup.find_all('img')
-        for img in images:
-            src = img.get('src')
-            if src:
-                # أولوية للصور الكبيرة أو ذات الأهمية
-                if (img.get('alt', '').lower() in ['logo', 'hero', 'banner'] or
-                    any(cls in ' '.join(img.get('class', [])).lower() 
-                        for cls in ['logo', 'hero', 'banner', 'main'])):
-                    critical_assets['images'].append(urljoin(self.base_url, src))
-        
-        return critical_assets
-
-    def _process_content_intelligently(self, soup: BeautifulSoup) -> BeautifulSoup:
-        """معالجة المحتوى بذكاء"""
-        # إزالة العناصر غير المرغوبة
-        if self.config.remove_ads:
-            soup = self._remove_ads_intelligently(soup)
-        
-        # تحسين الصور
-        soup = self._optimize_images(soup)
-        
-        # تنظيف الكود
-        soup = self._clean_html_code(soup)
-        
-        return soup
-
-    def _remove_ads_intelligently(self, soup: BeautifulSoup) -> BeautifulSoup:
-        """إزالة الإعلانات بذكاء"""
-        ad_selectors = [
-            '[class*="ad"]', '[id*="ad"]', '[class*="advertisement"]',
-            '.google-ads', '.adsbygoogle', '[data-ad-client]',
-            '[class*="banner"]', '[class*="popup"]', '[class*="modal"]'
-        ]
-        
-        for selector in ad_selectors:
-            elements = soup.select(selector)
-            for element in elements:
-                # فحص إضافي للتأكد من أنه إعلان
-                if self._is_likely_ad(element):
-                    element.decompose()
-        
-        return soup
-
-    def _is_likely_ad(self, element: Tag) -> bool:
-        """فحص ما إذا كان العنصر إعلاناً"""
-        if not isinstance(element, Tag):
+    def start_job(self, job_id: str) -> bool:
+        """بدء تشغيل وظيفة"""
+        if job_id not in self.jobs:
+            logger.error(f"وظيفة غير موجودة: {job_id}")
             return False
         
-        # فحص النص
-        text = element.get_text().lower()
-        ad_keywords = ['sponsored', 'advertisement', 'ads by', 'promoted']
+        job = self.jobs[job_id]
         
-        if any(keyword in text for keyword in ad_keywords):
+        if job.status != "pending":
+            logger.warning(f"الوظيفة {job_id} ليست في حالة انتظار")
+            return False
+        
+        # تشغيل الوظيفة في خيط منفصل
+        thread = threading.Thread(target=self._execute_job, args=(job_id,))
+        thread.daemon = True
+        thread.start()
+        
+        self.active_jobs[job_id] = thread
+        job.status = "running"
+        job.started_at = datetime.now().isoformat()
+        
+        self.system_stats['jobs_pending'] -= 1
+        self.system_stats['jobs_running'] += 1
+        
+        logger.info(f"تم بدء تشغيل الوظيفة: {job_id}")
+        return True
+
+    def _execute_job(self, job_id: str):
+        """تنفيذ وظيفة الاستخراج"""
+        job = self.jobs[job_id]
+        start_time = time.time()
+        
+        try:
+            logger.info(f"بدء تنفيذ الوظيفة {job_id}: {job.extraction_type.value}")
+            
+            # اختيار الأداة المناسبة حسب نوع الاستخراج
+            if job.extraction_type == ExtractionType.ANALYSIS_ONLY:
+                result = self._execute_analysis(job)
+            
+            elif job.extraction_type == ExtractionType.CONTENT_EXTRACTION:
+                result = self._execute_content_extraction(job)
+            
+            elif job.extraction_type == ExtractionType.ASSET_EXTRACTION:
+                result = self._execute_asset_extraction(job)
+            
+            elif job.extraction_type == ExtractionType.FULL_WEBSITE_CLONE:
+                result = self._execute_full_clone(job)
+            
+            elif job.extraction_type == ExtractionType.SECURITY_AUDIT:
+                result = self._execute_security_audit(job)
+            
+            elif job.extraction_type == ExtractionType.PERFORMANCE_ANALYSIS:
+                result = self._execute_performance_analysis(job)
+            
+            elif job.extraction_type == ExtractionType.SEO_ANALYSIS:
+                result = self._execute_seo_analysis(job)
+            
+            elif job.extraction_type == ExtractionType.COMPETITOR_RESEARCH:
+                result = self._execute_competitor_research(job)
+            
+            else:
+                raise ValueError(f"نوع استخراج غير مدعوم: {job.extraction_type}")
+            
+            # تحديث الوظيفة بالنتيجة
+            job.result = result
+            job.status = "completed"
+            job.progress = 100.0
+            job.completed_at = datetime.now().isoformat()
+            
+            # حفظ النتيجة
+            self._save_job_result(job)
+            
+            # تحديث الإحصائيات
+            execution_time = time.time() - start_time
+            self.system_stats['jobs_completed'] += 1
+            self.system_stats['jobs_running'] -= 1
+            self.system_stats['total_processing_time'] += execution_time
+            self.system_stats['average_completion_time'] = (
+                self.system_stats['total_processing_time'] / 
+                self.system_stats['jobs_completed']
+            )
+            
+            logger.info(f"اكتملت الوظيفة {job_id} بنجاح في {execution_time:.2f} ثانية")
+            
+        except Exception as e:
+            job.error = str(e)
+            job.status = "failed"
+            job.completed_at = datetime.now().isoformat()
+            
+            self.system_stats['jobs_failed'] += 1
+            self.system_stats['jobs_running'] -= 1
+            
+            logger.error(f"فشلت الوظيفة {job_id}: {e}")
+        
+        finally:
+            # تنظيف
+            if job_id in self.active_jobs:
+                del self.active_jobs[job_id]
+
+    def _execute_analysis(self, job: ExtractionJob) -> Dict[str, Any]:
+        """تنفيذ تحليل شامل"""
+        job.progress = 10.0
+        
+        if self.analyzer is None:
+            # تحليل احتياطي بسيط
+            return self._basic_analysis(job.url)
+        
+        analyzer = self.analyzer()
+        job.progress = 30.0
+        
+        result = analyzer.analyze_comprehensive(job.url)
+        job.progress = 80.0
+        
+        return result
+
+    def _execute_content_extraction(self, job: ExtractionJob) -> Dict[str, Any]:
+        """تنفيذ استخراج المحتوى"""
+        job.progress = 10.0
+        
+        # استخدام الكاشط لاستخراج المحتوى
+        if self.scraper is None:
+            return self._basic_content_extraction(job.url)
+        
+        from scrapers.smart_scraper import ScrapingConfig, ScrapingMode
+        
+        config = ScrapingConfig(
+            base_url=job.url,
+            mode=ScrapingMode.BASIC,
+            max_pages=job.config.get('max_pages', 5)
+        )
+        
+        scraper = self.scraper(config)
+        job.progress = 50.0
+        
+        result = scraper.scrape_website()
+        job.progress = 90.0
+        
+        return result
+
+    def _execute_asset_extraction(self, job: ExtractionJob) -> Dict[str, Any]:
+        """تنفيذ استخراج الأصول"""
+        job.progress = 10.0
+        
+        if self.extractor is None:
+            return self._basic_asset_extraction(job.url)
+        
+        from extractors.master_extractor import ExtractionConfig, ExtractionMode
+        
+        config = ExtractionConfig(
+            url=job.url,
+            mode=ExtractionMode.STANDARD,
+            extract_images=True,
+            extract_css=True,
+            extract_js=True
+        )
+        
+        extractor = self.extractor(config)
+        job.progress = 50.0
+        
+        result = extractor.extract_website()
+        job.progress = 90.0
+        
+        return result
+
+    def _execute_full_clone(self, job: ExtractionJob) -> Dict[str, Any]:
+        """تنفيذ نسخ كامل للموقع"""
+        job.progress = 5.0
+        
+        if self.extractor is None:
+            return self._basic_clone(job.url)
+        
+        from extractors.master_extractor import ExtractionConfig, ExtractionMode
+        
+        config = ExtractionConfig(
+            url=job.url,
+            mode=ExtractionMode.ULTRA,
+            max_pages=job.config.get('max_pages', 100),
+            extract_images=True,
+            extract_css=True,
+            extract_js=True,
+            extract_fonts=True,
+            extract_videos=True,
+            compress_output=True
+        )
+        
+        extractor = self.extractor(config)
+        job.progress = 30.0
+        
+        result = extractor.extract_website()
+        job.progress = 95.0
+        
+        return result
+
+    def _execute_security_audit(self, job: ExtractionJob) -> Dict[str, Any]:
+        """تنفيذ تدقيق أمني"""
+        job.progress = 10.0
+        
+        if self.analyzer is None:
+            return self._basic_security_audit(job.url)
+        
+        analyzer = self.analyzer()
+        job.progress = 40.0
+        
+        result = analyzer.analyze_security_comprehensive(job.url)
+        job.progress = 90.0
+        
+        return result
+
+    def _execute_performance_analysis(self, job: ExtractionJob) -> Dict[str, Any]:
+        """تنفيذ تحليل الأداء"""
+        job.progress = 10.0
+        
+        if self.analyzer is None:
+            return self._basic_performance_analysis(job.url)
+        
+        analyzer = self.analyzer()
+        job.progress = 40.0
+        
+        result = analyzer.analyze_performance_comprehensive(job.url)
+        job.progress = 90.0
+        
+        return result
+
+    def _execute_seo_analysis(self, job: ExtractionJob) -> Dict[str, Any]:
+        """تنفيذ تحليل SEO"""
+        job.progress = 10.0
+        
+        if self.analyzer is None:
+            return self._basic_seo_analysis(job.url)
+        
+        analyzer = self.analyzer()
+        job.progress = 40.0
+        
+        result = analyzer.analyze_seo_comprehensive(job.url)
+        job.progress = 90.0
+        
+        return result
+
+    def _execute_competitor_research(self, job: ExtractionJob) -> Dict[str, Any]:
+        """تنفيذ بحث المنافسين"""
+        job.progress = 10.0
+        
+        if self.analyzer is None:
+            return self._basic_competitor_research(job.url)
+        
+        analyzer = self.analyzer()
+        job.progress = 40.0
+        
+        result = analyzer.get_competitor_insights(job.url)
+        job.progress = 90.0
+        
+        return result
+
+    def _save_job_result(self, job: ExtractionJob):
+        """حفظ نتيجة الوظيفة"""
+        try:
+            job_dir = self.output_dir / job.job_id
+            job_dir.mkdir(exist_ok=True)
+            
+            # حفظ معلومات الوظيفة
+            job_info_path = job_dir / "job_info.json"
+            with open(job_info_path, 'w', encoding='utf-8') as f:
+                job_data = asdict(job)
+                json.dump(job_data, f, indent=2, ensure_ascii=False)
+            
+            # حفظ النتيجة منفصلة
+            if job.result:
+                result_path = job_dir / "result.json"
+                with open(result_path, 'w', encoding='utf-8') as f:
+                    json.dump(job.result, f, indent=2, ensure_ascii=False)
+            
+            logger.info(f"تم حفظ نتيجة الوظيفة {job.job_id}")
+            
+        except Exception as e:
+            logger.error(f"خطأ في حفظ نتيجة الوظيفة {job.job_id}: {e}")
+
+    def get_job_status(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """الحصول على حالة الوظيفة"""
+        if job_id not in self.jobs:
+            return None
+        
+        job = self.jobs[job_id]
+        return {
+            'job_id': job.job_id,
+            'url': job.url,
+            'extraction_type': job.extraction_type.value,
+            'status': job.status,
+            'progress': job.progress,
+            'created_at': job.created_at,
+            'started_at': job.started_at,
+            'completed_at': job.completed_at,
+            'error': job.error
+        }
+
+    def get_all_jobs(self) -> List[Dict[str, Any]]:
+        """الحصول على جميع الوظائف"""
+        return [self.get_job_status(job_id) for job_id in self.jobs.keys()]
+
+    def get_system_stats(self) -> Dict[str, Any]:
+        """الحصول على إحصائيات النظام"""
+        current_time = time.time()
+        uptime = current_time - self.system_stats['system_uptime']
+        
+        return {
+            **self.system_stats,
+            'uptime_seconds': round(uptime, 2),
+            'uptime_hours': round(uptime / 3600, 2),
+            'success_rate': round(
+                (self.system_stats['jobs_completed'] / 
+                 max(1, self.system_stats['total_jobs_created'])) * 100, 2
+            ),
+            'active_jobs_count': len(self.active_jobs)
+        }
+
+    def cancel_job(self, job_id: str) -> bool:
+        """إلغاء وظيفة"""
+        if job_id not in self.jobs:
+            return False
+        
+        job = self.jobs[job_id]
+        
+        if job.status == "running" and job_id in self.active_jobs:
+            # محاولة إيقاف الخيط (لا يمكن قتل الخيط بالقوة في Python)
+            job.status = "cancelled"
+            job.completed_at = datetime.now().isoformat()
+            
+            self.system_stats['jobs_running'] -= 1
+            logger.info(f"تم إلغاء الوظيفة {job_id}")
             return True
         
-        # فحص الخصائص
-        attrs = str(element.attrs).lower()
-        if any(word in attrs for word in ['doubleclick', 'googleads', 'adsystem']):
+        elif job.status == "pending":
+            job.status = "cancelled"
+            job.completed_at = datetime.now().isoformat()
+            
+            self.system_stats['jobs_pending'] -= 1
+            logger.info(f"تم إلغاء الوظيفة {job_id}")
             return True
         
         return False
 
-    def _optimize_images(self, soup: BeautifulSoup) -> BeautifulSoup:
-        """تحسين الصور"""
-        for img in soup.find_all('img'):
-            # إضافة loading="lazy" للصور غير الحيوية
-            if not any(cls in ' '.join(img.get('class', [])).lower() 
-                      for cls in ['hero', 'logo', 'above-fold']):
-                img['loading'] = 'lazy'
+    # Basic fallback methods
+    def _basic_analysis(self, url: str) -> Dict[str, Any]:
+        """تحليل احتياطي بسيط"""
+        import requests
+        from bs4 import BeautifulSoup
+        
+        try:
+            response = requests.get(url, timeout=10)
+            soup = BeautifulSoup(response.content, 'html.parser')
             
-            # إضافة alt إذا لم يكن موجوداً
-            if not img.get('alt'):
-                img['alt'] = 'صورة'
-        
-        return soup
+            return {
+                'url': url,
+                'title': soup.find('title').get_text() if soup.find('title') else '',
+                'status_code': response.status_code,
+                'content_length': len(response.content),
+                'basic_analysis': True
+            }
+        except Exception as e:
+            return {'error': str(e), 'basic_analysis': True}
 
-    def _clean_html_code(self, soup: BeautifulSoup) -> BeautifulSoup:
-        """تنظيف كود HTML"""
-        # إزالة التعليقات
-        for comment in soup.find_all(string=lambda text: isinstance(text, type(soup))):
-            if hasattr(comment, 'extract'):
-                comment.extract()
-        
-        # إزالة الخصائص غير الضرورية
-        for element in soup.find_all():
-            # إزالة خصائص التتبع
-            tracking_attrs = ['data-track', 'data-analytics', 'onclick', 'onload']
-            for attr in tracking_attrs:
-                if element.has_attr(attr):
-                    del element[attr]
-        
-        return soup
+    def _basic_content_extraction(self, url: str) -> Dict[str, Any]:
+        """استخراج محتوى احتياطي"""
+        return {'url': url, 'content_extraction': 'basic', 'message': 'أدوات متقدمة غير متوفرة'}
 
-    def _save_ai_analysis(self):
-        """حفظ تحليل AI"""
-        ai_report_path = self.site_dir / 'ai_analysis.json'
-        ai_report_path.write_text(
-            json.dumps(self.ai_analysis, ensure_ascii=False, indent=2),
-            encoding='utf-8'
-        )
+    def _basic_asset_extraction(self, url: str) -> Dict[str, Any]:
+        """استخراج أصول احتياطي"""
+        return {'url': url, 'asset_extraction': 'basic', 'message': 'أدوات متقدمة غير متوفرة'}
 
-    def _is_external_link(self, href: str) -> bool:
-        """فحص ما إذا كان الرابط خارجياً"""
-        if not href or href.startswith('#') or href.startswith('mailto:'):
-            return False
-        
-        parsed = urlparse(href)
-        return parsed.netloc and parsed.netloc != self.domain
+    def _basic_clone(self, url: str) -> Dict[str, Any]:
+        """نسخ احتياطي"""
+        return {'url': url, 'clone': 'basic', 'message': 'أدوات متقدمة غير متوفرة'}
 
-# وظائف مساعدة للاستخدام السريع
-def extract_website_simple(url: str, extraction_level: str = "standard") -> Tuple[Path, Dict[str, Any]]:
-    """استخراج بسيط للموقع"""
-    config = ExtractionConfig(
-        url=url,
-        extraction_level=ExtractionLevel(extraction_level)
-    )
-    extractor = SimpleWebsiteExtractor(config)
-    return extractor.extract_website()
+    def _basic_security_audit(self, url: str) -> Dict[str, Any]:
+        """تدقيق أمني احتياطي"""
+        return {'url': url, 'security_audit': 'basic', 'message': 'أدوات متقدمة غير متوفرة'}
 
-def extract_website_ultra(url: str, config: Dict[str, Any] = None) -> Tuple[Path, Dict[str, Any]]:
-    """استخراج فائق للموقع"""
-    extraction_config = ExtractionConfig(
-        url=url,
-        extraction_level=ExtractionLevel.ULTRA,
-        **(config if config else {})
-    )
-    extractor = UltraWebsiteExtractor(extraction_config)
-    return extractor.extract_ultra_smart()
+    def _basic_performance_analysis(self, url: str) -> Dict[str, Any]:
+        """تحليل أداء احتياطي"""
+        return {'url': url, 'performance_analysis': 'basic', 'message': 'أدوات متقدمة غير متوفرة'}
+
+    def _basic_seo_analysis(self, url: str) -> Dict[str, Any]:
+        """تحليل SEO احتياطي"""
+        return {'url': url, 'seo_analysis': 'basic', 'message': 'أدوات متقدمة غير متوفرة'}
+
+    def _basic_competitor_research(self, url: str) -> Dict[str, Any]:
+        """بحث منافسين احتياطي"""
+        return {'url': url, 'competitor_research': 'basic', 'message': 'أدوات متقدمة غير متوفرة'}

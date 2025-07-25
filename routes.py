@@ -20,18 +20,36 @@ import time
 from pathlib import Path
 import os
 
-# استيراد المحللات المتقدمة
+# استيراد الأدوات المدمجة الجديدة
 try:
-    from security_analyzer import SecurityAnalyzer
-    from performance_analyzer import PerformanceAnalyzer
-    from seo_analyzer import SEOAnalyzer
-    from competitor_analyzer import CompetitorAnalyzer
-    from website_extractor import WebsiteExtractor
-    from enhanced_website_extractor import EnhancedWebsiteExtractor
-    from ultra_extractor import UltraSmartExtractor
-    from advanced_ad_blocker import AdvancedAdBlocker
+    from analyzers.comprehensive_analyzer import ComprehensiveAnalyzer
+    from extractors.master_extractor import MasterExtractor, ExtractionConfig, ExtractionMode
+    from blockers.advanced_blocker import AdvancedBlocker, BlockingMode
+    from scrapers.smart_scraper import SmartScraper, ScrapingConfig, ScrapingMode
+    from tools.extraction_engine import ExtractionEngine, ExtractionType, Priority
+    
+    # تهيئة محرك الاستخراج الشامل
+    extraction_engine = ExtractionEngine()
+    
+    logging.info("تم تحميل جميع الأدوات المدمجة الجديدة بنجاح")
+    
 except ImportError as e:
-    logging.warning(f"Some advanced tools not available: {e}")
+    logging.warning(f"بعض الأدوات المدمجة غير متوفرة، استخدام أدوات احتياطية: {e}")
+    
+    # استيراد الأدوات القديمة كاحتياط
+    try:
+        from security_analyzer import SecurityAnalyzer
+        from performance_analyzer import PerformanceAnalyzer
+        from seo_analyzer import SEOAnalyzer
+        from competitor_analyzer import CompetitorAnalyzer
+        from website_extractor import WebsiteExtractor
+        from enhanced_website_extractor import EnhancedWebsiteExtractor
+        from ultra_extractor import UltraSmartExtractor
+        from advanced_ad_blocker import AdvancedAdBlocker
+        extraction_engine = None
+    except ImportError as e2:
+        logging.error(f"فشل في تحميل الأدوات الاحتياطية أيضاً: {e2}")
+        extraction_engine = None
 
 @app.route('/')
 def index():
