@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة التحكم - محلل المواقع{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- عنوان لوحة التحكم -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2 text-primary">
+                <i data-feather="activity" class="me-2"></i>
+                لوحة التحكم
+            </h1>
+            <p class="text-muted">نظرة شاملة على جميع التحليلات والإحصائيات</p>
+        </div>
+    </div>
+
+    <!-- إحصائيات سريعة -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ total_analyses }}</h4>
+                            <p class="card-text">إجمالي التحليلات</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i data-feather="bar-chart-2" size="32"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ analysis_stats.security or 0 }}</h4>
+                            <p class="card-text">تحليلات الأمان</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i data-feather="shield" size="32"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ analysis_stats.performance or 0 }}</h4>
+                            <p class="card-text">تحليلات الأداء</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i data-feather="zap" size="32"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ analysis_stats.seo or 0 }}</h4>
+                            <p class="card-text">تحليلات SEO</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i data-feather="search" size="32"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الأدوات السريعة -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="tool" class="me-2"></i>
+                        أدوات التحليل السريع
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="/security-analysis" class="btn btn-outline-primary">
+                                    <i data-feather="shield" class="me-2"></i>
+                                    تحليل الأمان
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="/performance-analysis" class="btn btn-outline-success">
+                                    <i data-feather="zap" class="me-2"></i>
+                                    تحليل الأداء
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="/seo-analysis" class="btn btn-outline-info">
+                                    <i data-feather="search" class="me-2"></i>
+                                    تحليل SEO
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="/competitor-analysis" class="btn btn-outline-warning">
+                                    <i data-feather="users" class="me-2"></i>
+                                    تحليل المنافسين
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="/comprehensive-analysis" class="btn btn-outline-dark">
+                                    <i data-feather="layers" class="me-2"></i>
+                                    التحليل الشامل
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="/reports" class="btn btn-outline-secondary">
+                                    <i data-feather="file-text" class="me-2"></i>
+                                    التقارير
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- التحليلات الأخيرة -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="clock" class="me-2"></i>
+                        التحليلات الأخيرة
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_analyses %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>الموقع</th>
+                                    <th>نوع التحليل</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for analysis in recent_analyses %}
+                                <tr>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 200px;">
+                                            {{ analysis.url }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'primary' if analysis.analysis_type == 'basic' else 'success' if analysis.analysis_type == 'security' else 'info' if analysis.analysis_type == 'performance' else 'warning' if analysis.analysis_type == 'seo' else 'dark' }}">
+                                            {{ analysis.analysis_type }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if analysis.status == 'completed' else 'warning' if analysis.status == 'running' else 'danger' }}">
+                                            {{ analysis.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ analysis.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="/results/{{ analysis.id }}" class="btn btn-outline-primary btn-sm">
+                                                <i data-feather="eye" size="14"></i>
+                                            </a>
+                                            <button class="btn btn-outline-success btn-sm" onclick="exportReport({{ analysis.id }})">
+                                                <i data-feather="download" size="14"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteAnalysis({{ analysis.id }})">
+                                                <i data-feather="trash-2" size="14"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i data-feather="inbox" size="48" class="text-muted mb-3"></i>
+                        <p class="text-muted">لا توجد تحليلات بعد</p>
+                        <a href="/" class="btn btn-primary">ابدأ تحليل جديد</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- إحصائيات التحليل -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="pie-chart" class="me-2"></i>
+                        توزيع أنواع التحليل
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="analysisTypeChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="trending-up" class="me-2"></i>
+                        نشاط التحليل الأسبوعي
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="weeklyActivityChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal تأكيد الحذف -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">تأكيد الحذف</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                هل أنت متأكد من حذف هذا التحليل؟ لا يمكن التراجع عن هذا الإجراء.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">حذف</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// تهيئة الرسوم البيانية
+document.addEventListener('DOMContentLoaded', function() {
+    // رسم بياني لأنواع التحليل
+    const analysisTypeCtx = document.getElementById('analysisTypeChart').getContext('2d');
+    new Chart(analysisTypeCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['أساسي', 'الأمان', 'الأداء', 'SEO', 'المنافسين', 'شامل'],
+            datasets: [{
+                data: [
+                    {{ analysis_stats.basic or 0 }},
+                    {{ analysis_stats.security or 0 }},
+                    {{ analysis_stats.performance or 0 }},
+                    {{ analysis_stats.seo or 0 }},
+                    {{ analysis_stats.competitor or 0 }},
+                    {{ analysis_stats.comprehensive or 0 }}
+                ],
+                backgroundColor: [
+                    '#0d6efd',
+                    '#198754',
+                    '#17a2b8',
+                    '#ffc107',
+                    '#fd7e14',
+                    '#6c757d'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // رسم بياني للنشاط الأسبوعي (بيانات وهمية للتوضيح)
+    const weeklyActivityCtx = document.getElementById('weeklyActivityChart').getContext('2d');
+    new Chart(weeklyActivityCtx, {
+        type: 'line',
+        data: {
+            labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+            datasets: [{
+                label: 'عدد التحليلات',
+                data: [12, 19, 3, 5, 2, 3, 7],
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+
+// وظائف JavaScript
+function exportReport(analysisId) {
+    window.open(`/api/export-report/${analysisId}`, '_blank');
+}
+
+let deleteAnalysisId = null;
+
+function deleteAnalysis(analysisId) {
+    deleteAnalysisId = analysisId;
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+
+document.getElementById('confirmDelete').addEventListener('click', function() {
+    if (deleteAnalysisId) {
+        fetch(`/api/delete-analysis/${deleteAnalysisId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                location.reload();
+            } else {
+                alert('حدث خطأ أثناء الحذف');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('حدث خطأ أثناء الحذف');
+        });
+    }
+    
+    const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+    modal.hide();
+});
+</script>
+{% endblock %}

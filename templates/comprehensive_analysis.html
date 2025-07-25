@@ -1,0 +1,557 @@
+{% extends "base.html" %}
+
+{% block title %}التحليل الشامل - محلل المواقع{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2 text-primary">
+                <i data-feather="layers" class="me-2"></i>
+                التحليل الشامل
+            </h1>
+            <p class="text-muted">تحليل كامل ومتكامل لجميع جوانب الموقع</p>
+        </div>
+    </div>
+
+    <!-- نموذج إعداد التحليل -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">إعداد التحليل الشامل</h5>
+                </div>
+                <div class="card-body">
+                    <form id="comprehensiveForm">
+                        <div class="mb-3">
+                            <label for="websiteUrl" class="form-label">رابط الموقع</label>
+                            <input type="url" class="form-control" id="websiteUrl" 
+                                   placeholder="https://example.com" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="basicAnalysis" checked>
+                                    <label class="form-check-label" for="basicAnalysis">
+                                        <i data-feather="globe" class="me-1"></i>
+                                        التحليل الأساسي
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="securityAnalysis" checked>
+                                    <label class="form-check-label" for="securityAnalysis">
+                                        <i data-feather="shield" class="me-1"></i>
+                                        تحليل الأمان
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="performanceAnalysis" checked>
+                                    <label class="form-check-label" for="performanceAnalysis">
+                                        <i data-feather="zap" class="me-1"></i>
+                                        تحليل الأداء
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="seoAnalysis" checked>
+                                    <label class="form-check-label" for="seoAnalysis">
+                                        <i data-feather="search" class="me-1"></i>
+                                        تحليل SEO
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i data-feather="layers" class="me-2"></i>
+                            بدء التحليل الشامل
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط التقدم -->
+    <div class="row mb-4" id="progressSection" style="display: none;">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6>جاري التحليل الشامل...</h6>
+                    <div class="progress mb-2">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" style="width: 0%" id="progressBar"></div>
+                    </div>
+                    <div id="currentStep" class="text-muted">بدء التحليل...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نتائج التحليل الشامل -->
+    <div id="resultsContainer" style="display: none;">
+        <!-- ملخص شامل -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i data-feather="bar-chart" class="me-2"></i>
+                            الملخص الشامل
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="overallSummary">
+                            <!-- سيتم ملء البيانات بواسطة JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- نتائج كل تحليل -->
+        <div class="row">
+            <div class="col-md-6 mb-4" id="securityCard" style="display: none;">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i data-feather="shield" class="me-2"></i>
+                            الأمان
+                        </h6>
+                    </div>
+                    <div class="card-body" id="securitySummary">
+                        <!-- نتائج الأمان -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4" id="performanceCard" style="display: none;">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i data-feather="zap" class="me-2"></i>
+                            الأداء
+                        </h6>
+                    </div>
+                    <div class="card-body" id="performanceSummary">
+                        <!-- نتائج الأداء -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4" id="seoCard" style="display: none;">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i data-feather="search" class="me-2"></i>
+                            SEO
+                        </h6>
+                    </div>
+                    <div class="card-body" id="seoSummary">
+                        <!-- نتائج SEO -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4" id="basicCard" style="display: none;">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i data-feather="globe" class="me-2"></i>
+                            التحليل الأساسي
+                        </h6>
+                    </div>
+                    <div class="card-body" id="basicSummary">
+                        <!-- نتائج التحليل الأساسي -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- التوصيات المجمعة -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i data-feather="lightbulb" class="me-2"></i>
+                            التوصيات المجمعة
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="recommendationsContainer">
+                            <!-- التوصيات حسب الأولوية -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- إجراءات التقرير -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">تقرير التحليل الشامل</h6>
+                                <small class="text-muted">تم إنشاؤه في <span id="reportTimestamp"></span></small>
+                            </div>
+                            <div>
+                                <button class="btn btn-success me-2" onclick="exportComprehensiveReport()">
+                                    <i data-feather="download" class="me-1"></i>
+                                    تصدير التقرير
+                                </button>
+                                <button class="btn btn-primary" onclick="startNewAnalysis()">
+                                    <i data-feather="refresh-cw" class="me-1"></i>
+                                    تحليل جديد
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let comprehensiveData = null;
+
+document.getElementById('comprehensiveForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const url = document.getElementById('websiteUrl').value;
+    const analysisTypes = [];
+    
+    if (document.getElementById('basicAnalysis').checked) analysisTypes.push('basic');
+    if (document.getElementById('securityAnalysis').checked) analysisTypes.push('security');
+    if (document.getElementById('performanceAnalysis').checked) analysisTypes.push('performance');
+    if (document.getElementById('seoAnalysis').checked) analysisTypes.push('seo');
+    
+    startComprehensiveAnalysis(url, analysisTypes);
+});
+
+function startComprehensiveAnalysis(url, types) {
+    document.getElementById('progressSection').style.display = 'block';
+    document.getElementById('resultsContainer').style.display = 'none';
+    
+    // محاكاة التقدم
+    simulateComprehensiveProgress(types);
+    
+    // إرسال الطلب
+    fetch('/api/comprehensive-analyze', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            url: url, 
+            analysis_types: types 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        comprehensiveData = data;
+        displayComprehensiveResults(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('حدث خطأ أثناء التحليل');
+        document.getElementById('progressSection').style.display = 'none';
+    });
+}
+
+function simulateComprehensiveProgress(types) {
+    const progressBar = document.getElementById('progressBar');
+    const currentStep = document.getElementById('currentStep');
+    
+    const steps = [];
+    let progress = 0;
+    const stepSize = 100 / types.length;
+    
+    types.forEach(type => {
+        progress += stepSize;
+        let stepName = '';
+        switch(type) {
+            case 'basic': stepName = 'التحليل الأساسي'; break;
+            case 'security': stepName = 'تحليل الأمان'; break;
+            case 'performance': stepName = 'تحليل الأداء'; break;
+            case 'seo': stepName = 'تحليل SEO'; break;
+        }
+        steps.push({ progress: Math.round(progress), text: `جاري ${stepName}...` });
+    });
+    
+    let currentStepIndex = 0;
+    const interval = setInterval(() => {
+        if (currentStepIndex < steps.length) {
+            const step = steps[currentStepIndex];
+            progressBar.style.width = step.progress + '%';
+            currentStep.textContent = step.text;
+            currentStepIndex++;
+        } else {
+            clearInterval(interval);
+            currentStep.textContent = 'إنهاء التحليل...';
+        }
+    }, 2000);
+}
+
+function displayComprehensiveResults(data) {
+    document.getElementById('progressSection').style.display = 'none';
+    document.getElementById('resultsContainer').style.display = 'block';
+    
+    // عرض التوقيت
+    const timestamp = new Date(data.timestamp).toLocaleString('ar-SA');
+    document.getElementById('reportTimestamp').textContent = timestamp;
+    
+    // عرض الملخص الشامل
+    displayOverallSummary(data);
+    
+    // عرض نتائج كل تحليل
+    const results = data.results || {};
+    
+    if (results.security) {
+        document.getElementById('securityCard').style.display = 'block';
+        displaySecuritySummary(results.security);
+    }
+    
+    if (results.performance) {
+        document.getElementById('performanceCard').style.display = 'block';
+        displayPerformanceSummary(results.performance);
+    }
+    
+    if (results.seo) {
+        document.getElementById('seoCard').style.display = 'block';
+        displaySEOSummary(results.seo);
+    }
+    
+    // عرض التوصيات المجمعة
+    displayCombinedRecommendations(results);
+}
+
+function displayOverallSummary(data) {
+    const container = document.getElementById('overallSummary');
+    const results = data.results || {};
+    
+    let html = '';
+    let totalScore = 0;
+    let scoreCount = 0;
+    
+    // حساب المتوسط العام للنقاط
+    Object.values(results).forEach(result => {
+        if (result.overall_score || result.performance_score || result.seo_score) {
+            const score = result.overall_score || result.performance_score || result.seo_score;
+            totalScore += score;
+            scoreCount++;
+        }
+    });
+    
+    const averageScore = scoreCount > 0 ? Math.round(totalScore / scoreCount) : 0;
+    
+    html += `
+        <div class="col-md-3 text-center mb-3">
+            <div class="h2 text-primary">${averageScore}</div>
+            <div class="text-muted">النقاط الإجمالية</div>
+        </div>
+        <div class="col-md-3 text-center mb-3">
+            <div class="h2 text-success">${Object.keys(results).length}</div>
+            <div class="text-muted">أنواع التحليل</div>
+        </div>
+        <div class="col-md-3 text-center mb-3">
+            <div class="h2 text-info">${data.url ? '1' : '0'}</div>
+            <div class="text-muted">موقع محلل</div>
+        </div>
+        <div class="col-md-3 text-center mb-3">
+            <div class="h2 text-warning">${getOverallGrade(averageScore)}</div>
+            <div class="text-muted">التقييم العام</div>
+        </div>
+    `;
+    
+    container.innerHTML = html;
+}
+
+function getOverallGrade(score) {
+    if (score >= 90) return 'A+';
+    if (score >= 80) return 'A';
+    if (score >= 70) return 'B';
+    if (score >= 60) return 'C';
+    if (score >= 50) return 'D';
+    return 'F';
+}
+
+function displaySecuritySummary(securityData) {
+    const container = document.getElementById('securitySummary');
+    const score = securityData.overall_score || 0;
+    const riskLevel = securityData.risk_level || 'غير محدد';
+    
+    let html = `
+        <div class="text-center mb-3">
+            <div class="h4 text-${score >= 70 ? 'success' : score >= 50 ? 'warning' : 'danger'}">${score}/100</div>
+            <div class="text-muted">نقاط الأمان</div>
+        </div>
+        <div class="mb-2">
+            <strong>مستوى المخاطر:</strong> 
+            <span class="badge bg-${riskLevel === 'منخفض' ? 'success' : riskLevel === 'متوسط' ? 'warning' : 'danger'}">
+                ${riskLevel}
+            </span>
+        </div>
+    `;
+    
+    if (securityData.ssl_analysis && securityData.ssl_analysis.has_ssl) {
+        html += '<div class="text-success"><i data-feather="check" class="me-1"></i> SSL مفعل</div>';
+    } else {
+        html += '<div class="text-danger"><i data-feather="x" class="me-1"></i> SSL غير مفعل</div>';
+    }
+    
+    container.innerHTML = html;
+    feather.replace();
+}
+
+function displayPerformanceSummary(performanceData) {
+    const container = document.getElementById('performanceSummary');
+    const score = performanceData.performance_score || 0;
+    const loadTime = performanceData.loading_metrics && performanceData.loading_metrics.total_load_time || 0;
+    
+    let html = `
+        <div class="text-center mb-3">
+            <div class="h4 text-${score >= 70 ? 'success' : score >= 50 ? 'warning' : 'danger'}">${score}/100</div>
+            <div class="text-muted">نقاط الأداء</div>
+        </div>
+        <div class="mb-2">
+            <strong>وقت التحميل:</strong> ${loadTime}ms
+        </div>
+        <div class="mb-2">
+            <strong>التقييم:</strong> 
+            <span class="badge bg-${score >= 70 ? 'success' : score >= 50 ? 'warning' : 'danger'}">
+                ${score >= 90 ? 'ممتاز' : score >= 70 ? 'جيد' : score >= 50 ? 'متوسط' : 'ضعيف'}
+            </span>
+        </div>
+    `;
+    
+    container.innerHTML = html;
+}
+
+function displaySEOSummary(seoData) {
+    const container = document.getElementById('seoSummary');
+    const score = seoData.seo_score || 0;
+    
+    let html = `
+        <div class="text-center mb-3">
+            <div class="h4 text-${score >= 70 ? 'success' : score >= 50 ? 'warning' : 'danger'}">${score}/100</div>
+            <div class="text-muted">نقاط SEO</div>
+        </div>
+    `;
+    
+    if (seoData.title_analysis && seoData.title_analysis.title) {
+        html += `<div class="mb-2"><strong>العنوان:</strong> ${seoData.title_analysis.title.substring(0, 50)}...</div>`;
+    }
+    
+    if (seoData.meta_analysis && seoData.meta_analysis.description) {
+        html += `<div class="mb-2"><strong>الوصف:</strong> ${seoData.meta_analysis.description.substring(0, 50)}...</div>`;
+    }
+    
+    container.innerHTML = html;
+}
+
+function displayCombinedRecommendations(results) {
+    const container = document.getElementById('recommendationsContainer');
+    
+    const allRecommendations = [];
+    
+    // جمع التوصيات من جميع التحليلات
+    Object.entries(results).forEach(([type, data]) => {
+        if (data.recommendations) {
+            data.recommendations.forEach(rec => {
+                allRecommendations.push({
+                    type: type,
+                    recommendation: rec,
+                    priority: getPriority(rec, type)
+                });
+            });
+        }
+    });
+    
+    // ترتيب التوصيات حسب الأولوية
+    allRecommendations.sort((a, b) => b.priority - a.priority);
+    
+    // تقسيم التوصيات حسب الأولوية
+    const highPriority = allRecommendations.filter(r => r.priority >= 8).slice(0, 5);
+    const mediumPriority = allRecommendations.filter(r => r.priority >= 5 && r.priority < 8).slice(0, 5);
+    const lowPriority = allRecommendations.filter(r => r.priority < 5).slice(0, 5);
+    
+    let html = '';
+    
+    if (highPriority.length > 0) {
+        html += '<div class="col-md-4"><h6 class="text-danger">أولوية عالية</h6><ul class="list-group list-group-flush">';
+        highPriority.forEach(item => {
+            html += `<li class="list-group-item p-2"><small>${item.recommendation}</small></li>`;
+        });
+        html += '</ul></div>';
+    }
+    
+    if (mediumPriority.length > 0) {
+        html += '<div class="col-md-4"><h6 class="text-warning">أولوية متوسطة</h6><ul class="list-group list-group-flush">';
+        mediumPriority.forEach(item => {
+            html += `<li class="list-group-item p-2"><small>${item.recommendation}</small></li>`;
+        });
+        html += '</ul></div>';
+    }
+    
+    if (lowPriority.length > 0) {
+        html += '<div class="col-md-4"><h6 class="text-info">أولوية منخفضة</h6><ul class="list-group list-group-flush">';
+        lowPriority.forEach(item => {
+            html += `<li class="list-group-item p-2"><small>${item.recommendation}</small></li>`;
+        });
+        html += '</ul></div>';
+    }
+    
+    if (html === '') {
+        html = '<div class="col-12"><p class="text-success">لا توجد توصيات عاجلة - الموقع في حالة جيدة!</p></div>';
+    }
+    
+    container.innerHTML = html;
+}
+
+function getPriority(recommendation, type) {
+    // تحديد أولوية التوصية بناءً على نوعها والمحتوى
+    const highPriorityKeywords = ['ثغرة', 'أمان', 'خطير', 'SSL', 'بطيء'];
+    const mediumPriorityKeywords = ['تحسين', 'تحديث', 'إضافة'];
+    
+    if (type === 'security') return 10; // الأمان له أولوية عالية دائماً
+    
+    for (let keyword of highPriorityKeywords) {
+        if (recommendation.includes(keyword)) return 9;
+    }
+    
+    for (let keyword of mediumPriorityKeywords) {
+        if (recommendation.includes(keyword)) return 6;
+    }
+    
+    return 3; // أولوية منخفضة افتراضياً
+}
+
+function exportComprehensiveReport() {
+    if (comprehensiveData) {
+        const dataStr = JSON.stringify(comprehensiveData, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `comprehensive_analysis_${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+    }
+}
+
+function startNewAnalysis() {
+    document.getElementById('resultsContainer').style.display = 'none';
+    document.getElementById('websiteUrl').value = '';
+    document.getElementById('websiteUrl').focus();
+}
+</script>
+{% endblock %}
