@@ -1,232 +1,219 @@
 // Website Analyzer - Main JavaScript file
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize tooltips if Bootstrap tooltips are available
-    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    // Initialize Feather icons if available
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+
+    // Form validation and enhancement
+    initializeFormValidation();
+
+    // Initialize animations
+    initializeAnimations();
+
+    // Initialize tooltips if Bootstrap is available
+    if (typeof bootstrap !== 'undefined') {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     }
-
-    // URL validation and formatting
-    const urlInput = document.getElementById('url');
-    if (urlInput) {
-        urlInput.addEventListener('blur', function() {
-            let url = this.value.trim();
-            if (url && !url.match(/^https?:\/\//)) {
-                // Auto-add https:// if no protocol specified
-                this.value = 'https://' + url;
-            }
-        });
-
-        // Real-time URL validation
-        urlInput.addEventListener('input', function() {
-            const url = this.value.trim();
-            const isValid = url === '' || isValidUrl(url) || isValidUrl('https://' + url);
-            
-            if (isValid) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-            } else {
-                this.classList.remove('is-valid');
-                this.classList.add('is-invalid');
-            }
-        });
-    }
-
-    // Progress tracking for analysis
-    const progressBar = document.getElementById('progressBar');
-    if (progressBar) {
-        // Animate progress bar
-        let progress = 25;
-        const interval = setInterval(() => {
-            progress += Math.random() * 10;
-            if (progress > 90) progress = 90;
-            progressBar.style.width = progress + '%';
-        }, 2000);
-
-        // Clear interval when page is about to unload
-        window.addEventListener('beforeunload', () => {
-            clearInterval(interval);
-        });
-    }
-
-    // Auto-refresh functionality for results page
-    const resultStatus = document.querySelector('[data-status]');
-    if (resultStatus && resultStatus.dataset.status === 'pending') {
-        const refreshInterval = setInterval(() => {
-            const currentUrl = window.location.href;
-            if (currentUrl.includes('/results/')) {
-                // Check if we're still on the same page
-                fetch(window.location.pathname + '/status', {
-                    method: 'GET',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'completed' || data.status === 'failed') {
-                        window.location.reload();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking status:', error);
-                });
-            }
-        }, 5000);
-
-        // Clear interval when leaving the page
-        window.addEventListener('beforeunload', () => {
-            clearInterval(refreshInterval);
-        });
-    }
-
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-
-    // Copy to clipboard functionality
-    const copyButtons = document.querySelectorAll('[data-copy]');
-    copyButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const textToCopy = this.dataset.copy;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                // Show success feedback
-                const originalText = this.innerHTML;
-                this.innerHTML = '<i data-feather="check" class="me-1"></i>Copied!';
-                setTimeout(() => {
-                    this.innerHTML = originalText;
-                    feather.replace();
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
-        });
-    });
-
-    // Table sorting functionality
-    const sortableHeaders = document.querySelectorAll('th[data-sort]');
-    sortableHeaders.forEach(header => {
-        header.style.cursor = 'pointer';
-        header.addEventListener('click', function() {
-            const table = this.closest('table');
-            const tbody = table.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            const column = this.cellIndex;
-            const isAscending = this.classList.contains('sort-asc');
-
-            // Sort rows
-            rows.sort((a, b) => {
-                const aText = a.cells[column].textContent.trim();
-                const bText = b.cells[column].textContent.trim();
-                
-                // Try to parse as numbers first
-                const aNum = parseFloat(aText);
-                const bNum = parseFloat(bText);
-                
-                if (!isNaN(aNum) && !isNaN(bNum)) {
-                    return isAscending ? bNum - aNum : aNum - bNum;
-                } else {
-                    return isAscending ? 
-                        bText.localeCompare(aText) : 
-                        aText.localeCompare(bText);
-                }
-            });
-
-            // Remove existing sort classes
-            sortableHeaders.forEach(h => {
-                h.classList.remove('sort-asc', 'sort-desc');
-            });
-
-            // Add appropriate class
-            this.classList.add(isAscending ? 'sort-desc' : 'sort-asc');
-
-            // Reorder table rows
-            rows.forEach(row => tbody.appendChild(row));
-        });
-    });
-
-    // Enhanced form validation
-    const forms = document.querySelectorAll('form[data-validate]');
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            let isValid = true;
-            const requiredFields = form.querySelectorAll('[required]');
-
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    field.classList.add('is-invalid');
-                    isValid = false;
-                } else {
-                    field.classList.remove('is-invalid');
-                    field.classList.add('is-valid');
-                }
-            });
-
-            if (!isValid) {
-                e.preventDefault();
-                const firstInvalid = form.querySelector('.is-invalid');
-                if (firstInvalid) {
-                    firstInvalid.focus();
-                }
-            }
-        });
-    });
-
-    // Auto-resize textareas
-    const textareas = document.querySelectorAll('textarea[data-auto-resize]');
-    textareas.forEach(textarea => {
-        const resizeTextarea = () => {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-        };
-
-        textarea.addEventListener('input', resizeTextarea);
-        resizeTextarea(); // Initial resize
-    });
-
-    // Loading states for buttons
-    const submitButtons = document.querySelectorAll('button[type="submit"]');
-    submitButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const form = this.closest('form');
-            if (form && form.checkValidity()) {
-                const originalHtml = this.innerHTML;
-                this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
-                this.disabled = true;
-
-                // Re-enable after 10 seconds as fallback
-                setTimeout(() => {
-                    this.innerHTML = originalHtml;
-                    this.disabled = false;
-                }, 10000);
-            }
-        });
-    });
 });
 
-// Utility functions
+function initializeFormValidation() {
+    const form = document.getElementById('analysisForm');
+    const urlInput = document.getElementById('url');
+    const submitBtn = document.getElementById('analyzeBtn');
+
+    if (!form || !urlInput || !submitBtn) {
+        return; // Elements not found, skip initialization
+    }
+
+    // URL input validation
+    urlInput.addEventListener('input', function() {
+        const url = this.value.trim();
+        const isValid = isValidUrl(url);
+
+        if (url && !isValid) {
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-invalid');
+        }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        const url = urlInput.value.trim();
+
+        if (!url) {
+            e.preventDefault();
+            showAlert('يرجى إدخال رابط الموقع', 'error');
+            return false;
+        }
+
+        if (!isValidUrl(url)) {
+            e.preventDefault();
+            showAlert('يرجى إدخال رابط صحيح', 'error');
+            return false;
+        }
+
+        // Show loading state
+        setLoadingState(submitBtn, true);
+
+        // The form will submit normally after this
+        return true;
+    });
+}
+
 function isValidUrl(string) {
     try {
-        const url = new URL(string);
-        return url.protocol === 'http:' || url.protocol === 'https:';
+        // Add protocol if missing
+        if (!string.startsWith('http://') && !string.startsWith('https://')) {
+            string = 'https://' + string;
+        }
+        new URL(string);
+        return true;
     } catch (_) {
         return false;
     }
 }
 
+function setLoadingState(button, loading) {
+    if (!button) return;
+
+    if (loading) {
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>جاري التحليل...';
+    } else {
+        button.disabled = false;
+        button.innerHTML = '<i data-feather="zap" class="me-2" width="18" height="18"></i>تحليل الموقع';
+        // Re-initialize feather icons
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    }
+}
+
+function showAlert(message, type = 'info') {
+    // Create alert element
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    // Find container to insert alert
+    const container = document.querySelector('.flash-messages') || document.querySelector('.container-fluid');
+    if (container) {
+        container.insertBefore(alertDiv, container.firstChild);
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
+}
+
+function initializeAnimations() {
+    // Counter animation for stats
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            const increment = target / 200;
+
+            if (count < target) {
+                counter.innerText = Math.ceil(count + increment);
+                setTimeout(updateCount, 1);
+            } else {
+                counter.innerText = target;
+            }
+        };
+
+        // Start animation when element is visible
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    updateCount();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        observer.observe(counter);
+    });
+
+    // Pulse animation for buttons
+    const pulseButtons = document.querySelectorAll('.pulse-btn');
+    pulseButtons.forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+        });
+
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+}
+
+// Progress tracking for analysis page
+function updateProgress(resultId) {
+    if (!resultId) return;
+
+    fetch(`/api/status/${resultId}`)
+        .then(response => response.json())
+        .then(data => {
+            const progressBar = document.querySelector('.progress-bar');
+            const statusText = document.querySelector('.status-text');
+
+            if (progressBar) {
+                progressBar.style.width = data.progress + '%';
+            }
+
+            if (statusText) {
+                statusText.textContent = getStatusText(data.status);
+            }
+
+            // If completed, redirect to results
+            if (data.status === 'completed') {
+                window.location.href = `/results/${resultId}`;
+            } else if (data.status === 'failed') {
+                showAlert(data.error_message || 'حدث خطأ في التحليل', 'error');
+            } else {
+                // Continue polling
+                setTimeout(() => updateProgress(resultId), 2000);
+            }
+        })
+        .catch(error => {
+            console.error('Error checking status:', error);
+            setTimeout(() => updateProgress(resultId), 5000);
+        });
+}
+
+function getStatusText(status) {
+    const statusTexts = {
+        'pending': 'في الانتظار...',
+        'processing': 'جاري التحليل...',
+        'completed': 'اكتمل التحليل',
+        'failed': 'فشل التحليل'
+    };
+
+    return statusTexts[status] || status;
+}
+
+// Export functions for use in other scripts
+window.WebsiteAnalyzer = {
+    updateProgress: updateProgress,
+    setLoadingState: setLoadingState,
+    showAlert: showAlert
+};
+
+// Utility functions
 function formatBytes(bytes, decimals = 2) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -255,11 +242,3 @@ function debounce(func, wait, immediate) {
         if (callNow) func.apply(context, args);
     };
 }
-
-// Export functions for use in other modules
-window.WebAnalyzer = {
-    isValidUrl,
-    formatBytes,
-    formatNumber,
-    debounce
-};

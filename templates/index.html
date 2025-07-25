@@ -15,52 +15,63 @@
                 <p class="lead text-light opacity-75 mb-4">
                     اكتشف أسرار أي موقع ويب بتحليل شامل ومتطور للتقنيات والبنية والأداء
                 </p>
-                
+
+                <!-- Flash messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-messages mb-4">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
                 <!-- Analysis Form -->
-                <form method="POST" action="{{ url_for('analyze_website') }}" class="analysis-form">
+                <form method="POST" action="{{ url_for('analyze_website') }}" class="analysis-form" id="analysisForm">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-8">
                             <label for="url" class="form-label text-light">رابط الموقع</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-dark border-secondary">
-                                    <i data-feather="globe" class="text-primary" width="20" height="20"></i>
+                                <span class="input-group-text bg-dark border-primary text-light">
+                                    <i data-feather="globe" width="18" height="18"></i>
                                 </span>
                                 <input type="url" 
-                                       class="form-control form-control-lg bg-dark border-secondary text-white" 
+                                       class="form-control form-control-lg bg-dark border-primary text-light" 
                                        id="url" 
                                        name="url" 
-                                       placeholder="https://example.com" 
+                                       placeholder="https://example.com"
                                        required>
                             </div>
                         </div>
-                        
-                        <div class="col-md-2">
-                            <label for="max_depth" class="form-label text-light">عمق التحليل</label>
-                            <select class="form-select form-select-lg bg-dark border-secondary text-white" 
-                                    id="max_depth" 
-                                    name="max_depth">
-                                <option value="1">سريع (1)</option>
-                                <option value="2" selected>متوسط (2)</option>
-                                <option value="3">عميق (3)</option>
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary btn-lg w-100 gradient-btn">
-                                <i data-feather="play" class="me-2" width="20" height="20"></i>
-                                تحليل
+
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 pulse-btn" id="analyzeBtn">
+                                <i data-feather="zap" class="me-2" width="18" height="18"></i>
+                                تحليل الموقع
                             </button>
                         </div>
                     </div>
-                    
+
                     <!-- Advanced Options -->
-                    <div class="row mt-3">
+                    <div class="row mt-4">
                         <div class="col-md-6">
-                            <div class="form-check form-switch">
+                            <label for="max_depth" class="form-label text-light">عمق التحليل</label>
+                            <select class="form-select bg-dark border-primary text-light" id="max_depth" name="max_depth">
+                                <option value="1">صفحة واحدة (سريع)</option>
+                                <option value="2" selected>مستويين (متوسط)</option>
+                                <option value="3">ثلاثة مستويات (شامل)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 d-flex align-items-end">
+                            <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="block_ads" name="block_ads" checked>
                                 <label class="form-check-label text-light" for="block_ads">
-                                    <i data-feather="shield" class="me-2 text-warning" width="16" height="16"></i>
-                                    حظر الإعلانات أثناء التحليل
+                                    حجب الإعلانات والتتبع
                                 </label>
                             </div>
                         </div>
@@ -71,51 +82,55 @@
     </div>
 
     <!-- Features Section -->
-    <div class="row g-4 mb-5">
-        <div class="col-md-6 col-lg-3">
-            <div class="glass-card p-4 text-center h-100">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center text-white mb-5">ميزات التحليل المتقدم</h2>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="feature-card glass-card p-4 h-100">
                 <div class="feature-icon mb-3">
                     <i data-feather="code" class="text-primary" width="40" height="40"></i>
                 </div>
-                <h5 class="text-white mb-2">تحليل التقنيات</h5>
-                <p class="text-light opacity-75 small">
-                    اكتشاف الإطارات والمكتبات والتقنيات المستخدمة
+                <h5 class="text-white mb-3">تحليل التقنيات</h5>
+                <p class="text-light opacity-75">
+                    اكتشاف أطر العمل، المكتبات، وأنظمة إدارة المحتوى المستخدمة
                 </p>
             </div>
         </div>
-        
-        <div class="col-md-6 col-lg-3">
-            <div class="glass-card p-4 text-center h-100">
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="feature-card glass-card p-4 h-100">
                 <div class="feature-icon mb-3">
                     <i data-feather="layers" class="text-success" width="40" height="40"></i>
                 </div>
-                <h5 class="text-white mb-2">بنية الموقع</h5>
-                <p class="text-light opacity-75 small">
-                    تحليل هيكل HTML والعناصر والتنظيم
+                <h5 class="text-white mb-3">تحليل البنية</h5>
+                <p class="text-light opacity-75">
+                    فهم التخطيط، العناصر، والهيكل العام للموقع
                 </p>
             </div>
         </div>
-        
-        <div class="col-md-6 col-lg-3">
-            <div class="glass-card p-4 text-center h-100">
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="feature-card glass-card p-4 h-100">
                 <div class="feature-icon mb-3">
-                    <i data-feather="trending-up" class="text-info" width="40" height="40"></i>
+                    <i data-feather="search" class="text-warning" width="40" height="40"></i>
                 </div>
-                <h5 class="text-white mb-2">تحسين SEO</h5>
-                <p class="text-light opacity-75 small">
-                    فحص عوامل تحسين محركات البحث والأداء
+                <h5 class="text-white mb-3">تحسين SEO</h5>
+                <p class="text-light opacity-75">
+                    تحليل البيانات الوصفية وعوامل تحسين محركات البحث
                 </p>
             </div>
         </div>
-        
-        <div class="col-md-6 col-lg-3">
-            <div class="glass-card p-4 text-center h-100">
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="feature-card glass-card p-4 h-100">
                 <div class="feature-icon mb-3">
-                    <i data-feather="image" class="text-warning" width="40" height="40"></i>
+                    <i data-feather="file-text" class="text-info" width="40" height="40"></i>
                 </div>
-                <h5 class="text-white mb-2">الأصول والملفات</h5>
-                <p class="text-light opacity-75 small">
-                    تحليل الصور والخطوط والملفات المستخدمة
+                <h5 class="text-white mb-3">تقرير شامل</h5>
+                <p class="text-light opacity-75">
+                    دليل مفصل لإعادة إنشاء الموقع بالعربية
                 </p>
             </div>
         </div>
@@ -213,174 +228,55 @@
 .table-hover > tbody > tr:hover > td {
     background-color: rgba(255, 255, 255, 0.05);
 }
+
+.pulse-btn {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+    }
+
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+    }
+}
 </style>
 
 <script>
-// Form validation
-document.querySelector('.analysis-form').addEventListener('submit', function(e) {
-    const urlInput = document.getElementById('url');
-    const url = urlInput.value.trim();
-    
-    if (!url) {
-        e.preventDefault();
-        urlInput.focus();
-        return;
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Feather icons
+    if (typeof feather !== 'undefined') {
+        feather.replace();
     }
-    
-    // Add protocol if missing
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        urlInput.value = 'https://' + url;
-    }
-    
-    // Show loading state
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>جاري التحليل...';
-    submitBtn.disabled = true;
-});
 
-// Initialize Feather icons
-if (typeof feather !== 'undefined') {
-    feather.replace();
-}
+    // Form validation and submission
+    const form = document.getElementById('analysisForm');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+
+    if (form && analyzeBtn) {
+        form.addEventListener('submit', function(e) {
+            const url = document.getElementById('url').value.trim();
+
+            if (!url) {
+                e.preventDefault();
+                alert('يرجى إدخال رابط الموقع');
+                return false;
+            }
+
+            // Add loading state
+            analyzeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>جاري التحليل...';
+            analyzeBtn.disabled = true;
+        });
+    }
+});
 </script>
 {% endblock %}
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محلل المواقع الذكي</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <header class="header">
-            <h1>🔍 محلل المواقع الذكي</h1>
-            <p>تحليل شامل ومتقدم للمواقع الإلكترونية</p>
-        </header>
-
-        <!-- Flash messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {{ message }}
-                            <button type="button" class="close-btn" onclick="this.parentElement.remove()">×</button>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <main class="main-content">
-            <div class="analysis-form">
-                <form action="{{ url_for('analyze_website') }}" method="POST" id="analyzeForm">
-                    <div class="form-group">
-                        <label for="url">🌐 رابط الموقع المراد تحليله:</label>
-                        <input type="url" 
-                               id="url" 
-                               name="url" 
-                               placeholder="https://example.com" 
-                               required
-                               class="url-input">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="max_depth">📊 عمق التحليل:</label>
-                        <select id="max_depth" name="max_depth" class="depth-select">
-                            <option value="1">سطحي (صفحة واحدة)</option>
-                            <option value="2" selected>متوسط (صفحتان)</option>
-                            <option value="3">عميق (3 صفحات)</option>
-                            <option value="4">شامل (4 صفحات)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="block_ads" name="block_ads" checked>
-                            <span class="checkmark"></span>
-                            🚫 حجب الإعلانات أثناء التحليل
-                        </label>
-                    </div>
-
-                    <button type="submit" class="analyze-btn" id="submitBtn">
-                        <span class="btn-text">🚀 بدء التحليل</span>
-                        <div class="loading-spinner" style="display: none;"></div>
-                    </button>
-                </form>
-            </div>
-
-            <div class="features">
-                <h2>✨ مميزات المحلل</h2>
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <h3>🏗️ تحليل البنية</h3>
-                        <p>تحليل عميق لبنية HTML وتنظيم المحتوى</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>🎨 تحليل الأصول</h3>
-                        <p>فحص الصور، CSS، JavaScript والخطوط</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>⚙️ تحليل التقنيات</h3>
-                        <p>اكتشاف إطارات العمل والمكتبات المستخدمة</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>📈 تحليل SEO</h3>
-                        <p>تقييم تحسين محركات البحث والأداء</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>🗺️ خريطة التنقل</h3>
-                        <p>تحليل بنية الروابط وخريطة الموقع</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>📋 تقرير عربي</h3>
-                        <p>تقرير شامل باللغة العربية</p>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <footer class="footer">
-            <p>&copy; 2024 محلل المواقع الذكي. جميع الحقوق محفوظة.</p>
-            <a href="{{ url_for('history') }}" class="history-link">📚 سجل التحليلات</a>
-        </footer>
-    </div>
-
-    <script>
-        document.getElementById('analyzeForm').addEventListener('submit', function(e) {
-            const submitBtn = document.getElementById('submitBtn');
-            const btnText = submitBtn.querySelector('.btn-text');
-            const spinner = submitBtn.querySelector('.loading-spinner');
-            
-            if (submitBtn && btnText && spinner) {
-                submitBtn.disabled = true;
-                btnText.style.display = 'none';
-                spinner.style.display = 'inline-block';
-                btnText.textContent = '⏳ جاري التحليل...';
-                
-                setTimeout(function() {
-                    btnText.style.display = 'inline-block';
-                }, 100);
-            }
-        });
-
-        // تنظيف رسائل التنبيه تلقائياً
-        setTimeout(function() {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                if (alert) {
-                    alert.style.opacity = '0';
-                    setTimeout(function() {
-                        if (alert.parentElement) {
-                            alert.remove();
-                        }
-                    }, 300);
-                }
-            });
-        }, 5000);
-    </script>
-</body>
-</html>
