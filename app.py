@@ -15,7 +15,7 @@ db = SQLAlchemy(model_class=Base)
 
 # Create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET") or "temp-secret-key-for-development"
+app.secret_key = os.environ.get("SESSION_SECRET") or "ultra-secure-flask-secret-key-2025-replit-migration-xyz789"
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Configure the database
