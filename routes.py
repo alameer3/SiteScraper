@@ -113,11 +113,31 @@ def analyze_website():
 def dashboard():
     """لوحة التحكم الرئيسية"""
     try:
+        # احصائيات التحليلات
+        total_analyses = ScrapeResult.query.count()
+        
+        # إحصائيات حسب النوع
+        analysis_stats = {
+            'security': ScrapeResult.query.filter_by(analysis_type='security').count(),
+            'performance': ScrapeResult.query.filter_by(analysis_type='performance').count(),
+            'seo': ScrapeResult.query.filter_by(analysis_type='seo').count(),
+            'competitor': ScrapeResult.query.filter_by(analysis_type='competitor').count()
+        }
+        
+        # آخر التحليلات
         recent_results = ScrapeResult.query.order_by(ScrapeResult.created_at.desc()).limit(10).all()
-        return render_template('dashboard.html', results=recent_results)
+        
+        return render_template('dashboard.html', 
+                             results=recent_results,
+                             total_analyses=total_analyses,
+                             analysis_stats=analysis_stats)
     except Exception as e:
         logging.error(f"Error loading dashboard: {e}")
-        return render_template('dashboard.html', results=[])
+        # في حالة الخطأ، إرجاع قيم افتراضية
+        return render_template('dashboard.html', 
+                             results=[],
+                             total_analyses=0,
+                             analysis_stats={'security': 0, 'performance': 0, 'seo': 0, 'competitor': 0})
 
 @app.route('/history')
 def history():
@@ -280,6 +300,8 @@ def api_extraction_status(url):
 def reports_page():
     """صفحة التقارير"""
     return render_template('reports.html')
+
+
 
 # APIs للتحليل المتقدم
 @app.route('/api/security-analyze', methods=['POST'])
