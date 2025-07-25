@@ -763,31 +763,9 @@ body {
         
         return components
     
-    def _detect_performance_tools(self, soup, content):
-        """اكتشاف أدوات الأداء"""
-        tools = []
-        performance_patterns = {
-            'Google Analytics': r'google-analytics|gtag|ga\(',
-            'GTM': r'googletagmanager',
-            'Hotjar': r'hotjar',
-            'New Relic': r'newrelic'
-        }
-        
-        for tool, pattern in performance_patterns.items():
-            if re.search(pattern, content, re.IGNORECASE):
-                tools.append(tool)
-        
-        return tools
+
     
-    def _analyze_component_patterns(self, soup):
-        """تحليل أنماط المكونات"""
-        patterns = {
-            'cards': len(soup.find_all(class_=re.compile(r'card'))),
-            'buttons': len(soup.find_all('button')) + len(soup.find_all(class_=re.compile(r'btn'))),
-            'forms': len(soup.find_all('form')),
-            'modals': len(soup.find_all(class_=re.compile(r'modal')))
-        }
-        return patterns
+
     
     def _analyze_images_detailed(self, soup, url):
         """تحليل تفصيلي للصور"""
@@ -890,3 +868,35 @@ body {
             'responsive_images': len(soup.find_all('img', srcset=True))
         }
         return patterns
+    
+    def _detect_performance_tools(self, soup, content):
+        """كشف أدوات الأداء"""
+        tools = []
+        performance_patterns = {
+            'Google PageSpeed': r'pagespeed',
+            'Lazy Loading': r'loading=["\']lazy["\']',
+            'Service Worker': r'navigator\.serviceWorker',
+            'Web Workers': r'new Worker\(',
+            'Caching': r'cache-control|expires'
+        }
+        
+        for tool, pattern in performance_patterns.items():
+            if re.search(pattern, content, re.IGNORECASE):
+                tools.append(tool)
+        return tools
+    
+    def _analyze_component_patterns(self, soup):
+        """تحليل أنماط المكونات"""
+        patterns = {
+            'buttons': len(soup.find_all('button')) + len(soup.find_all(class_=re.compile(r'btn|button'))),
+            'forms': len(soup.find_all('form')),
+            'navigation': len(soup.find_all('nav')) + len(soup.find_all(class_=re.compile(r'nav|menu'))),
+            'cards': len(soup.find_all(class_=re.compile(r'card'))),
+            'modals': len(soup.find_all(class_=re.compile(r'modal|popup')))
+        }
+        return patterns
+    
+
+    
+
+    

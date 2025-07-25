@@ -6,7 +6,9 @@ This is a Flask-based web application that provides comprehensive website analys
 
 ## User Preferences
 
-Preferred communication style: Simple, everyday language.
+- **Communication style**: Arabic language, simple and clear explanations  
+- **Technical approach**: Thorough debugging and complete solutions
+- **Code quality**: Fix all errors completely, no incomplete implementations
 
 ## System Architecture
 

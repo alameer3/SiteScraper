@@ -366,7 +366,7 @@ def api_search_analyses():
         # إحصائيات
         total_query = ScrapeResult.query
         if query:
-            total_query = total_query.filter(ScrapeResult.url.like(f'%{query}%'))
+            total_query = total_query.filter(ScrapeResult.url.contains(query))
         if analysis_type:
             total_query = total_query.filter(ScrapeResult.analysis_type == analysis_type)
             
