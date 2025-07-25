@@ -33,7 +33,7 @@ with app.app_context():
     import models
     db.create_all()
 
-# Import routes
-from routes import *
+# Import enhanced routes (routes.py is deprecated)
+# from routes import *
 
 

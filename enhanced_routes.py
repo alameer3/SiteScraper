@@ -3,6 +3,121 @@
 طرق متطورة لجميع الميزات الجديدة
 """
 
+from flask import render_template, request, jsonify, redirect, url_for, flash, make_response
+from app import app, db
+from models import ScrapeResult
+from simple_scraper import SimpleScraper
+from analyzer import WebsiteAnalyzer
+from advanced_analyzer import AdvancedWebsiteAnalyzer
+from technical_extractor import TechnicalExtractor
+from arabic_generator import ArabicGenerator
+from urllib.parse import urlparse
+import json
+import logging
+from datetime import datetime
+import threading
+
+@app.route('/')
+def index():
+    """Main page with URL input form"""
+    try:
+        return render_template('index.html')
+    except Exception as e:
+        logging.error(f"Error rendering index page: {e}")
+        return f"خطأ في تحميل الصفحة الرئيسية: {str(e)}", 500
+
+@app.route('/analyze', methods=['POST'])
+def analyze_website():
+    """Start website analysis"""
+    try:
+        url = request.form.get('url', '').strip()
+        max_depth = int(request.form.get('max_depth', 2))
+        block_ads = request.form.get('block_ads') == 'on'
+        
+        if not url:
+            flash('يرجى إدخال رابط صحيح', 'error')
+            return redirect(url_for('index'))
+            
+        # التحقق من صحة الرابط
+        if not url.startswith(('http://', 'https://')):
+            url = 'https://' + url
+            
+        # Validate URL
+        try:
+            parsed_url = urlparse(url)
+            if not parsed_url.netloc:
+                flash('رابط غير صحيح', 'error')
+                return redirect(url_for('index'))
+        except Exception:
+            flash('رابط غير صحيح', 'error')
+            return redirect(url_for('index'))
+        
+        # Start analysis in background
+        def analyze_in_background():
+            try:
+                scraper = SimpleScraper()
+                analyzer = AdvancedWebsiteAnalyzer()
+                
+                # Scrape the website
+                scrape_data = scraper.scrape_website(url, max_depth=max_depth)
+                
+                # Analyze the scraped data
+                analysis_result = analyzer.analyze_comprehensive(url, scrape_data)
+                
+                # Store in database
+                result = ScrapeResult(
+                    url=url,
+                    structure_data=json.dumps(analysis_result.get('structure', {})),
+                    assets_data=json.dumps(analysis_result.get('assets', {})),
+                    technology_data=json.dumps(analysis_result.get('technology', {})),
+                    seo_data=json.dumps(analysis_result.get('seo', {})),
+                    navigation_data=json.dumps(analysis_result.get('navigation', {})),
+                    status='completed'
+                )
+                db.session.add(result)
+                db.session.commit()
+                
+                logging.info(f"Analysis completed for {url}")
+                
+            except Exception as e:
+                logging.error(f"Analysis failed for {url}: {e}")
+                
+        # Start background analysis
+        thread = threading.Thread(target=analyze_in_background)
+        thread.start()
+        
+        flash('تم بدء تحليل الموقع، ستظهر النتائج قريباً', 'success')
+        return redirect(url_for('dashboard'))
+        
+    except ValueError as e:
+        flash('خطأ في قيم النموذج', 'error')
+        return redirect(url_for('index'))
+    except Exception as e:
+        logging.error(f"Error processing form: {e}")
+        flash('حدث خطأ في معالجة النموذج', 'error')
+        return redirect(url_for('index'))
+
+@app.route('/history')
+def history():
+    """Analysis history page"""
+    try:
+        results = ScrapeResult.query.order_by(ScrapeResult.created_at.desc()).limit(50).all()
+        return render_template('history.html', results=results)
+    except Exception as e:
+        logging.error(f"Error loading history: {e}")
+        return render_template('history.html', results=[])
+
+@app.route('/results/<int:result_id>')
+def view_results(result_id):
+    """View analysis results"""
+    try:
+        result = ScrapeResult.query.get_or_404(result_id)
+        return render_template('results.html', result=result)
+    except Exception as e:
+        logging.error(f"Error loading results: {e}")
+        flash('خطأ في تحميل النتائج', 'error')
+        return redirect(url_for('history'))
+
 from flask import render_template, request, jsonify, redirect, url_for, flash, send_file
 from app import app, db
 from models import ScrapeResult
