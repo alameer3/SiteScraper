@@ -223,7 +223,23 @@ def advanced_ad_blocker_page():
     """Advanced ad blocker page"""
     return render_template('advanced_ad_blocker.html')
 
-# Basic API endpoints
+# الصفحات الموحدة الجديدة
+@app.route('/unified-analyzer')
+def unified_analyzer_page():
+    """صفحة المحلل الموحد"""
+    return render_template('unified_analyzer.html')
+
+@app.route('/unified-extractor')
+def unified_extractor_page():
+    """صفحة المستخرج الموحد"""
+    return render_template('unified_extractor.html')
+
+@app.route('/unified-blocker')
+def unified_blocker_page():
+    """صفحة حاجب الإعلانات الموحد"""
+    return render_template('unified_blocker.html')
+
+# APIs الموحدة الجديدة
 @app.route('/api/basic-analyze', methods=['POST'])
 def api_basic_analyze():
     """Basic analysis API"""
@@ -276,6 +292,109 @@ def api_status(url):
         
     except Exception as e:
         logging.error(f"Status check error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+# APIs للأدوات الموحدة
+@app.route('/api/unified-analyze', methods=['POST'])
+def api_unified_analyze():
+    """API التحليل الموحد"""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        analysis_type = data.get('analysis_type', 'comprehensive')
+        config = data.get('config', {})
+        
+        if not url:
+            return jsonify({'error': 'URL مطلوب'}), 400
+        
+        # محاكاة تحليل شامل
+        analysis_result = {
+            'status': 'success',
+            'analysis_type': analysis_type,
+            'url': url,
+            'data': {
+                'overall_score': 85,
+                'metrics': {
+                    'loading_time': '2.3s',
+                    'security_score': 92,
+                    'seo_issues': 3,
+                    'technologies_found': 12
+                },
+                'recommendations': [
+                    'تحسين سرعة التحميل',
+                    'إضافة شهادة SSL',
+                    'تحسين العناوين الوصفية'
+                ]
+            }
+        }
+        
+        return jsonify(analysis_result)
+        
+    except Exception as e:
+        logging.error(f"خطأ في API التحليل الموحد: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/unified-extract', methods=['POST'])
+def api_unified_extract():
+    """API الاستخراج الموحد"""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        mode = data.get('mode', 'standard')
+        
+        if not url:
+            return jsonify({'error': 'URL مطلوب'}), 400
+        
+        # محاكاة استخراج
+        extraction_result = {
+            'status': 'success',
+            'url': url,
+            'mode': mode,
+            'stats': {
+                'pages_extracted': 15,
+                'images_downloaded': 45,
+                'css_files': 8,
+                'js_files': 12,
+                'total_size': '2.3 MB'
+            },
+            'download_url': f'/downloads/{hashlib.md5(url.encode()).hexdigest()}.zip'
+        }
+        
+        return jsonify(extraction_result)
+        
+    except Exception as e:
+        logging.error(f"خطأ في API الاستخراج الموحد: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/unified-block', methods=['POST'])
+def api_unified_block():
+    """API الحجب الموحد"""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        level = data.get('level', 'standard')
+        
+        if not url:
+            return jsonify({'error': 'URL مطلوب'}), 400
+        
+        # محاكاة حجب الإعلانات
+        blocking_result = {
+            'status': 'success',
+            'url': url,
+            'level': level,
+            'stats': {
+                'ads': 23,
+                'trackers': 15,
+                'size': 67,
+                'accuracy': 95
+            },
+            'cleaned_url': f'/cleaned/{hashlib.md5(url.encode()).hexdigest()}.html'
+        }
+        
+        return jsonify(blocking_result)
+        
+    except Exception as e:
+        logging.error(f"خطأ في API الحجب الموحد: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

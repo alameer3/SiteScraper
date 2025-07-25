@@ -1,882 +1,0 @@
-
-{% extends "base.html" %}
-
-{% block title %}أداة استخراج المواقع الشاملة - جميع المزايا{% endblock %}
-
-{% block content %}
-<div class="container-fluid mt-4">
-    <!-- عنوان الأداة مع جميع المزايا -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h2 text-primary">
-                <i data-feather="download" class="me-2"></i>
-                🌐 أداة استخراج المواقع الشاملة - جميع المزايا
-            </h1>
-            <p class="text-muted">منصة متكاملة لاستخراج وتحليل المواقع مع الذكاء الاصطناعي المتطور</p>
-        </div>
-    </div>
-
-    <!-- شريط المزايا السريع -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card bg-gradient-primary text-white">
-                <div class="card-body">
-                    <h5 class="card-title">🚀 جميع المزايا المتاحة في منصة واحدة</h5>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <h6><i data-feather="shield" class="me-1"></i> الأمان والحماية</h6>
-                            <ul class="small">
-                                <li>تحليل الثغرات الأمنية</li>
-                                <li>فحص SSL وTLS</li>
-                                <li>كشف البرمجيات الخبيثة</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-3">
-                            <h6><i data-feather="zap" class="me-1"></i> الأداء والسرعة</h6>
-                            <ul class="small">
-                                <li>تحليل سرعة التحميل</li>
-                                <li>تقييم Core Web Vitals</li>
-                                <li>فحص الاستجابة المحمولة</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-3">
-                            <h6><i data-feather="search" class="me-1"></i> SEO وتحسين المحركات</h6>
-                            <ul class="small">
-                                <li>تحليل الكلمات المفتاحية</li>
-                                <li>فحص البيانات المنظمة</li>
-                                <li>تقييم Meta Tags</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-3">
-                            <h6><i data-feather="users" class="me-1"></i> تحليل المنافسين</h6>
-                            <ul class="small">
-                                <li>مقارنة شاملة</li>
-                                <li>تحليل التقنيات المستخدمة</li>
-                                <li>مراقبة الاتجاهات</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- أزرار الوصول السريع للمزايا -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">🎯 الوصول السريع لجميع أدوات التحليل</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <div class="d-grid">
-                                <button class="btn btn-outline-danger" onclick="openAnalysisTool('security')">
-                                    <i data-feather="shield" class="me-2"></i>
-                                    تحليل الأمان
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="d-grid">
-                                <button class="btn btn-outline-warning" onclick="openAnalysisTool('performance')">
-                                    <i data-feather="zap" class="me-2"></i>
-                                    تحليل الأداء
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="d-grid">
-                                <button class="btn btn-outline-success" onclick="openAnalysisTool('seo')">
-                                    <i data-feather="search" class="me-2"></i>
-                                    تحليل SEO
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="d-grid">
-                                <button class="btn btn-outline-info" onclick="openAnalysisTool('competitor')">
-                                    <i data-feather="users" class="me-2"></i>
-                                    تحليل المنافسين
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="d-grid">
-                                <button class="btn btn-outline-purple" onclick="openAnalysisTool('comprehensive')">
-                                    <i data-feather="layers" class="me-2"></i>
-                                    التحليل الشامل
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="d-grid">
-                                <button class="btn btn-outline-secondary" onclick="openAnalysisTool('dashboard')">
-                                    <i data-feather="bar-chart-2" class="me-2"></i>
-                                    لوحة التحكم
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- تحذير مهم -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="alert alert-warning">
-                <h5><i data-feather="alert-triangle" class="me-2"></i>تحذير هام</h5>
-                <p class="mb-1">هذه الأداة مخصصة للأغراض التعليمية والبحثية فقط. تأكد من احترام:</p>
-                <ul class="mb-0">
-                    <li>حقوق الطبع والنشر للمحتوى</li>
-                    <li>شروط الاستخدام للموقع المستهدف</li>
-                    <li>القوانين المحلية والدولية</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- نموذج الاستخراج المحدث -->
-    <div class="row mb-4">
-        <div class="col-lg-10 mx-auto">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i data-feather="settings" class="me-2"></i>
-                        إعدادات الاستخراج والتحليل الشامل
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form id="extractorForm">
-                        <div class="mb-3">
-                            <label for="websiteUrl" class="form-label">رابط الموقع المراد استخراجه وتحليله</label>
-                            <div class="input-group">
-                                <input type="url" class="form-control" id="websiteUrl" required 
-                                       placeholder="https://example.com">
-                                <button class="btn btn-outline-secondary" type="button" onclick="analyzeBeforeExtract()">
-                                    <i data-feather="eye" class="me-1"></i>
-                                    تحليل سريع
-                                </button>
-                            </div>
-                            <div class="form-text">أدخل الرابط الكامل للموقع مع http:// أو https://</div>
-                        </div>
-
-                        <!-- خيارات التحليل المتقدم -->
-                        <div class="mb-3">
-                            <label class="form-label">أنواع التحليل المطلوبة (اختر المناسب لك)</label>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="enableSecurity" checked>
-                                        <label class="form-check-label" for="enableSecurity">
-                                            <i data-feather="shield" width="16" height="16"></i>
-                                            تحليل الأمان والثغرات
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="enablePerformance" checked>
-                                        <label class="form-check-label" for="enablePerformance">
-                                            <i data-feather="zap" width="16" height="16"></i>
-                                            تحليل الأداء والسرعة
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="enableSEO" checked>
-                                        <label class="form-check-label" for="enableSEO">
-                                            <i data-feather="search" width="16" height="16"></i>
-                                            تحليل SEO وتحسين المحركات
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="enableTech" checked>
-                                        <label class="form-check-label" for="enableTech">
-                                            <i data-feather="cpu" width="16" height="16"></i>
-                                            تحليل التقنيات المستخدمة
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="enableContent" checked>
-                                        <label class="form-check-label" for="enableContent">
-                                            <i data-feather="file-text" width="16" height="16"></i>
-                                            تحليل المحتوى والهيكل
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="enableCompetitor">
-                                        <label class="form-check-label" for="enableCompetitor">
-                                            <i data-feather="users" width="16" height="16"></i>
-                                            تحليل المنافسين (اختياري)
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="maxPages" class="form-label">عدد الصفحات الأقصى</label>
-                                <select class="form-select" id="maxPages">
-                                    <option value="10">10 صفحات (سريع)</option>
-                                    <option value="25" selected>25 صفحة (متوسط)</option>
-                                    <option value="50">50 صفحة (شامل)</option>
-                                    <option value="100">100 صفحة (كامل)</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="extractionDepth" class="form-label">عمق التحليل</label>
-                                <select class="form-select" id="extractionDepth">
-                                    <option value="basic">أساسي (محتوى نصي)</option>
-                                    <option value="standard" selected>معياري (محتوى + تحليل)</option>
-                                    <option value="complete">شامل (كل شيء + AI)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- خيارات متقدمة للتنظيف بالذكاء الاصطناعي -->
-                        <div class="mb-3">
-                            <label class="form-label">🤖 التنظيف الذكي بالذكاء الاصطناعي</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="useAIBlocker" checked>
-                                <label class="form-check-label" for="useAIBlocker">
-                                    <strong>تفعيل حاجب الإعلانات المتطور بالـ AI</strong>
-                                    <small class="text-muted d-block">95% دقة في حجب الإعلانات وعناصر التتبع</small>
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="removeAds" checked>
-                                <label class="form-check-label" for="removeAds">
-                                    إزالة الإعلانات والعناصر الترويجية
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="removeTracking" checked>
-                                <label class="form-check-label" for="removeTracking">
-                                    إزالة سكريپت التتبع والتحليلات
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="cleanCode" checked>
-                                <label class="form-check-label" for="cleanCode">
-                                    تنظيف الكود وإزالة التعليقات
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">عناصر مطلوب استخراجها</label>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="extractText" checked>
-                                        <label class="form-check-label" for="extractText">
-                                            المحتوى النصي
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="extractImages" checked>
-                                        <label class="form-check-label" for="extractImages">
-                                            الصور والرسومات
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="extractCSS" checked>
-                                        <label class="form-check-label" for="extractCSS">
-                                            ملفات التصميم (CSS)
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="extractJS">
-                                        <label class="form-check-label" for="extractJS">
-                                            ملفات JavaScript
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="extractStructure" checked>
-                                        <label class="form-check-label" for="extractStructure">
-                                            البيانات المنظمة
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="extractMeta" checked>
-                                        <label class="form-check-label" for="extractMeta">
-                                            البيانات الوصفية
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- أزرار التشغيل -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button type="button" class="btn btn-outline-info me-md-2" onclick="previewAnalysis()">
-                                <i data-feather="eye" class="me-2"></i>
-                                معاينة سريعة
-                            </button>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i data-feather="download" class="me-2"></i>
-                                بدء الاستخراج والتحليل الشامل
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- شريط التقدم -->
-    <div class="row mb-4" id="progressSection" style="display: none;">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>جاري الاستخراج والتحليل...</span>
-                        <span id="progressText">0%</span>
-                    </div>
-                    <div class="progress mb-3">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                             id="progressBar" role="progressbar" style="width: 0%"></div>
-                    </div>
-                    <div id="currentStatus" class="text-muted">
-                        <i data-feather="clock" class="me-1"></i>
-                        بدء العملية...
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- إحصائيات مباشرة مع جميع المزايا -->
-    <div class="row mb-4" id="liveStats" style="display: none;">
-        <div class="col-md-2 mb-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body text-center">
-                    <h4 id="pagesExtracted">0</h4>
-                    <small>صفحات مستخرجة</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 mb-3">
-            <div class="card bg-success text-white">
-                <div class="card-body text-center">
-                    <h4 id="imagesDownloaded">0</h4>
-                    <small>صور محملة</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 mb-3">
-            <div class="card bg-info text-white">
-                <div class="card-body text-center">
-                    <h4 id="cssFiles">0</h4>
-                    <small>ملفات CSS</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 mb-3">
-            <div class="card bg-warning text-white">
-                <div class="card-body text-center">
-                    <h4 id="adsRemoved">0</h4>
-                    <small>إعلانات محذوفة</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 mb-3">
-            <div class="card bg-danger text-white">
-                <div class="card-body text-center">
-                    <h4 id="securityIssues">0</h4>
-                    <small>مشاكل أمنية</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 mb-3">
-            <div class="card bg-secondary text-white">
-                <div class="card-body text-center">
-                    <h4 id="seoScore">0</h4>
-                    <small>نقاط SEO</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- نتائج الاستخراج والتحليل -->
-    <div class="row" id="resultsSection" style="display: none;">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i data-feather="check-circle" class="me-2 text-success"></i>
-                        اكتمل الاستخراج والتحليل الشامل بنجاح!
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <!-- نتائج التحليلات -->
-                    <div class="row mb-4">
-                        <div class="col-md-12">
-                            <h6>📊 ملخص التحليلات:</h6>
-                            <div id="analysisResults" class="row">
-                                <!-- سيتم ملؤها ديناميكياً -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h6>ملخص العملية:</h6>
-                            <ul id="extractionSummary">
-                                <!-- سيتم ملؤها ديناميكياً -->
-                            </ul>
-                            
-                            <h6 class="mt-3">المجلدات المنشأة:</h6>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <ul class="list-unstyled">
-                                        <li><i data-feather="folder" class="me-1"></i> <code>pages/</code> - صفحات HTML نظيفة</li>
-                                        <li><i data-feather="folder" class="me-1"></i> <code>content/</code> - محتوى نصي</li>
-                                        <li><i data-feather="folder" class="me-1"></i> <code>assets/images/</code> - الصور</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <ul class="list-unstyled">
-                                        <li><i data-feather="folder" class="me-1"></i> <code>assets/css/</code> - ملفات التصميم</li>
-                                        <li><i data-feather="folder" class="me-1"></i> <code>assets/js/</code> - ملفات JavaScript</li>
-                                        <li><i data-feather="folder" class="me-1"></i> <code>reports/</code> - تقارير التحليل</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-success" id="launchBtn">
-                                    <i data-feather="external-link" class="me-2"></i>
-                                    🚀 تشغيل الموقع المستخرج
-                                </button>
-                                <button class="btn btn-primary" id="downloadBtn">
-                                    <i data-feather="download" class="me-2"></i>
-                                    تحميل الملفات المستخرجة
-                                </button>
-                                <button class="btn btn-info" id="viewReportBtn">
-                                    <i data-feather="file-text" class="me-2"></i>
-                                    عرض التقرير التفصيلي
-                                </button>
-                                <button class="btn btn-secondary" id="newExtractionBtn">
-                                    <i data-feather="refresh-cw" class="me-2"></i>
-                                    استخراج موقع جديد
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مساعدة وإرشادات محدثة -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i data-feather="help-circle" class="me-2"></i>
-                        كيفية الاستخدام - الدليل الشامل
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <h6><i data-feather="info" class="me-1"></i> ما تستخرجه الأداة:</h6>
-                            <ul class="small">
-                                <li>المحتوى النصي مع تنظيف ذكي AI</li>
-                                <li>جميع الصور والرسومات</li>
-                                <li>ملفات CSS منظفة من التتبع</li>
-                                <li>البيانات المنظمة والوصفية</li>
-                                <li>تقارير أمنية شاملة</li>
-                                <li>تحليل SEO متقدم</li>
-                                <li>مقارنات الأداء</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-3">
-                            <h6><i data-feather="shield" class="me-1"></i> الأمان والتنظيف:</h6>
-                            <ul class="small">
-                                <li>حجب الإعلانات بدقة 95%</li>
-                                <li>إزالة عناصر التتبع</li>
-                                <li>فحص الثغرات الأمنية</li>
-                                <li>تنظيف SSL وTLS</li>
-                                <li>كشف البرمجيات الضارة</li>
-                                <li>حماية الخصوصية</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-3">
-                            <h6><i data-feather="zap" class="me-1"></i> الأداء والتحليل:</h6>
-                            <ul class="small">
-                                <li>قياس سرعة التحميل</li>
-                                <li>Core Web Vitals</li>
-                                <li>تحسين الاستجابة</li>
-                                <li>تحليل التقنيات المستخدمة</li>
-                                <li>فحص البيانات المنظمة</li>
-                                <li>تقييم SEO شامل</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-3">
-                            <h6><i data-feather="tool" class="me-1"></i> بعد الاستخراج:</h6>
-                            <ul class="small">
-                                <li>تشغيل تلقائي للموقع المنسوخ</li>
-                                <li>تقارير تحليل شاملة</li>
-                                <li>مقارنات مع المنافسين</li>
-                                <li>توصيات التحسين</li>
-                                <li>خطة العمل المقترحة</li>
-                                <li>دليل التطوير</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- JavaScript المحدث -->
-<script>
-class ComprehensiveWebsiteExtractor {
-    constructor() {
-        this.extractionId = null;
-        this.updateInterval = null;
-        this.analysisResults = {};
-        this.init();
-    }
-    
-    init() {
-        document.getElementById('extractorForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.startComprehensiveExtraction();
-        });
-        
-        document.getElementById('launchBtn').addEventListener('click', () => {
-            this.launchExtractedSite();
-        });
-        
-        document.getElementById('downloadBtn').addEventListener('click', () => {
-            this.downloadResults();
-        });
-        
-        document.getElementById('viewReportBtn').addEventListener('click', () => {
-            this.viewComprehensiveReport();
-        });
-        
-        document.getElementById('newExtractionBtn').addEventListener('click', () => {
-            this.resetForm();
-        });
-        
-        feather.replace();
-    }
-    
-    async startComprehensiveExtraction() {
-        const formData = this.collectFormData();
-        
-        if (!formData.url) {
-            alert('يرجى إدخال رابط الموقع');
-            return;
-        }
-        
-        try {
-            this.showProgress();
-            
-            // بدء الاستخراج الأساسي
-            const extractResponse = await fetch('/extract-website', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-            
-            const extractResult = await extractResponse.json();
-            
-            if (extractResult.success) {
-                this.extractionId = extractResult.extraction_id;
-                
-                // تشغيل التحليلات المختارة بالتوازي
-                await this.runSelectedAnalyses(formData);
-                
-                this.showComprehensiveResults(extractResult);
-            } else {
-                throw new Error(extractResult.error || 'فشل في بدء الاستخراج');
-            }
-            
-        } catch (error) {
-            console.error('خطأ في بدء الاستخراج:', error);
-            alert('حدث خطأ في بدء الاستخراج: ' + error.message);
-            this.hideProgress();
-        }
-    }
-    
-    collectFormData() {
-        return {
-            url: document.getElementById('websiteUrl').value.trim(),
-            max_pages: parseInt(document.getElementById('maxPages').value),
-            extraction_depth: document.getElementById('extractionDepth').value,
-            analyses: {
-                security: document.getElementById('enableSecurity').checked,
-                performance: document.getElementById('enablePerformance').checked,
-                seo: document.getElementById('enableSEO').checked,
-                tech: document.getElementById('enableTech').checked,
-                content: document.getElementById('enableContent').checked,
-                competitor: document.getElementById('enableCompetitor').checked
-            },
-            options: {
-                use_ai_blocker: document.getElementById('useAIBlocker').checked,
-                remove_ads: document.getElementById('removeAds').checked,
-                remove_tracking: document.getElementById('removeTracking').checked,
-                clean_code: document.getElementById('cleanCode').checked,
-                extract_text: document.getElementById('extractText').checked,
-                extract_images: document.getElementById('extractImages').checked,
-                extract_css: document.getElementById('extractCSS').checked,
-                extract_js: document.getElementById('extractJS').checked,
-                extract_structure: document.getElementById('extractStructure').checked,
-                extract_meta: document.getElementById('extractMeta').checked
-            }
-        };
-    }
-    
-    async runSelectedAnalyses(formData) {
-        const promises = [];
-        
-        if (formData.analyses.security) {
-            promises.push(this.runSecurityAnalysis(formData.url));
-        }
-        
-        if (formData.analyses.performance) {
-            promises.push(this.runPerformanceAnalysis(formData.url));
-        }
-        
-        if (formData.analyses.seo) {
-            promises.push(this.runSEOAnalysis(formData.url));
-        }
-        
-        try {
-            const results = await Promise.allSettled(promises);
-            this.processAnalysisResults(results, formData.analyses);
-        } catch (error) {
-            console.error('خطأ في تشغيل التحليلات:', error);
-        }
-    }
-    
-    async runSecurityAnalysis(url) {
-        const response = await fetch('/api/security-analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url })
-        });
-        return { type: 'security', data: await response.json() };
-    }
-    
-    async runPerformanceAnalysis(url) {
-        const response = await fetch('/api/performance-analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url })
-        });
-        return { type: 'performance', data: await response.json() };
-    }
-    
-    async runSEOAnalysis(url) {
-        const response = await fetch('/api/seo-analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url })
-        });
-        return { type: 'seo', data: await response.json() };
-    }
-    
-    processAnalysisResults(results, enabledAnalyses) {
-        results.forEach((result, index) => {
-            if (result.status === 'fulfilled') {
-                const analysisResult = result.value;
-                this.analysisResults[analysisResult.type] = analysisResult.data;
-                this.updateAnalysisStats(analysisResult.type, analysisResult.data);
-            }
-        });
-    }
-    
-    updateAnalysisStats(type, data) {
-        if (type === 'security' && data.security_issues) {
-            document.getElementById('securityIssues').textContent = data.security_issues.length || 0;
-        }
-        
-        if (type === 'seo' && data.overall_score) {
-            document.getElementById('seoScore').textContent = Math.round(data.overall_score) || 0;
-        }
-    }
-    
-    showProgress() {
-        document.getElementById('progressSection').style.display = 'block';
-        document.getElementById('liveStats').style.display = 'block';
-        document.getElementById('resultsSection').style.display = 'none';
-    }
-    
-    hideProgress() {
-        document.getElementById('progressSection').style.display = 'none';
-        document.getElementById('liveStats').style.display = 'none';
-    }
-    
-    showComprehensiveResults(extractResult) {
-        this.hideProgress();
-        document.getElementById('resultsSection').style.display = 'block';
-        
-        // عرض ملخص الاستخراج
-        this.displayExtractionSummary(extractResult);
-        
-        // عرض نتائج التحليلات
-        this.displayAnalysisResults();
-    }
-    
-    displayExtractionSummary(result) {
-        const summary = document.getElementById('extractionSummary');
-        summary.innerHTML = `
-            <li>✅ تم استخراج ${result.pages_extracted || 0} صفحة بنجاح</li>
-            <li>🖼️ تم تحميل ${result.images_downloaded || 0} صورة</li>
-            <li>🎨 تم تحميل ${result.css_files || 0} ملف CSS</li>
-            <li>⚡ تم تحميل ${result.js_files || 0} ملف JavaScript</li>
-            <li>🛡️ تم حذف ${result.ads_removed || 0} عنصر إعلاني بالذكاء الاصطناعي</li>
-            <li>🔒 تم حذف ${result.tracking_removed || 0} عنصر تتبع</li>
-            <li>📊 تم إجراء ${Object.keys(this.analysisResults).length} تحليل شامل</li>
-        `;
-    }
-    
-    displayAnalysisResults() {
-        const resultsContainer = document.getElementById('analysisResults');
-        let resultsHTML = '';
-        
-        Object.entries(this.analysisResults).forEach(([type, data]) => {
-            const typeNames = {
-                security: 'الأمان',
-                performance: 'الأداء', 
-                seo: 'SEO'
-            };
-            
-            const score = data.overall_score || data.security_score || data.performance_score || 0;
-            const scoreClass = score >= 80 ? 'success' : score >= 60 ? 'warning' : 'danger';
-            
-            resultsHTML += `
-                <div class="col-md-4 mb-3">
-                    <div class="card border-${scoreClass}">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">${typeNames[type]}</h5>
-                            <h3 class="text-${scoreClass}">${Math.round(score)}/100</h3>
-                            <button class="btn btn-sm btn-outline-${scoreClass}" onclick="viewAnalysisDetails('${type}')">
-                                عرض التفاصيل
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        resultsContainer.innerHTML = resultsHTML;
-    }
-
-    launchExtractedSite() {
-        if (this.extractionId) {
-            const launchUrl = `/launch-extracted/${this.extractionId}`;
-            window.open(launchUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-        } else {
-            alert('❌ لم يتم العثور على الموقع المستخرج');
-        }
-    }
-    
-    downloadResults() {
-        if (this.extractionId) {
-            window.open(`/api/download-extraction/${this.extractionId}`, '_blank');
-        }
-    }
-    
-    viewComprehensiveReport() {
-        if (this.extractionId) {
-            window.open(`/api/extraction-report/${this.extractionId}`, '_blank');
-        }
-    }
-    
-    resetForm() {
-        document.getElementById('extractorForm').reset();
-        document.getElementById('resultsSection').style.display = 'none';
-        this.extractionId = null;
-        this.analysisResults = {};
-    }
-}
-
-// دوال إضافية
-function openAnalysisTool(tool) {
-    const urls = {
-        security: '/security-analysis',
-        performance: '/performance-analysis', 
-        seo: '/seo-analysis',
-        competitor: '/competitor-analysis',
-        comprehensive: '/comprehensive-analysis',
-        dashboard: '/dashboard'
-    };
-    
-    if (urls[tool]) {
-        window.open(urls[tool], '_blank');
-    }
-}
-
-function analyzeBeforeExtract() {
-    const url = document.getElementById('websiteUrl').value.trim();
-    if (url) {
-        window.open(`/analyze?url=${encodeURIComponent(url)}`, '_blank');
-    } else {
-        alert('يرجى إدخال رابط أولاً');
-    }
-}
-
-function previewAnalysis() {
-    const url = document.getElementById('websiteUrl').value.trim();
-    if (url) {
-        // فتح معاينة سريعة
-        alert('🔍 جاري تحضير المعاينة السريعة...');
-        // يمكن إضافة API خاص بالمعاينة السريعة
-    } else {
-        alert('يرجى إدخال رابط أولاً');
-    }
-}
-
-function viewAnalysisDetails(type) {
-    // عرض تفاصيل التحليل في نافذة جديدة
-    const tools = {
-        security: '/security-analysis',
-        performance: '/performance-analysis',
-        seo: '/seo-analysis'
-    };
-    
-    if (tools[type]) {
-        window.open(tools[type], '_blank');
-    }
-}
-
-// تهيئة الأداة الشاملة
-document.addEventListener('DOMContentLoaded', function() {
-    const extractor = new ComprehensiveWebsiteExtractor();
-    feather.replace();
-});
-</script>
-
-<style>
-.btn-outline-purple {
-    color: #6f42c1;
-    border-color: #6f42c1;
-}
-.btn-outline-purple:hover {
-    color: #fff;
-    background-color: #6f42c1;
-    border-color: #6f42c1;
-}
-.bg-gradient-primary {
-    background: linear-gradient(45deg, #007bff, #0056b3) !important;
-}
-</style>
-{% endblock %}
