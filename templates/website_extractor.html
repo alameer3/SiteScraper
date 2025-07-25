@@ -1,0 +1,511 @@
+{% extends "base.html" %}
+
+{% block title %}أداة استخراج المواقع - محلل المواقع{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- عنوان الأداة -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2 text-primary">
+                <i data-feather="download" class="me-2"></i>
+                أداة استخراج المواقع الشاملة
+            </h1>
+            <p class="text-muted">استخرج المحتوى والتصميم والهيكل الكامل من أي موقع لبناء موقعك الخاص</p>
+        </div>
+    </div>
+
+    <!-- تحذير مهم -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <h5><i data-feather="alert-triangle" class="me-2"></i>تحذير هام</h5>
+                <p class="mb-1">هذه الأداة مخصصة للأغراض التعليمية والبحثية فقط. تأكد من احترام:</p>
+                <ul class="mb-0">
+                    <li>حقوق الطبع والنشر للمحتوى</li>
+                    <li>شروط الاستخدام للموقع المستهدف</li>
+                    <li>القوانين المحلية والدولية</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج الاستخراج -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="settings" class="me-2"></i>
+                        إعدادات الاستخراج
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="extractorForm">
+                        <div class="mb-3">
+                            <label for="websiteUrl" class="form-label">رابط الموقع المراد استخراجه</label>
+                            <input type="url" class="form-control" id="websiteUrl" required 
+                                   placeholder="https://example.com">
+                            <div class="form-text">أدخل الرابط الكامل للموقع مع http:// أو https://</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="maxPages" class="form-label">عدد الصفحات الأقصى</label>
+                                <select class="form-select" id="maxPages">
+                                    <option value="10">10 صفحات</option>
+                                    <option value="25" selected>25 صفحة</option>
+                                    <option value="50">50 صفحة</option>
+                                    <option value="100">100 صفحة</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="extractionDepth" class="form-label">عمق الاستخراج</label>
+                                <select class="form-select" id="extractionDepth">
+                                    <option value="basic">أساسي (محتوى نصي)</option>
+                                    <option value="standard" selected>معياري (محتوى + صور)</option>
+                                    <option value="complete">شامل (كل شيء)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">خيارات التنظيف</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="removeAds" checked>
+                                <label class="form-check-label" for="removeAds">
+                                    إزالة الإعلانات والعناصر الترويجية
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="removeTracking" checked>
+                                <label class="form-check-label" for="removeTracking">
+                                    إزالة سكريبت التتبع والتحليلات
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cleanCode" checked>
+                                <label class="form-check-label" for="cleanCode">
+                                    تنظيف الكود وإزالة التعليقات
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">عناصر مطلوب استخراجها</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="extractText" checked>
+                                        <label class="form-check-label" for="extractText">
+                                            المحتوى النصي
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="extractImages" checked>
+                                        <label class="form-check-label" for="extractImages">
+                                            الصور والرسومات
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="extractCSS" checked>
+                                        <label class="form-check-label" for="extractCSS">
+                                            ملفات التصميم (CSS)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="extractJS">
+                                        <label class="form-check-label" for="extractJS">
+                                            ملفات JavaScript
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="extractStructure" checked>
+                                        <label class="form-check-label" for="extractStructure">
+                                            البيانات المنظمة
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="extractMeta" checked>
+                                        <label class="form-check-label" for="extractMeta">
+                                            البيانات الوصفية
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i data-feather="download" class="me-2"></i>
+                                بدء الاستخراج
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط التقدم -->
+    <div class="row mb-4" id="progressSection" style="display: none;">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>جاري الاستخراج...</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="progress mb-3">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             id="progressBar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div id="currentStatus" class="text-muted">
+                        <i data-feather="clock" class="me-1"></i>
+                        بدء العملية...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- إحصائيات مباشرة -->
+    <div class="row mb-4" id="liveStats" style="display: none;">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h4 id="pagesExtracted">0</h4>
+                    <small>صفحات مستخرجة</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h4 id="imagesDownloaded">0</h4>
+                    <small>صور محملة</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h4 id="cssFiles">0</h4>
+                    <small>ملفات CSS</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h4 id="adsRemoved">0</h4>
+                    <small>إعلانات محذوفة</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نتائج الاستخراج -->
+    <div class="row" id="resultsSection" style="display: none;">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="check-circle" class="me-2 text-success"></i>
+                        اكتمل الاستخراج بنجاح!
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h6>ملخص العملية:</h6>
+                            <ul id="extractionSummary">
+                                <!-- سيتم ملؤها ديناميكياً -->
+                            </ul>
+                            
+                            <h6 class="mt-3">المجلدات المنشأة:</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li><i data-feather="folder" class="me-1"></i> <code>pages/</code> - صفحات HTML نظيفة</li>
+                                        <li><i data-feather="folder" class="me-1"></i> <code>content/</code> - محتوى نصي</li>
+                                        <li><i data-feather="folder" class="me-1"></i> <code>assets/images/</code> - الصور</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li><i data-feather="folder" class="me-1"></i> <code>assets/css/</code> - ملفات التصميم</li>
+                                        <li><i data-feather="folder" class="me-1"></i> <code>assets/js/</code> - ملفات JavaScript</li>
+                                        <li><i data-feather="folder" class="me-1"></i> <code>data/</code> - البيانات المنظمة</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-success" id="downloadBtn">
+                                    <i data-feather="download" class="me-2"></i>
+                                    تحميل الملفات المستخرجة
+                                </button>
+                                <button class="btn btn-info" id="viewReportBtn">
+                                    <i data-feather="file-text" class="me-2"></i>
+                                    عرض التقرير التفصيلي
+                                </button>
+                                <button class="btn btn-secondary" id="newExtractionBtn">
+                                    <i data-feather="refresh-cw" class="me-2"></i>
+                                    استخراج موقع جديد
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مساعدة وإرشادات -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="help-circle" class="me-2"></i>
+                        كيفية الاستخدام
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6><i data-feather="info" class="me-1"></i> ما تستخرجه الأداة:</h6>
+                            <ul class="small">
+                                <li>المحتوى النصي مع تنظيف ذكي</li>
+                                <li>جميع الصور والرسومات</li>
+                                <li>ملفات CSS منظفة من التتبع</li>
+                                <li>البيانات المنظمة (JSON-LD, Schema)</li>
+                                <li>البيانات الوصفية والعناوين</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6><i data-feather="shield" class="me-1"></i> التنظيف الذكي:</h6>
+                            <ul class="small">
+                                <li>إزالة الإعلانات والنوافذ المنبثقة</li>
+                                <li>حذف سكريپت التتبع والتحليلات</li>
+                                <li>تنظيف الكود من التعليقات</li>
+                                <li>إزالة العناصر المخفية</li>
+                                <li>فلترة المحتوى غير المفيد</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6><i data-feather="tool" class="me-1"></i> بعد الاستخراج:</h6>
+                            <ul class="small">
+                                <li>استخدم الملفات كقاعدة لموقعك</li>
+                                <li>اعدل المحتوى ليناسب احتياجاتك</li>
+                                <li>طور التصميم والوظائف</li>
+                                <li>احترم حقوق الملكية الفكرية</li>
+                                <li>اختبر الموقع قبل النشر</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+class WebsiteExtractor {
+    constructor() {
+        this.extractionId = null;
+        this.updateInterval = null;
+        this.init();
+    }
+    
+    init() {
+        document.getElementById('extractorForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.startExtraction();
+        });
+        
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            this.downloadResults();
+        });
+        
+        document.getElementById('viewReportBtn').addEventListener('click', () => {
+            this.viewReport();
+        });
+        
+        document.getElementById('newExtractionBtn').addEventListener('click', () => {
+            this.resetForm();
+        });
+        
+        feather.replace();
+    }
+    
+    async startExtraction() {
+        const formData = {
+            url: document.getElementById('websiteUrl').value.trim(),
+            max_pages: parseInt(document.getElementById('maxPages').value),
+            extraction_depth: document.getElementById('extractionDepth').value,
+            options: {
+                remove_ads: document.getElementById('removeAds').checked,
+                remove_tracking: document.getElementById('removeTracking').checked,
+                clean_code: document.getElementById('cleanCode').checked,
+                extract_text: document.getElementById('extractText').checked,
+                extract_images: document.getElementById('extractImages').checked,
+                extract_css: document.getElementById('extractCSS').checked,
+                extract_js: document.getElementById('extractJS').checked,
+                extract_structure: document.getElementById('extractStructure').checked,
+                extract_meta: document.getElementById('extractMeta').checked
+            }
+        };
+        
+        if (!formData.url) {
+            alert('يرجى إدخال رابط الموقع');
+            return;
+        }
+        
+        try {
+            this.showProgress();
+            
+            const response = await fetch('/api/extract-website', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.extraction_id) {
+                this.extractionId = result.extraction_id;
+                this.startStatusUpdates();
+            } else {
+                throw new Error(result.error || 'فشل في بدء الاستخراج');
+            }
+            
+        } catch (error) {
+            console.error('خطأ في بدء الاستخراج:', error);
+            alert('حدث خطأ في بدء الاستخراج: ' + error.message);
+            this.hideProgress();
+        }
+    }
+    
+    startStatusUpdates() {
+        this.updateInterval = setInterval(async () => {
+            try {
+                const response = await fetch(`/api/extraction-status/${this.extractionId}`);
+                const status = await response.json();
+                
+                this.updateProgress(status);
+                
+                if (status.status === 'completed' || status.status === 'failed') {
+                    clearInterval(this.updateInterval);
+                    
+                    if (status.status === 'completed') {
+                        this.showResults(status);
+                    } else {
+                        alert('فشل في الاستخراج: ' + (status.error || 'خطأ غير معروف'));
+                        this.hideProgress();
+                    }
+                }
+                
+            } catch (error) {
+                console.error('خطأ في تحديث الحالة:', error);
+            }
+        }, 2000);
+    }
+    
+    updateProgress(status) {
+        const progress = status.progress || 0;
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const currentStatus = document.getElementById('currentStatus');
+        
+        progressBar.style.width = progress + '%';
+        progressText.textContent = Math.round(progress) + '%';
+        currentStatus.innerHTML = `<i data-feather="activity" class="me-1"></i>${status.current_status || 'جاري العمل...'}`;
+        
+        // تحديث الإحصائيات المباشرة
+        if (status.stats) {
+            document.getElementById('pagesExtracted').textContent = status.stats.pages_extracted || 0;
+            document.getElementById('imagesDownloaded').textContent = status.stats.images_downloaded || 0;
+            document.getElementById('cssFiles').textContent = status.stats.css_files || 0;
+            document.getElementById('adsRemoved').textContent = status.stats.ads_removed || 0;
+        }
+        
+        feather.replace();
+    }
+    
+    showProgress() {
+        document.getElementById('progressSection').style.display = 'block';
+        document.getElementById('liveStats').style.display = 'block';
+        document.getElementById('resultsSection').style.display = 'none';
+    }
+    
+    hideProgress() {
+        document.getElementById('progressSection').style.display = 'none';
+        document.getElementById('liveStats').style.display = 'none';
+    }
+    
+    showResults(status) {
+        this.hideProgress();
+        document.getElementById('resultsSection').style.display = 'block';
+        
+        const summary = document.getElementById('extractionSummary');
+        summary.innerHTML = `
+            <li>تم استخراج ${status.stats.pages_extracted || 0} صفحة</li>
+            <li>تم تحميل ${status.stats.images_downloaded || 0} صورة</li>
+            <li>تم تحميل ${status.stats.css_files || 0} ملف CSS</li>
+            <li>تم تحميل ${status.stats.js_files || 0} ملف JavaScript</li>
+            <li>تم حذف ${status.stats.ads_removed || 0} عنصر إعلاني</li>
+            <li>تم حذف ${status.stats.tracking_removed || 0} عنصر تتبع</li>
+            <li>الوقت المستغرق: ${Math.round((status.duration || 0) / 60)} دقيقة</li>
+        `;
+    }
+    
+    async downloadResults() {
+        if (!this.extractionId) return;
+        
+        try {
+            window.open(`/api/download-extraction/${this.extractionId}`, '_blank');
+        } catch (error) {
+            console.error('خطأ في التحميل:', error);
+            alert('حدث خطأ في التحميل');
+        }
+    }
+    
+    async viewReport() {
+        if (!this.extractionId) return;
+        
+        try {
+            window.open(`/api/extraction-report/${this.extractionId}`, '_blank');
+        } catch (error) {
+            console.error('خطأ في عرض التقرير:', error);
+            alert('حدث خطأ في عرض التقرير');
+        }
+    }
+    
+    resetForm() {
+        document.getElementById('extractorForm').reset();
+        document.getElementById('resultsSection').style.display = 'none';
+        this.extractionId = null;
+        
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+            this.updateInterval = null;
+        }
+    }
+}
+
+// تهيئة الأداة
+document.addEventListener('DOMContentLoaded', function() {
+    const extractor = new WebsiteExtractor();
+});
+</script>
+{% endblock %}

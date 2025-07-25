@@ -131,6 +131,7 @@ from security_analyzer import SecurityAnalyzer
 from performance_analyzer import PerformanceAnalyzer
 from seo_analyzer import SEOAnalyzer
 from competitor_analyzer import CompetitorAnalyzer
+from website_extractor import WebsiteExtractor
 
 @app.route('/security-analysis')
 def security_analysis_page():
@@ -625,6 +626,233 @@ def api_site_comparison():
     
     except Exception as e:
         logging.error(f"خطأ في مقارنة المواقع: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/website-extractor')
+def website_extractor_page():
+    """صفحة أداة استخراج المواقع"""
+    return render_template('website_extractor.html')
+
+@app.route('/api/extract-website', methods=['POST'])
+def api_extract_website():
+    """API لاستخراج المواقع الشامل"""
+    try:
+        import hashlib
+        import threading
+        from pathlib import Path
+        
+        data = request.get_json()
+        url = data.get('url', '').strip()
+        max_pages = data.get('max_pages', 25)
+        extraction_depth = data.get('extraction_depth', 'standard')
+        options = data.get('options', {})
+        
+        if not url:
+            return jsonify({'error': 'URL مطلوب'}), 400
+        
+        # التحقق من صحة الرابط
+        if not url.startswith(('http://', 'https://')):
+            url = 'https://' + url
+        
+        # إنشاء معرف فريد للاستخراج
+        extraction_id = hashlib.md5(f"{url}_{time.time()}".encode()).hexdigest()[:12]
+        
+        # إنشاء مجلد مؤقت للاستخراج
+        output_dir = f"extracted_sites/{extraction_id}"
+        
+        # بدء الاستخراج في خيط منفصل
+        def extract_in_background():
+            with app.app_context():
+                try:
+                    extractor = WebsiteExtractor(url, output_dir)
+                    
+                    # حفظ حالة الاستخراج
+                    extraction_status = {
+                        'id': extraction_id,
+                        'url': url,
+                        'status': 'running',
+                        'progress': 0,
+                        'current_status': 'بدء الاستخراج...',
+                        'start_time': time.time(),
+                        'stats': {
+                            'pages_extracted': 0,
+                            'images_downloaded': 0,
+                            'css_files': 0,
+                            'js_files': 0,
+                            'ads_removed': 0,
+                            'tracking_removed': 0
+                        }
+                    }
+                    
+                    # حفظ الحالة في قاعدة البيانات أو ملف
+                    cache_file = Path(f"temp/extraction_{extraction_id}.json")
+                    cache_file.parent.mkdir(exist_ok=True)
+                    
+                    with open(cache_file, 'w', encoding='utf-8') as f:
+                        json.dump(extraction_status, f, ensure_ascii=False)
+                    
+                    # تحديث التقدم
+                    extraction_status['current_status'] = 'جاري تحليل الموقع...'
+                    extraction_status['progress'] = 10
+                    with open(cache_file, 'w', encoding='utf-8') as f:
+                        json.dump(extraction_status, f, ensure_ascii=False)
+                    
+                    # تشغيل الاستخراج
+                    result = extractor.extract_complete_website(max_pages)
+                    
+                    # تحديث النتائج النهائية
+                    extraction_status['status'] = 'completed'
+                    extraction_status['progress'] = 100
+                    extraction_status['current_status'] = 'اكتمل الاستخراج بنجاح!'
+                    extraction_status['end_time'] = time.time()
+                    extraction_status['duration'] = extraction_status['end_time'] - extraction_status['start_time']
+                    extraction_status['stats'] = extractor.stats
+                    extraction_status['result'] = result
+                    
+                    with open(cache_file, 'w', encoding='utf-8') as f:
+                        json.dump(extraction_status, f, ensure_ascii=False)
+                    
+                    logging.info(f"اكتمل الاستخراج للموقع: {url}")
+                    
+                except Exception as e:
+                    extraction_status['status'] = 'failed'
+                    extraction_status['error'] = str(e)
+                    extraction_status['progress'] = 0
+                    
+                    with open(cache_file, 'w', encoding='utf-8') as f:
+                        json.dump(extraction_status, f, ensure_ascii=False)
+                    
+                    logging.error(f"فشل الاستخراج للموقع {url}: {e}")
+        
+        # تشغيل الاستخراج في الخلفية
+        thread = threading.Thread(target=extract_in_background)
+        thread.start()
+        
+        return jsonify({
+            'extraction_id': extraction_id,
+            'message': 'تم بدء الاستخراج بنجاح',
+            'status': 'started'
+        })
+        
+    except Exception as e:
+        logging.error(f"خطأ في بدء استخراج الموقع: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/extraction-status/<extraction_id>')
+def api_extraction_status(extraction_id):
+    """الحصول على حالة الاستخراج"""
+    try:
+        from pathlib import Path
+        
+        cache_file = Path(f"temp/extraction_{extraction_id}.json")
+        
+        if not cache_file.exists():
+            return jsonify({'error': 'الاستخراج غير موجود'}), 404
+        
+        with open(cache_file, 'r', encoding='utf-8') as f:
+            status = json.load(f)
+        
+        return jsonify(status)
+        
+    except Exception as e:
+        logging.error(f"خطأ في جلب حالة الاستخراج: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/download-extraction/<extraction_id>')
+def api_download_extraction(extraction_id):
+    """تحميل ملفات الاستخراج مضغوطة"""
+    try:
+        import zipfile
+        from io import BytesIO
+        from pathlib import Path
+        
+        output_dir = Path(f"extracted_sites/{extraction_id}")
+        
+        if not output_dir.exists():
+            return jsonify({'error': 'الاستخراج غير موجود'}), 404
+        
+        # إنشاء ملف مضغوط
+        zip_buffer = BytesIO()
+        
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for file_path in output_dir.rglob('*'):
+                if file_path.is_file():
+                    arcname = file_path.relative_to(output_dir)
+                    zip_file.write(file_path, arcname)
+        
+        zip_buffer.seek(0)
+        
+        return send_file(
+            zip_buffer,
+            as_attachment=True,
+            download_name=f'extracted_website_{extraction_id}.zip',
+            mimetype='application/zip'
+        )
+        
+    except Exception as e:
+        logging.error(f"خطأ في تحميل الاستخراج: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/extraction-report/<extraction_id>')
+def api_extraction_report(extraction_id):
+    """عرض تقرير الاستخراج"""
+    try:
+        from pathlib import Path
+        
+        cache_file = Path(f"temp/extraction_{extraction_id}.json")
+        
+        if not cache_file.exists():
+            return jsonify({'error': 'التقرير غير موجود'}), 404
+        
+        with open(cache_file, 'r', encoding='utf-8') as f:
+            status = json.load(f)
+        
+        # إنشاء تقرير HTML
+        report_html = f"""
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>تقرير الاستخراج - {status.get('url', '')}</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+            <div class="container my-5">
+                <h1>تقرير الاستخراج الشامل</h1>
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>معلومات أساسية</h3>
+                        <table class="table">
+                            <tr><td>الموقع:</td><td>{status.get('url', '')}</td></tr>
+                            <tr><td>معرف الاستخراج:</td><td>{extraction_id}</td></tr>
+                            <tr><td>الحالة:</td><td>{status.get('status', '')}</td></tr>
+                            <tr><td>الوقت المستغرق:</td><td>{round(status.get('duration', 0) / 60, 2)} دقيقة</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>الإحصائيات</h3>
+                        <table class="table">
+                            <tr><td>الصفحات المستخرجة:</td><td>{status.get('stats', {}).get('pages_extracted', 0)}</td></tr>
+                            <tr><td>الصور المحملة:</td><td>{status.get('stats', {}).get('images_downloaded', 0)}</td></tr>
+                            <tr><td>ملفات CSS:</td><td>{status.get('stats', {}).get('css_files', 0)}</td></tr>
+                            <tr><td>ملفات JS:</td><td>{status.get('stats', {}).get('js_files', 0)}</td></tr>
+                            <tr><td>الإعلانات المحذوفة:</td><td>{status.get('stats', {}).get('ads_removed', 0)}</td></tr>
+                            <tr><td>عناصر التتبع المحذوفة:</td><td>{status.get('stats', {}).get('tracking_removed', 0)}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        return render_template_string(report_html)
+        
+    except Exception as e:
+        logging.error(f"خطأ في عرض تقرير الاستخراج: {e}")
         return jsonify({'error': str(e)}), 500
 
 def _generate_comparison_insights(results):
