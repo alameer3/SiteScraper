@@ -591,6 +591,62 @@ class AdvancedBlocker:
             'performance_score': min(100, 60 + self.stats['size_reduction_percentage'])
         }
 
+    # ================ AdBlocker المدمج ================
+    
+    def block_ads_basic(self, html_content: str) -> str:
+        """حجب الإعلانات الأساسي - من AdBlocker"""
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        # إزالة العناصر الإعلانية
+        ad_selectors = [
+            '[class*="ad"]', '[id*="ad"]', '[class*="advertisement"]',
+            '[class*="banner"]', '[class*="popup"]', '.google-ads'
+        ]
+        
+        removed_count = 0
+        for selector in ad_selectors:
+            elements = soup.select(selector)
+            for element in elements:
+                element.decompose()
+                removed_count += 1
+        
+        self.stats['ads_blocked'] += removed_count
+        return str(soup)
+
+    def block_ads_advanced(self, html_content: str) -> str:
+        """حجب الإعلانات المتقدم - من AdvancedAdBlocker"""
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        # حجب متقدم مع تحليل النص
+        removed_count = 0
+        
+        # إزالة النصوص الإعلانية  
+        ad_text_patterns = [
+            r'sponsored\s+content', r'advertisement', r'إعلان',
+            r'الرعاة', r'إعلان مدفوع', r'sponsored\s+by'
+        ]
+        
+        for pattern in ad_text_patterns:
+            for element in soup.find_all(string=re.compile(pattern, re.I)):
+                if element.parent:
+                    element.parent.decompose()
+                    removed_count += 1
+        
+        # إزالة العناصر الإعلانية المتقدمة
+        advanced_selectors = [
+            '[class*="sidebar-ad"]', '[class*="header-ad"]', '[class*="footer-ad"]',
+            '[data-google-ad]', '[data-ad-slot]', '[class*="promo"]'
+        ]
+        
+        for selector in advanced_selectors:
+            elements = soup.select(selector)
+            for element in elements:
+                element.decompose()
+                removed_count += 1
+        
+        self.stats['ads_blocked'] += removed_count
+        return str(soup)
+
     def get_blocking_report(self) -> Dict[str, Any]:
         """تقرير شامل عن عملية الحجب"""
         return {

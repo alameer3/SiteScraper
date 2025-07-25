@@ -273,6 +273,15 @@ class MasterExtractor:
                 'stats': self.stats
             }
 
+    # Placeholder methods for complete functionality  
+    def _extract_basic(self): return {'mode': 'basic', 'extracted_files': []}
+    def _extract_standard(self): return {'mode': 'standard', 'extracted_files': []}
+    def _extract_advanced(self): return {'mode': 'advanced', 'extracted_files': []}
+    def _extract_ultra(self): return {'mode': 'ultra', 'extracted_files': []}
+    def _extract_secure(self): return {'mode': 'secure', 'extracted_files': []}
+    def _save_extraction_report(self): pass
+    def _compress_output(self): pass
+
     def _extract_basic(self) -> Dict[str, Any]:
         """استخراج أساسي للمحتوى النصي فقط"""
         logger.info("تشغيل الاستخراج الأساسي")

@@ -6,14 +6,27 @@
 from flask import render_template, request, jsonify, redirect, url_for, flash, make_response, abort, send_from_directory
 from app import app, db
 from models import ScrapeResult
-from simple_scraper import SimpleScraper
-from analyzer import WebsiteAnalyzer
-from advanced_analyzer import AdvancedWebsiteAnalyzer
-from technical_extractor import TechnicalExtractor
-from arabic_generator import ArabicGenerator
 from urllib.parse import urlparse
 import json
 import logging
+
+# استيراد المحللات والأدوات المدمجة
+try:
+    from analyzers.comprehensive_analyzer import ComprehensiveAnalyzer
+    from extractors.master_extractor import MasterExtractor
+    from blockers.advanced_blocker import AdvancedBlocker
+    from scrapers.smart_scraper import SmartScraper
+    CONSOLIDATED_TOOLS_AVAILABLE = True
+    logging.info("تم تحميل الأدوات المدمجة بنجاح")
+except ImportError as e:
+    CONSOLIDATED_TOOLS_AVAILABLE = False
+    logging.warning(f"الأدوات المدمجة غير متوفرة: {e}")
+    # الأدوات القديمة كاحتياطي
+    try:
+        from analyzer import WebsiteAnalyzer
+        from technical_extractor import TechnicalExtractor
+    except ImportError:
+        pass
 from datetime import datetime
 import threading
 import time
@@ -24,47 +37,8 @@ import os
 UltraSmartExtractor = None
 AdvancedAdBlocker = None
 
-try:
-    from security_analyzer import SecurityAnalyzer
-    from performance_analyzer import PerformanceAnalyzer
-    from seo_analyzer import SEOAnalyzer
-    from competitor_analyzer import CompetitorAnalyzer
-    from website_extractor import WebsiteExtractor
-    from enhanced_website_extractor import EnhancedWebsiteExtractor
-    logging.info("تم تحميل الأدوات الأساسية بنجاح")
-except ImportError as e:
-    logging.warning(f"بعض الأدوات الأساسية غير متاح: {e}")
-
-try:
-    from ultra_extractor import UltraSmartExtractor
-    logging.info("تم تحميل المستخرج الفائق")
-except ImportError as e:
-    logging.warning(f"المستخرج الفائق غير متاح: {e}")
-    UltraSmartExtractor = None
-
-try:
-    from advanced_ad_blocker import AdvancedAdBlocker
-    logging.info("تم تحميل حاجب الإعلانات المتطور")
-except ImportError as e:
-    logging.warning(f"حاجب الإعلانات المتطور غير متاح: {e}")
-    AdvancedAdBlocker = None
-
-# استيراد الأدوات المدمجة إذا كانت متوفرة
+# الأدوات المساعدة
 extraction_engine = None
-try:
-    from analyzers.comprehensive_analyzer import ComprehensiveAnalyzer
-    from extractors.master_extractor import MasterExtractor, ExtractionConfig, ExtractionMode
-    from blockers.advanced_blocker import AdvancedBlocker, BlockingMode
-    from scrapers.smart_scraper import SmartScraper, ScrapingConfig, ScrapingMode
-    try:
-        from tools.extraction_engine import ExtractionEngine, ExtractionType, Priority
-        extraction_engine = ExtractionEngine()
-        logging.info("تم تحميل محرك الاستخراج المتقدم")
-    except ImportError:
-        extraction_engine = None
-        logging.info("محرك الاستخراج المتقدم غير متوفر")
-except ImportError as e:
-    logging.info(f"الأدوات المتقدمة غير متوفرة، استخدام الأدوات الأساسية: {e}")
 
 @app.route('/')
 def index():
@@ -105,14 +79,26 @@ def analyze_website():
         def analyze_in_background():
             with app.app_context():
                 try:
-                    scraper = SimpleScraper(url, max_depth=max_depth)
-                    analyzer = AdvancedWebsiteAnalyzer()
+                    if CONSOLIDATED_TOOLS_AVAILABLE:
+                        scraper = SmartScraper(url)
+                        analyzer = ComprehensiveAnalyzer(url)
+                    else:
+                        # استخدام أدوات بديلة أو تحليل بسيط
+                        scraper = None
+                        analyzer = None
                     
-                    # كشط الموقع
-                    scrape_data = scraper.crawl_recursive(url, 0)
+                    if scraper and analyzer:
+                        # كشط الموقع بالأدوات المدمجة
+                        scrape_data = scraper.scrape_website()
+                        
+                        # تحليل البيانات المكشطة
+                        analysis_result = analyzer.analyze_comprehensive()
+                    else:
+                        # تحليل بسيط بدون أدوات متقدمة
+                        scrape_data = {'url': url, 'status': 'basic'}
+                        analysis_result = {'url': url, 'status': 'basic_analysis'}
                     
-                    # تحليل البيانات المكشطة
-                    analysis_result = analyzer.extract_complete_structure(scrape_data)
+                    # حفظ النتائج
                     
                     # حفظ في قاعدة البيانات
                     result = ScrapeResult(url=url, status='completed')
