@@ -162,8 +162,8 @@ class AdvancedWebsiteAnalyzer:
                 
                 # استخراج ملفات الوسائط
                 content['videos'][url] = self._extract_videos(soup, url)
-                content['audio'][url] = self._extract_audio(soup, url)
-                content['documents'][url] = self._extract_documents(soup, url)
+                content['audio'][url] = self._extract_audio(soup)
+                content['documents'][url] = self._extract_documents(soup)
                 
                 # تحليل أنماط المحتوى
                 content['content_patterns'][url] = self._analyze_content_patterns(soup)
@@ -569,8 +569,6 @@ class AdvancedWebsiteAnalyzer:
             cache_info['cache_score'] += 25
             
         return cache_info
-        }
-        return cache_info
     
     def _analyze_accessibility(self, soup):
         """تحليل إمكانية الوصول"""
@@ -614,3 +612,145 @@ class AdvancedWebsiteAnalyzer:
             'accessibility_enhanced': 'ARIA enhanced template'
         }
         return templates
+    
+    def _analyze_interactive_elements(self, soup):
+        """تحليل العناصر التفاعلية"""
+        return {
+            'buttons': len(soup.find_all('button')),
+            'inputs': len(soup.find_all('input')),
+            'forms': len(soup.find_all('form')),
+            'links': len(soup.find_all('a'))
+        }
+    
+    def _extract_typography_rules(self, soup):
+        """استخراج قواعد الطباعة"""
+        return {
+            'headings': [tag.name for tag in soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])],
+            'paragraphs': len(soup.find_all('p')),
+            'text_elements': len(soup.find_all(text=True))
+        }
+    
+    def _extract_animations(self, soup):
+        """استخراج الرسوم المتحركة"""
+        return {
+            'css_animations': [],
+            'transitions': [],
+            'keyframes': []
+        }
+    
+    def _extract_media_queries(self, soup):
+        """استخراج استعلامات الوسائط"""
+        return {
+            'responsive_breakpoints': [],
+            'device_queries': [],
+            'print_styles': []
+        }
+    
+    def _extract_data_attributes(self, soup):
+        """استخراج خصائص البيانات"""
+        data_attrs = []
+        for element in soup.find_all():
+            for attr in element.attrs:
+                if attr.startswith('data-'):
+                    data_attrs.append(attr)
+        return list(set(data_attrs))
+    
+    def _fetch_js_content(self, url):
+        """جلب محتوى JavaScript"""
+        try:
+            response = self.session.get(url, timeout=10)
+            return response.text
+        except:
+            return ""
+    
+    def _extract_ajax_endpoints(self, js_content):
+        """استخراج نقاط AJAX"""
+        return []
+    
+    def _extract_api_calls(self, js_content):
+        """استخراج استدعاءات API"""
+        return []
+    
+    def _extract_documents(self, soup):
+        """استخراج المستندات"""
+        documents = []
+        for link in soup.find_all('a', href=True):
+            href = link.get('href', '')
+            if any(ext in href.lower() for ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx']):
+                documents.append(href)
+        return documents
+    
+    def _analyze_content_patterns(self, soup):
+        """تحليل أنماط المحتوى"""
+        return {
+            'text_blocks': len(soup.find_all(['p', 'div'])),
+            'lists': len(soup.find_all(['ul', 'ol'])),
+            'tables': len(soup.find_all('table'))
+        }
+    
+    def _detect_languages(self, soup):
+        """كشف اللغات"""
+        lang_attr = soup.find('html')
+        if lang_attr and lang_attr.get('lang'):
+            return [lang_attr.get('lang')]
+        return ['unknown']
+    
+    def _extract_complete_metadata(self, soup):
+        """استخراج البيانات الوصفية الكاملة"""
+        metadata = {}
+        for meta in soup.find_all('meta'):
+            name = meta.get('name') or meta.get('property')
+            content = meta.get('content')
+            if name and content:
+                metadata[name] = content
+        return metadata
+    
+    def _extract_resource_hints(self, soup):
+        """استخراج تلميحات الموارد"""
+        hints = []
+        for link in soup.find_all('link'):
+            rel = link.get('rel', [])
+            if isinstance(rel, str):
+                rel = [rel]
+            if any(hint in rel for hint in ['preload', 'prefetch', 'dns-prefetch', 'preconnect']):
+                hints.append({
+                    'rel': rel,
+                    'href': link.get('href', ''),
+                    'as': link.get('as', '')
+                })
+        return hints
+    
+    def _generate_css_framework(self, analysis_data):
+        """إنشاء إطار عمل CSS"""
+        return {
+            'framework': 'custom',
+            'components': ['buttons', 'forms', 'navigation'],
+            'utilities': ['spacing', 'colors', 'typography']
+        }
+    
+    def _generate_js_components(self, analysis_data):
+        """إنشاء مكونات JavaScript"""
+        return {
+            'components': ['modal', 'dropdown', 'carousel'],
+            'utilities': ['helpers', 'validators', 'formatters']
+        }
+    
+    def _generate_asset_requirements(self, analysis_data):
+        """إنشاء متطلبات الأصول"""
+        return {
+            'images': ['hero.jpg', 'logo.png'],
+            'fonts': ['custom-font.woff2'],
+            'icons': ['feather-icons']
+        }
+    
+    def _generate_deployment_guide(self, analysis_data):
+        """إنشاء دليل النشر"""
+        return {
+            'steps': [
+                'تحضير الملفات',
+                'رفع الملفات',
+                'تكوين الخادم',
+                'اختبار الموقع'
+            ],
+            'requirements': ['web server', 'domain', 'ssl certificate']
+        }

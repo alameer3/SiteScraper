@@ -203,14 +203,12 @@ class TechnicalExtractor:
                 )
                 
                 # تحليل أدوات الأداء
-                tech_stack['performance_tools'].update(
-                    self._detect_performance_tools(soup, page_content)
-                )
+                performance_tools = self._detect_performance_tools(soup, page_content)
+                tech_stack['performance_tools'][url] = performance_tools
                 
                 # تحليل الخدمات الخارجية
-                tech_stack['third_party_services'].update(
-                    self._detect_third_party_services(soup)
-                )
+                third_party = self._detect_third_party_services(soup)
+                tech_stack['third_party_services'].update(third_party)
                 
             except Exception as e:
                 logging.error(f"خطأ في تحليل التقنيات لـ {url}: {e}")
@@ -327,11 +325,6 @@ class TechnicalExtractor:
         return {
             'total_count': len(videos),
             'formats': list(set([video.get('format', 'unknown') for video in videos]))
-        }
-            'videos_details': {},
-            'documents_analysis': {},
-            'optimization_analysis': {},
-            'loading_strategies': {}
         }
         
         for url, page_data in crawl_data.items():
@@ -495,11 +488,11 @@ class TechnicalExtractor:
         
         # خصائص ARIA
         aria_elements = soup.find_all(attrs={'aria-label': True})
-        patterns['aria_labels'] = len(aria_elements)
+        patterns['aria_labels'].append(len(aria_elements))
         
         # خصائص البيانات
         data_elements = soup.find_all(attrs=lambda x: x and any(k.startswith('data-') for k in x.keys()))
-        patterns['data_attributes'] = len(data_elements)
+        patterns['data_attributes'].append(len(data_elements))
         
         return patterns
     
