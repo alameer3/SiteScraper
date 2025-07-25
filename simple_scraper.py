@@ -31,9 +31,9 @@ class SimpleScraper:
     def get_page_content(self, url):
         """Fetch page content with error handling"""
         try:
-            response = self.session.get(url, timeout=10)
+            response = self.session.get(url, timeout=5)
             response.raise_for_status()
-            time.sleep(self.delay)
+            time.sleep(0.5)  # Faster delay
             return response
         except requests.exceptions.RequestException as e:
             logging.error(f"Error fetching {url}: {e}")
