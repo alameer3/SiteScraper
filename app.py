@@ -1,11 +1,12 @@
 import os
 import logging
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-# Set up logging
+# Set up logging for debugging
 logging.basicConfig(level=logging.DEBUG)
 
 class Base(DeclarativeBase):
@@ -13,27 +14,27 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
-# Create the app
+# create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-flask-secret-key-2025-replit-secure")
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+app.secret_key = os.environ.get("SESSION_SECRET")
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1) # needed for url_for to generate with https
 
-# Configure the database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL") or "sqlite:///instance/webscraper.db"
+# configure the database, relative to the app instance folder
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
 }
-
-# Initialize the app with the extension
+# initialize the app with the extension, flask-sqlalchemy >= 3.0.x
 db.init_app(app)
 
 with app.app_context():
-    # Import models to ensure tables are created
-    import models
+    # Make sure to import the models here or their tables won't be created
+    import models  # noqa: F401
+
     db.create_all()
 
-# Import enhanced routes (routes.py is deprecated)
-# from routes import *
+# Import routes after app is initialized
+import routes  # noqa: F401
 
 
