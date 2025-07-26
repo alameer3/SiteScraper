@@ -1059,7 +1059,7 @@ class DeepExtractionEngine:
                 # البحث عن مدخلات البحث
                 search_inputs = soup.find_all('input', type='search')
                 search_inputs += soup.find_all('input', placeholder=re.compile('search', re.I))
-                search_inputs += soup.find_all('input', name=re.compile('search|query|q', re.I))
+                search_inputs += soup.find_all('input', attrs={'name': re.compile('search|query|q', re.I)})
 
                 for search_input in search_inputs:
                     if isinstance(search_input, Tag):
@@ -1259,9 +1259,11 @@ class DeepExtractionEngine:
                 rating_elements = soup.find_all(class_=re.compile('rating|star|score', re.I))
                 for rating in rating_elements:
                     if isinstance(rating, Tag):
+                        rating_class = rating.get('class') or []
+                        rating_class_str = ' '.join(rating_class) if isinstance(rating_class, list) else str(rating_class)
                         comments_data['rating_systems'].append({
-                            'class': rating.get('class') or [],
-                            'type': 'stars' if 'star' in str(rating.get('class', [])).lower() else 'numeric'
+                            'class': rating_class,
+                            'type': 'stars' if 'star' in rating_class_str.lower() else 'numeric'
                         })
 
                 # البحث عن نماذج المراجعة
@@ -1509,6 +1511,8 @@ class DeepExtractionEngine:
                         'word_count': len(main_text.split()) if main_text else 0,
                         'language': metadata.language if metadata and hasattr(metadata, 'language') else 'unknown'
                     }
+            else:
+                return {'error': 'no_session_available'}
 
         except ImportError:
             logging.warning("Trafilatura غير متوفر - تم تخطي الاستخراج")
@@ -1520,12 +1524,13 @@ class DeepExtractionEngine:
     async def _download_asset(self, asset_url: str) -> Optional[str]:
         """تحميل ملف نصي (CSS, JS)"""
         try:
-            async with self.session.get(asset_url, timeout=aiohttp.ClientTimeout(total=10)) as response:
-                if response.status == 200:
-                    content = await response.text()
-                    # حفظ الملف محلياً
-                    await self._save_asset_locally(asset_url, content, 'text')
-                    return content
+            if self.session:
+                async with self.session.get(asset_url, timeout=aiohttp.ClientTimeout(total=10)) as response:
+                    if response.status == 200:
+                        content = await response.text()
+                        # حفظ الملف محلياً
+                        await self._save_asset_locally(asset_url, content, 'text')
+                        return content
         except Exception as e:
             logging.warning(f"فشل تحميل {asset_url}: {e}")
         return None
@@ -1533,12 +1538,13 @@ class DeepExtractionEngine:
     async def _download_binary_asset(self, asset_url: str) -> Optional[bytes]:
         """تحميل ملف ثنائي (صور، خطوط)"""
         try:
-            async with self.session.get(asset_url, timeout=aiohttp.ClientTimeout(total=15)) as response:
-                if response.status == 200:
-                    content = await response.read()
-                    # حفظ الملف محلياً
-                    await self._save_asset_locally(asset_url, content, 'binary')
-                    return content
+            if self.session:
+                async with self.session.get(asset_url, timeout=aiohttp.ClientTimeout(total=15)) as response:
+                    if response.status == 200:
+                        content = await response.read()
+                        # حفظ الملف محلياً  
+                        await self._save_asset_locally(asset_url, content, 'binary')
+                        return content
         except Exception as e:
             logging.warning(f"فشل تحميل {asset_url}: {e}")
         return None
@@ -1587,7 +1593,7 @@ class DeepExtractionEngine:
         for audio in soup.find_all('audio'):
             if isinstance(audio, Tag):
                 src = audio.get('src')
-                if src:
+                if src and isinstance(src, str):
                     audio_url = urljoin(base_url, src)
                     audio_data = await self._download_binary_asset(audio_url)
                     if audio_data:
@@ -1604,7 +1610,7 @@ class DeepExtractionEngine:
                 for source in audio.find_all('source'):
                     if isinstance(source, Tag):
                         src = source.get('src')
-                        if src:
+                        if src and isinstance(src, str):
                             media_files['streaming_sources'].append({
                                 'url': urljoin(base_url, src),
                                 'type': source.get('type', ''),
@@ -1615,7 +1621,7 @@ class DeepExtractionEngine:
         for video in soup.find_all('video'):
             if isinstance(video, Tag):
                 src = video.get('src')
-                if src:
+                if src and isinstance(src, str):
                     video_url = urljoin(base_url, src)
                     # لا نحمل ملفات الفيديو الكبيرة، نحفظ المعلومات فقط
                     filename = os.path.basename(urlparse(src).path)
@@ -1633,7 +1639,7 @@ class DeepExtractionEngine:
                 for source in video.find_all('source'):
                     if isinstance(source, Tag):
                         src = source.get('src')
-                        if src:
+                        if src and isinstance(src, str):
                             media_files['streaming_sources'].append({
                                 'url': urljoin(base_url, src),
                                 'type': source.get('type', ''),
@@ -1744,7 +1750,6 @@ class DeepExtractionEngine:
 
                 # البحث عن استخدام localStorage
                 if 'localStorage' in html_content:
-                    import re
                     localStorage_calls = re.findall(
                         r'localStorage\.(setItem|getItem|removeItem)\s*\(\s*[\'"]([^\'"]+)[\'"]',
                         html_content,
@@ -1809,12 +1814,11 @@ class DeepExtractionEngine:
                 for css_link in css_links:
                     if isinstance(css_link, Tag):
                         href = css_link.get('href')
-                        if href:
+                        if href and isinstance(href, str):
                             try:
                                 css_url = urljoin(url, href)
                                 css_content = await self._download_asset(css_url)
                                 if css_content:
-                                    import re
                                     media_queries = re.findall(
                                         r'@media\s*\([^)]+\)',
                                         css_content,
@@ -1916,7 +1920,6 @@ class DeepExtractionEngine:
 
                 # البحث عن JavaScript error handling
                 if 'try' in html_content and 'catch' in html_content:
-                    import re
                     try_catch_blocks = re.findall(
                         r'try\s*{[^}]*}\s*catch\s*\([^)]*\)\s*{[^}]*}',
                         html_content,
@@ -1948,7 +1951,7 @@ class DeepExtractionEngine:
             if not PLAYWRIGHT_AVAILABLE:
                 return {'error': 'playwright_not_available'}
 
-            async with async_playwright() as p:
+            async with async_playwright() as p:  # type: ignore
                 browser = await p.chromium.launch(headless=True)
                 page = await browser.new_page()
 
@@ -2018,10 +2021,10 @@ class DeepExtractionEngine:
                     'h3': [self._safe_get_text(h) for h in soup.find_all('h3')]
                 },
                 'paragraphs': [self._safe_get_text(p) for p in soup.find_all('p')[:10]],
-                'links': [{'text': self._safe_get_text(a), 'href': a.get('href', '')} 
-                         for a in soup.find_all('a', href=True)[:20]],
-                'images': [{'alt': img.get('alt', ''), 'src': img.get('src', '')} 
-                          for img in soup.find_all('img')[:10]],
+                'links': [{'text': self._safe_get_text(a), 'href': str(a.get('href', ''))} 
+                         for a in soup.find_all('a', href=True)[:20] if isinstance(a, Tag)],
+                'images': [{'alt': str(img.get('alt', '')), 'src': str(img.get('src', ''))} 
+                          for img in soup.find_all('img')[:10] if isinstance(img, Tag)],
                 'forms': len(soup.find_all('form')),
                 'tables': len(soup.find_all('table')),
                 'lists': len(soup.find_all(['ul', 'ol']))
