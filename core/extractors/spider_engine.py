@@ -35,8 +35,8 @@ class SpiderConfig:
     respect_robots_txt: bool = True
     follow_external_links: bool = False
     max_file_size: int = 10 * 1024 * 1024  # 10MB
-    allowed_domains: List[str] = None
-    blocked_extensions: List[str] = None
+    allowed_domains: Optional[List[str]] = None
+    blocked_extensions: Optional[List[str]] = None
     user_agent: str = "Mozilla/5.0 (compatible; WebSpider/1.0)"
     timeout: int = 30
     enable_javascript_discovery: bool = True

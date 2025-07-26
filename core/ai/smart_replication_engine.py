@@ -24,7 +24,7 @@ class ReplicationConfig:
 class SmartReplicationEngine:
     """محرك النسخ الذكي المتقدم"""
 
-    def __init__(self, config: ReplicationConfig = None):
+    def __init__(self, config: Optional[ReplicationConfig] = None):
         self.config = config or ReplicationConfig()
         self.logger = logging.getLogger(__name__)
 

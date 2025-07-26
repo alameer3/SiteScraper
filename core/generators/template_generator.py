@@ -453,9 +453,9 @@ class TemplateGenerator:
     
     {css_links.get(css_framework, css_links['vanilla'])}
     
-    {% if self.config.include_responsive %}
+    {{% if config.include_responsive %}}
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    {% endif %}
+    {{% endif %}}
     
     <style>
         /* أنماط مخصصة */
@@ -463,7 +463,7 @@ class TemplateGenerator:
             font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }}
         
-        {% if self.config.include_animations %}
+        {{% if config.include_animations %}}
         .fade-in {{
             animation: fadeIn 0.5s ease-in;
         }}
@@ -472,7 +472,7 @@ class TemplateGenerator:
             from {{ opacity: 0; }}
             to {{ opacity: 1; }}
         }}
-        {% endif %}
+        {{% endif %}}
     </style>
     
     {{{{ extra_head | safe }}}}
