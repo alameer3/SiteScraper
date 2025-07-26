@@ -1,100 +1,124 @@
+#!/usr/bin/env python3
 """
-تطبيق بسيط لاختبار الوظائف الأساسية
+تطبيق Flask بسيط لأداة استخراج المواقع
+يستخدم النظام العامل working_extractor مباشرة
 """
 import os
+import sys
 import json
-from flask import Flask, render_template, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
 from datetime import datetime
 
-# إعداد Flask
+# إضافة المسار الحالي
+sys.path.insert(0, os.path.dirname(__file__))
+
+try:
+    from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+    from working_extractor import WebsiteExtractor
+except ImportError as e:
+    print(f"Import error: {e}")
+    print("Running with basic HTTP server instead...")
+    from working_extractor import main
+    if __name__ == '__main__':
+        main()
+    sys.exit(0)
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'test-secret-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///simple_app.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = os.environ.get("SESSION_SECRET", "simple-secret-key")
 
-# إعداد قاعدة البيانات
-class Base(DeclarativeBase):
-    pass
+# إنشاء مستخرج المواقع
+extractor = WebsiteExtractor()
 
-db = SQLAlchemy(model_class=Base)
-db.init_app(app)
-
-# نموذج البيانات
-class SimpleExtraction(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(500), nullable=False)
-    extraction_type = db.Column(db.String(50), nullable=False)
-    status = db.Column(db.String(20), default='completed')
-    result_data = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-# إنشاء الجداول
-with app.app_context():
-    db.create_all()
+# تخزين النتائج في الذاكرة للبساطة
+results_storage = {}
+next_id = 1
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    """الصفحة الرئيسية"""
+    try:
+        recent_results = list(results_storage.values())[-5:]  # آخر 5 نتائج
+        return render_template('index.html', recent_results=recent_results)
+    except Exception:
+        # تحميل صفحة بسيطة في حالة عدم وجود templates
+        return get_simple_html()
 
-@app.route('/extract', methods=['GET', 'POST'])
+@app.route('/extract', methods=['POST'])
 def extract():
-    if request.method == 'POST':
-        url = request.form.get('url')
-        extraction_type = request.form.get('extraction_type', 'basic')
-        
-        if not url:
+    """استخراج موقع جديد"""
+    global next_id
+    
+    url = request.form.get('url') or request.args.get('url')
+    extraction_type = request.form.get('extraction_type', 'basic')
+    
+    if not url:
+        if request.content_type == 'application/json':
             return jsonify({'error': 'URL is required'}), 400
+        flash('يرجى إدخال رابط الموقع', 'error')
+        return redirect(url_for('index'))
+    
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    try:
+        # استخراج الموقع
+        result = extractor.extract_website(url, extraction_type)
         
-        # إنشاء نتيجة بسيطة
-        result_data = {
-            'success': True,
+        # حفظ النتيجة في الذاكرة
+        result_id = next_id
+        next_id += 1
+        
+        results_storage[result_id] = {
+            'id': result_id,
             'url': url,
+            'title': result.get('title', 'No title'),
             'extraction_type': extraction_type,
-            'pages_extracted': 1,
-            'assets_downloaded': 0,
-            'total_size': 1024,
-            'duration': 2.5,
-            'technologies_detected': {
-                'framework': 'Unknown',
-                'cms': 'Unknown',
-                'analytics': []
-            },
-            'timestamp': datetime.now().isoformat()
+            'data': result,
+            'created_at': datetime.now().isoformat()
         }
         
-        # حفظ في قاعدة البيانات
-        extraction = SimpleExtraction(
-            url=url,
-            extraction_type=extraction_type,
-            status='completed',
-            result_data=json.dumps(result_data)
-        )
-        db.session.add(extraction)
-        db.session.commit()
+        if request.content_type == 'application/json':
+            return jsonify({
+                'success': True,
+                'result_id': result_id,
+                'data': result
+            })
         
-        return jsonify({
-            'status': 'success',
-            'extraction_id': extraction.id,
-            'result': result_data
-        })
-    
-    return render_template('extract.html')
+        try:
+            return redirect(url_for('result_detail', result_id=result_id))
+        except Exception:
+            return jsonify(result)  # عرض JSON إذا فشل الـ template
+        
+    except Exception as e:
+        error_msg = f'خطأ في استخراج الموقع: {str(e)}'
+        if request.content_type == 'application/json':
+            return jsonify({'error': error_msg}), 500
+        flash(error_msg, 'error')
+        return redirect(url_for('index'))
 
 @app.route('/results')
 def results():
-    extractions = SimpleExtraction.query.order_by(SimpleExtraction.created_at.desc()).all()
-    return render_template('results.html', extractions=extractions)
+    """صفحة جميع النتائج"""
+    try:
+        all_results = list(results_storage.values())
+        return render_template('results.html', results=all_results)
+    except Exception:
+        return jsonify(list(results_storage.values()))
 
-@app.route('/result/<int:extraction_id>')
-def view_result(extraction_id):
-    extraction = SimpleExtraction.query.get_or_404(extraction_id)
-    result_data = json.loads(extraction.result_data) if extraction.result_data else {}
-    return render_template('result_detail.html', extraction=extraction, result_data=result_data)
+@app.route('/result/<int:result_id>')
+def result_detail(result_id):
+    """تفاصيل النتيجة"""
+    result = results_storage.get(result_id)
+    if not result:
+        return jsonify({'error': 'Result not found'}), 404
+    
+    try:
+        return render_template('result_detail.html', result=result)
+    except Exception:
+        return jsonify(result)
 
 @app.route('/api/extract', methods=['POST'])
 def api_extract():
+    """API لاستخراج الموقع"""
     data = request.get_json()
     if not data or 'url' not in data:
         return jsonify({'error': 'URL is required'}), 400
@@ -102,29 +126,84 @@ def api_extract():
     url = data['url']
     extraction_type = data.get('extraction_type', 'basic')
     
-    result_data = {
-        'success': True,
-        'url': url,
-        'extraction_type': extraction_type,
-        'pages_extracted': 1,
-        'assets_downloaded': 0,
-        'total_size': 1024,
-        'message': 'تم الاستخراج بنجاح (نسخة تجريبية)'
-    }
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
     
-    return jsonify({
-        'status': 'success',
-        'result': result_data
-    })
+    try:
+        result = extractor.extract_website(url, extraction_type)
+        return jsonify({
+            'success': True,
+            'data': result
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @app.route('/health')
 def health():
+    """فحص صحة النظام"""
     return jsonify({
         'status': 'healthy',
-        'database': 'connected',
-        'timestamp': datetime.now().isoformat()
+        'app': 'website-analyzer-simple',
+        'results_count': len(results_storage)
     })
 
+def get_simple_html():
+    """صفحة HTML بسيطة في حالة عدم وجود templates"""
+    return '''
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+        <meta charset="UTF-8">
+        <title>أداة استخراج المواقع</title>
+        <style>
+            body { font-family: Arial; text-align: center; margin: 50px; background: #f8f9fa; }
+            .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            h1 { color: #333; margin-bottom: 30px; }
+            .form-group { margin: 20px 0; text-align: right; }
+            label { display: block; margin-bottom: 5px; font-weight: bold; }
+            input[type="url"], select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+            button { background: #007bff; color: white; padding: 12px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+            button:hover { background: #0056b3; }
+            .recent-results { margin-top: 40px; text-align: right; }
+            .result-item { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🌐 أداة استخراج المواقع</h1>
+            
+            <form method="POST" action="/extract">
+                <div class="form-group">
+                    <label for="url">رابط الموقع:</label>
+                    <input type="url" id="url" name="url" required placeholder="https://example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="extraction_type">نوع الاستخراج:</label>
+                    <select id="extraction_type" name="extraction_type">
+                        <option value="basic">أساسي - سريع</option>
+                        <option value="standard">متوسط</option>
+                        <option value="advanced">متقدم - شامل</option>
+                    </select>
+                </div>
+                
+                <button type="submit">استخراج الموقع</button>
+            </form>
+            
+            <div class="recent-results">
+                <h3>آخر العمليات:</h3>
+                <p>عدد النتائج المحفوظة: ''' + str(len(results_storage)) + '''</p>
+                <a href="/results">عرض جميع النتائج</a> | 
+                <a href="/health">فحص النظام</a>
+            </div>
+        </div>
+    </body>
+    </html>
+    '''
+
 if __name__ == '__main__':
-    print("🚀 تشغيل التطبيق البسيط...")
+    print("تشغيل التطبيق على المنفذ 5000...")
     app.run(host='0.0.0.0', port=5000, debug=True)
