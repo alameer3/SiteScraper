@@ -1642,7 +1642,7 @@ class DeepExtractionEngine:
 
         return media_files
 
-    async def _analyze_javascript_events(self, url: str) ->> List[Dict[str, Any]]:
+    async def _analyze_javascript_events(self, url: str) -> List[Dict[str, Any]]:
         """تحليل JavaScript Events"""
         events = []
 

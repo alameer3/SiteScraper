@@ -368,7 +368,7 @@ class SmartReplicationEngine:
     async def analyze_with_ai(self, extraction_data: Dict[str, Any]) -> Dict[str, Any]:
         """تحليل البيانات المستخرجة بالذكاء الاصطناعي"""
         self.logger.info("تحليل البيانات بالذكاء الاصطناعي...")
-        
+
         ai_analysis = {
             'code_complexity': await self._assess_code_complexity(extraction_data),
             'architecture_patterns': await self._identify_architecture_patterns(extraction_data),
@@ -377,51 +377,51 @@ class SmartReplicationEngine:
             'security_assessment': await self._assess_security_features(extraction_data),
             'performance_insights': await self._analyze_performance_patterns(extraction_data)
         }
-        
+
         return ai_analysis
 
     async def _assess_code_complexity(self, extraction_data: Dict) -> Dict[str, Any]:
         """تقييم تعقيد الكود"""
         complexity_score = 0
         factors = []
-        
+
         # تحليل عدد الصفحات
         interface_data = extraction_data.get('interface_extraction', {})
         html_files_count = len(interface_data.get('html_files', {}))
         js_files_count = len(interface_data.get('javascript_files', {}))
         css_files_count = len(interface_data.get('css_files', {}))
-        
+
         # حساب نقاط التعقيد
         if html_files_count > 10:
             complexity_score += 2
             factors.append('عدد كبير من ملفات HTML')
-        
+
         if js_files_count > 5:
             complexity_score += 3
             factors.append('عدد كبير من ملفات JavaScript')
-        
+
         if css_files_count > 3:
             complexity_score += 1
             factors.append('عدد كبير من ملفات CSS')
-        
+
         # تحليل التقنيات المستخدمة
         technical_data = extraction_data.get('technical_structure', {})
         api_endpoints = technical_data.get('api_endpoints', [])
-        
+
         if len(api_endpoints) > 10:
             complexity_score += 3
             factors.append('عدد كبير من API endpoints')
-        
+
         # تحليل الميزات
         features_data = extraction_data.get('features_extraction', {})
         if features_data.get('authentication_system', {}).get('login_forms'):
             complexity_score += 2
             factors.append('نظام مصادقة معقد')
-        
+
         if features_data.get('content_management', {}).get('detected_cms') != 'unknown':
             complexity_score += 2
             factors.append('نظام إدارة محتوى')
-        
+
         # تصنيف التعقيد
         if complexity_score <= 3:
             complexity_level = 'بسيط'
@@ -431,7 +431,7 @@ class SmartReplicationEngine:
             complexity_level = 'معقد'
         else:
             complexity_level = 'معقد جداً'
-        
+
         return {
             'complexity_score': complexity_score,
             'complexity_level': complexity_level,
@@ -442,11 +442,11 @@ class SmartReplicationEngine:
     async def _identify_architecture_patterns(self, extraction_data: Dict) -> List[str]:
         """تحديد أنماط البنية المعمارية"""
         patterns = []
-        
+
         # تحليل بنية الواجهة
         interface_data = extraction_data.get('interface_extraction', {})
         js_files = interface_data.get('javascript_files', {})
-        
+
         # فحص أنماط SPA
         spa_indicators = ['react', 'vue', 'angular', 'spa']
         for filename, file_data in js_files.items():
@@ -454,45 +454,45 @@ class SmartReplicationEngine:
             if any(indicator in content for indicator in spa_indicators):
                 patterns.append('Single Page Application (SPA)')
                 break
-        
+
         # فحص أنماط MVC
         technical_data = extraction_data.get('technical_structure', {})
         routing_system = technical_data.get('routing_system', {})
-        
+
         if routing_system.get('routing_patterns'):
             patterns.append('MVC Pattern')
-        
+
         # فحص أنماط RESTful API
         api_endpoints = technical_data.get('api_endpoints', [])
         rest_methods = ['GET', 'POST', 'PUT', 'DELETE']
-        
+
         if any(endpoint.get('method') in rest_methods for endpoint in api_endpoints):
             patterns.append('RESTful API')
-        
+
         # فحص أنماط الميكروسيرفيس
         if len(api_endpoints) > 15:
             patterns.append('Microservices Architecture')
-        
+
         # فحص أنماط التصميم المتجاوب
         behavior_data = extraction_data.get('behavior_analysis', {})
         responsive_behavior = behavior_data.get('responsive_behavior', {})
-        
+
         if responsive_behavior.get('css_media_queries'):
             patterns.append('Responsive Design')
-        
+
         return list(set(patterns))
 
     async def _generate_optimization_suggestions(self, extraction_data: Dict) -> List[Dict]:
         """إنشاء اقتراحات التحسين"""
         suggestions = []
-        
+
         # تحليل الأداء
         interface_data = extraction_data.get('interface_extraction', {})
-        
+
         # اقتراحات تحسين CSS
         css_files = interface_data.get('css_files', {})
         total_css_size = sum(len(file_data.get('content', '')) for file_data in css_files.values())
-        
+
         if total_css_size > 100000:  # أكثر من 100KB
             suggestions.append({
                 'type': 'performance',
@@ -500,11 +500,11 @@ class SmartReplicationEngine:
                 'suggestion': 'ضغط وتحسين ملفات CSS',
                 'description': 'حجم ملفات CSS كبير، يُنصح بضغطها واستخدام CSS minification'
             })
-        
+
         # اقتراحات تحسين JavaScript
         js_files = interface_data.get('javascript_files', {})
         total_js_size = sum(len(file_data.get('content', '')) for file_data in js_files.values())
-        
+
         if total_js_size > 200000:  # أكثر من 200KB
             suggestions.append({
                 'type': 'performance',
@@ -512,11 +512,11 @@ class SmartReplicationEngine:
                 'suggestion': 'تحسين وضغط ملفات JavaScript',
                 'description': 'حجم ملفات JavaScript كبير، يُنصح بتقسيمها وضغطها'
             })
-        
+
         # اقتراحات الأمان
         features_data = extraction_data.get('features_extraction', {})
         auth_system = features_data.get('authentication_system', {})
-        
+
         if not auth_system.get('two_factor_auth'):
             suggestions.append({
                 'type': 'security',
@@ -524,11 +524,11 @@ class SmartReplicationEngine:
                 'suggestion': 'إضافة المصادقة الثنائية',
                 'description': 'تحسين الأمان بإضافة نظام المصادقة الثنائية'
             })
-        
+
         # اقتراحات SEO
         behavior_data = extraction_data.get('behavior_analysis', {})
         loading_states = behavior_data.get('loading_states', {})
-        
+
         if not loading_states.get('lazy_loading'):
             suggestions.append({
                 'type': 'seo',
@@ -536,7 +536,7 @@ class SmartReplicationEngine:
                 'suggestion': 'تطبيق Lazy Loading للصور',
                 'description': 'تحسين سرعة التحميل باستخدام lazy loading للصور'
             })
-        
+
         return suggestions
 
     async def _recommend_technologies(self, extraction_data: Dict) -> Dict[str, List]:
@@ -547,39 +547,39 @@ class SmartReplicationEngine:
             'databases': [],
             'deployment_platforms': []
         }
-        
+
         # تحليل التعقيد لاختيار Frontend Framework
         complexity = await self._assess_code_complexity(extraction_data)
         complexity_level = complexity['complexity_level']
-        
+
         if complexity_level == 'بسيط':
             recommendations['frontend_frameworks'] = ['HTML/CSS/JS', 'Bootstrap', 'jQuery']
         elif complexity_level == 'متوسط':
             recommendations['frontend_frameworks'] = ['Vue.js', 'React', 'Alpine.js']
         else:
             recommendations['frontend_frameworks'] = ['React', 'Angular', 'Vue.js']
-        
+
         # توصيات Backend
         features_data = extraction_data.get('features_extraction', {})
-        
+
         if features_data.get('authentication_system', {}).get('login_forms'):
             recommendations['backend_technologies'].extend(['Flask', 'Django', 'FastAPI'])
-        
+
         if features_data.get('content_management', {}).get('detected_cms') != 'unknown':
             recommendations['backend_technologies'].extend(['Django', 'WordPress', 'Strapi'])
-        
+
         # توصيات قواعد البيانات
         technical_data = extraction_data.get('technical_structure', {})
         db_indicators = technical_data.get('database_structure', {})
-        
+
         if db_indicators.get('crud_operations'):
             recommendations['databases'] = ['PostgreSQL', 'MySQL', 'MongoDB']
         else:
             recommendations['databases'] = ['SQLite', 'JSON Files']
-        
+
         # توصيات النشر
         recommendations['deployment_platforms'] = ['Replit', 'Vercel', 'Netlify', 'Heroku']
-        
+
         return recommendations
 
     async def _assess_security_features(self, extraction_data: Dict) -> Dict[str, Any]:
@@ -590,40 +590,40 @@ class SmartReplicationEngine:
             'security_features': [],
             'recommendations': []
         }
-        
+
         features_data = extraction_data.get('features_extraction', {})
         auth_system = features_data.get('authentication_system', {})
-        
+
         # فحص المصادقة
         if auth_system.get('login_forms'):
             security_assessment['security_features'].append('نظام تسجيل دخول')
             security_assessment['security_score'] += 2
-        
+
         if auth_system.get('two_factor_auth'):
             security_assessment['security_features'].append('مصادقة ثنائية')
             security_assessment['security_score'] += 3
         else:
             security_assessment['vulnerabilities'].append('عدم وجود مصادقة ثنائية')
             security_assessment['recommendations'].append('إضافة نظام المصادقة الثنائية')
-        
+
         if auth_system.get('captcha_present'):
             security_assessment['security_features'].append('CAPTCHA')
             security_assessment['security_score'] += 1
-        
+
         # فحص HTTPS
         # هذا سيحتاج فحص فعلي للموقع
         security_assessment['recommendations'].append('التأكد من استخدام HTTPS')
-        
+
         # فحص validation
         forms_with_validation = 0
         for form in auth_system.get('registration_forms', []):
             if form.get('fields_count', 0) > 0:
                 forms_with_validation += 1
-        
+
         if forms_with_validation > 0:
             security_assessment['security_features'].append('تحقق من صحة النماذج')
             security_assessment['security_score'] += 1
-        
+
         # تصنيف الأمان
         if security_assessment['security_score'] >= 5:
             security_level = 'جيد'
@@ -631,9 +631,9 @@ class SmartReplicationEngine:
             security_level = 'متوسط'
         else:
             security_level = 'ضعيف'
-        
+
         security_assessment['security_level'] = security_level
-        
+
         return security_assessment
 
     async def _analyze_performance_patterns(self, extraction_data: Dict) -> Dict[str, Any]:
@@ -644,44 +644,44 @@ class SmartReplicationEngine:
             'caching_strategies': {},
             'recommendations': []
         }
-        
+
         # تحليل أداء التحميل
         behavior_data = extraction_data.get('behavior_analysis', {})
         loading_states = behavior_data.get('loading_states', {})
-        
+
         performance_analysis['loading_performance'] = {
             'lazy_loading_enabled': loading_states.get('lazy_loading', False),
             'async_scripts_count': len(loading_states.get('async_scripts', [])),
             'preloading_resources': len(loading_states.get('preloading', []))
         }
-        
+
         # تحليل تحسين الموارد
         interface_data = extraction_data.get('interface_extraction', {})
-        
+
         total_css_size = sum(len(file_data.get('content', '')) for file_data in interface_data.get('css_files', {}).values())
         total_js_size = sum(len(file_data.get('content', '')) for file_data in interface_data.get('javascript_files', {}).values())
         total_images_count = len(interface_data.get('images', {}))
-        
+
         performance_analysis['resource_optimization'] = {
             'total_css_size_kb': total_css_size / 1024,
             'total_js_size_kb': total_js_size / 1024,
             'total_images_count': total_images_count,
             'optimization_needed': total_css_size > 100000 or total_js_size > 200000
         }
-        
+
         # اقتراحات تحسين الأداء
         if total_css_size > 100000:
             performance_analysis['recommendations'].append('ضغط ملفات CSS')
-        
+
         if total_js_size > 200000:
             performance_analysis['recommendations'].append('تقسيم وضغط ملفات JavaScript')
-        
+
         if not loading_states.get('lazy_loading'):
             performance_analysis['recommendations'].append('تطبيق Lazy Loading')
-        
+
         if len(loading_states.get('async_scripts', [])) == 0:
             performance_analysis['recommendations'].append('استخدام تحميل غير متزامن للـ JavaScript')
-        
+
         return performance_analysis
 
     def _generate_complexity_recommendations(self, complexity_level: str) -> List[str]:
@@ -709,25 +709,37 @@ class SmartReplicationEngine:
                 'استخدام CI/CD pipeline'
             ]
         }
-        
-        return recommendations.get(complexity_level, []))
-        
+
+        return recommendations.get(complexity_level, [])
+
+    async def _assess_code_complexity_fixed(self, extraction_data: Dict) -> Dict[str, Any]:
+        """تقييم تعقيد الكود - نسخة محدثة"""
+        complexity_score = 0
+        factors = []
+
+        # تحليل عدد الصفحات
+        interface_data = extraction_data.get('interface_extraction', {})
+        html_files_count = len(interface_data.get('html_files', {}))
+        js_files_count = len(interface_data.get('javascript_files', {}))
+        css_files_count = len(interface_data.get('css_files', {}))
+
+        # حساب نقاط التعقيد
         if html_files_count > 10:
             complexity_score += 2
             factors.append('عدد كبير من صفحات HTML')
-        
+
         if js_files_count > 5:
             complexity_score += 3
             factors.append('عدد كبير من ملفات JavaScript')
-        
+
         # تحليل التقنيات المستخدمة
         technical_structure = extraction_data.get('technical_structure', {})
         api_endpoints = technical_structure.get('api_endpoints', [])
-        
+
         if len(api_endpoints) > 10:
             complexity_score += 3
             factors.append('عدد كبير من نقاط API')
-        
+
         # تقييم مستوى التعقيد
         if complexity_score <= 3:
             level = 'بسيط'
@@ -735,7 +747,7 @@ class SmartReplicationEngine:
             level = 'متوسط'
         else:
             level = 'معقد'
-        
+
         return {
             'complexity_score': complexity_score,
             'complexity_level': level,
@@ -746,18 +758,18 @@ class SmartReplicationEngine:
     async def _identify_architecture_patterns(self, extraction_data: Dict) -> List[Dict[str, Any]]:
         """تحديد أنماط العمارة البرمجية"""
         patterns = []
-        
+
         # فحص نمط MVC
         technical_structure = extraction_data.get('technical_structure', {})
         routing_system = technical_structure.get('routing_system', {})
-        
+
         if routing_system.get('spa_routing', False):
             patterns.append({
                 'pattern': 'Single Page Application (SPA)',
                 'confidence': 0.9,
                 'evidence': 'وجود نظام توجيه في الواجهة الأمامية'
             })
-        
+
         # فحص نمط REST API
         api_endpoints = technical_structure.get('api_endpoints', [])
         if api_endpoints:
@@ -768,26 +780,26 @@ class SmartReplicationEngine:
                     'confidence': min(rest_indicators / 5, 1.0),
                     'evidence': f'وجود {rest_indicators} نقطة API'
                 })
-        
+
         # فحص نمط Component-Based
         features_data = extraction_data.get('features_extraction', {})
         interactive_components = technical_structure.get('interactive_components', {})
-        
+
         if len(interactive_components.get('forms', [])) > 2:
             patterns.append({
                 'pattern': 'Component-Based Architecture',
                 'confidence': 0.7,
                 'evidence': 'وجود مكونات تفاعلية متعددة'
             })
-        
+
         return patterns
 
     async def _generate_optimization_suggestions(self, extraction_data: Dict) -> List[Dict[str, Any]]:
         """إنتاج اقتراحات التحسين"""
         suggestions = []
-        
+
         interface_data = extraction_data.get('interface_extraction', {})
-        
+
         # فحص تحسينات الصور
         images = interface_data.get('images', {})
         if len(images) > 10:
@@ -797,7 +809,7 @@ class SmartReplicationEngine:
                 'impact': 'high',
                 'description': f'يوجد {len(images)} صورة يمكن تحسينها لتحسين الأداء'
             })
-        
+
         # فحص تحسينات CSS
         css_files = interface_data.get('css_files', {})
         if len(css_files) > 3:
@@ -807,7 +819,7 @@ class SmartReplicationEngine:
                 'impact': 'medium',
                 'description': f'دمج {len(css_files)} ملفات CSS لتقليل طلبات HTTP'
             })
-        
+
         # فحص تحسينات JavaScript
         js_files = interface_data.get('javascript_files', {})
         if len(js_files) > 3:
@@ -817,11 +829,11 @@ class SmartReplicationEngine:
                 'impact': 'high',
                 'description': f'دمج {len(js_files)} ملفات JavaScript وضغطها'
             })
-        
+
         # فحص تحسينات الأمان
         features_data = extraction_data.get('features_extraction', {})
         auth_system = features_data.get('authentication_system', {})
-        
+
         if not auth_system.get('two_factor_auth', False):
             suggestions.append({
                 'category': 'security',
@@ -829,7 +841,7 @@ class SmartReplicationEngine:
                 'impact': 'high',
                 'description': 'تحسين الأمان بإضافة المصادقة الثنائية'
             })
-        
+
         return suggestions
 
     async def _recommend_technologies(self, extraction_data: Dict) -> Dict[str, List[str]]:
@@ -840,39 +852,39 @@ class SmartReplicationEngine:
             'databases': [],
             'tools': []
         }
-        
+
         # تحليل التقنيات الحالية
         initial_analysis = extraction_data.get('initial_analysis', {})
         technologies = initial_analysis.get('initial_technologies', {})
         current_frameworks = technologies.get('frameworks', [])
-        
+
         # توصيات Frontend
         if 'react' not in current_frameworks:
             recommendations['frontend_frameworks'].append('React - لتطوير واجهات تفاعلية حديثة')
-        
+
         if 'bootstrap' not in current_frameworks:
             recommendations['frontend_frameworks'].append('Bootstrap - لتصميم متجاوب سريع')
-        
+
         # توصيات Backend
         features_data = extraction_data.get('features_extraction', {})
         if features_data.get('authentication_system'):
             recommendations['backend_frameworks'].append('Flask/Django - لنظام مصادقة قوي')
-        
+
         # توصيات قواعد البيانات
         technical_structure = extraction_data.get('technical_structure', {})
         db_structure = technical_structure.get('database_structure', {})
-        
+
         if db_structure.get('crud_operations'):
             recommendations['databases'].append('PostgreSQL - لعمليات CRUD معقدة')
             recommendations['databases'].append('Redis - للتخزين المؤقت')
-        
+
         # توصيات الأدوات
         recommendations['tools'].extend([
             'Webpack - لتجميع الموارد',
             'ESLint - لفحص جودة الكود',
             'Sass/SCSS - لكتابة CSS متقدم'
         ])
-        
+
         return recommendations
 
     async def _assess_security_features(self, extraction_data: Dict) -> Dict[str, Any]:
@@ -883,23 +895,23 @@ class SmartReplicationEngine:
             'recommendations': [],
             'security_score': 0
         }
-        
+
         features_data = extraction_data.get('features_extraction', {})
         auth_system = features_data.get('authentication_system', {})
-        
+
         # فحص ميزات الأمان الحالية
         if auth_system.get('login_forms'):
             security_assessment['current_features'].append('نظام تسجيل الدخول')
             security_assessment['security_score'] += 2
-        
+
         if auth_system.get('two_factor_auth'):
             security_assessment['current_features'].append('المصادقة الثنائية')
             security_assessment['security_score'] += 3
-        
+
         if auth_system.get('captcha_present'):
             security_assessment['current_features'].append('حماية CAPTCHA')
             security_assessment['security_score'] += 1
-        
+
         # فحص الثغرات المحتملة
         if not auth_system.get('two_factor_auth', False):
             security_assessment['vulnerabilities'].append({
@@ -907,7 +919,7 @@ class SmartReplicationEngine:
                 'description': 'عدم وجود مصادقة ثنائية',
                 'severity': 'medium'
             })
-        
+
         # توصيات الأمان
         security_assessment['recommendations'].extend([
             'تفعيل HTTPS للموقع بالكامل',
@@ -915,7 +927,7 @@ class SmartReplicationEngine:
             'تنفيذ rate limiting للطلبات',
             'تشفير البيانات الحساسة'
         ])
-        
+
         return security_assessment
 
     async def _analyze_performance_patterns(self, extraction_data: Dict) -> Dict[str, Any]:
@@ -926,43 +938,43 @@ class SmartReplicationEngine:
             'caching_opportunities': [],
             'performance_score': 0
         }
-        
+
         behavior_data = extraction_data.get('behavior_analysis', {})
         loading_states = behavior_data.get('loading_states', {})
-        
+
         # تحليل أنماط التحميل
         if loading_states.get('lazy_loading', False):
             performance_analysis['loading_patterns'].append('Lazy Loading مفعل')
             performance_analysis['performance_score'] += 2
-        
+
         if loading_states.get('async_scripts'):
             performance_analysis['loading_patterns'].append('سكريبت غير متزامن')
             performance_analysis['performance_score'] += 1
-        
+
         # فرص التحسين
         interface_data = extraction_data.get('interface_extraction', {})
-        
+
         if len(interface_data.get('images', {})) > 5:
             performance_analysis['resource_optimization'].append({
                 'type': 'image_optimization',
                 'description': 'ضغط وتحسين الصور',
                 'impact': 'high'
             })
-        
+
         if len(interface_data.get('css_files', {})) > 2:
             performance_analysis['resource_optimization'].append({
                 'type': 'css_minification',
                 'description': 'ضغط ودمج ملفات CSS',
                 'impact': 'medium'
             })
-        
+
         # فرص التخزين المؤقت
         performance_analysis['caching_opportunities'].extend([
             'تفعيل browser caching للموارد الثابتة',
             'استخدام CDN للملفات الكبيرة',
             'تطبيق service workers للتخزين المؤقت'
         ])
-        
+
         return performance_analysis
 
     def _get_complexity_recommendation(self, level: str) -> str:
