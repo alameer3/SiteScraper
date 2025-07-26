@@ -259,10 +259,38 @@ class WebsiteClonerPro:
         logger.addHandler(console_handler)
         
         return logger
+    
+    def _clean_url(self, url: str) -> str:
+        """تنظيف وتصحيح URL"""
+        if not url:
+            return ""
+        
+        url = url.strip()
+        
+        # إصلاح مشكلة URL المضاعف
+        if 'chttps://' in url:
+            # استخراج الجزء الصحيح
+            if url.startswith('https://example.chttps://'):
+                url = url.replace('https://example.chttps://', 'https://')
+            elif 'chttps://' in url:
+                url = url.split('chttps://', 1)[1]
+                if not url.startswith('http'):
+                    url = 'https://' + url
+        
+        # إضافة http إذا لم يكن موجوداً
+        if not url.startswith(('http://', 'https://')):
+            url = 'https://' + url
+        
+        # إزالة trailing slash
+        url = url.rstrip('/')
+        
+        return url
         
     async def clone_website_complete(self, target_url: str) -> CloningResult:
         """الوظيفة الرئيسية لاستنساخ الموقع بشكل كامل"""
         
+        # تنظيف وتصحيح الURL
+        target_url = self._clean_url(target_url)
         self.config.target_url = target_url
         self.result.start_time = datetime.now()
         

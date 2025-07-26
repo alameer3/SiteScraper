@@ -217,7 +217,7 @@ class WebsiteClonerIntegration:
             
             if self.unified_extractor:
                 self.logger.info("تشغيل Unified Master Extractor...")
-                unified_result = await self.unified_extractor.extract_comprehensive(target_url)
+                unified_result = await self.unified_extractor.extract_everything(target_url)
                 results['unified_extraction'] = unified_result
             
             return results
