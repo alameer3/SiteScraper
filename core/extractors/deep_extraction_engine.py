@@ -361,7 +361,7 @@ class DeepExtractionEngine:
                     elements.append({
                         'tag': tag_name,
                         'id': element.get('id', ''),
-                        'class': element.get('class', []),
+                        'class': element.get('class') or [],
                         'text_length': len(self._safe_get_text(element))
                     })
         
@@ -404,7 +404,7 @@ class DeepExtractionEngine:
                 interactive.append({
                     'type': 'button',
                     'text': self._safe_get_text(button),
-                    'class': button.get('class', []),
+                    'class': button.get('class') or [],
                     'onclick': button.get('onclick', '')
                 })
         
@@ -412,12 +412,12 @@ class DeepExtractionEngine:
         for link in body.find_all('a', href=True):
             if isinstance(link, Tag):
                 href = link.get('href', '')
-                if href.startswith('#') or 'javascript:' in href:
+                if isinstance(href, str) and (href.startswith('#') or 'javascript:' in href):
                     interactive.append({
                         'type': 'interactive_link',
                         'text': self._safe_get_text(link),
                         'href': href,
-                        'class': link.get('class', [])
+                        'class': link.get('class') or []
                     })
         
         return interactive
@@ -434,7 +434,7 @@ class DeepExtractionEngine:
         for nav in body.find_all('nav'):
             if isinstance(nav, Tag):
                 nav_item = {
-                    'class': nav.get('class', []),
+                    'class': nav.get('class') or [],
                     'links': []
                 }
                 
@@ -443,7 +443,7 @@ class DeepExtractionEngine:
                         nav_item['links'].append({
                             'text': self._safe_get_text(link),
                             'href': link.get('href', ''),
-                            'class': link.get('class', [])
+                            'class': link.get('class') or []
                         })
                 
                 nav_data['menus'].append(nav_item)
@@ -617,7 +617,7 @@ class DeepExtractionEngine:
                 for endpoint in common_endpoints:
                     test_url = urljoin(url, endpoint)
                     try:
-                        async with self.session.head(test_url, timeout=5) as resp:
+                        async with self.session.head(test_url, timeout=aiohttp.ClientTimeout(total=5)) as resp:
                             if resp.status < 400:
                                 endpoints.append({
                                     'url': endpoint,
@@ -719,14 +719,17 @@ class DeepExtractionEngine:
                 for link in soup.find_all('a', href=True):
                     if isinstance(link, Tag):
                         href = link.get('href', '')
-                        full_url = urljoin(url, href)
+                        if isinstance(href, str):
+                            full_url = urljoin(url, href)
+                        else:
+                            full_url = url
                         link_domain = urlparse(full_url).netloc
                         
                         link_data = {
                             'text': self._safe_get_text(link),
                             'href': href,
                             'full_url': full_url,
-                            'class': link.get('class', [])
+                            'class': link.get('class') or []
                         }
                         
                         if link_domain == base_domain or not link_domain:
@@ -771,7 +774,7 @@ class DeepExtractionEngine:
                     if isinstance(form, Tag):
                         form_data = {
                             'id': form.get('id', ''),
-                            'class': form.get('class', []),
+                            'class': form.get('class') or [],
                             'action': form.get('action', ''),
                             'method': form.get('method', 'get'),
                             'fields_count': len(form.find_all(['input', 'select', 'textarea']))
@@ -796,7 +799,7 @@ class DeepExtractionEngine:
                         if isinstance(modal, Tag):
                             interactive_data['modals'].append({
                                 'id': modal.get('id', ''),
-                                'class': modal.get('class', []),
+                                'class': modal.get('class') or [],
                                 'title': self._safe_get_text(modal.find(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']))
                             })
                 
@@ -807,7 +810,7 @@ class DeepExtractionEngine:
                         interactive_data['dropdowns'].append({
                             'tag': dropdown.name,
                             'id': dropdown.get('id', ''),
-                            'class': dropdown.get('class', [])
+                            'class': dropdown.get('class') or []
                         })
                 
                 # البحث عن carousels/sliders
@@ -817,7 +820,7 @@ class DeepExtractionEngine:
                     for carousel in carousels:
                         if isinstance(carousel, Tag):
                             interactive_data['carousels'].append({
-                                'class': carousel.get('class', []),
+                                'class': carousel.get('class') or [],
                                 'slides_count': len(carousel.find_all(['slide', 'item']))
                             })
                 
@@ -827,7 +830,7 @@ class DeepExtractionEngine:
                     if isinstance(tab_container, Tag):
                         tabs = tab_container.find_all(['li', 'a', 'button'])
                         interactive_data['tabs'].append({
-                            'container_class': tab_container.get('class', []),
+                            'container_class': tab_container.get('class') or [],
                             'tabs_count': len(tabs)
                         })
                 
@@ -836,7 +839,7 @@ class DeepExtractionEngine:
                 for accordion in accordion_elements:
                     if isinstance(accordion, Tag):
                         interactive_data['accordions'].append({
-                            'class': accordion.get('class', []),
+                            'class': accordion.get('class') or [],
                             'sections_count': len(accordion.find_all(['section', 'div']))
                         })
         
@@ -874,6 +877,410 @@ class DeepExtractionEngine:
         features_data['comments_rating_system'] = await self._analyze_comments_rating_system(url)
         
         return features_data
+    
+    async def _analyze_authentication_system(self, url: str) -> Dict[str, Any]:
+        """تحليل آلية المصادقة والتسجيل"""
+        auth_data = {
+            'login_forms': [],
+            'registration_forms': [],
+            'password_fields': [],
+            'social_auth_buttons': [],
+            'two_factor_auth': False,
+            'captcha_present': False
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # البحث عن نماذج تسجيل الدخول
+                login_indicators = ['login', 'signin', 'sign-in', 'log-in', 'auth']
+                for indicator in login_indicators:
+                    forms = soup.find_all('form', class_=re.compile(indicator, re.I))
+                    forms += soup.find_all('form', id=re.compile(indicator, re.I))
+                    
+                    for form in forms:
+                        if isinstance(form, Tag):
+                            password_fields = form.find_all('input', type='password')
+                            if password_fields:
+                                auth_data['login_forms'].append({
+                                    'id': form.get('id', ''),
+                                    'class': form.get('class') or [],
+                                    'action': form.get('action', ''),
+                                    'method': form.get('method', 'post')
+                                })
+                
+                # البحث عن نماذج التسجيل
+                register_indicators = ['register', 'signup', 'sign-up', 'create-account']
+                for indicator in register_indicators:
+                    forms = soup.find_all('form', class_=re.compile(indicator, re.I))
+                    forms += soup.find_all('form', id=re.compile(indicator, re.I))
+                    
+                    for form in forms:
+                        if isinstance(form, Tag):
+                            auth_data['registration_forms'].append({
+                                'id': form.get('id', ''),
+                                'class': form.get('class') or [],
+                                'action': form.get('action', ''),
+                                'fields_count': len(form.find_all(['input', 'select', 'textarea']))
+                            })
+                
+                # البحث عن حقول كلمة المرور
+                password_inputs = soup.find_all('input', type='password')
+                for pwd_input in password_inputs:
+                    if isinstance(pwd_input, Tag):
+                        auth_data['password_fields'].append({
+                            'id': pwd_input.get('id', ''),
+                            'name': pwd_input.get('name', ''),
+                            'class': pwd_input.get('class') or []
+                        })
+                
+                # البحث عن أزرار المصادقة الاجتماعية
+                social_indicators = ['facebook', 'google', 'twitter', 'github', 'linkedin', 'oauth']
+                for indicator in social_indicators:
+                    buttons = soup.find_all(['a', 'button'], class_=re.compile(indicator, re.I))
+                    buttons += soup.find_all(['a', 'button'], id=re.compile(indicator, re.I))
+                    
+                    for button in buttons:
+                        if isinstance(button, Tag):
+                            auth_data['social_auth_buttons'].append({
+                                'provider': indicator,
+                                'text': self._safe_get_text(button),
+                                'class': button.get('class') or []
+                            })
+                
+                # فحص المصادقة الثنائية
+                two_factor_indicators = ['2fa', 'two-factor', 'otp', 'verification', 'sms-code']
+                if any(indicator in html_content.lower() for indicator in two_factor_indicators):
+                    auth_data['two_factor_auth'] = True
+                
+                # فحص الكابتشا
+                captcha_indicators = ['captcha', 'recaptcha', 'hcaptcha']
+                if any(indicator in html_content.lower() for indicator in captcha_indicators):
+                    auth_data['captcha_present'] = True
+        
+        return auth_data
+    
+    async def _analyze_cms_system(self, url: str) -> Dict[str, Any]:
+        """تحليل نظام إدارة المحتوى"""
+        cms_data = {
+            'detected_cms': 'unknown',
+            'admin_panels': [],
+            'content_editors': [],
+            'upload_forms': [],
+            'media_galleries': []
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # اكتشاف أنواع CMS
+                cms_signatures = {
+                    'wordpress': ['wp-content', 'wp-includes', 'wp-admin'],
+                    'drupal': ['drupal', 'sites/default'],
+                    'joomla': ['joomla', 'com_content'],
+                    'magento': ['magento', 'mage'],
+                    'shopify': ['shopify', 'shop.js'],
+                    'wix': ['wix.com', 'wixstatic'],
+                    'squarespace': ['squarespace', 'static1.squarespace']
+                }
+                
+                for cms_name, signatures in cms_signatures.items():
+                    if any(sig in html_content.lower() for sig in signatures):
+                        cms_data['detected_cms'] = cms_name
+                        break
+                
+                # البحث عن لوحات الإدارة
+                admin_indicators = ['admin', 'dashboard', 'control-panel', 'backend']
+                for indicator in admin_indicators:
+                    admin_links = soup.find_all('a', href=re.compile(indicator, re.I))
+                    for link in admin_links:
+                        if isinstance(link, Tag):
+                            cms_data['admin_panels'].append({
+                                'text': self._safe_get_text(link),
+                                'href': link.get('href', ''),
+                                'class': link.get('class') or []
+                            })
+                
+                # البحث عن محررات المحتوى
+                editor_indicators = ['editor', 'wysiwyg', 'tinymce', 'ckeditor']
+                for indicator in editor_indicators:
+                    if indicator in html_content.lower():
+                        cms_data['content_editors'].append(indicator)
+                
+                # البحث عن نماذج الرفع
+                upload_forms = soup.find_all('form', enctype='multipart/form-data')
+                for form in upload_forms:
+                    if isinstance(form, Tag):
+                        file_inputs = form.find_all('input', type='file')
+                        if file_inputs:
+                            cms_data['upload_forms'].append({
+                                'action': form.get('action', ''),
+                                'file_inputs_count': len(file_inputs)
+                            })
+        
+        return cms_data
+    
+    async def _analyze_search_functionality(self, url: str) -> Dict[str, Any]:
+        """تحليل وظائف البحث والتصفية"""
+        search_data = {
+            'search_forms': [],
+            'search_inputs': [],
+            'filter_elements': [],
+            'autocomplete_present': False,
+            'advanced_search': False
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # البحث عن نماذج البحث
+                search_forms = soup.find_all('form', class_=re.compile('search', re.I))
+                search_forms += soup.find_all('form', id=re.compile('search', re.I))
+                search_forms += soup.find_all('form', role='search')
+                
+                for form in search_forms:
+                    if isinstance(form, Tag):
+                        search_data['search_forms'].append({
+                            'id': form.get('id', ''),
+                            'class': form.get('class') or [],
+                            'action': form.get('action', ''),
+                            'method': form.get('method', 'get')
+                        })
+                
+                # البحث عن مدخلات البحث
+                search_inputs = soup.find_all('input', type='search')
+                search_inputs += soup.find_all('input', placeholder=re.compile('search', re.I))
+                search_inputs += soup.find_all('input', name=re.compile('search|query|q', re.I))
+                
+                for search_input in search_inputs:
+                    if isinstance(search_input, Tag):
+                        search_data['search_inputs'].append({
+                            'id': search_input.get('id', ''),
+                            'name': search_input.get('name', ''),
+                            'placeholder': search_input.get('placeholder', ''),
+                            'class': search_input.get('class') or []
+                        })
+                
+                # البحث عن عناصر التصفية
+                filter_selectors = soup.find_all('select', class_=re.compile('filter', re.I))
+                filter_checkboxes = soup.find_all('input', type='checkbox', class_=re.compile('filter', re.I))
+                
+                for filter_elem in filter_selectors + filter_checkboxes:
+                    if isinstance(filter_elem, Tag):
+                        search_data['filter_elements'].append({
+                            'type': filter_elem.get('type', 'select'),
+                            'name': filter_elem.get('name', ''),
+                            'class': filter_elem.get('class') or []
+                        })
+                
+                # فحص الإكمال التلقائي
+                autocomplete_indicators = ['autocomplete', 'typeahead', 'suggestions']
+                if any(indicator in html_content.lower() for indicator in autocomplete_indicators):
+                    search_data['autocomplete_present'] = True
+                
+                # فحص البحث المتقدم
+                advanced_indicators = ['advanced-search', 'advanced search', 'filter options']
+                if any(indicator in html_content.lower() for indicator in advanced_indicators):
+                    search_data['advanced_search'] = True
+        
+        return search_data
+    
+    async def _analyze_navigation_system(self, url: str) -> Dict[str, Any]:
+        """تحليل التنقل والقوائم"""
+        nav_data = {
+            'primary_navigation': [],
+            'secondary_navigation': [],
+            'breadcrumbs': [],
+            'pagination': [],
+            'mega_menus': [],
+            'mobile_navigation': []
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # التنقل الأساسي
+                primary_navs = soup.find_all('nav', class_=re.compile('primary|main|header', re.I))
+                primary_navs += soup.find_all('nav', id=re.compile('primary|main|header', re.I))
+                
+                for nav in primary_navs:
+                    if isinstance(nav, Tag):
+                        nav_links = nav.find_all('a')
+                        nav_data['primary_navigation'].append({
+                            'id': nav.get('id', ''),
+                            'class': nav.get('class') or [],
+                            'links_count': len(nav_links),
+                            'has_dropdown': bool(nav.find_all(class_=re.compile('dropdown|submenu', re.I)))
+                        })
+                
+                # التنقل الثانوي
+                secondary_navs = soup.find_all('nav', class_=re.compile('secondary|footer|sidebar', re.I))
+                for nav in secondary_navs:
+                    if isinstance(nav, Tag):
+                        nav_links = nav.find_all('a')
+                        nav_data['secondary_navigation'].append({
+                            'id': nav.get('id', ''),
+                            'class': nav.get('class') or [],
+                            'links_count': len(nav_links)
+                        })
+                
+                # مسار التنقل (Breadcrumbs)
+                breadcrumb_selectors = soup.find_all(class_=re.compile('breadcrumb', re.I))
+                breadcrumb_selectors += soup.find_all(attrs={'aria-label': re.compile('breadcrumb', re.I)})
+                
+                for breadcrumb in breadcrumb_selectors:
+                    if isinstance(breadcrumb, Tag):
+                        nav_data['breadcrumbs'].append({
+                            'class': breadcrumb.get('class') or [],
+                            'items_count': len(breadcrumb.find_all('a'))
+                        })
+                
+                # الترقيم (Pagination)
+                pagination_selectors = soup.find_all(class_=re.compile('pagination|pager', re.I))
+                for pagination in pagination_selectors:
+                    if isinstance(pagination, Tag):
+                        nav_data['pagination'].append({
+                            'class': pagination.get('class') or [],
+                            'pages_count': len(pagination.find_all('a'))
+                        })
+                
+                # القوائم الضخمة (Mega Menus)
+                mega_menus = soup.find_all(class_=re.compile('mega|dropdown-mega', re.I))
+                for mega in mega_menus:
+                    if isinstance(mega, Tag):
+                        nav_data['mega_menus'].append({
+                            'class': mega.get('class') or [],
+                            'columns_count': len(mega.find_all(class_=re.compile('col|column', re.I)))
+                        })
+                
+                # التنقل المحمول
+                mobile_indicators = ['mobile-nav', 'mobile-menu', 'hamburger', 'toggle-nav']
+                for indicator in mobile_indicators:
+                    mobile_elements = soup.find_all(class_=re.compile(indicator, re.I))
+                    if mobile_elements:
+                        nav_data['mobile_navigation'].append({
+                            'type': indicator,
+                            'elements_count': len(mobile_elements)
+                        })
+        
+        return nav_data
+    
+    async def _analyze_charts_and_interaction(self, url: str) -> Dict[str, Any]:
+        """تحليل الرسوم البيانية والتفاعل"""
+        charts_data = {
+            'chart_libraries': [],
+            'interactive_charts': [],
+            'data_visualizations': [],
+            'canvas_elements': []
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # مكتبات الرسوم البيانية الشائعة
+                chart_libraries = {
+                    'chartjs': 'chart.js',
+                    'd3js': 'd3.js',
+                    'highcharts': 'highcharts',
+                    'plotly': 'plotly',
+                    'echarts': 'echarts',
+                    'googlecharts': 'google.visualization'
+                }
+                
+                for lib_name, lib_signature in chart_libraries.items():
+                    if lib_signature in html_content.lower():
+                        charts_data['chart_libraries'].append(lib_name)
+                
+                # عناصر Canvas للرسوم
+                canvas_elements = soup.find_all('canvas')
+                for canvas in canvas_elements:
+                    if isinstance(canvas, Tag):
+                        charts_data['canvas_elements'].append({
+                            'id': canvas.get('id', ''),
+                            'class': canvas.get('class') or [],
+                            'width': canvas.get('width', ''),
+                            'height': canvas.get('height', '')
+                        })
+                
+                # عناصر SVG للرسوم
+                svg_elements = soup.find_all('svg')
+                for svg in svg_elements:
+                    if isinstance(svg, Tag):
+                        charts_data['data_visualizations'].append({
+                            'type': 'svg',
+                            'class': svg.get('class') or [],
+                            'viewbox': svg.get('viewBox', '')
+                        })
+        
+        return charts_data
+    
+    async def _analyze_comments_rating_system(self, url: str) -> Dict[str, Any]:
+        """تحليل نظام التعليقات أو التقييمات"""
+        comments_data = {
+            'comment_sections': [],
+            'rating_systems': [],
+            'review_forms': [],
+            'social_sharing': []
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # البحث عن أقسام التعليقات
+                comment_indicators = ['comment', 'review', 'feedback']
+                for indicator in comment_indicators:
+                    comment_sections = soup.find_all(class_=re.compile(indicator, re.I))
+                    comment_sections += soup.find_all(id=re.compile(indicator, re.I))
+                    
+                    for section in comment_sections:
+                        if isinstance(section, Tag):
+                            comments_data['comment_sections'].append({
+                                'id': section.get('id', ''),
+                                'class': section.get('class') or [],
+                                'comments_count': len(section.find_all(class_=re.compile('comment-item|review-item', re.I)))
+                            })
+                
+                # البحث عن أنظمة التقييم
+                rating_elements = soup.find_all(class_=re.compile('rating|star|score', re.I))
+                for rating in rating_elements:
+                    if isinstance(rating, Tag):
+                        comments_data['rating_systems'].append({
+                            'class': rating.get('class') or [],
+                            'type': 'stars' if 'star' in str(rating.get('class', [])).lower() else 'numeric'
+                        })
+                
+                # البحث عن نماذج المراجعة
+                review_forms = soup.find_all('form', class_=re.compile('review|comment|feedback', re.I))
+                for form in review_forms:
+                    if isinstance(form, Tag):
+                        comments_data['review_forms'].append({
+                            'action': form.get('action', ''),
+                            'has_rating': bool(form.find_all('input', type='radio'))
+                        })
+                
+                # البحث عن مشاركة اجتماعية
+                social_indicators = ['share', 'facebook', 'twitter', 'linkedin', 'social']
+                for indicator in social_indicators:
+                    social_elements = soup.find_all(class_=re.compile(indicator, re.I))
+                    if social_elements:
+                        comments_data['social_sharing'].append({
+                            'platform': indicator,
+                            'elements_count': len(social_elements)
+                        })
+        
+        return comments_data
     
     async def _extract_website_behavior(self, url: str) -> Dict[str, Any]:
         """استخراج سلوك الموقع حسب المتطلبات"""
@@ -1022,7 +1429,7 @@ class DeepExtractionEngine:
                     'dom_content': await page.content(),
                     'title': await page.title(),
                     'url': page.url,
-                    'viewport': await page.viewport_size(),
+                    'viewport': page.viewport_size,
                     'screenshots': {},
                     'network_requests': [],
                     'console_logs': [],
@@ -1094,8 +1501,462 @@ class DeepExtractionEngine:
             logging.warning("Playwright غير متوفر - تم تخطي الاستخراج")
             return {'error': 'playwright_not_available'}
         except Exception as e:
-            logging.error(f"خطأ في Playwright extraction: {e}")
+            logging.error(f"خطأ في استخراج Playwright: {e}")
             return {'error': str(e)}
+    
+    async def _selenium_extraction(self, url: str) -> Dict[str, Any]:
+        """استخراج باستخدام Selenium للمواقع المعقدة"""
+        try:
+            from selenium import webdriver
+            from selenium.webdriver.chrome.options import Options
+            from selenium.webdriver.common.by import By
+            from selenium.webdriver.support.ui import WebDriverWait
+            from selenium.webdriver.support import expected_conditions as EC
+            
+            chrome_options = Options()
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-dev-shm-usage')
+            
+            driver = webdriver.Chrome(options=chrome_options)
+            driver.get(url)
+            
+            # انتظار تحميل الصفحة
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.TAG_NAME, "body"))
+            )
+            
+            extraction_data = {
+                'page_source': driver.page_source,
+                'title': driver.title,
+                'current_url': driver.current_url,
+                'cookies': driver.get_cookies(),
+                'local_storage': {},
+                'session_storage': {},
+                'javascript_executed': True
+            }
+            
+            # استخراج Local Storage
+            try:
+                local_storage_keys = driver.execute_script("return Object.keys(localStorage);")
+                for key in local_storage_keys:
+                    value = driver.execute_script(f"return localStorage.getItem('{key}');")
+                    extraction_data['local_storage'][key] = value
+            except:
+                pass
+            
+            # استخراج Session Storage
+            try:
+                session_storage_keys = driver.execute_script("return Object.keys(sessionStorage);")
+                for key in session_storage_keys:
+                    value = driver.execute_script(f"return sessionStorage.getItem('{key}');")
+                    extraction_data['session_storage'][key] = value
+            except:
+                pass
+            
+            # تحليل JavaScript وأحداث الصفحة
+            try:
+                js_events = driver.execute_script("""
+                    var events = [];
+                    var elements = document.querySelectorAll('*');
+                    elements.forEach(function(el) {
+                        var attrs = el.attributes;
+                        for (var i = 0; i < attrs.length; i++) {
+                            if (attrs[i].name.startsWith('on')) {
+                                events.push({
+                                    element: el.tagName,
+                                    event: attrs[i].name,
+                                    handler: attrs[i].value
+                                });
+                            }
+                        }
+                    });
+                    return events;
+                """)
+                extraction_data['javascript_events'] = js_events
+            except:
+                extraction_data['javascript_events'] = []
+            
+            driver.quit()
+            return extraction_data
+            
+        except ImportError:
+            logging.warning("Selenium غير متوفر - تم تخطي الاستخراج")
+            return {'error': 'selenium_not_available'}
+        except Exception as e:
+            logging.error(f"خطأ في استخراج Selenium: {e}")
+            return {'error': str(e)}
+    
+    async def _trafilatura_extraction(self, url: str) -> Dict[str, Any]:
+        """استخراج باستخدام Trafilatura للنصوص والمحتوى"""
+        try:
+            import trafilatura
+            
+            # تحميل وتحليل الصفحة
+            downloaded = trafilatura.fetch_url(url)
+            if not downloaded:
+                return {'error': 'failed_to_fetch'}
+            
+            # استخراج النص الرئيسي
+            main_text = trafilatura.extract(downloaded)
+            
+            # استخراج البيانات الوصفية
+            metadata = trafilatura.extract_metadata(downloaded)
+            
+            # استخراج التعليقات إن وجدت
+            comments = trafilatura.extract_comments(downloaded)
+            
+            # استخراج الروابط
+            links = trafilatura.extract_links(downloaded)
+            
+            extraction_data = {
+                'main_text': main_text or '',
+                'metadata': {
+                    'title': metadata.title if metadata else '',
+                    'author': metadata.author if metadata else '',
+                    'description': metadata.description if metadata else '',
+                    'date': str(metadata.date) if metadata and metadata.date else '',
+                    'language': metadata.language if metadata else '',
+                    'url': metadata.url if metadata else url
+                },
+                'comments': comments or [],
+                'links': links or [],
+                'word_count': len(main_text.split()) if main_text else 0,
+                'extraction_method': 'trafilatura'
+            }
+            
+            return extraction_data
+            
+        except ImportError:
+            logging.warning("Trafilatura غير متوفر - تم تخطي الاستخراج")
+            return {'error': 'trafilatura_not_available'}
+        except Exception as e:
+            logging.error(f"خطأ في استخراج Trafilatura: {e}")
+            return {'error': str(e)}
+    
+    async def _beautifulsoup_extraction(self, url: str) -> Dict[str, Any]:
+        """استخراج باستخدام BeautifulSoup للتحليل التفصيلي"""
+        try:
+            if not self.session:
+                return {'error': 'no_session'}
+                
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                extraction_data = {
+                    'title': soup.title.string if soup.title else '',
+                    'meta_tags': [],
+                    'headings': {},
+                    'links': [],
+                    'images': [],
+                    'forms': [],
+                    'tables': [],
+                    'scripts': [],
+                    'stylesheets': [],
+                    'text_content': soup.get_text().strip(),
+                    'language': self._get_language(soup),
+                    'charset': self._get_charset(soup)
+                }
+                
+                # استخراج meta tags
+                for meta in soup.find_all('meta'):
+                    if isinstance(meta, Tag):
+                        meta_data = {
+                            'name': meta.get('name', ''),
+                            'property': meta.get('property', ''),
+                            'content': meta.get('content', ''),
+                            'http_equiv': meta.get('http-equiv', '')
+                        }
+                        extraction_data['meta_tags'].append(meta_data)
+                
+                # استخراج العناوين
+                for i in range(1, 7):
+                    headings = soup.find_all(f'h{i}')
+                    extraction_data['headings'][f'h{i}'] = [
+                        self._safe_get_text(h) for h in headings if isinstance(h, Tag)
+                    ]
+                
+                # استخراج الروابط
+                for link in soup.find_all('a', href=True):
+                    if isinstance(link, Tag):
+                        href = link.get('href', '')
+                        if isinstance(href, str):
+                            extraction_data['links'].append({
+                                'text': self._safe_get_text(link),
+                                'href': href,
+                                'title': link.get('title', ''),
+                                'class': link.get('class') or []
+                            })
+                
+                # استخراج الصور
+                for img in soup.find_all('img'):
+                    if isinstance(img, Tag):
+                        extraction_data['images'].append({
+                            'src': img.get('src', ''),
+                            'alt': img.get('alt', ''),
+                            'title': img.get('title', ''),
+                            'class': img.get('class') or []
+                        })
+                
+                # استخراج النماذج
+                for form in soup.find_all('form'):
+                    if isinstance(form, Tag):
+                        inputs = form.find_all(['input', 'select', 'textarea'])
+                        extraction_data['forms'].append({
+                            'action': form.get('action', ''),
+                            'method': form.get('method', 'get'),
+                            'id': form.get('id', ''),
+                            'class': form.get('class') or [],
+                            'inputs_count': len(inputs)
+                        })
+                
+                # استخراج الجداول
+                for table in soup.find_all('table'):
+                    if isinstance(table, Tag):
+                        rows = table.find_all('tr')
+                        extraction_data['tables'].append({
+                            'rows_count': len(rows),
+                            'class': table.get('class') or [],
+                            'id': table.get('id', '')
+                        })
+                
+                # استخراج السكريبتات
+                for script in soup.find_all('script'):
+                    if isinstance(script, Tag):
+                        extraction_data['scripts'].append({
+                            'src': script.get('src', ''),
+                            'type': script.get('type', 'text/javascript'),
+                            'async': script.has_attr('async'),
+                            'defer': script.has_attr('defer'),
+                            'inline': bool(script.string)
+                        })
+                
+                # استخراج CSS
+                for link in soup.find_all('link', rel='stylesheet'):
+                    if isinstance(link, Tag):
+                        extraction_data['stylesheets'].append({
+                            'href': link.get('href', ''),
+                            'media': link.get('media', 'all'),
+                            'type': link.get('type', 'text/css')
+                        })
+                
+                return extraction_data
+                
+        except Exception as e:
+            logging.error(f"خطأ في استخراج BeautifulSoup: {e}")
+            return {'error': str(e)}
+    
+    # إضافة الدوال المساعدة المفقودة للسلوك
+    async def _analyze_javascript_events(self, url: str) -> List[Dict[str, Any]]:
+        """تحليل أحداث JavaScript في الصفحة"""
+        events = []
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # البحث عن معالجات الأحداث في HTML
+                event_attributes = ['onclick', 'onchange', 'onsubmit', 'onload', 'onmouseover']
+                for attr in event_attributes:
+                    elements = soup.find_all(attrs={attr: True})
+                    for element in elements:
+                        if isinstance(element, Tag):
+                            events.append({
+                                'element': element.name,
+                                'event': attr,
+                                'handler': element.get(attr, ''),
+                                'id': element.get('id', ''),
+                                'class': element.get('class') or []
+                            })
+        
+        return events
+    
+    async def _analyze_ajax_calls(self, url: str) -> List[Dict[str, Any]]:
+        """تحليل استدعاءات AJAX في الصفحة"""
+        ajax_calls = []
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                
+                # البحث عن أنماط AJAX في JavaScript
+                import re
+                ajax_patterns = [
+                    r'fetch\([\'"]([^\'"]+)[\'"]',
+                    r'axios\.[get|post|put|delete|patch]+\([\'"]([^\'"]+)[\'"]',
+                    r'XMLHttpRequest.*?open\([\'"](\w+)[\'"],\s*[\'"]([^\'"]+)[\'"]',
+                    r'\$\.ajax\({.*?url:\s*[\'"]([^\'"]+)[\'"]',
+                    r'\$\.get\([\'"]([^\'"]+)[\'"]',
+                    r'\$\.post\([\'"]([^\'"]+)[\'"]'
+                ]
+                
+                for pattern in ajax_patterns:
+                    matches = re.finditer(pattern, html_content, re.IGNORECASE | re.DOTALL)
+                    for match in matches:
+                        if len(match.groups()) >= 1:
+                            url_match = match.group(1)
+                            method = 'GET'
+                            if 'post' in pattern.lower():
+                                method = 'POST'
+                            elif len(match.groups()) >= 2:
+                                method = match.group(1).upper()
+                                url_match = match.group(2)
+                            
+                            ajax_calls.append({
+                                'url': url_match,
+                                'method': method,
+                                'pattern': pattern,
+                                'context': match.group(0)[:100]
+                            })
+        
+        return ajax_calls
+    
+    async def _analyze_storage_usage(self, url: str) -> Dict[str, Any]:
+        """تحليل استخدام Local Storage والكوكيز"""
+        storage_data = {
+            'local_storage_references': [],
+            'session_storage_references': [],
+            'cookie_references': [],
+            'indexeddb_references': []
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                
+                # البحث عن مراجع التخزين المحلي
+                import re
+                storage_patterns = {
+                    'localStorage': r'localStorage\.[getItem|setItem|removeItem|clear]+',
+                    'sessionStorage': r'sessionStorage\.[getItem|setItem|removeItem|clear]+',
+                    'document.cookie': r'document\.cookie\s*[=]',
+                    'indexedDB': r'indexedDB\.[open|transaction]+'
+                }
+                
+                for storage_type, pattern in storage_patterns.items():
+                    matches = re.findall(pattern, html_content, re.IGNORECASE)
+                    storage_data[f"{storage_type.lower().replace('.', '_')}_references"] = matches
+        
+        return storage_data
+    
+    async def _analyze_responsive_behavior(self, url: str) -> Dict[str, Any]:
+        """تحليل السلوك المتجاوب للموقع"""
+        responsive_data = {
+            'viewport_meta': False,
+            'media_queries': [],
+            'responsive_images': False,
+            'flexible_layout': False
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # فحص viewport meta tag
+                viewport_meta = soup.find('meta', attrs={'name': 'viewport'})
+                if viewport_meta:
+                    responsive_data['viewport_meta'] = True
+                
+                # البحث عن media queries في CSS المضمن
+                import re
+                media_query_pattern = r'@media[^{]+{'
+                media_queries = re.findall(media_query_pattern, html_content, re.IGNORECASE)
+                responsive_data['media_queries'] = media_queries
+                
+                # فحص الصور المتجاوبة
+                responsive_imgs = soup.find_all('img', srcset=True)
+                responsive_data['responsive_images'] = len(responsive_imgs) > 0
+                
+                # فحص تخطيط مرن
+                flexible_indicators = ['flex', 'grid', 'bootstrap', 'container-fluid']
+                for indicator in flexible_indicators:
+                    if indicator in html_content.lower():
+                        responsive_data['flexible_layout'] = True
+                        break
+        
+        return responsive_data
+    
+    async def _analyze_loading_states(self, url: str) -> Dict[str, Any]:
+        """تحليل حالات التحميل في الموقع"""
+        loading_data = {
+            'loading_indicators': [],
+            'lazy_loading': False,
+            'progress_bars': [],
+            'spinners': []
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # البحث عن مؤشرات التحميل
+                loading_indicators = ['loading', 'loader', 'spinner', 'progress']
+                for indicator in loading_indicators:
+                    elements = soup.find_all(class_=re.compile(indicator, re.I))
+                    if elements:
+                        loading_data['loading_indicators'].extend([
+                            {'class': elem.get('class') or [], 'tag': elem.name}
+                            for elem in elements if isinstance(elem, Tag)
+                        ])
+                
+                # فحص lazy loading
+                lazy_images = soup.find_all('img', loading='lazy')
+                lazy_images += soup.find_all('img', attrs={'data-src': True})
+                loading_data['lazy_loading'] = len(lazy_images) > 0
+                
+                # البحث عن أشرطة التقدم
+                progress_bars = soup.find_all(['progress', 'div'], class_=re.compile('progress', re.I))
+                loading_data['progress_bars'] = [
+                    {'class': bar.get('class') or [], 'tag': bar.name}
+                    for bar in progress_bars if isinstance(bar, Tag)
+                ]
+        
+        return loading_data
+    
+    async def _analyze_error_handling(self, url: str) -> Dict[str, Any]:
+        """تحليل إدارة الأخطاء في الموقع"""
+        error_data = {
+            'error_pages': [],
+            'try_catch_blocks': 0,
+            'error_messages': [],
+            'fallback_content': []
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # البحث عن رسائل الخطأ
+                error_indicators = ['error', 'alert', 'warning', 'danger']
+                for indicator in error_indicators:
+                    error_elements = soup.find_all(class_=re.compile(indicator, re.I))
+                    for elem in error_elements:
+                        if isinstance(elem, Tag):
+                            error_data['error_messages'].append({
+                                'class': elem.get('class') or [],
+                                'text': self._safe_get_text(elem)[:100],
+                                'type': indicator
+                            })
+                
+                # عد try-catch blocks في JavaScript
+                import re
+                try_catch_count = len(re.findall(r'try\s*{.*?catch', html_content, re.IGNORECASE | re.DOTALL))
+                error_data['try_catch_blocks'] = try_catch_count
+                
+                # البحث عن محتوى احتياطي
+                fallback_elements = soup.find_all(attrs={'data-fallback': True})
+                fallback_elements += soup.find_all('noscript')
+                error_data['fallback_content'] = [
+                    {'tag': elem.name, 'content': self._safe_get_text(elem)[:50]}
+                    for elem in fallback_elements if isinstance(elem, Tag)
+                ]
+        
+        return error_data
     
     async def _selenium_extraction(self, url: str) -> Dict[str, Any]:
         """استخراج باستخدام Selenium للمواقع المعقدة"""

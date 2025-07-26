@@ -30,7 +30,7 @@ class ReplicationConfig:
 class SmartReplicationEngine:
     """محرك النسخ الذكي لإعادة إنشاء المواقع"""
     
-    def __init__(self, config: ReplicationConfig = None):
+    def __init__(self, config: Optional[ReplicationConfig] = None):
         self.config = config or ReplicationConfig()
         self.session: Optional[aiohttp.ClientSession] = None
         
