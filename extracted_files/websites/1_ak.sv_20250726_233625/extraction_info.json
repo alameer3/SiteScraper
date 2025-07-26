@@ -1,0 +1,41 @@
+{
+  "extraction_id": 1,
+  "tool_name": "websites",
+  "url": "https://ak.sv",
+  "domain": "ak.sv",
+  "timestamp": "20250726_233625",
+  "created_at": "2025-07-26T23:36:25.487363",
+  "folder_structure": {
+    "content": "01_content",
+    "assets": "02_assets",
+    "structure": "03_structure",
+    "analysis": "04_analysis",
+    "replicated": "05_replicated",
+    "exports": "06_exports",
+    "logs": "07_logs"
+  },
+  "status": "completed",
+  "completed_at": "2025-07-26T23:36:25.929484",
+  "final_results": {
+    "extraction_id": 1,
+    "url": "https://ak.sv",
+    "extraction_type": "basic",
+    "success": true,
+    "status_code": 200,
+    "content_type": "text/html",
+    "title": "اكوام | موقع التحميل و المشاهدة العربي الاول",
+    "content_length": 18421,
+    "links_found": 39,
+    "images_found": 4,
+    "scripts_found": 8,
+    "stylesheets_found": 4,
+    "technologies_detected": [
+      "jQuery"
+    ],
+    "duration": 0.44,
+    "timestamp": "2025-07-26T23:36:25.928564",
+    "domain": "ak.sv"
+  },
+  "file_count": 4,
+  "total_size": 20593
+}

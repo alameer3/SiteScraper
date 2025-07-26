@@ -15,6 +15,12 @@ import urllib.error
 import ssl
 import re
 
+# استيراد منظم الملفات
+try:
+    from file_organizer import file_organizer
+except ImportError:
+    file_organizer = None
+
 class WebsiteExtractor:
     """مستخرج المواقع البسيط"""
     
@@ -23,11 +29,19 @@ class WebsiteExtractor:
         self.extraction_id = 0
     
     def extract_website(self, url, extraction_type='basic'):
-        """استخراج أساسي للموقع"""
+        """استخراج أساسي للموقع مع حفظ منظم"""
         self.extraction_id += 1
         extraction_id = self.extraction_id
         
         start_time = time.time()
+        
+        # إنشاء مجلد الاستخراج
+        extraction_folder = None
+        if file_organizer:
+            try:
+                extraction_folder = file_organizer.create_extraction_folder('websites', url, extraction_id)
+            except Exception as e:
+                print(f"تحذير: فشل في إنشاء مجلد منظم: {e}")
         
         try:
             # إعداد SSL context
@@ -90,6 +104,28 @@ class WebsiteExtractor:
                 'timestamp': datetime.now().isoformat(),
                 'domain': urlparse(url).netloc
             }
+            
+            # حفظ الملفات في النظام المنظم
+            if extraction_folder and file_organizer:
+                try:
+                    # حفظ المحتوى الأساسي
+                    file_organizer.save_content(extraction_folder, 'html', content, 'index.html')
+                    
+                    # حفظ النتائج
+                    file_organizer.save_content(extraction_folder, 'analysis', result, 'extraction_results.json')
+                    
+                    # حفظ قائمة التقنيات
+                    if technologies:
+                        file_organizer.save_content(extraction_folder, 'analysis', {'technologies': technologies}, 'technologies_detected.json')
+                    
+                    # إنهاء عملية الاستخراج
+                    file_organizer.finalize_extraction(extraction_folder, result)
+                    
+                    # إضافة مسار المجلد للنتيجة
+                    result['extraction_folder'] = str(extraction_folder)
+                    
+                except Exception as e:
+                    print(f"تحذير: فشل في حفظ الملفات: {e}")
             
             # حفظ النتيجة
             self.results[extraction_id] = result

@@ -1,0 +1,20 @@
+{
+  "extraction_id": 1,
+  "url": "https://ak.sv",
+  "extraction_type": "basic",
+  "success": true,
+  "status_code": 200,
+  "content_type": "text/html",
+  "title": "اكوام | موقع التحميل و المشاهدة العربي الاول",
+  "content_length": 18421,
+  "links_found": 39,
+  "images_found": 4,
+  "scripts_found": 8,
+  "stylesheets_found": 4,
+  "technologies_detected": [
+    "jQuery"
+  ],
+  "duration": 0.44,
+  "timestamp": "2025-07-26T23:36:25.928564",
+  "domain": "ak.sv"
+}
