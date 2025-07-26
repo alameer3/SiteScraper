@@ -1,15 +1,15 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}خطأ في الخادم - 500{% endblock %}
+{% block title %}صفحة غير موجودة - 404{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-6 text-center">
             <div class="error-page">
-                <h1 class="display-1 text-danger">500</h1>
-                <h2 class="mb-4">خطأ في الخادم</h2>
-                <p class="lead mb-4">عذراً، حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى لاحقاً.</p>
+                <h1 class="display-1 text-primary">404</h1>
+                <h2 class="mb-4">الصفحة غير موجودة</h2>
+                <p class="lead mb-4">عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها.</p>
                 <a href="{{ url_for('index') }}" class="btn btn-primary">العودة للصفحة الرئيسية</a>
             </div>
         </div>

@@ -218,7 +218,7 @@
                     </div>
                     {% set cache_percent = (cache_stats.get('active_entries', 0) / cache_stats.get('total_entries', 1) * 100) if cache_stats.get('total_entries', 0) > 0 else 0 %}
                     <div class="progress">
-                        <div class="progress-bar bg-primary" style="width: {{ cache_percent }}%"></div>
+                        <div class="progress-bar bg-primary" style="width: {{ "%.1f"|format(cache_percent) }}%"></div>
                     </div>
                 </div>
 
