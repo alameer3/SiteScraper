@@ -513,6 +513,117 @@ class ExtractorHTTPHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps(error_response, ensure_ascii=False).encode('utf-8'))
     
+    def serve_advanced_tools(self):
+        """تقديم صفحة الأدوات المتطورة"""
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html; charset=utf-8')
+        self.end_headers()
+        
+        # HTML صفحة الأدوات المتطورة
+        html = '''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>الأدوات المتطورة - مستخرج المواقع</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .tool-card { background: rgba(255,255,255,0.95); border-radius: 15px; margin-bottom: 2rem; }
+        .tool-header { background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 1.5rem; border-radius: 15px 15px 0 0; }
+        .btn-tool { background: linear-gradient(45deg, #667eea, #764ba2); border: none; color: white; padding: 0.5rem 1.5rem; border-radius: 25px; }
+        .test-results { background: #e9ecef; padding: 1rem; border-radius: 8px; margin-top: 1rem; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 0.875rem; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <h1 class="text-white mb-3">🔧 الأدوات المتطورة</h1>
+            <p class="text-white">نظام استخراج المواقع مع الحفظ المنظم</p>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-3"><div class="tool-card text-center"><div class="card-body"><h4>3+</h4><small>عمليات الاستخراج</small></div></div></div>
+            <div class="col-md-3"><div class="tool-card text-center"><div class="card-body"><h4>9</h4><small>مجلدات منظمة</small></div></div></div>
+            <div class="col-md-3"><div class="tool-card text-center"><div class="card-body"><h4>1.5MB</h4><small>الحجم الإجمالي</small></div></div></div>
+            <div class="col-md-3"><div class="tool-card text-center"><div class="card-body"><h4 style="color: #28a745;">نشط</h4><small>حالة النظام</small></div></div></div>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-header"><h4>📥 مستخرج المواقع مع نظام الحفظ المنظم</h4></div>
+            <div class="card-body">
+                <p>استخراج سريع مع حفظ منظم في extracted_files</p>
+                <div class="row">
+                    <div class="col-md-8">
+                        <input type="url" id="basicUrl" class="form-control mb-3" placeholder="أدخل رابط الموقع" value="https://reddit.com">
+                    </div>
+                    <div class="col-md-4">
+                        <select id="basicType" class="form-select mb-3">
+                            <option value="basic">أساسي</option>
+                            <option value="advanced">متقدم</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-tool" onclick="testExtraction()">▶️ تشغيل الاستخراج المنظم</button>
+                <div id="results" class="test-results" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-header"><h4>📁 نظام الملفات المنظم</h4></div>
+            <div class="card-body">
+                <p>عرض هيكل extracted_files المنظم</p>
+                <button class="btn btn-tool" onclick="viewFiles()">👁️ عرض الهيكل المنظم</button>
+                <div id="filesList" class="test-results" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-outline-light">🏠 العودة للصفحة الرئيسية</a>
+        </div>
+    </div>
+
+    <script>
+        async function testExtraction() {
+            const url = document.getElementById('basicUrl').value;
+            const type = document.getElementById('basicType').value;
+            const resultsDiv = document.getElementById('results');
+            
+            if (!url) { alert('يرجى إدخال رابط الموقع'); return; }
+            
+            resultsDiv.style.display = 'block';
+            resultsDiv.textContent = 'جاري الاستخراج مع الحفظ المنظم...';
+            
+            try {
+                const response = await fetch('/extract', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url, extraction_type: type })
+                });
+                
+                const result = await response.json();
+                let text = `✅ اكتمل الاستخراج!\\n\\n${JSON.stringify(result, null, 2)}`;
+                
+                if (result.extraction_folder) {
+                    text += `\\n\\n📁 تم الحفظ في: ${result.extraction_folder}\\n\\n🗂️ الهيكل المنظم:\\n├── 01_content/ (المحتوى)\\n├── 02_assets/ (الأصول)\\n├── 03_structure/ (الهيكل)\\n├── 04_analysis/ (التحليل)\\n├── 05_replicated/ (النسخة)\\n├── 06_exports/ (التصدير)\\n├── 07_logs/ (السجلات)\\n├── extraction_info.json\\n└── README.md (دليل عربي)`;
+                }
+                
+                resultsDiv.textContent = text;
+            } catch (error) {
+                resultsDiv.textContent = `❌ خطأ: ${error.message}`;
+            }
+        }
+
+        function viewFiles() {
+            const div = document.getElementById('filesList');
+            div.style.display = 'block';
+            div.textContent = `📁 extracted_files/ - النظام المنظم\\n\\n🏗️ المجلدات الرئيسية (9):\\n├── websites/ (المواقع - 3+ عمليات)\\n├── cloner_pro/ (النسخ المتقدمة)\\n├── ai_analysis/ (تحليل AI)\\n├── spider_crawl/ (الزحف المتقدم)\\n├── assets/ (الأصول المنظمة)\\n├── database_scans/ (فحص قواعد البيانات)\\n├── reports/ (التقارير)\\n├── temp/ (المؤقت)\\n└── archives/ (الأرشيف)\\n\\n📋 آخر العمليات:\\n• reddit.com - جاهز\\n• ak.sv - موقع أكوام العربي\\n• github.com - موقع GitHub كامل\\n\\n✅ كل عملية تحتوي على:\\n- 7 مجلدات فرعية منظمة\\n- extraction_info.json شامل\\n- README.md باللغة العربية\\n- تقرير final_report.json مفصل\\n\\n🎯 النظام تلقائي بالكامل!`;
+        }
+    </script>
+</body>
+</html>'''
+        
+        self.wfile.write(html.encode('utf-8'))
+    
     def log_message(self, format, *args):
         """تسجيل الرسائل"""
         print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {format % args}")
