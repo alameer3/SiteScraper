@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 def start_smart_replication():
     """بدء عملية النسخ الذكي"""
     try:
-        data = request.json
+        data = request.get_json() or {}
         extraction_data = data.get('extraction_data', {})
         config_data = data.get('config', {})
         
@@ -58,7 +58,7 @@ def start_smart_replication():
 def analyze_with_ai():
     """تحليل البيانات بالذكاء الاصطناعي"""
     try:
-        data = request.json
+        data = request.get_json() or {}
         extraction_data = data.get('extraction_data', {})
         
         # إنشاء محرك النسخ الذكي
@@ -89,7 +89,7 @@ def analyze_with_ai():
 def recognize_patterns():
     """التعرف على الأنماط"""
     try:
-        data = request.json
+        data = request.get_json() or {}
         extraction_data = data.get('extraction_data', {})
         
         config = ReplicationConfig()
@@ -118,7 +118,7 @@ def recognize_patterns():
 def quality_assurance_check():
     """فحص ضمان الجودة"""
     try:
-        data = request.json
+        data = request.get_json() or {}
         replication_results = data.get('replication_results', {})
         
         config = ReplicationConfig()
@@ -154,12 +154,7 @@ def not_found(error):
 
 @smart_replication_bp.errorhandler(500)
 def internal_error(error):
-    return jsonify({'error': 'خطأ داخلي في الخادم'}), 500ion as e:
-        logger.error(f"خطأ في النسخ الذكي: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
+    return jsonify({'error': 'خطأ داخلي في الخادم'}), 500
 
 @smart_replication_bp.route('/smart-replication/status/<replication_id>', methods=['GET'])
 def get_replication_status(replication_id):
