@@ -164,6 +164,8 @@ class ExtractorHTTPHandler(BaseHTTPRequestHandler):
         """معالجة طلبات GET"""
         if self.path == '/':
             self.serve_index()
+        elif self.path == '/advanced-tools':
+            self.serve_advanced_tools()
         elif self.path == '/health':
             self.serve_health()
         elif self.path == '/results':
