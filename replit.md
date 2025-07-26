@@ -17,6 +17,7 @@ This is a Flask-based web application that provides comprehensive website analys
 - **Communication style**: Arabic language, simple and clear explanations  
 - **Technical approach**: Thorough debugging and complete solutions
 - **Code quality**: Fix all errors completely, no incomplete implementations
+- **Development approach**: Always ask for user approval before starting new development work
 
 ## System Architecture
 
