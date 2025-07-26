@@ -18,11 +18,13 @@ from utils.formatters import DataFormatter, ReportFormatter
 from api.endpoints.analyzer_api import analyzer_api
 from api.endpoints.deep_extraction_api import deep_extraction_bp
 from api.endpoints.smart_replication_api import smart_replication_bp
+from api.endpoints.advanced_ai_api import advanced_ai_bp
 
 # Register all blueprints
 app.register_blueprint(analyzer_api)
 app.register_blueprint(deep_extraction_bp, url_prefix='/api')
 app.register_blueprint(smart_replication_bp, url_prefix='/api')
+app.register_blueprint(advanced_ai_bp)
 
 # Initialize components
 ai_analyzer = AIAnalyzer()
@@ -55,8 +57,13 @@ def deep_extraction():
 
 @app.route('/smart-replication')
 def smart_replication():
-    """Smart replication page."""
+    """صفحة النسخ الذكي"""
     return render_template('pages/smart_replication.html')
+
+@app.route('/advanced-ai')
+def advanced_ai():
+    """صفحة الذكاء الاصطناعي المتقدم"""
+    return render_template('pages/advanced_ai.html')
 
 @app.route('/extract-content', methods=['POST'])
 def extract_content():

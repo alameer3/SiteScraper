@@ -710,7 +710,7 @@ class SmartReplicationEngine:
             ]
         }
         
-        return recommendations.get(complexity_level, [])_files', {}))
+        return recommendations.get(complexity_level, []))
         
         if html_files_count > 10:
             complexity_score += 2
