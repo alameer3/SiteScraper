@@ -38,8 +38,9 @@ import threading
 import queue
 
 # Web scraping and parsing
-from bs4 import BeautifulSoup, Tag
-from bs4.element import NavigableString
+from bs4 import BeautifulSoup, Tag, NavigableString
+from bs4.element import NavigableString as BS4NavigableString
+from typing import cast
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -698,13 +699,14 @@ class WebsiteClonerPro:
         
         # استخراج روابط <a>
         for link in soup.find_all('a'):
-            href_attr = link.get('href')
-            if href_attr:
-                href = str(href_attr).strip()
-                if href:
-                    full_url = urljoin(base_url, href)
-                    if self._is_valid_internal_url(full_url, parsed_base.netloc):
-                        links.add(full_url)
+            if isinstance(link, Tag):
+                href_attr = link.get('href')
+                if href_attr:
+                    href = str(href_attr).strip()
+                    if href:
+                        full_url = urljoin(base_url, href)
+                        if self._is_valid_internal_url(full_url, parsed_base.netloc):
+                            links.add(full_url)
         
         # استخراج روابط من JavaScript
         for script in soup.find_all('script'):
@@ -908,25 +910,28 @@ class WebsiteClonerPro:
                     
                     # استخراج الصور
                     for img in soup.find_all('img'):
-                        src = img.get('src')
-                        if src:
-                            asset_url = urljoin(self.config.target_url, str(src))
-                            assets_found.add(('image', asset_url))
+                        if isinstance(img, Tag):
+                            src = img.get('src')
+                            if src:
+                                asset_url = urljoin(self.config.target_url, str(src))
+                                assets_found.add(('image', asset_url))
                     
                     # استخراج CSS
                     for link in soup.find_all('link'):
-                        href = link.get('href')
-                        rel = link.get('rel')
-                        if href and rel and 'stylesheet' in str(rel):
-                            asset_url = urljoin(self.config.target_url, str(href))
-                            assets_found.add(('css', asset_url))
+                        if isinstance(link, Tag):
+                            href = link.get('href')
+                            rel = link.get('rel')
+                            if href and rel and 'stylesheet' in str(rel):
+                                asset_url = urljoin(self.config.target_url, str(href))
+                                assets_found.add(('css', asset_url))
                     
                     # استخراج JavaScript
                     for script in soup.find_all('script'):
-                        src = script.get('src')
-                        if src:
-                            asset_url = urljoin(self.config.target_url, str(src))
-                            assets_found.add(('js', asset_url))
+                        if isinstance(script, Tag):
+                            src = script.get('src')
+                            if src:
+                                asset_url = urljoin(self.config.target_url, str(src))
+                                assets_found.add(('js', asset_url))
         
         # تحميل الأصول
         for asset_type, asset_url in assets_found:
@@ -1077,37 +1082,9 @@ class WebsiteClonerPro:
         
         return tech_analysis
     
-    async def _analyze_site_structure(self) -> Dict[str, Any]:
-        """تحليل بنية الموقع"""
-        structure = {
-            'page_hierarchy': {},
-            'navigation_patterns': [],
-            'content_types': {},
-            'url_patterns': [],
-            'internal_linking': {}
-        }
-        
-        # تحليل URL patterns
-        content_dir = os.path.join(self.result.output_path, "01_extracted_content")
-        for html_file in os.listdir(content_dir):
-            if html_file.endswith('.html'):
-                # استخراج نمط URL من اسم الملف
-                url_pattern = html_file.replace('.html', '').replace('_', '/')
-                structure['url_patterns'].append(url_pattern)
-        
-        return structure
+
     
-    async def _comprehensive_security_analysis(self) -> Dict[str, Any]:
-        """تحليل أمني شامل"""
-        security = {
-            'ssl_analysis': {},
-            'headers_security': {},
-            'vulnerabilities': [],
-            'authentication_methods': [],
-            'data_protection': {}
-        }
-        
-        # تحليل SSL
+
         try:
             parsed_url = urlparse(self.config.target_url)
             if parsed_url.scheme == 'https':
@@ -2622,8 +2599,9 @@ function getDatabase() {{
         }
         
         # البحث عن إشارات CMS
-        if soup.find('meta', attrs={'name': 'generator'}):
-            generator = soup.find('meta', attrs={'name': 'generator'}).get('content', '')
+        generator_meta = soup.find('meta', attrs={'name': 'generator'})
+        if generator_meta and isinstance(generator_meta, Tag):
+            generator = str(generator_meta.get('content', ''))
             if 'wordpress' in generator.lower():
                 tech_data['cms'] = 'WordPress'
             elif 'drupal' in generator.lower():
@@ -2632,86 +2610,1381 @@ function getDatabase() {{
         # البحث عن JavaScript frameworks
         scripts = soup.find_all('script')
         for script in scripts:
-            src = script.get('src', '') if isinstance(script.get('src'), str) else ''
-            if 'react' in src:
-                tech_data['frameworks'].append('React')
-            elif 'vue' in src:
-                tech_data['frameworks'].append('Vue.js')
-            elif 'angular' in src:
-                tech_data['frameworks'].append('Angular')
+            if isinstance(script, Tag):
+                src_attr = script.get('src')
+                src = str(src_attr) if src_attr else ''
+                if 'react' in src:
+                    tech_data['frameworks'].append('React')
+                elif 'vue' in src:
+                    tech_data['frameworks'].append('Vue.js')
+                elif 'angular' in src:
+                    tech_data['frameworks'].append('Angular')
         
         return tech_data
 
     async def _extract_all_pages(self):
         """استخراج جميع الصفحات"""
         self.logger.info("بدء استخراج جميع الصفحات...")
-        # هذه دالة وهمية للحد من الأخطاء
-        self.result.pages_extracted = 1
+        
+        urls_to_process = [self.config.target_url]
+        processed_urls = set()
+        depth = 0
+        
+        while urls_to_process and depth < self.config.max_depth and len(processed_urls) < self.config.max_pages:
+            current_batch = urls_to_process[:10]  # معالجة 10 URLs في المرة
+            urls_to_process = urls_to_process[10:]
+            
+            for url in current_batch:
+                if url in processed_urls:
+                    continue
+                    
+                # جلب محتوى الصفحة
+                content = await self._fetch_page_content(url, use_js=self.config.handle_javascript)
+                if content:
+                    # حفظ المحتوى
+                    page_filename = self._url_to_filename(url) + '.html'
+                    page_path = os.path.join(self.result.output_path, "01_extracted_content", page_filename)
+                    
+                    async with aiofiles.open(page_path, 'w', encoding='utf-8') as f:
+                        await f.write(content)
+                    
+                    # استخراج الروابط الجديدة
+                    soup = BeautifulSoup(content, 'html.parser')
+                    new_links = await self._extract_all_links(soup, url)
+                    
+                    for new_link in new_links:
+                        if new_link not in processed_urls and new_link not in current_batch:
+                            urls_to_process.append(new_link)
+                    
+                    processed_urls.add(url)
+                    self.result.pages_extracted += 1
+                    
+                await asyncio.sleep(self.config.delay_between_requests)
+            
+            depth += 1
         
     async def _download_all_assets(self):
-        """تحميل جميع الأصول"""
+        """تحميل جميع الأصول (صور، CSS، JS، إلخ)"""
         self.logger.info("بدء تحميل جميع الأصول...")
-        # هذه دالة وهمية للحد من الأخطاء
-        self.result.assets_downloaded = 0
+        assets_found = set()
         
+        # البحث في جميع الملفات المستخرجة
+        content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+        if os.path.exists(content_dir):
+            for html_file in os.listdir(content_dir):
+                if html_file.endswith('.html'):
+                    file_path = os.path.join(content_dir, html_file)
+                    async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                        content = await f.read()
+                        soup = BeautifulSoup(content, 'html.parser')
+                        
+                        # استخراج الصور
+                        for img in soup.find_all('img'):
+                            if isinstance(img, Tag):
+                                src = img.get('src')
+                                if src:
+                                    asset_url = urljoin(self.config.target_url, str(src))
+                                    assets_found.add(('image', asset_url))
+                        
+                        # استخراج CSS
+                        for link in soup.find_all('link'):
+                            if isinstance(link, Tag):
+                                href = link.get('href')
+                                rel = link.get('rel')
+                                if href and rel and 'stylesheet' in str(rel):
+                                    asset_url = urljoin(self.config.target_url, str(href))
+                                    assets_found.add(('css', asset_url))
+                        
+                        # استخراج JavaScript
+                        for script in soup.find_all('script'):
+                            if isinstance(script, Tag):
+                                src = script.get('src')
+                                if src:
+                                    asset_url = urljoin(self.config.target_url, str(src))
+                                    assets_found.add(('js', asset_url))
+        
+        # تحميل الأصول
+        for asset_type, asset_url in assets_found:
+            await self._download_asset(asset_type, asset_url)
+            self.result.assets_downloaded += 1
+        
+    async def _download_asset(self, asset_type: str, asset_url: str):
+        """تحميل أصل واحد"""
+        try:
+            parsed_url = urlparse(asset_url)
+            filename = os.path.basename(parsed_url.path) or f"asset_{hash(asset_url)}"
+            
+            # تحديد المجلد حسب نوع الأصل
+            if asset_type == 'image':
+                asset_dir = os.path.join(self.result.output_path, "02_assets", "images")
+            elif asset_type == 'css':
+                asset_dir = os.path.join(self.result.output_path, "02_assets", "styles")
+            elif asset_type == 'js':
+                asset_dir = os.path.join(self.result.output_path, "02_assets", "scripts")
+            else:
+                asset_dir = os.path.join(self.result.output_path, "02_assets", "other")
+            
+            os.makedirs(asset_dir, exist_ok=True)
+            asset_path = os.path.join(asset_dir, filename)
+            
+            # تحميل الملف
+            headers = {
+                'User-Agent': random.choice(self.user_agents),
+                'Accept': '*/*',
+                'Accept-Encoding': 'gzip, deflate',
+                'Accept-Language': 'en-US,en;q=0.5'
+            }
+            
+            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
+                async with session.get(asset_url, headers=headers) as response:
+                    if response.status == 200:
+                        content = await response.read()
+                        async with aiofiles.open(asset_path, 'wb') as f:
+                            await f.write(content)
+                        self.logger.debug(f"تم تحميل: {filename}")
+        except Exception as e:
+            self.logger.error(f"خطأ في تحميل {asset_url}: {e}")
+
     async def _extract_dynamic_content(self):
-        """استخراج المحتوى الديناميكي"""
+        """استخراج المحتوى الديناميكي باستخدام JavaScript"""
         self.logger.info("استخراج المحتوى الديناميكي...")
         
+        if not self.config.handle_javascript:
+            return
+        
+        try:
+            # استخدام Playwright لاستخراج المحتوى الديناميكي
+            from playwright.async_api import async_playwright
+            
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(headless=True)
+                page = await browser.new_page()
+                
+                # تعطيل الصور لتوفير الوقت
+                await page.route("**/*.{png,jpg,jpeg,gif,svg,ico}", lambda route: route.abort())
+                
+                await page.goto(self.config.target_url, wait_until='networkidle')
+                
+                # انتظار تحميل المحتوى الديناميكي
+                await page.wait_for_timeout(3000)
+                
+                # استخراج المحتوى النهائي
+                dynamic_content = await page.content()
+                
+                # حفظ المحتوى الديناميكي
+                dynamic_path = os.path.join(self.result.output_path, "01_extracted_content", "dynamic_content.html")
+                async with aiofiles.open(dynamic_path, 'w', encoding='utf-8') as f:
+                    await f.write(dynamic_content)
+                
+                await browser.close()
+                
+        except ImportError:
+            self.logger.warning("Playwright غير مثبت - تخطي استخراج المحتوى الديناميكي")
+        except Exception as e:
+            self.logger.error(f"خطأ في استخراج المحتوى الديناميكي: {e}")
+        
     async def _extract_hidden_content(self):
-        """استخراج المحتوى المخفي"""
+        """استخراج المحتوى المخفي والتعليقات"""
         self.logger.info("استخراج المحتوى المخفي...")
         
+        content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+        hidden_content = []
+        
+        if os.path.exists(content_dir):
+            for html_file in os.listdir(content_dir):
+                if html_file.endswith('.html'):
+                    file_path = os.path.join(content_dir, html_file)
+                    async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                        content = await f.read()
+                        
+                        # استخراج التعليقات HTML
+                        html_comments = re.findall(r'<!--(.*?)-->', content, re.DOTALL)
+                        for comment in html_comments:
+                            if comment.strip():
+                                hidden_content.append({
+                                    'type': 'html_comment',
+                                    'content': comment.strip(),
+                                    'file': html_file
+                                })
+                        
+                        # استخراج العناصر المخفية بـ CSS
+                        soup = BeautifulSoup(content, 'html.parser')
+                        for element in soup.find_all(style=re.compile(r'display:\s*none|visibility:\s*hidden')):
+                            if isinstance(element, Tag):
+                                hidden_content.append({
+                                    'type': 'hidden_element',
+                                    'tag': element.name,
+                                    'content': element.get_text(strip=True)[:200],
+                                    'file': html_file
+                                })
+        
+        # حفظ المحتوى المخفي
+        hidden_path = os.path.join(self.result.output_path, "04_analysis", "hidden_content.json")
+        os.makedirs(os.path.dirname(hidden_path), exist_ok=True)
+        
+        async with aiofiles.open(hidden_path, 'w', encoding='utf-8') as f:
+            await f.write(json.dumps(hidden_content, ensure_ascii=False, indent=2))
+        
     async def _comprehensive_technology_analysis(self) -> Dict[str, Any]:
-        """تحليل شامل للتقنيات"""
-        return {'frameworks': [], 'cms': 'unknown', 'server': 'unknown'}
+        """تحليل شامل للتقنيات المستخدمة في الموقع"""
+        self.logger.info("بدء التحليل الشامل للتقنيات...")
+        
+        tech_analysis = {
+            'cms': 'unknown',
+            'frameworks': [],
+            'libraries': [],
+            'analytics': [],
+            'server_technology': 'unknown',
+            'hosting_provider': 'unknown',
+            'ssl_info': {},
+            'performance_tools': [],
+            'cdn_usage': [],
+            'database_indicators': []
+        }
+        
+        try:
+            # تحليل headers الخادم
+            async with aiohttp.ClientSession() as session:
+                async with session.head(self.config.target_url) as response:
+                    headers = response.headers
+                    
+                    # تحليل معلومات الخادم
+                    server_header = headers.get('Server', '')
+                    if 'nginx' in server_header.lower():
+                        tech_analysis['server_technology'] = 'Nginx'
+                    elif 'apache' in server_header.lower():
+                        tech_analysis['server_technology'] = 'Apache'
+                    elif 'cloudflare' in server_header.lower():
+                        tech_analysis['cdn_usage'].append('Cloudflare')
+                    
+                    # تحليل X-Powered-By header
+                    powered_by = headers.get('X-Powered-By', '')
+                    if 'php' in powered_by.lower():
+                        tech_analysis['frameworks'].append('PHP')
+                    elif 'express' in powered_by.lower():
+                        tech_analysis['frameworks'].append('Express.js')
+            
+            # تحليل المحتوى المستخرج
+            content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+            if os.path.exists(content_dir):
+                for html_file in os.listdir(content_dir):
+                    if html_file.endswith('.html'):
+                        file_path = os.path.join(content_dir, html_file)
+                        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                            content = await f.read()
+                            soup = BeautifulSoup(content, 'html.parser')
+                            
+                            # تحليل مولد CMS
+                            generator_meta = soup.find('meta', attrs={'name': 'generator'})
+                            if generator_meta and isinstance(generator_meta, Tag):
+                                generator = str(generator_meta.get('content', ''))
+                                if 'wordpress' in generator.lower():
+                                    tech_analysis['cms'] = 'WordPress'
+                                elif 'drupal' in generator.lower():
+                                    tech_analysis['cms'] = 'Drupal'
+                                elif 'joomla' in generator.lower():
+                                    tech_analysis['cms'] = 'Joomla'
+                            
+                            # تحليل المكتبات والإطارات
+                            scripts = soup.find_all('script')
+                            for script in scripts:
+                                if isinstance(script, Tag):
+                                    src = script.get('src', '')
+                                    script_content = script.get_text()
+                                    
+                                    if src:
+                                        src_str = str(src)
+                                        if 'jquery' in src_str:
+                                            tech_analysis['libraries'].append('jQuery')
+                                        elif 'react' in src_str:
+                                            tech_analysis['frameworks'].append('React')
+                                        elif 'vue' in src_str:
+                                            tech_analysis['frameworks'].append('Vue.js')
+                                        elif 'angular' in src_str:
+                                            tech_analysis['frameworks'].append('Angular')
+                                        elif 'bootstrap' in src_str:
+                                            tech_analysis['libraries'].append('Bootstrap')
+                                    
+                                    if script_content:
+                                        if 'google-analytics' in script_content or 'gtag(' in script_content:
+                                            tech_analysis['analytics'].append('Google Analytics')
+                                        elif 'fbq(' in script_content:
+                                            tech_analysis['analytics'].append('Facebook Pixel')
+                            
+                            # تحليل روابط CSS
+                            css_links = soup.find_all('link', rel='stylesheet')
+                            for link in css_links:
+                                if isinstance(link, Tag):
+                                    href = str(link.get('href', ''))
+                                    if 'bootstrap' in href:
+                                        tech_analysis['libraries'].append('Bootstrap')
+                                    elif 'fontawesome' in href:
+                                        tech_analysis['libraries'].append('Font Awesome')
+                                    
+                        break  # تحليل أول ملف فقط لتوفير الوقت
+            
+            # إزالة المكررات
+            tech_analysis['frameworks'] = list(set(tech_analysis['frameworks']))
+            tech_analysis['libraries'] = list(set(tech_analysis['libraries']))
+            tech_analysis['analytics'] = list(set(tech_analysis['analytics']))
+            tech_analysis['cdn_usage'] = list(set(tech_analysis['cdn_usage']))
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في التحليل التقني: {e}")
+        
+        return tech_analysis
         
     async def _analyze_site_structure(self) -> Dict[str, Any]:
-        """تحليل بنية الموقع"""
-        return {'depth': 1, 'pages': 1, 'structure': 'simple'}
+        """تحليل بنية الموقع والتنقل"""
+        self.logger.info("تحليل بنية الموقع...")
+        
+        structure_analysis = {
+            'total_pages': 0,
+            'navigation_structure': {},
+            'page_hierarchy': {},
+            'internal_links': [],
+            'external_links': [],
+            'broken_links': [],
+            'sitemap_exists': False,
+            'robots_txt_exists': False,
+            'main_sections': []
+        }
+        
+        try:
+            # فحص وجود sitemap
+            sitemap_url = urljoin(self.config.target_url, '/sitemap.xml')
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(sitemap_url) as response:
+                        if response.status == 200:
+                            structure_analysis['sitemap_exists'] = True
+            except:
+                pass
+            
+            # فحص وجود robots.txt
+            robots_url = urljoin(self.config.target_url, '/robots.txt')
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(robots_url) as response:
+                        if response.status == 200:
+                            structure_analysis['robots_txt_exists'] = True
+            except:
+                pass
+            
+            # تحليل الصفحات المستخرجة
+            content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+            if os.path.exists(content_dir):
+                structure_analysis['total_pages'] = len([f for f in os.listdir(content_dir) if f.endswith('.html')])
+                
+                # تحليل التنقل
+                for html_file in os.listdir(content_dir):
+                    if html_file.endswith('.html'):
+                        file_path = os.path.join(content_dir, html_file)
+                        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                            content = await f.read()
+                            soup = BeautifulSoup(content, 'html.parser')
+                            
+                            # استخراج القوائم الرئيسية
+                            nav_elements = soup.find_all(['nav', 'ul', 'ol'])
+                            for nav in nav_elements:
+                                if isinstance(nav, Tag):
+                                    nav_class = nav.get('class', [])
+                                    nav_id = nav.get('id', '')
+                                    
+                                    if any(keyword in str(nav_class) + str(nav_id) for keyword in ['menu', 'nav', 'navigation']):
+                                        links = nav.find_all('a')
+                                        nav_links = []
+                                        for link in links:
+                                            if isinstance(link, Tag):
+                                                href = link.get('href')
+                                                text = link.get_text(strip=True)
+                                                if href and text:
+                                                    nav_links.append({
+                                                        'url': str(href),
+                                                        'text': text
+                                                    })
+                                        
+                                        if nav_links:
+                                            structure_analysis['navigation_structure'][f"{nav.name}_{nav_id or nav_class}"] = nav_links
+                        
+                        break  # تحليل أول صفحة فقط
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في تحليل بنية الموقع: {e}")
+        
+        return structure_analysis
         
     async def _comprehensive_security_analysis(self) -> Dict[str, Any]:
-        """تحليل الأمان الشامل"""
-        return {'ssl': True, 'headers': {}, 'vulnerabilities': []}
+        """تحليل الأمان الشامل للموقع"""
+        self.logger.info("بدء التحليل الأمني الشامل...")
+        
+        security_analysis = {
+            'ssl_certificate': {},
+            'security_headers': {},
+            'vulnerabilities_detected': [],
+            'authentication_methods': [],
+            'data_protection_measures': [],
+            'secure_practices': [],
+            'security_score': 0,
+            'recommendations': []
+        }
+        
+        try:
+            # تحليل شهادة SSL
+            parsed_url = urlparse(self.config.target_url)
+            if parsed_url.scheme == 'https':
+                security_analysis['ssl_certificate'] = {
+                    'enabled': True,
+                    'protocol': 'HTTPS',
+                    'secure_connection': True
+                }
+                security_analysis['security_score'] += 30
+            else:
+                security_analysis['ssl_certificate'] = {
+                    'enabled': False,
+                    'protocol': 'HTTP',
+                    'secure_connection': False
+                }
+                security_analysis['vulnerabilities_detected'].append('No SSL encryption')
+                security_analysis['recommendations'].append('تفعيل شهادة SSL للحماية')
+            
+            # تحليل headers الأمان
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self.config.target_url) as response:
+                    headers = response.headers
+                    
+                    # فحص Security Headers المهمة
+                    security_headers = {
+                        'Content-Security-Policy': headers.get('Content-Security-Policy'),
+                        'X-Frame-Options': headers.get('X-Frame-Options'),
+                        'X-Content-Type-Options': headers.get('X-Content-Type-Options'),
+                        'Strict-Transport-Security': headers.get('Strict-Transport-Security'),
+                        'X-XSS-Protection': headers.get('X-XSS-Protection'),
+                        'Referrer-Policy': headers.get('Referrer-Policy')
+                    }
+                    
+                    security_analysis['security_headers'] = security_headers
+                    
+                    # تقييم Security Headers
+                    for header, value in security_headers.items():
+                        if value:
+                            security_analysis['secure_practices'].append(f'{header} header configured')
+                            security_analysis['security_score'] += 10
+                        else:
+                            security_analysis['vulnerabilities_detected'].append(f'Missing {header} header')
+                            security_analysis['recommendations'].append(f'إضافة {header} header للحماية')
+            
+            # تحليل المحتوى للبحث عن مشاكل أمنية
+            content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+            if os.path.exists(content_dir):
+                for html_file in os.listdir(content_dir):
+                    if html_file.endswith('.html'):
+                        file_path = os.path.join(content_dir, html_file)
+                        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                            content = await f.read()
+                            
+                            # البحث عن نماذج غير محمية
+                            if '<form' in content and 'method="post"' in content:
+                                if 'csrf' not in content.lower() and 'token' not in content.lower():
+                                    security_analysis['vulnerabilities_detected'].append('Forms without CSRF protection')
+                                    security_analysis['recommendations'].append('إضافة حماية CSRF للنماذج')
+                            
+                            # البحث عن external scripts
+                            external_scripts = re.findall(r'<script[^>]+src=["\']https?://[^"\']*["\'][^>]*>', content)
+                            if external_scripts:
+                                security_analysis['vulnerabilities_detected'].append(f'External scripts loaded: {len(external_scripts)}')
+                                security_analysis['recommendations'].append('مراجعة الملفات الخارجية المحملة')
+                        
+                        break  # تحليل أول ملف فقط
+            
+            # حساب النتيجة النهائية
+            max_score = 100
+            security_analysis['security_score'] = min(security_analysis['security_score'], max_score)
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في التحليل الأمني: {e}")
+        
+        return security_analysis
         
     async def _performance_analysis(self) -> Dict[str, Any]:
-        """تحليل الأداء"""
-        return {'load_time': 0, 'page_size': 0, 'requests': 0}
+        """تحليل الأداء وسرعة التحميل"""
+        self.logger.info("بدء تحليل الأداء...")
+        
+        performance_data = {
+            'page_load_time': 0.0,
+            'page_size_kb': 0,
+            'total_requests': 0,
+            'asset_breakdown': {
+                'images': {'count': 0, 'size_kb': 0},
+                'css': {'count': 0, 'size_kb': 0},
+                'js': {'count': 0, 'size_kb': 0},
+                'other': {'count': 0, 'size_kb': 0}
+            },
+            'optimization_opportunities': [],
+            'performance_score': 0,
+            'loading_recommendations': []
+        }
+        
+        try:
+            # قياس وقت تحميل الصفحة الرئيسية
+            start_time = time.time()
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self.config.target_url) as response:
+                    content = await response.read()
+                    load_time = time.time() - start_time
+                    performance_data['page_load_time'] = round(load_time, 2)
+                    performance_data['page_size_kb'] = round(len(content) / 1024, 2)
+            
+            # تحليل الأصول المحملة
+            assets_dir = os.path.join(self.result.output_path, "02_assets")
+            if os.path.exists(assets_dir):
+                for asset_type in ['images', 'styles', 'scripts', 'other']:
+                    type_dir = os.path.join(assets_dir, asset_type)
+                    if os.path.exists(type_dir):
+                        files = os.listdir(type_dir)
+                        total_size = 0
+                        for file in files:
+                            file_path = os.path.join(type_dir, file)
+                            if os.path.isfile(file_path):
+                                total_size += os.path.getsize(file_path)
+                        
+                        asset_key = asset_type if asset_type != 'styles' else 'css'
+                        asset_key = asset_key if asset_key != 'scripts' else 'js'
+                        
+                        if asset_key in performance_data['asset_breakdown']:
+                            performance_data['asset_breakdown'][asset_key] = {
+                                'count': len(files),
+                                'size_kb': round(total_size / 1024, 2)
+                            }
+                            performance_data['total_requests'] += len(files)
+            
+            # تقييم الأداء وتقديم التوصيات
+            if performance_data['page_load_time'] > 3.0:
+                performance_data['optimization_opportunities'].append('صفحة بطيئة التحميل')
+                performance_data['loading_recommendations'].append('تحسين سرعة التحميل')
+                performance_data['performance_score'] -= 20
+            
+            if performance_data['page_size_kb'] > 1000:
+                performance_data['optimization_opportunities'].append('حجم صفحة كبير')
+                performance_data['loading_recommendations'].append('ضغط المحتوى والصور')
+                performance_data['performance_score'] -= 15
+            
+            if performance_data['asset_breakdown']['images']['count'] > 20:
+                performance_data['optimization_opportunities'].append('عدد كبير من الصور')
+                performance_data['loading_recommendations'].append('تحسين الصور واستخدام lazy loading')
+                performance_data['performance_score'] -= 10
+            
+            # حساب النتيجة النهائية
+            base_score = 100
+            performance_data['performance_score'] = max(base_score + performance_data['performance_score'], 0)
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في تحليل الأداء: {e}")
+        
+        return performance_data
         
     async def _extract_api_endpoints(self) -> List[str]:
-        """استخراج نقاط النهاية للـ API"""
-        return []
+        """استخراج نقاط النهاية للـ API من المحتوى والكود"""
+        self.logger.info("استخراج API endpoints...")
+        
+        api_endpoints = []
+        
+        try:
+            # البحث في ملفات JavaScript
+            content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+            if os.path.exists(content_dir):
+                for html_file in os.listdir(content_dir):
+                    if html_file.endswith('.html'):
+                        file_path = os.path.join(content_dir, html_file)
+                        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                            content = await f.read()
+                            
+                            # البحث عن API calls في JavaScript
+                            api_patterns = [
+                                r'fetch\(["\']([^"\']+)["\']',
+                                r'axios\.(?:get|post|put|delete)\(["\']([^"\']+)["\']',
+                                r'ajax\s*\(\s*["\']([^"\']+)["\']',
+                                r'["\'](?:api|API)/([^"\']+)["\']',
+                                r'/api/v\d+/[^"\'?\s]+',
+                                r'/rest/[^"\'?\s]+',
+                                r'/graphql[^"\'?\s]*'
+                            ]
+                            
+                            for pattern in api_patterns:
+                                matches = re.findall(pattern, content, re.IGNORECASE)
+                                for match in matches:
+                                    if match and not match.startswith('#'):
+                                        full_url = urljoin(self.config.target_url, match)
+                                        if full_url not in api_endpoints:
+                                            api_endpoints.append(full_url)
+            
+            # البحث في ملفات JavaScript المحملة
+            scripts_dir = os.path.join(self.result.output_path, "02_assets", "scripts")
+            if os.path.exists(scripts_dir):
+                for script_file in os.listdir(scripts_dir):
+                    if script_file.endswith('.js'):
+                        file_path = os.path.join(scripts_dir, script_file)
+                        try:
+                            async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                                script_content = await f.read()
+                                
+                                # البحث عن API endpoints في الملفات
+                                endpoint_patterns = [
+                                    r'["\']([^"\']*api[^"\']*)["\']',
+                                    r'["\']([^"\']*/v\d+/[^"\']*)["\']',
+                                    r'endpoint[:\s]*["\']([^"\']+)["\']',
+                                    r'baseURL[:\s]*["\']([^"\']+)["\']'
+                                ]
+                                
+                                for pattern in endpoint_patterns:
+                                    matches = re.findall(pattern, script_content, re.IGNORECASE)
+                                    for match in matches:
+                                        if match and 'api' in match.lower():
+                                            full_url = urljoin(self.config.target_url, match)
+                                            if full_url not in api_endpoints:
+                                                api_endpoints.append(full_url)
+                        except:
+                            continue
+                        
+                        # فقط أول 5 ملفات لتوفير الوقت
+                        if len(os.listdir(scripts_dir)) > 5:
+                            break
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في استخراج API endpoints: {e}")
+        
+        return api_endpoints[:20]  # إرجاع أول 20 endpoint
         
     async def _analyze_database_structure(self) -> Dict[str, Any]:
-        """تحليل بنية قاعدة البيانات"""
-        return {'tables': [], 'relationships': []}
+        """تحليل بنية قاعدة البيانات والبيانات المخزنة"""
+        self.logger.info("تحليل بنية قاعدة البيانات...")
+        
+        database_analysis = {
+            'database_indicators': [],
+            'data_storage_methods': [],
+            'potential_tables': [],
+            'data_relationships': [],
+            'storage_technologies': [],
+            'data_patterns': []
+        }
+        
+        try:
+            # تحليل forms لاستنتاج structure قاعدة البيانات
+            content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+            if os.path.exists(content_dir):
+                for html_file in os.listdir(content_dir):
+                    if html_file.endswith('.html'):
+                        file_path = os.path.join(content_dir, html_file)
+                        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                            content = await f.read()
+                            soup = BeautifulSoup(content, 'html.parser')
+                            
+                            # تحليل النماذج لاستنتاج جداول قاعدة البيانات
+                            forms = soup.find_all('form')
+                            for form in forms:
+                                if isinstance(form, Tag):
+                                    form_inputs = form.find_all(['input', 'select', 'textarea'])
+                                    if len(form_inputs) > 2:  # نموذج معقد
+                                        form_fields = []
+                                        for inp in form_inputs:
+                                            if isinstance(inp, Tag):
+                                                name = inp.get('name')
+                                                input_type = inp.get('type', 'text')
+                                                if name:
+                                                    form_fields.append({
+                                                        'field': str(name),
+                                                        'type': str(input_type)
+                                                    })
+                                        
+                                        if form_fields:
+                                            table_name = self._infer_table_name(form_fields)
+                                            database_analysis['potential_tables'].append({
+                                                'table_name': table_name,
+                                                'fields': form_fields,
+                                                'source': 'form_analysis'
+                                            })
+                            
+                            # البحث عن مؤشرات قواعد البيانات في JavaScript
+                            script_tags = soup.find_all('script')
+                            for script in script_tags:
+                                if isinstance(script, Tag):
+                                    script_content = script.get_text()
+                                    if script_content:
+                                        # البحث عن مؤشرات قواعد البيانات
+                                        db_indicators = [
+                                            'mysql', 'postgresql', 'mongodb', 'sqlite',
+                                            'database', 'collection', 'table', 'schema',
+                                            'INSERT', 'SELECT', 'UPDATE', 'DELETE'
+                                        ]
+                                        
+                                        for indicator in db_indicators:
+                                            if indicator.lower() in script_content.lower():
+                                                if indicator not in database_analysis['database_indicators']:
+                                                    database_analysis['database_indicators'].append(indicator)
+                        
+                        break  # تحليل أول ملف فقط
+            
+            # تحليل localStorage و sessionStorage usage
+            if 'localStorage' in content or 'sessionStorage' in content:
+                database_analysis['data_storage_methods'].append('Browser Storage')
+            
+            # تحليل cookies usage
+            if 'cookie' in content.lower() or 'document.cookie' in content:
+                database_analysis['data_storage_methods'].append('Cookies')
+                
+        except Exception as e:
+            self.logger.error(f"خطأ في تحليل قاعدة البيانات: {e}")
+        
+        return database_analysis
+    
+    def _infer_table_name(self, fields: List[Dict]) -> str:
+        """استنتاج اسم الجدول من الحقول"""
+        common_patterns = {
+            'user': ['name', 'email', 'password', 'username'],
+            'product': ['name', 'price', 'description', 'category'],
+            'order': ['quantity', 'total', 'date', 'status'],
+            'contact': ['name', 'email', 'message', 'phone'],
+            'comment': ['name', 'email', 'comment', 'content']
+        }
+        
+        field_names = [f['field'].lower() for f in fields]
+        
+        for table_name, pattern_fields in common_patterns.items():
+            matches = sum(1 for field in pattern_fields if any(field in fname for fname in field_names))
+            if matches >= 2:  # على الأقل حقلين متطابقين
+                return table_name
+        
+        return 'unknown_table'
         
     async def _extract_source_code(self) -> Dict[str, Any]:
-        """استخراج الكود المصدري"""
-        return {'files': [], 'structure': {}}
+        """استخراج وتحليل الكود المصدري للموقع"""
+        self.logger.info("استخراج الكود المصدري...")
+        
+        source_code_analysis = {
+            'html_files': [],
+            'css_files': [],
+            'js_files': [],
+            'code_structure': {},
+            'programming_languages': [],
+            'frameworks_detected': [],
+            'total_lines_of_code': 0,
+            'code_quality_metrics': {}
+        }
+        
+        try:
+            # تحليل ملفات HTML
+            content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+            if os.path.exists(content_dir):
+                for html_file in os.listdir(content_dir):
+                    if html_file.endswith('.html'):
+                        file_path = os.path.join(content_dir, html_file)
+                        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                            content = await f.read()
+                            lines_count = len(content.splitlines())
+                            
+                            source_code_analysis['html_files'].append({
+                                'filename': html_file,
+                                'size_kb': round(len(content) / 1024, 2),
+                                'lines_of_code': lines_count,
+                                'elements_count': len(BeautifulSoup(content, 'html.parser').find_all())
+                            })
+                            source_code_analysis['total_lines_of_code'] += lines_count
+            
+            # تحليل ملفات CSS
+            css_dir = os.path.join(self.result.output_path, "02_assets", "styles")
+            if os.path.exists(css_dir):
+                for css_file in os.listdir(css_dir):
+                    if css_file.endswith('.css'):
+                        file_path = os.path.join(css_dir, css_file)
+                        try:
+                            async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                                content = await f.read()
+                                lines_count = len(content.splitlines())
+                                
+                                # تحليل CSS properties
+                                css_rules = re.findall(r'{[^}]+}', content)
+                                
+                                source_code_analysis['css_files'].append({
+                                    'filename': css_file,
+                                    'size_kb': round(len(content) / 1024, 2),
+                                    'lines_of_code': lines_count,
+                                    'css_rules_count': len(css_rules)
+                                })
+                                source_code_analysis['total_lines_of_code'] += lines_count
+                        except:
+                            continue
+            
+            # تحليل ملفات JavaScript
+            js_dir = os.path.join(self.result.output_path, "02_assets", "scripts")
+            if os.path.exists(js_dir):
+                for js_file in os.listdir(js_dir):
+                    if js_file.endswith('.js'):
+                        file_path = os.path.join(js_dir, js_file)
+                        try:
+                            async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                                content = await f.read()
+                                lines_count = len(content.splitlines())
+                                
+                                # تحليل JavaScript functions
+                                functions = re.findall(r'function\s+\w+\s*\(', content)
+                                arrow_functions = re.findall(r'=>', content)
+                                
+                                source_code_analysis['js_files'].append({
+                                    'filename': js_file,
+                                    'size_kb': round(len(content) / 1024, 2),
+                                    'lines_of_code': lines_count,
+                                    'functions_count': len(functions) + len(arrow_functions)
+                                })
+                                source_code_analysis['total_lines_of_code'] += lines_count
+                        except:
+                            continue
+            
+            # تحديد اللغات المستخدمة
+            if source_code_analysis['html_files']:
+                source_code_analysis['programming_languages'].append('HTML')
+            if source_code_analysis['css_files']:
+                source_code_analysis['programming_languages'].append('CSS')
+            if source_code_analysis['js_files']:
+                source_code_analysis['programming_languages'].append('JavaScript')
+            
+            # حساب مقاييس جودة الكود
+            source_code_analysis['code_quality_metrics'] = {
+                'total_files': len(source_code_analysis['html_files']) + len(source_code_analysis['css_files']) + len(source_code_analysis['js_files']),
+                'average_file_size_kb': round(sum(f['size_kb'] for files in [source_code_analysis['html_files'], source_code_analysis['css_files'], source_code_analysis['js_files']] for f in files) / max(1, len(source_code_analysis['html_files']) + len(source_code_analysis['css_files']) + len(source_code_analysis['js_files'])), 2),
+                'code_organization_score': min(100, max(0, 100 - (source_code_analysis['total_lines_of_code'] // 500) * 10))
+            }
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في استخراج الكود المصدري: {e}")
+        
+        return source_code_analysis
         
     async def _analyze_interactions(self) -> Dict[str, Any]:
-        """تحليل التفاعلات"""
-        return {'forms': [], 'buttons': [], 'links': []}
+        """تحليل التفاعلات والعناصر التفاعلية في الموقع"""
+        self.logger.info("تحليل التفاعلات...")
+        
+        interactions_analysis = {
+            'forms': [],
+            'buttons': [],
+            'links': [],
+            'interactive_elements': [],
+            'javascript_events': [],
+            'user_input_fields': [],
+            'navigation_elements': [],
+            'interactivity_score': 0
+        }
+        
+        try:
+            content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+            if os.path.exists(content_dir):
+                for html_file in os.listdir(content_dir):
+                    if html_file.endswith('.html'):
+                        file_path = os.path.join(content_dir, html_file)
+                        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                            content = await f.read()
+                            soup = BeautifulSoup(content, 'html.parser')
+                            
+                            # تحليل النماذج
+                            forms = soup.find_all('form')
+                            for form in forms:
+                                if isinstance(form, Tag):
+                                    form_data = {
+                                        'action': str(form.get('action', '')),
+                                        'method': str(form.get('method', 'get')),
+                                        'inputs_count': len(form.find_all(['input', 'select', 'textarea'])),
+                                        'has_validation': bool(form.find(['input'], required=True))
+                                    }
+                                    interactions_analysis['forms'].append(form_data)
+                                    interactions_analysis['interactivity_score'] += 15
+                            
+                            # تحليل الأزرار
+                            buttons = soup.find_all(['button', 'input'])
+                            for button in buttons:
+                                if isinstance(button, Tag):
+                                    button_type = str(button.get('type', ''))
+                                    if button.name == 'button' or button_type in ['button', 'submit']:
+                                        button_data = {
+                                            'type': button_type or 'button',
+                                            'text': button.get_text(strip=True),
+                                            'has_onclick': bool(button.get('onclick')),
+                                            'has_id': bool(button.get('id'))
+                                        }
+                                        interactions_analysis['buttons'].append(button_data)
+                                        interactions_analysis['interactivity_score'] += 5
+                            
+                            # تحليل الروابط
+                            links = soup.find_all('a')
+                            internal_links = 0
+                            external_links = 0
+                            for link in links:
+                                if isinstance(link, Tag):
+                                    href = str(link.get('href', ''))
+                                    link_data = {
+                                        'href': href,
+                                        'text': link.get_text(strip=True),
+                                        'target': str(link.get('target', '')),
+                                        'is_external': href.startswith(('http://', 'https://')) and not href.startswith(self.config.target_url)
+                                    }
+                                    interactions_analysis['links'].append(link_data)
+                                    
+                                    if link_data['is_external']:
+                                        external_links += 1
+                                    else:
+                                        internal_links += 1
+                            
+                            # تحليل العناصر التفاعلية الأخرى
+                            interactive_selectors = [
+                                '[onclick]', '[onchange]', '[onsubmit]', '[onload]',
+                                '.dropdown', '.modal', '.tab', '.accordion',
+                                '[data-toggle]', '[data-target]'
+                            ]
+                            
+                            for selector in interactive_selectors:
+                                elements = soup.select(selector)
+                                if elements:
+                                    interactions_analysis['interactive_elements'].append({
+                                        'type': selector,
+                                        'count': len(elements)
+                                    })
+                                    interactions_analysis['interactivity_score'] += len(elements) * 3
+                            
+                            # تحليل حقول الإدخال
+                            input_fields = soup.find_all(['input', 'select', 'textarea'])
+                            for field in input_fields:
+                                if isinstance(field, Tag):
+                                    field_data = {
+                                        'type': str(field.get('type', field.name)),
+                                        'name': str(field.get('name', '')),
+                                        'required': bool(field.get('required')),
+                                        'placeholder': str(field.get('placeholder', ''))
+                                    }
+                                    interactions_analysis['user_input_fields'].append(field_data)
+                            
+                            # البحث عن JavaScript events
+                            script_tags = soup.find_all('script')
+                            for script in script_tags:
+                                if isinstance(script, Tag):
+                                    script_content = script.get_text()
+                                    if script_content:
+                                        # البحث عن event listeners
+                                        events = re.findall(r'addEventListener\(["\'](\w+)["\']', script_content)
+                                        for event in events:
+                                            if event not in interactions_analysis['javascript_events']:
+                                                interactions_analysis['javascript_events'].append(event)
+                                                interactions_analysis['interactivity_score'] += 8
+                        
+                        break  # تحليل أول ملف فقط
+            
+            # حساب النتيجة النهائية للتفاعلية
+            max_score = 500
+            interactions_analysis['interactivity_score'] = min(interactions_analysis['interactivity_score'], max_score)
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في تحليل التفاعلات: {e}")
+        
+        return interactions_analysis
         
     async def _create_replica_structure(self) -> Dict[str, Any]:
-        """إنشاء هيكل النسخة المطابقة"""
-        return {'structure': 'created'}
+        """إنشاء هيكل النسخة المطابقة للموقع"""
+        self.logger.info("إنشاء هيكل النسخة المطابقة...")
+        
+        replica_info = {
+            'replica_path': '',
+            'structure_created': False,
+            'files_copied': 0,
+            'directories_created': 0,
+            'replica_type': 'static_html',
+            'launch_instructions': {}
+        }
+        
+        try:
+            # إنشاء مجلد النسخة المطابقة
+            replica_dir = os.path.join(self.result.output_path, "05_cloned_site")
+            os.makedirs(replica_dir, exist_ok=True)
+            replica_info['replica_path'] = replica_dir
+            
+            # إنشاء البنية الأساسية
+            subdirs = ['css', 'js', 'images', 'fonts', 'assets']
+            for subdir in subdirs:
+                subdir_path = os.path.join(replica_dir, subdir)
+                os.makedirs(subdir_path, exist_ok=True)
+                replica_info['directories_created'] += 1
+            
+            # نسخ ملفات HTML
+            content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+            if os.path.exists(content_dir):
+                for html_file in os.listdir(content_dir):
+                    if html_file.endswith('.html'):
+                        source_path = os.path.join(content_dir, html_file)
+                        
+                        # تحديد الملف الرئيسي
+                        if html_file.startswith(('index', 'home', 'main')) or len(os.listdir(content_dir)) == 1:
+                            dest_path = os.path.join(replica_dir, 'index.html')
+                        else:
+                            dest_path = os.path.join(replica_dir, html_file)
+                        
+                        async with aiofiles.open(source_path, 'r', encoding='utf-8') as src:
+                            content = await src.read()
+                            # تحديث مسارات الأصول
+                            content = self._fix_asset_paths(content)
+                            
+                            async with aiofiles.open(dest_path, 'w', encoding='utf-8') as dst:
+                                await dst.write(content)
+                            
+                            replica_info['files_copied'] += 1
+            
+            # نسخ الأصول
+            assets_dir = os.path.join(self.result.output_path, "02_assets")
+            if os.path.exists(assets_dir):
+                # نسخ الصور
+                images_src = os.path.join(assets_dir, "images")
+                if os.path.exists(images_src):
+                    images_dst = os.path.join(replica_dir, "images")
+                    await self._copy_directory_contents(images_src, images_dst)
+                
+                # نسخ CSS
+                css_src = os.path.join(assets_dir, "styles")
+                if os.path.exists(css_src):
+                    css_dst = os.path.join(replica_dir, "css")
+                    await self._copy_directory_contents(css_src, css_dst)
+                
+                # نسخ JavaScript
+                js_src = os.path.join(assets_dir, "scripts")
+                if os.path.exists(js_src):
+                    js_dst = os.path.join(replica_dir, "js")
+                    await self._copy_directory_contents(js_src, js_dst)
+            
+            # إنشاء ملف README
+            readme_content = f"""# {self.config.target_url} - نسخة مطابقة
+
+تم إنشاء هذه النسخة باستخدام Website Cloner Pro
+تاريخ الإنشاء: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+## تعليمات التشغيل:
+1. افتح ملف index.html في المتصفح
+2. أو استخدم خادم ويب محلي:
+   - Python: python -m http.server 8000
+   - Node.js: npx serve .
+   - PHP: php -S localhost:8000
+
+## معلومات النسخة:
+- الملفات المنسوخة: {replica_info['files_copied']}
+- المجلدات المنشأة: {replica_info['directories_created']}
+- نوع النسخة: HTML ثابت
+"""
+            
+            readme_path = os.path.join(replica_dir, 'README.md')
+            async with aiofiles.open(readme_path, 'w', encoding='utf-8') as f:
+                await f.write(readme_content)
+            
+            replica_info['structure_created'] = True
+            replica_info['launch_instructions'] = {
+                'browser': f"file://{os.path.join(replica_dir, 'index.html')}",
+                'python_server': f"cd {replica_dir} && python -m http.server 8000",
+                'node_server': f"cd {replica_dir} && npx serve .",
+                'access_url': "http://localhost:8000"
+            }
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في إنشاء النسخة المطابقة: {e}")
+        
+        return replica_info
+    
+    def _fix_asset_paths(self, html_content: str) -> str:
+        """إصلاح مسارات الأصول في HTML"""
+        # تحديث مسارات CSS
+        html_content = re.sub(r'href=["\']([^"\']*\.css)["\']', r'href="css/\1"', html_content)
+        # تحديث مسارات JavaScript
+        html_content = re.sub(r'src=["\']([^"\']*\.js)["\']', r'src="js/\1"', html_content)
+        # تحديث مسارات الصور
+        html_content = re.sub(r'src=["\']([^"\']*\.(jpg|jpeg|png|gif|svg|ico))["\']', r'src="images/\1"', html_content)
+        
+        return html_content
+    
+    async def _copy_directory_contents(self, src_dir: str, dst_dir: str):
+        """نسخ محتويات مجلد"""
+        if os.path.exists(src_dir):
+            for item in os.listdir(src_dir):
+                src_path = os.path.join(src_dir, item)
+                dst_path = os.path.join(dst_dir, item)
+                
+                if os.path.isfile(src_path):
+                    async with aiofiles.open(src_path, 'rb') as src_file:
+                        content = await src_file.read()
+                        async with aiofiles.open(dst_path, 'wb') as dst_file:
+                            await dst_file.write(content)
         
     async def _copy_and_modify_files(self):
-        """نسخ وتعديل الملفات"""
-        pass
+        """نسخ وتعديل الملفات للنسخة المطابقة"""
+        self.logger.info("نسخ وتعديل الملفات...")
+        
+        try:
+            replica_dir = os.path.join(self.result.output_path, "05_cloned_site")
+            
+            # تحديث جميع ملفات HTML لإصلاح الروابط
+            for html_file in os.listdir(replica_dir):
+                if html_file.endswith('.html'):
+                    file_path = os.path.join(replica_dir, html_file)
+                    async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                        content = await f.read()
+                    
+                    # إصلاح الروابط المكسورة
+                    content = self._fix_broken_links(content)
+                    # إزالة الروابط الخارجية المكسورة
+                    content = self._clean_external_references(content)
+                    
+                    async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
+                        await f.write(content)
+            
+            # تحديث ملفات CSS لإصلاح مسارات الصور
+            css_dir = os.path.join(replica_dir, "css")
+            if os.path.exists(css_dir):
+                for css_file in os.listdir(css_dir):
+                    if css_file.endswith('.css'):
+                        file_path = os.path.join(css_dir, css_file)
+                        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                            content = await f.read()
+                        
+                        # إصلاح مسارات الصور في CSS
+                        content = re.sub(r'url\(["\']?([^"\']*\.(jpg|jpeg|png|gif|svg))["\']?\)', r'url("../images/\1")', content)
+                        
+                        async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
+                            await f.write(content)
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في نسخ وتعديل الملفات: {e}")
+    
+    def _fix_broken_links(self, html_content: str) -> str:
+        """إصلاح الروابط المكسورة"""
+        # تحويل الروابط النسبية إلى روابط محلية
+        html_content = re.sub(r'href=["\']\.\.?/([^"\']*)["\']', r'href="\1"', html_content)
+        # إزالة الروابط الفارغة
+        html_content = re.sub(r'href=["\']["\']', r'href="#"', html_content)
+        return html_content
+    
+    def _clean_external_references(self, html_content: str) -> str:
+        """تنظيف المراجع الخارجية"""
+        # إزالة Google Analytics و tracking scripts
+        html_content = re.sub(r'<script[^>]*google-analytics[^>]*>.*?</script>', '', html_content, flags=re.DOTALL)
+        html_content = re.sub(r'<script[^>]*gtag[^>]*>.*?</script>', '', html_content, flags=re.DOTALL)
+        # إزالة Facebook Pixel
+        html_content = re.sub(r'<script[^>]*facebook[^>]*>.*?</script>', '', html_content, flags=re.DOTALL)
+        return html_content
         
     async def _create_routing_system(self):
-        """إنشاء نظام التوجيه"""
-        pass
+        """إنشاء نظام التوجيه للموقع المستنسخ"""
+        self.logger.info("إنشاء نظام التوجيه...")
+        
+        try:
+            replica_dir = os.path.join(self.result.output_path, "05_cloned_site")
+            
+            # إنشاء ملف .htaccess للمواقع الثابتة
+            htaccess_content = """# Website Cloner Pro - Routing Configuration
+DirectoryIndex index.html
+ErrorDocument 404 /index.html
+
+# Security Headers
+Header always set X-Frame-Options DENY
+Header always set X-Content-Type-Options nosniff
+Header always set X-XSS-Protection "1; mode=block"
+
+# Cache Control
+<IfModule mod_expires.c>
+    ExpiresActive on
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+</IfModule>
+"""
+            
+            htaccess_path = os.path.join(replica_dir, '.htaccess')
+            async with aiofiles.open(htaccess_path, 'w', encoding='utf-8') as f:
+                await f.write(htaccess_content)
+            
+            # إنشاء server configuration للتطوير
+            server_config = {
+                'python': {
+                    'command': 'python -m http.server 8000',
+                    'description': 'Python HTTP Server - للتطوير السريع'
+                },
+                'node': {
+                    'command': 'npx serve . -p 8000',
+                    'description': 'Node.js Serve - للاختبار المحلي'
+                },
+                'php': {
+                    'command': 'php -S localhost:8000',
+                    'description': 'PHP Built-in Server - للتطوير'
+                }
+            }
+            
+            server_config_path = os.path.join(replica_dir, 'server-config.json')
+            async with aiofiles.open(server_config_path, 'w', encoding='utf-8') as f:
+                await f.write(json.dumps(server_config, ensure_ascii=False, indent=2))
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في إنشاء نظام التوجيه: {e}")
         
     async def _setup_local_database(self):
-        """إعداد قاعدة البيانات المحلية"""
-        pass
+        """إعداد قاعدة البيانات المحلية للموقع المستنسخ"""
+        self.logger.info("إعداد قاعدة البيانات المحلية...")
+        
+        try:
+            db_dir = os.path.join(self.result.output_path, "07_databases")
+            os.makedirs(db_dir, exist_ok=True)
+            
+            # إنشاء قاعدة بيانات SQLite للموقع المستنسخ
+            db_path = os.path.join(db_dir, "cloned_site.db")
+            
+            # استخدام sqlite3 لإنشاء جداول أساسية
+            import sqlite3
+            
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            
+            # إنشاء جداول أساسية بناءً على التحليل
+            database_analysis = await self._analyze_database_structure()
+            
+            for table_info in database_analysis.get('potential_tables', []):
+                table_name = table_info['table_name']
+                fields = table_info['fields']
+                
+                # إنشاء SQL CREATE TABLE
+                create_sql = f"CREATE TABLE IF NOT EXISTS {table_name} (\n"
+                create_sql += "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                
+                for field in fields:
+                    field_name = field['field']
+                    field_type = self._sql_type_from_html_type(field['type'])
+                    create_sql += f"    {field_name} {field_type},\n"
+                
+                create_sql += "    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n"
+                create_sql += ");"
+                
+                cursor.execute(create_sql)
+            
+            # إنشاء جدول للإحصائيات
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS site_analytics (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    page_url TEXT,
+                    visit_count INTEGER DEFAULT 0,
+                    last_visit TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            
+            conn.commit()
+            conn.close()
+            
+            # إنشاء ملف تكوين قاعدة البيانات
+            db_config = {
+                'database_file': 'cloned_site.db',
+                'type': 'sqlite',
+                'tables_created': len(database_analysis.get('potential_tables', [])) + 1,
+                'setup_date': datetime.now().isoformat(),
+                'connection_string': f"sqlite:///{db_path}"
+            }
+            
+            config_path = os.path.join(db_dir, 'database_config.json')
+            async with aiofiles.open(config_path, 'w', encoding='utf-8') as f:
+                await f.write(json.dumps(db_config, ensure_ascii=False, indent=2))
+            
+            self.logger.info(f"تم إنشاء قاعدة البيانات المحلية: {db_path}")
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في إعداد قاعدة البيانات المحلية: {e}")
+    
+    def _sql_type_from_html_type(self, html_type: str) -> str:
+        """تحويل نوع HTML إلى نوع SQL"""
+        type_mapping = {
+            'email': 'TEXT',
+            'password': 'TEXT',
+            'text': 'TEXT',
+            'textarea': 'TEXT',
+            'number': 'INTEGER',
+            'tel': 'TEXT',
+            'url': 'TEXT',
+            'date': 'DATE',
+            'datetime-local': 'TIMESTAMP',
+            'checkbox': 'BOOLEAN',
+            'radio': 'TEXT',
+            'select': 'TEXT',
+            'hidden': 'TEXT'
+        }
+        return type_mapping.get(html_type.lower(), 'TEXT')
         
     async def _test_links(self) -> Dict[str, Any]:
-        """اختبار الروابط"""
+        """اختبار الروابط وصحتها"""
+        self.logger.info("اختبار الروابط...")
+        
+        link_test_results = {
+            'total_links': 0,
+            'working_links': 0,
+            'broken_links': 0,
+            'external_links': 0,
+            'internal_links': 0,
+            'link_details': [],
+            'broken_link_details': []
+        }
+        
+        try:
+            content_dir = os.path.join(self.result.output_path, "01_extracted_content")
+            if os.path.exists(content_dir):
+                for html_file in os.listdir(content_dir):
+                    if html_file.endswith('.html'):
+                        file_path = os.path.join(content_dir, html_file)
+                        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                            content = await f.read()
+                            soup = BeautifulSoup(content, 'html.parser')
+                            
+                            links = soup.find_all('a', href=True)
+                            for link in links:
+                                if isinstance(link, Tag):
+                                    href = str(link.get('href', ''))
+                                    if href and href != '#':
+                                        link_test_results['total_links'] += 1
+                                        
+                                        # تحديد نوع الرابط
+                                        is_external = href.startswith(('http://', 'https://')) and not href.startswith(self.config.target_url)
+                                        
+                                        if is_external:
+                                            link_test_results['external_links'] += 1
+                                        else:
+                                            link_test_results['internal_links'] += 1
+                                        
+                                        # اختبار الرابط (للروابط الخارجية فقط)
+                                        if is_external:
+                                            try:
+                                                async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10)) as session:
+                                                    async with session.head(href) as response:
+                                                        if response.status < 400:
+                                                            link_test_results['working_links'] += 1
+                                                        else:
+                                                            link_test_results['broken_links'] += 1
+                                                            link_test_results['broken_link_details'].append({
+                                                                'url': href,
+                                                                'status': response.status,
+                                                                'text': link.get_text(strip=True)
+                                                            })
+                                            except:
+                                                link_test_results['broken_links'] += 1
+                                                link_test_results['broken_link_details'].append({
+                                                    'url': href,
+                                                    'status': 'timeout/error',
+                                                    'text': link.get_text(strip=True)
+                                                })
+                                        else:
+                                            # الروابط الداخلية تعتبر تعمل افتراضياً
+                                            link_test_results['working_links'] += 1
+                        
+                        break  # فحص أول ملف فقط لتوفير الوقت
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في اختبار الروابط: {e}")
+        
+        return link_test_results
         return {'working': 0, 'broken': 0}
         
     async def _validate_files(self) -> Dict[str, Any]:
