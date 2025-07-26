@@ -2,7 +2,7 @@ modules = ["web", "python-3.11", "nodejs-20"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["openssl", "postgresql", "xcodebuild", "zlib"]
+packages = ["freetype", "geckodriver", "gitFull", "glibcLocales", "openssl", "playwright-driver", "postgresql", "xcodebuild", "zlib"]
 
 [deployment]
 deploymentTarget = "autoscale"

@@ -5,8 +5,10 @@ Clean and compatible with Replit environment
 
 from flask import render_template, request, jsonify, redirect, url_for, flash
 from app import app, db
-from models import ScrapeResult
+# Import ScrapeResult at the function level to avoid circular imports
+# from models import ScrapeResult
 from urllib.parse import urlparse
+from extractors.master_extractor import MasterExtractor, ExtractionConfig, ExtractionMode
 import json
 import logging
 from datetime import datetime
@@ -51,46 +53,99 @@ def analyze_website():
             flash('Invalid URL', 'error')
             return redirect(url_for('index'))
         
-        # Basic analysis function
+        # Enhanced analysis function using MasterExtractor
         def analyze_in_background():
             with app.app_context():
                 try:
-                    # Simple website analysis using requests and BeautifulSoup
-                    response = requests.get(url, timeout=10)
-                    soup = BeautifulSoup(response.content, 'html.parser')
+                    # Configure extraction based on request parameters
+                    if max_depth <= 1:
+                        mode = ExtractionMode.BASIC
+                    elif max_depth <= 3:
+                        mode = ExtractionMode.STANDARD
+                    else:
+                        mode = ExtractionMode.ADVANCED
                     
-                    # Basic analysis data
-                    analysis_data = {
-                        'title': soup.title.string if soup.title else 'No title',
-                        'meta_description': '',
-                        'headings': len(soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])),
-                        'images': len(soup.find_all('img')),
-                        'links': len(soup.find_all('a')),
-                        'forms': len(soup.find_all('form')),
-                        'scripts': len(soup.find_all('script')),
-                        'stylesheets': len(soup.find_all('link', rel='stylesheet'))
-                    }
+                    config = ExtractionConfig(
+                        mode=mode,
+                        max_pages=min(max_depth * 10, 50),  # Reasonable limit
+                        max_depth=max_depth,
+                        timeout=30,
+                        extract_images=True,
+                        extract_documents=True,
+                        block_ads=block_ads,
+                        follow_external_links=False
+                    )
                     
-                    # Get meta description
-                    meta_desc = soup.find('meta', attrs={'name': 'description'})
-                    if meta_desc and isinstance(meta_desc, Tag) and 'content' in meta_desc.attrs:
-                        analysis_data['meta_description'] = meta_desc.get('content', '')
+                    # Create extractor and perform extraction
+                    extractor = MasterExtractor(config)
+                    extraction_result = extractor.extract(url, save_report=False)
                     
-                    # Save results to database
-                    result = ScrapeResult(url=url, status='completed')
-                    result.set_structure_data(analysis_data)
-                    result.set_assets_data({'analyzed': True, 'url': url})
-                    result.set_technology_data({'basic_analysis': True})
-                    result.set_seo_data({'analyzed': True, 'data': analysis_data})
-                    result.set_navigation_data({'links_found': analysis_data['links']})
+                    if 'error' in extraction_result:
+                        raise Exception(extraction_result['error'])
                     
-                    db.session.add(result)
-                    db.session.commit()
-                    
-                    logging.info(f"Analysis completed for {url}")
+                    # Process extraction results
+                    pages = extraction_result.get('pages', [])
+                    if pages:
+                        main_page = pages[0]
+                        
+                        # Create comprehensive analysis data
+                        analysis_data = {
+                            'title': main_page.get('title', 'No title'),
+                            'meta_description': main_page.get('meta_description', ''),
+                            'headings': sum(len(h) for h in main_page.get('headings', {}).values()),
+                            'images': len(main_page.get('images', [])),
+                            'links': len(main_page.get('links', [])),
+                            'forms': len(main_page.get('forms', [])),
+                            'scripts': len(main_page.get('scripts', [])),
+                            'stylesheets': len(main_page.get('stylesheets', [])),
+                            'pages_analyzed': len(pages),
+                            'extraction_mode': extraction_result.get('mode', 'basic'),
+                            'extraction_time': extraction_result.get('extraction_time', 0)
+                        }
+                        
+                        # Import at function level to avoid circular imports
+                        from models import ScrapeResult
+                        
+                        # Save comprehensive results to database
+                        result = ScrapeResult(url=url, status='completed')
+                        result.set_structure_data(analysis_data)
+                        result.set_assets_data({
+                            'images': main_page.get('images', []),
+                            'scripts': main_page.get('scripts', []),
+                            'stylesheets': main_page.get('stylesheets', [])
+                        })
+                        result.set_technology_data({
+                            'extraction_mode': extraction_result.get('mode'),
+                            'spa_info': main_page.get('spa_info', {}),
+                            'dynamic_content': main_page.get('dynamic_content', [])
+                        })
+                        result.set_seo_data({
+                            'title': main_page.get('title', ''),
+                            'meta_description': main_page.get('meta_description', ''),
+                            'headings': main_page.get('headings', {}),
+                            'security_analysis': main_page.get('security_analysis', {})
+                        })
+                        result.set_navigation_data({
+                            'internal_links': len([l for l in main_page.get('links', []) if not l.get('is_external', True)]),
+                            'external_links': len([l for l in main_page.get('links', []) if l.get('is_external', False)]),
+                            'total_pages': len(pages)
+                        })
+                        
+                        # Store full extraction result as JSON
+                        result.data = json.dumps(extraction_result, default=str, ensure_ascii=False)
+                        
+                        db.session.add(result)
+                        db.session.commit()
+                        
+                        logging.info(f"Enhanced analysis completed for {url} - Mode: {mode.value}, Pages: {len(pages)}")
+                    else:
+                        raise Exception("No pages extracted from website")
                     
                 except Exception as e:
-                    logging.error(f"Analysis failed for {url}: {e}")
+                    logging.error(f"Enhanced analysis failed for {url}: {e}")
+                    # Import at function level to avoid circular imports
+                    from models import ScrapeResult
+                    
                     # Save error result
                     error_result = ScrapeResult(url=url, status='failed')
                     error_result.error_message = str(e)
@@ -117,6 +172,9 @@ def analyze_website():
 def dashboard():
     """Main dashboard"""
     try:
+        # Import at function level to avoid circular imports
+        from models import ScrapeResult
+        
         # Analysis statistics
         total_analyses = ScrapeResult.query.count()
         
@@ -147,6 +205,7 @@ def dashboard():
 def history():
     """Analysis history page"""
     try:
+        from models import ScrapeResult
         results = ScrapeResult.query.order_by(ScrapeResult.created_at.desc()).limit(50).all()
         return render_template('history.html', results=results)
     except Exception as e:
@@ -157,6 +216,7 @@ def history():
 def view_result(result_id):
     """View specific analysis result"""
     try:
+        from models import ScrapeResult
         result = ScrapeResult.query.get_or_404(result_id)
         return render_template('results.html', result=result)
     except Exception as e:
@@ -168,6 +228,7 @@ def view_result(result_id):
 def view_results(result_id):
     """View analysis results"""
     try:
+        from models import ScrapeResult
         result = ScrapeResult.query.get_or_404(result_id)
         return render_template('results.html', result=result)
     except Exception as e:

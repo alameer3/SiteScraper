@@ -11,13 +11,6 @@ class ScrapeResult(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     completed_at = db.Column(db.DateTime)
 
-    def __init__(self, url, status='pending', analysis_type='basic', data=None, timestamp=None):
-        self.url = url
-        self.status = status
-        self.analysis_type = analysis_type
-        self.data = data
-        self.timestamp = timestamp or datetime.utcnow()
-
     # Analysis results stored as JSON
     structure_data = db.Column(db.Text)  # HTML structure analysis
     assets_data = db.Column(db.Text)     # Images, CSS, JS files
@@ -35,6 +28,13 @@ class ScrapeResult(db.Model):
     analysis_type = db.Column(db.String(50), default='basic')  # Type of analysis
     data = db.Column(db.Text)  # Additional data storage
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)  # Analysis timestamp
+
+    def __init__(self, url, status='pending', analysis_type='basic', data=None, timestamp=None):
+        self.url = url
+        self.status = status
+        self.analysis_type = analysis_type
+        self.data = data
+        self.timestamp = timestamp or datetime.utcnow()
 
     def set_structure_data(self, data):
         try:

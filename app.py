@@ -34,7 +34,6 @@ with app.app_context():
 
     db.create_all()
 
-# Import routes after app is initialized
-import routes  # noqa: F401
+# Routes will be imported after models are initialized
 
 
