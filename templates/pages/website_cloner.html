@@ -1,70 +1,27 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}مستنسخ المواقع الذكي{% endblock %}
+{% block title %}أداة نسخ المواقع المتقدمة{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
-    <!-- عنوان الصفحة -->
+    <!-- Header Section -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card glass-card border-0 shadow-lg">
-                <div class="card-body text-center py-5">
-                    <div class="d-flex justify-content-center align-items-center mb-3">
-                        <i data-feather="copy" class="me-3" style="width: 48px; height: 48px; color: var(--primary-color);"></i>
-                        <h1 class="display-5 fw-bold gradient-text mb-0">مستنسخ المواقع الذكي</h1>
-                    </div>
-                    <p class="lead text-muted">إنشاء نسخة طبق الأصل من أي موقع مع كامل الوظائف والتصميم</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مراحل الاستنساخ -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card glass-card border-0 shadow-lg">
-                <div class="card-header bg-transparent border-0">
-                    <h3 class="card-title">
-                        <i data-feather="layers" class="me-2"></i>
-                        مراحل الاستنساخ الذكي
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="text-center p-4">
-                                <div class="feature-icon mx-auto mb-3">
-                                    <i data-feather="search"></i>
-                                </div>
-                                <h5>1. التحليل العميق</h5>
-                                <p class="text-muted">فحص شامل للموقع واستخراج كامل البنية والمحتوى</p>
-                                <div class="progress mb-2" style="height: 6px;">
-                                    <div class="progress-bar" id="analysisProgress" style="width: 0%"></div>
-                                </div>
-                            </div>
+            <div class="card bg-gradient-dark text-white border-0 shadow-lg">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h1 class="h2 mb-2">🌐 أداة نسخ المواقع المتقدمة</h1>
+                            <p class="mb-0 opacity-8">استنساخ شامل للمواقع مع تحليل ذكي وتقارير مفصلة</p>
                         </div>
-                        <div class="col-md-4">
-                            <div class="text-center p-4">
-                                <div class="feature-icon mx-auto mb-3">
-                                    <i data-feather="cpu"></i>
-                                </div>
-                                <h5>2. المعالجة الذكية</h5>
-                                <p class="text-muted">تحليل الكود وإعادة إنشاء الوظائف بذكاء اصطناعي</p>
-                                <div class="progress mb-2" style="height: 6px;">
-                                    <div class="progress-bar" id="processingProgress" style="width: 0%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="text-center p-4">
-                                <div class="feature-icon mx-auto mb-3">
-                                    <i data-feather="download"></i>
-                                </div>
-                                <h5>3. الإنتاج والتصدير</h5>
-                                <p class="text-muted">توليد مشروع كامل قابل للتشغيل والنشر</p>
-                                <div class="progress mb-2" style="height: 6px;">
-                                    <div class="progress-bar" id="generationProgress" style="width: 0%"></div>
-                                </div>
+                        <div class="text-end">
+                            <div class="d-flex gap-2">
+                                <a href="/website-cloner/integrated" class="btn btn-info btn-sm">
+                                    <i data-feather="layers"></i> النسخة المتكاملة
+                                </a>
+                                <a href="/website-cloner/comparison" class="btn btn-warning btn-sm">
+                                    <i data-feather="bar-chart-2"></i> مقارنة الأدوات
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -73,258 +30,276 @@
         </div>
     </div>
 
-    <!-- نموذج الاستنساخ -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card glass-card border-0 shadow-lg">
-                <div class="card-header bg-transparent border-0">
-                    <h3 class="card-title">
-                        <i data-feather="settings" class="me-2"></i>
-                        إعدادات الاستنساخ
-                    </h3>
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Configuration Panel -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i data-feather="settings"></i> إعدادات الاستخراج</h5>
                 </div>
                 <div class="card-body">
-                    <form id="cloningForm">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="mb-3">
-                                    <label for="sourceUrl" class="form-label fw-bold">الموقع المصدر</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-transparent border-end-0">
-                                            <i data-feather="globe" style="width: 18px; height: 18px;"></i>
-                                        </span>
-                                        <input type="url" class="form-control border-start-0" id="sourceUrl" 
-                                               placeholder="https://example.com" required>
-                                    </div>
-                                </div>
+                    <form id="clonerForm">
+                        <!-- URL Input -->
+                        <div class="mb-3">
+                            <label for="targetUrl" class="form-label">رابط الموقع المستهدف</label>
+                            <input type="url" class="form-control" id="targetUrl" name="target_url" 
+                                   placeholder="https://example.com" required>
+                            <div class="form-text">أدخل الرابط الكامل للموقع المراد نسخه</div>
+                        </div>
+
+                        <!-- Extraction Mode -->
+                        <div class="mb-3">
+                            <label for="primaryTool" class="form-label">نوع الاستخراج</label>
+                            <select class="form-select" id="primaryTool" name="primary_tool">
+                                <option value="website_cloner_pro">Website Cloner Pro (الأحدث)</option>
+                                <option value="hybrid">نظام هجين (Website Cloner + الأدوات الحالية)</option>
+                                <option value="unified_master">الأدوات الحالية فقط</option>
+                            </select>
+                        </div>
+
+                        <!-- Advanced Settings -->
+                        <div class="mb-3">
+                            <label for="maxDepth" class="form-label">عمق الاستخراج</label>
+                            <select class="form-select" id="maxDepth" name="max_depth">
+                                <option value="1">سطحي (صفحة واحدة)</option>
+                                <option value="2">متوسط (مستويان)</option>
+                                <option value="3" selected>عميق (3 مستويات)</option>
+                                <option value="4">شامل (4 مستويات)</option>
+                                <option value="5">كامل (5 مستويات)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="maxPages" class="form-label">عدد الصفحات القصوى</label>
+                            <input type="number" class="form-control" id="maxPages" name="max_pages" 
+                                   value="50" min="1" max="500">
+                        </div>
+
+                        <!-- Feature Toggles -->
+                        <div class="mb-3">
+                            <h6>الميزات المتقدمة</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="extractAssets" 
+                                       name="extract_assets" checked>
+                                <label class="form-check-label" for="extractAssets">
+                                    تحميل الأصول (صور، CSS، JS)
+                                </label>
                             </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="cloningMode" class="form-label fw-bold">نوع الاستنساخ</label>
-                                    <select class="form-select" id="cloningMode">
-                                        <option value="complete">كامل - مع قاعدة البيانات</option>
-                                        <option value="frontend" selected>الواجهة فقط</option>
-                                        <option value="static">ثابت - HTML/CSS/JS</option>
-                                        <option value="adaptive">تكيفي - تحسين ذكي</option>
-                                    </select>
-                                </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="analyzeAI" 
+                                       name="analyze_with_ai" checked>
+                                <label class="form-check-label" for="analyzeAI">
+                                    التحليل بالذكاء الاصطناعي
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="generateReports" 
+                                       name="generate_reports" checked>
+                                <label class="form-check-label" for="generateReports">
+                                    إنشاء التقارير المفصلة
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="useHybrid" 
+                                       name="use_hybrid">
+                                <label class="form-check-label" for="useHybrid">
+                                    استخدام الأدوات المتخصصة إضافياً
+                                </label>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="targetFramework" class="form-label fw-bold">إطار العمل المطلوب</label>
-                                    <select class="form-select" id="targetFramework">
-                                        <option value="flask" selected>Flask (Python)</option>
-                                        <option value="django">Django (Python)</option>
-                                        <option value="fastapi">FastAPI (Python)</option>
-                                        <option value="react">React (JavaScript)</option>
-                                        <option value="vue">Vue.js (JavaScript)</option>
-                                        <option value="vanilla">HTML خالص</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="projectName" class="form-label fw-bold">اسم المشروع</label>
-                                    <input type="text" class="form-control" id="projectName" 
-                                           placeholder="my-cloned-website" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- خيارات متقدمة -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="accordion mb-3" id="advancedOptions">
-                                    <div class="accordion-item glass-card border-0">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed bg-transparent border-0" type="button" 
-                                                    data-bs-toggle="collapse" data-bs-target="#optionsCollapse">
-                                                <i data-feather="sliders" class="me-2"></i>
-                                                خيارات متقدمة
-                                            </button>
-                                        </h2>
-                                        <div id="optionsCollapse" class="accordion-collapse collapse">
-                                            <div class="accordion-body">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <h6 class="fw-bold mb-3">المكونات المطلوبة</h6>
-                                                        <div class="form-check mb-2">
-                                                            <input class="form-check-input" type="checkbox" id="includeImages" checked>
-                                                            <label class="form-check-label" for="includeImages">
-                                                                الصور والوسائط
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check mb-2">
-                                                            <input class="form-check-input" type="checkbox" id="includeStyles" checked>
-                                                            <label class="form-check-label" for="includeStyles">
-                                                                الأنماط والتصميم
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check mb-2">
-                                                            <input class="form-check-input" type="checkbox" id="includeScripts" checked>
-                                                            <label class="form-check-label" for="includeScripts">
-                                                                البرمجيات والتفاعلات
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check mb-2">
-                                                            <input class="form-check-input" type="checkbox" id="includeForms">
-                                                            <label class="form-check-label" for="includeForms">
-                                                                النماذج والإدخالات
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <h6 class="fw-bold mb-3">تحسينات ذكية</h6>
-                                                        <div class="form-check mb-2">
-                                                            <input class="form-check-input" type="checkbox" id="optimizeImages" checked>
-                                                            <label class="form-check-label" for="optimizeImages">
-                                                                ضغط وتحسين الصور
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check mb-2">
-                                                            <input class="form-check-input" type="checkbox" id="minifyCode" checked>
-                                                            <label class="form-check-label" for="minifyCode">
-                                                                ضغط الكود
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check mb-2">
-                                                            <input class="form-check-input" type="checkbox" id="responsiveDesign" checked>
-                                                            <label class="form-check-label" for="responsiveDesign">
-                                                                تصميم متجاوب
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check mb-2">
-                                                            <input class="form-check-input" type="checkbox" id="seoOptimization">
-                                                            <label class="form-check-label" for="seoOptimization">
-                                                                تحسين محركات البحث
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-primary btn-lg px-4 me-3" id="startCloningBtn">
-                                    <i data-feather="play" class="me-2"></i>
-                                    بدء الاستنساخ
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary btn-lg px-4" id="previewBtn">
-                                    <i data-feather="eye" class="me-2"></i>
-                                    معاينة سريعة
-                                </button>
-                            </div>
-                        </div>
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary w-100" id="startExtraction">
+                            <i data-feather="play"></i> بدء عملية النسخ
+                        </button>
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- مراقب التقدم -->
-    <div class="row mb-4" id="progressMonitor" style="display: none;">
-        <div class="col-12">
-            <div class="card glass-card border-0 shadow-lg">
-                <div class="card-header bg-transparent border-0">
-                    <h3 class="card-title">
-                        <i data-feather="activity" class="me-2"></i>
-                        حالة الاستنساخ
-                    </h3>
+            <!-- Tool Information -->
+            <div class="card shadow-sm border-0 mt-3">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i data-feather="info"></i> معلومات الأدوات</h6>
                 </div>
                 <div class="card-body">
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span id="currentPhase">جاري التحليل العميق...</span>
-                            <span id="overallProgress">0%</span>
-                        </div>
-                        <div class="progress mb-3" style="height: 12px;">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                 id="mainProgressBar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="stat-card text-center">
-                                <h4 id="filesExtracted">0</h4>
-                                <p class="text-muted">ملفات مستخرجة</p>
+                    <div class="accordion" id="toolsAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#clonerInfo">
+                                    Website Cloner Pro
+                                </button>
+                            </h2>
+                            <div id="clonerInfo" class="accordion-collapse collapse" 
+                                 data-bs-parent="#toolsAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li>✅ استخراج شامل (6 مراحل)</li>
+                                        <li>✅ تحليل ذكي بالAI</li>
+                                        <li>✅ تقارير متعددة الصيغ</li>
+                                        <li>✅ نسخ طبق الأصل</li>
+                                        <li>✅ تحليل أمني متقدم</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="stat-card text-center">
-                                <h4 id="componentsGenerated">0</h4>
-                                <p class="text-muted">مكونات منشأة</p>
+                        <div class="accordion-item">
+                            <button class="accordion-button collapsed" type="button" 
+                                    data-bs-toggle="collapse" data-bs-target="#hybridInfo">
+                                النظام الهجين
+                            </button>
+                            <div id="hybridInfo" class="accordion-collapse collapse" 
+                                 data-bs-parent="#toolsAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li>🔄 يجمع بين جميع الأدوات</li>
+                                        <li>📊 مقارنة النتائج</li>
+                                        <li>🎯 أفضل دقة</li>
+                                        <li>⚡ أطول في الوقت</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="stat-card text-center">
-                                <h4 id="functionsReplicated">0</h4>
-                                <p class="text-muted">وظائف مستنسخة</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="stat-card text-center">
-                                <h4 id="completionTime">--:--</h4>
-                                <p class="text-muted">وقت مقدر للانتهاء</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <button type="button" class="btn btn-warning me-2" id="pauseCloningBtn">
-                            <i data-feather="pause" class="me-2"></i>
-                            إيقاف مؤقت
-                        </button>
-                        <button type="button" class="btn btn-danger" id="stopCloningBtn">
-                            <i data-feather="square" class="me-2"></i>
-                            إيقاف الاستنساخ
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- النتائج والتحميل -->
-    <div class="row" id="resultsPanel" style="display: none;">
-        <div class="col-12">
-            <div class="card glass-card border-0 shadow-lg">
-                <div class="card-header bg-transparent border-0">
-                    <h3 class="card-title text-success">
-                        <i data-feather="check-circle" class="me-2"></i>
-                        تم الاستنساخ بنجاح!
-                    </h3>
+        <!-- Results Panel -->
+        <div class="col-lg-8">
+            <!-- Status Card -->
+            <div class="card shadow-sm border-0 mb-4" id="statusCard" style="display: none;">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i data-feather="activity"></i> حالة الاستخراج</h5>
+                    <span class="badge bg-info" id="statusBadge">جاري التحضير...</span>
                 </div>
                 <div class="card-body">
-                    <div id="resultsDisplay">
-                        <!-- سيتم ملء النتائج هنا -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span id="statusMessage">بدء عملية الاستخراج...</span>
+                        <span id="progressPercent">0%</span>
                     </div>
-                    
-                    <div class="mt-4 d-flex gap-3 flex-wrap">
-                        <button type="button" class="btn btn-success btn-lg" id="downloadProjectBtn">
-                            <i data-feather="download" class="me-2"></i>
-                            تحميل المشروع
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-primary" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <small class="text-muted">معرف العملية</small>
+                            <div class="fw-bold" id="extractionId">-</div>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted">وقت البدء</small>
+                            <div class="fw-bold" id="startTime">-</div>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted">المدة المقدرة</small>
+                            <div class="fw-bold" id="estimatedTime">-</div>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-sm btn-outline-danger" id="cancelBtn" style="display: none;">
+                                إلغاء
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Card -->
+            <div class="card shadow-sm border-0" id="resultsCard" style="display: none;">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i data-feather="check-circle"></i> نتائج الاستخراج</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" 
+                                data-bs-toggle="dropdown">
+                            تحميل
                         </button>
-                        <button type="button" class="btn btn-info btn-lg" id="previewSiteBtn">
-                            <i data-feather="external-link" class="me-2"></i>
-                            معاينة الموقع
-                        </button>
-                        <button type="button" class="btn btn-outline-primary btn-lg" id="viewCodeBtn">
-                            <i data-feather="code" class="me-2"></i>
-                            عرض الكود
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary btn-lg" id="generateReportBtn">
-                            <i data-feather="file-text" class="me-2"></i>
-                            تقرير مفصل
-                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" data-download="json">
+                                <i data-feather="file-text"></i> ملف JSON
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" data-download="csv">
+                                <i data-feather="table"></i> ملف CSV
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" data-download="site">
+                                <i data-feather="globe"></i> الموقع المستنسخ
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Summary Stats -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 text-center">
+                            <div class="border rounded p-3">
+                                <h4 class="text-primary mb-1" id="pagesCount">0</h4>
+                                <small class="text-muted">صفحات مستخرجة</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="border rounded p-3">
+                                <h4 class="text-success mb-1" id="assetsCount">0</h4>
+                                <small class="text-muted">أصول محملة</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="border rounded p-3">
+                                <h4 class="text-info mb-1" id="techCount">0</h4>
+                                <small class="text-muted">تقنيات مكتشفة</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="border rounded p-3">
+                                <h4 class="text-warning mb-1" id="qualityScore">0</h4>
+                                <small class="text-muted">نقاط الجودة</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Results Tabs -->
+                    <ul class="nav nav-tabs mb-3" id="resultsTabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#summaryTab">
+                                الملخص
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#comparisonTab">
+                                المقارنة
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#technologiesTab">
+                                التقنيات
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#recommendationsTab">
+                                التوصيات
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="summaryTab">
+                            <div id="summaryContent">
+                                <!-- Summary content will be populated here -->
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="comparisonTab">
+                            <div id="comparisonContent">
+                                <!-- Comparison content will be populated here -->
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="technologiesTab">
+                            <div id="technologiesContent">
+                                <!-- Technologies content will be populated here -->
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="recommendationsTab">
+                            <div id="recommendationsContent">
+                                <!-- Recommendations content will be populated here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -333,269 +308,271 @@
 </div>
 
 <script>
-class WebsiteClonerManager {
-    constructor() {
-        this.currentCloningId = null;
-        this.cloningInterval = null;
-        this.initEventListeners();
-    }
-
-    initEventListeners() {
-        document.getElementById('cloningForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.startCloning();
-        });
-
-        document.getElementById('previewBtn').addEventListener('click', () => {
-            this.quickPreview();
-        });
-
-        document.getElementById('pauseCloningBtn').addEventListener('click', () => {
-            this.pauseCloning();
-        });
-
-        document.getElementById('stopCloningBtn').addEventListener('click', () => {
-            this.stopCloning();
-        });
-
-        document.getElementById('downloadProjectBtn').addEventListener('click', () => {
-            this.downloadProject();
-        });
-
-        document.getElementById('previewSiteBtn').addEventListener('click', () => {
-            this.previewSite();
-        });
-    }
-
-    async startCloning() {
-        const formData = this.collectFormData();
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('clonerForm');
+    const statusCard = document.getElementById('statusCard');
+    const resultsCard = document.getElementById('resultsCard');
+    
+    let currentExtractionId = null;
+    let statusInterval = null;
+    
+    // Handle form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
         
-        // إظهار مراقب التقدم
-        document.getElementById('progressMonitor').style.display = 'block';
-        document.getElementById('resultsPanel').style.display = 'none';
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
         
-        // محاكاة عملية الاستنساخ
-        this.simulateCloning(formData);
-    }
-
-    collectFormData() {
-        return {
-            sourceUrl: document.getElementById('sourceUrl').value,
-            cloningMode: document.getElementById('cloningMode').value,
-            targetFramework: document.getElementById('targetFramework').value,
-            projectName: document.getElementById('projectName').value,
-            options: {
-                includeImages: document.getElementById('includeImages').checked,
-                includeStyles: document.getElementById('includeStyles').checked,
-                includeScripts: document.getElementById('includeScripts').checked,
-                includeForms: document.getElementById('includeForms').checked,
-                optimizeImages: document.getElementById('optimizeImages').checked,
-                minifyCode: document.getElementById('minifyCode').checked,
-                responsiveDesign: document.getElementById('responsiveDesign').checked,
-                seoOptimization: document.getElementById('seoOptimization').checked
-            }
-        };
-    }
-
-    simulateCloning(formData) {
-        let progress = 0;
-        const phases = [
-            { name: 'التحليل العميق للموقع...', duration: 3000 },
-            { name: 'استخراج المكونات والأصول...', duration: 4000 },
-            { name: 'معالجة وتحسين الكود...', duration: 3500 },
-            { name: 'إنشاء البنية والملفات...', duration: 2500 },
-            { name: 'تطبيق التحسينات الذكية...', duration: 2000 },
-            { name: 'اختبار المشروع المُنتج...', duration: 1500 },
-            { name: 'تحضير التحميل...', duration: 1000 }
-        ];
-
-        let currentPhaseIndex = 0;
-        let phaseProgress = 0;
-
-        this.cloningInterval = setInterval(() => {
-            if (currentPhaseIndex < phases.length) {
-                const currentPhase = phases[currentPhaseIndex];
-                document.getElementById('currentPhase').textContent = currentPhase.name;
-                
-                phaseProgress += (100 / phases.length) / (currentPhase.duration / 100);
-                progress = Math.min(progress + 1, 100);
-                
-                // تحديث أشرطة التقدم
-                document.getElementById('mainProgressBar').style.width = progress + '%';
-                document.getElementById('overallProgress').textContent = Math.round(progress) + '%';
-                
-                // تحديث الإحصائيات
-                document.getElementById('filesExtracted').textContent = Math.floor(progress * 1.2);
-                document.getElementById('componentsGenerated').textContent = Math.floor(progress * 0.8);
-                document.getElementById('functionsReplicated').textContent = Math.floor(progress * 0.5);
-                
-                // تقدير وقت الانتهاء
-                const remainingTime = Math.max(0, 15 - Math.floor(progress * 0.15));
-                const minutes = Math.floor(remainingTime / 60);
-                const seconds = remainingTime % 60;
-                document.getElementById('completionTime').textContent = 
-                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-                if (phaseProgress >= 100) {
-                    currentPhaseIndex++;
-                    phaseProgress = 0;
-                }
+        // Convert checkboxes to booleans
+        data.extract_assets = formData.has('extract_assets');
+        data.analyze_with_ai = formData.has('analyze_with_ai');
+        data.generate_reports = formData.has('generate_reports');
+        data.use_hybrid = formData.has('use_hybrid');
+        
+        try {
+            // Start extraction
+            const response = await fetch('/api/website-cloner/extract', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                currentExtractionId = result.extraction_id;
+                showStatusCard(result);
+                startStatusPolling();
             } else {
-                this.completeCloning(formData);
+                alert('خطأ: ' + result.error);
             }
-        }, 100);
-    }
-
-    completeCloning(formData) {
-        clearInterval(this.cloningInterval);
+        } catch (error) {
+            alert('خطأ في الاتصال: ' + error.message);
+        }
+    });
+    
+    function showStatusCard(result) {
+        statusCard.style.display = 'block';
+        resultsCard.style.display = 'none';
         
-        // إخفاء مراقب التقدم وإظهار النتائج
-        document.getElementById('progressMonitor').style.display = 'none';
-        document.getElementById('resultsPanel').style.display = 'block';
-        
-        // عرض نتائج الاستنساخ
-        this.displayResults(formData);
+        document.getElementById('extractionId').textContent = result.extraction_id;
+        document.getElementById('startTime').textContent = new Date().toLocaleTimeString('ar');
+        document.getElementById('statusBadge').textContent = 'جاري التشغيل...';
+        document.getElementById('statusBadge').className = 'badge bg-warning';
     }
-
-    displayResults(formData) {
-        const resultsHtml = `
+    
+    function startStatusPolling() {
+        if (statusInterval) clearInterval(statusInterval);
+        
+        statusInterval = setInterval(async () => {
+            if (!currentExtractionId) return;
+            
+            try {
+                const response = await fetch(`/api/website-cloner/status/${currentExtractionId}`);
+                const status = await response.json();
+                
+                if (status.success) {
+                    updateStatus(status);
+                    
+                    if (status.status === 'completed') {
+                        clearInterval(statusInterval);
+                        await loadResults();
+                    } else if (status.status === 'failed') {
+                        clearInterval(statusInterval);
+                        showError(status.error);
+                    }
+                }
+            } catch (error) {
+                console.error('خطأ في الحصول على الحالة:', error);
+            }
+        }, 2000); // Poll every 2 seconds
+    }
+    
+    function updateStatus(status) {
+        document.getElementById('statusMessage').textContent = status.message;
+        document.getElementById('progressPercent').textContent = status.progress + '%';
+        document.getElementById('progressBar').style.width = status.progress + '%';
+        
+        if (status.progress === 100) {
+            document.getElementById('statusBadge').textContent = 'مكتمل';
+            document.getElementById('statusBadge').className = 'badge bg-success';
+        }
+    }
+    
+    async function loadResults() {
+        try {
+            const response = await fetch(`/api/website-cloner/results/${currentExtractionId}`);
+            const results = await response.json();
+            
+            if (results.success) {
+                showResults(results);
+            } else {
+                showError(results.error);
+            }
+        } catch (error) {
+            showError('خطأ في الحصول على النتائج: ' + error.message);
+        }
+    }
+    
+    function showResults(results) {
+        resultsCard.style.display = 'block';
+        
+        // Update summary stats
+        const summary = results.website_cloner_summary || {};
+        document.getElementById('pagesCount').textContent = summary.pages_extracted || 0;
+        document.getElementById('assetsCount').textContent = summary.assets_downloaded || 0;
+        document.getElementById('techCount').textContent = (summary.technologies_detected || []).length;
+        
+        const integratedSummary = results.integrated_summary || {};
+        document.getElementById('qualityScore').textContent = integratedSummary.quality_score || 0;
+        
+        // Populate tabs
+        populateSummaryTab(results);
+        populateComparisonTab(results);
+        populateTechnologiesTab(results);
+        populateRecommendationsTab(results);
+        
+        // Setup download links
+        setupDownloadLinks();
+    }
+    
+    function populateSummaryTab(results) {
+        const summary = results.website_cloner_summary || {};
+        const content = document.getElementById('summaryContent');
+        
+        content.innerHTML = `
             <div class="row">
-                <div class="col-md-8">
-                    <h5 class="text-success mb-3">تفاصيل المشروع المُنشأ</h5>
+                <div class="col-md-6">
+                    <h6>معلومات عامة</h6>
                     <ul class="list-unstyled">
-                        <li><strong>الموقع المصدر:</strong> ${formData.sourceUrl}</li>
-                        <li><strong>اسم المشروع:</strong> ${formData.projectName}</li>
-                        <li><strong>إطار العمل:</strong> ${this.getFrameworkName(formData.targetFramework)}</li>
-                        <li><strong>نوع الاستنساخ:</strong> ${this.getCloningTypeName(formData.cloningMode)}</li>
-                        <li><strong>حجم المشروع:</strong> ~15.2 MB</li>
-                        <li><strong>عدد الملفات:</strong> 127 ملف</li>
+                        <li><strong>الهدف:</strong> ${results.summary?.target_url || '-'}</li>
+                        <li><strong>الأداة المستخدمة:</strong> ${results.summary?.primary_tool || '-'}</li>
+                        <li><strong>المدة:</strong> ${results.summary?.duration ? results.summary.duration.toFixed(2) + ' ثانية' : '-'}</li>
+                        <li><strong>النجاح:</strong> ${summary.success ? '✅ نعم' : '❌ لا'}</li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h5 class="text-success mb-3">إحصائيات النجاح</h5>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="text-center">
-                                <h3 class="text-primary">98%</h3>
-                                <small class="text-muted">دقة الاستنساخ</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="text-center">
-                                <h3 class="text-success">95%</h3>
-                                <small class="text-muted">الوظائف المتوافقة</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mt-4">
-                <h6 class="fw-bold">مكونات المشروع المُنشأ:</h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between">
-                                ملفات HTML
-                                <span class="badge bg-primary rounded-pill">12</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                ملفات CSS
-                                <span class="badge bg-info rounded-pill">8</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                ملفات JavaScript
-                                <span class="badge bg-warning rounded-pill">15</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between">
-                                الصور والأيقونات
-                                <span class="badge bg-success rounded-pill">67</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                الخطوط
-                                <span class="badge bg-secondary rounded-pill">4</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                ملفات أخرى
-                                <span class="badge bg-dark rounded-pill">21</span>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="col-md-6">
+                    <h6>إحصائيات الاستخراج</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>الصفحات:</strong> ${summary.pages_extracted || 0}</li>
+                        <li><strong>الأصول:</strong> ${summary.assets_downloaded || 0}</li>
+                        <li><strong>الحجم الإجمالي:</strong> ${summary.total_size ? (summary.total_size / 1024).toFixed(1) + ' KB' : '-'}</li>
+                        <li><strong>المجلد:</strong> ${summary.output_path || '-'}</li>
+                    </ul>
                 </div>
             </div>
         `;
+    }
+    
+    function populateComparisonTab(results) {
+        const comparison = results.comparison_analysis || {};
+        const content = document.getElementById('comparisonContent');
         
-        document.getElementById('resultsDisplay').innerHTML = resultsHtml;
-    }
-
-    getFrameworkName(framework) {
-        const frameworks = {
-            'flask': 'Flask (Python)',
-            'django': 'Django (Python)',
-            'fastapi': 'FastAPI (Python)',
-            'react': 'React (JavaScript)',
-            'vue': 'Vue.js (JavaScript)',
-            'vanilla': 'HTML خالص'
-        };
-        return frameworks[framework] || framework;
-    }
-
-    getCloningTypeName(mode) {
-        const modes = {
-            'complete': 'كامل مع قاعدة البيانات',
-            'frontend': 'الواجهة فقط',
-            'static': 'ثابت',
-            'adaptive': 'تكيفي ذكي'
-        };
-        return modes[mode] || mode;
-    }
-
-    quickPreview() {
-        const url = document.getElementById('sourceUrl').value;
-        if (!url) {
-            alert('يرجى إدخال رابط الموقع أولاً');
+        if (Object.keys(comparison).length === 0) {
+            content.innerHTML = '<p class="text-muted">لا توجد مقارنة متاحة - لم يتم استخدام النظام الهجين</p>';
             return;
         }
         
-        // فتح معاينة في نافذة جديدة
-        window.open(url, '_blank');
+        content.innerHTML = `
+            <h6>نتائج المقارنة</h6>
+            <div class="alert alert-info">
+                <strong>التوصية:</strong> ${comparison.recommendation || 'غير متوفر'}
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>مقارنة السرعة</h6>
+                    ${comparison.extraction_speed ? `
+                        <ul class="list-unstyled">
+                            <li>Website Cloner Pro: ${comparison.extraction_speed.website_cloner_pro}</li>
+                            <li>الأدوات الحالية: ${comparison.extraction_speed.unified_extractor}</li>
+                            <li><strong>الأسرع:</strong> ${comparison.extraction_speed.faster_tool}</li>
+                        </ul>
+                    ` : '<p class="text-muted">غير متوفر</p>'}
+                </div>
+                <div class="col-md-6">
+                    <h6>مقارنة الجودة</h6>
+                    ${comparison.content_quality ? `
+                        <ul class="list-unstyled">
+                            <li>Website Cloner Pro: ${comparison.content_quality.website_cloner_pro_pages} صفحة</li>
+                            <li>الأدوات الحالية: ${comparison.content_quality.unified_extractor_pages} صفحة</li>
+                            <li><strong>الأفضل:</strong> ${comparison.content_quality.better_coverage}</li>
+                        </ul>
+                    ` : '<p class="text-muted">غير متوفر</p>'}
+                </div>
+            </div>
+        `;
     }
-
-    pauseCloning() {
-        if (this.cloningInterval) {
-            clearInterval(this.cloningInterval);
-            document.getElementById('pauseCloningBtn').innerHTML = 
-                '<i data-feather="play" class="me-2"></i>استكمال';
-            feather.replace();
+    
+    function populateTechnologiesTab(results) {
+        const technologies = results.integrated_summary?.combined_technologies || 
+                           results.website_cloner_summary?.technologies_detected || [];
+        const content = document.getElementById('technologiesContent');
+        
+        if (technologies.length === 0) {
+            content.innerHTML = '<p class="text-muted">لم يتم اكتشاف تقنيات محددة</p>';
+            return;
         }
+        
+        const techList = technologies.map(tech => `
+            <span class="badge bg-primary me-2 mb-2">${tech}</span>
+        `).join('');
+        
+        content.innerHTML = `
+            <h6>التقنيات المكتشفة (${technologies.length})</h6>
+            <div class="mb-3">${techList}</div>
+            <h6>تفاصيل التقنيات</h6>
+            <div class="row">
+                ${technologies.map(tech => `
+                    <div class="col-md-4 mb-2">
+                        <div class="border rounded p-2 text-center">
+                            <small class="text-muted">${tech}</small>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
     }
-
-    stopCloning() {
-        if (this.cloningInterval) {
-            clearInterval(this.cloningInterval);
-            document.getElementById('progressMonitor').style.display = 'none';
-            alert('تم إيقاف عملية الاستنساخ');
+    
+    function populateRecommendationsTab(results) {
+        const recommendations = results.recommendations || [];
+        const content = document.getElementById('recommendationsContent');
+        
+        if (recommendations.length === 0) {
+            content.innerHTML = '<p class="text-muted">لا توجد توصيات متاحة</p>';
+            return;
         }
+        
+        const recList = recommendations.map((rec, index) => `
+            <div class="alert alert-info">
+                <strong>${index + 1}.</strong> ${rec}
+            </div>
+        `).join('');
+        
+        content.innerHTML = `
+            <h6>التوصيات (${recommendations.length})</h6>
+            ${recList}
+        `;
     }
-
-    downloadProject() {
-        // محاكاة تحميل المشروع
-        alert('جاري تحضير المشروع للتحميل...\nسيتم تحميل ملف ZIP يحتوي على المشروع كاملاً');
+    
+    function setupDownloadLinks() {
+        document.querySelectorAll('[data-download]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const type = this.dataset.download;
+                if (currentExtractionId) {
+                    window.open(`/api/website-cloner/download/${currentExtractionId}/${type}`, '_blank');
+                }
+            });
+        });
     }
-
-    previewSite() {
-        // محاكاة معاينة الموقع المستنسخ
-        alert('جاري فتح معاينة للموقع المستنسخ...');
+    
+    function showError(error) {
+        document.getElementById('statusBadge').textContent = 'فشل';
+        document.getElementById('statusBadge').className = 'badge bg-danger';
+        document.getElementById('statusMessage').textContent = 'خطأ: ' + error;
     }
-}
-
-// تهيئة المدير عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', () => {
-    new WebsiteClonerManager();
 });
 </script>
 {% endblock %}

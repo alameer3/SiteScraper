@@ -1,6 +1,12 @@
 """
-ماسح قواعد البيانات المتقدم
-Advanced Database Scanner - Deep Database Structure Analysis
+Database Scanner - Advanced Database Detection Tool
+أداة كشف قواعد البيانات المتقدمة
+
+هذه الأداة المتخصصة تكمل Website Cloner Pro في كشف:
+- قواعد البيانات المخفية
+- هياكل البيانات المعقدة  
+- APIs وقواعد البيانات الخارجية
+- أنظمة إدارة المحتوى
 """
 
 import asyncio
@@ -8,448 +14,460 @@ import aiohttp
 import logging
 import re
 import json
+import time
 from typing import Dict, List, Any, Optional, Set
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urlparse, urljoin
 from dataclasses import dataclass
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 
 @dataclass
 class DatabaseScanConfig:
-    """إعدادات مسح قاعدة البيانات"""
-    scan_depth: int = 3
+    """إعدادات مسح قواعد البيانات"""
+    deep_scan: bool = True
+    scan_apis: bool = True
+    detect_cms: bool = True
     analyze_forms: bool = True
-    detect_apis: bool = True
-    analyze_javascript: bool = True
-    scan_common_endpoints: bool = True
-    timeout: int = 10
+    check_endpoints: bool = True
+    timeout: int = 30
+    max_concurrent: int = 5
 
 class DatabaseScanner:
-    """ماسح قواعد البيانات المتقدم"""
-
+    """أداة كشف قواعد البيانات المتخصصة"""
+    
     def __init__(self, config: Optional[DatabaseScanConfig] = None):
         self.config = config or DatabaseScanConfig()
+        self.logger = logging.getLogger(__name__)
         self.session: Optional[aiohttp.ClientSession] = None
-        self.discovered_endpoints: Set[str] = set()
-        self.database_indicators: Dict[str, Any] = {}
-        self.data_models: List[Dict[str, Any]] = []
-
-    async def scan_database_structure(self, target_url: str) -> Dict[str, Any]:
-        """مسح شامل لبنية قاعدة البيانات"""
-        logging.info(f"بدء مسح قاعدة البيانات للموقع: {target_url}")
-
+        
+        # Database signatures
+        self.db_signatures = {
+            'mysql': [
+                r'mysql_connect', r'mysqli_', r'SELECT.*FROM', 
+                r'mysql error', r'mysql syntax error'
+            ],
+            'postgresql': [
+                r'pg_connect', r'postgresql', r'psql', 
+                r'postgres error', r'pg_query'
+            ],
+            'mongodb': [
+                r'mongodb://', r'mongo\.(find|insert|update)', 
+                r'db\.collection', r'ObjectId\('
+            ],
+            'sqlite': [
+                r'sqlite', r'\.db', r'\.sqlite', 
+                r'database is locked', r'sqlite error'
+            ],
+            'oracle': [
+                r'oracle', r'oci_connect', r'ora-\d+', 
+                r'sqlplus', r'tnsnames'
+            ],
+            'mssql': [
+                r'sqlserver', r'mssql_connect', r'microsoft sql', 
+                r'sql server', r'tsql'
+            ]
+        }
+        
+        # API patterns
+        self.api_patterns = [
+            r'/api/v\d+/', r'/rest/', r'/graphql', 
+            r'/webhook/', r'\.json', r'\.xml',
+            r'application/json', r'application/xml'
+        ]
+        
+        # CMS signatures
+        self.cms_signatures = {
+            'wordpress': [
+                r'wp-content', r'wp-admin', r'wp-includes',
+                r'wordpress', r'wp_', r'/wp-json/'
+            ],
+            'drupal': [
+                r'drupal', r'sites/default', r'modules/',
+                r'themes/', r'/user/login'
+            ],
+            'joomla': [
+                r'joomla', r'administrator/', r'components/',
+                r'templates/', r'option=com_'
+            ],
+            'magento': [
+                r'magento', r'skin/frontend', r'app/code',
+                r'mage/', r'checkout/cart'
+            ]
+        }
+    
+    async def scan_website_databases(self, target_url: str) -> Dict[str, Any]:
+        """مسح شامل لقواعد البيانات في الموقع"""
+        self.logger.info(f"بدء مسح قواعد البيانات للموقع: {target_url}")
+        
+        scan_results = {
+            'target_url': target_url,
+            'scan_timestamp': time.time(),
+            'databases_detected': {},
+            'apis_discovered': [],
+            'cms_detected': {},
+            'data_endpoints': [],
+            'forms_analysis': [],
+            'security_issues': [],
+            'recommendations': []
+        }
+        
         try:
-            self.session = aiohttp.ClientSession()
-
-            scan_results = {
-                'database_type': 'unknown',
-                'detected_tables': [],
-                'data_models': [],
-                'relationships': [],
-                'crud_operations': [],
-                'api_endpoints': [],
-                'security_analysis': {},
-                'recommendations': []
-            }
-
-            # مسح البنية الأساسية
-            basic_structure = await self._scan_basic_structure(target_url)
-            scan_results.update(basic_structure)
-
-            # تحليل النماذج والبيانات
+            # Create session
+            timeout = aiohttp.ClientTimeout(total=self.config.timeout)
+            self.session = aiohttp.ClientSession(timeout=timeout)
+            
+            # Phase 1: Basic content analysis
+            scan_results['databases_detected'] = await self._detect_databases(target_url)
+            
+            # Phase 2: API discovery
+            if self.config.scan_apis:
+                scan_results['apis_discovered'] = await self._discover_apis(target_url)
+            
+            # Phase 3: CMS detection
+            if self.config.detect_cms:
+                scan_results['cms_detected'] = await self._detect_cms(target_url)
+            
+            # Phase 4: Forms analysis
             if self.config.analyze_forms:
-                form_analysis = await self._analyze_forms_for_database(target_url)
-                scan_results['data_models'].extend(form_analysis)
-
-            # اكتشاف API endpoints
-            if self.config.detect_apis:
-                api_analysis = await self._discover_database_apis(target_url)
-                scan_results['api_endpoints'] = api_analysis
-
-            # تحليل JavaScript للحصول على معلومات قاعدة البيانات
-            if self.config.analyze_javascript:
-                js_analysis = await self._analyze_javascript_database_calls(target_url)
-                scan_results['crud_operations'].extend(js_analysis)
-
-            # مسح النقاط النهائية الشائعة
-            if self.config.scan_common_endpoints:
-                common_endpoints = await self._scan_common_database_endpoints(target_url)
-                scan_results['api_endpoints'].extend(common_endpoints)
-
-            # تحليل العلاقات
-            scan_results['relationships'] = self._analyze_data_relationships(scan_results)
-
-            # تحليل الأمان
-            scan_results['security_analysis'] = await self._analyze_database_security(target_url)
-
-            # إنتاج التوصيات
-            scan_results['recommendations'] = self._generate_database_recommendations(scan_results)
-
-            return scan_results
-
+                scan_results['forms_analysis'] = await self._analyze_forms(target_url)
+            
+            # Phase 5: Endpoint checking
+            if self.config.check_endpoints:
+                scan_results['data_endpoints'] = await self._check_data_endpoints(target_url)
+            
+            # Phase 6: Security analysis
+            scan_results['security_issues'] = await self._analyze_security_issues(scan_results)
+            
+            # Phase 7: Generate recommendations
+            scan_results['recommendations'] = await self._generate_recommendations(scan_results)
+            
         except Exception as e:
-            logging.error(f"خطأ في مسح قاعدة البيانات: {e}")
-            return {'error': str(e)}
-
+            self.logger.error(f"خطأ في مسح قواعد البيانات: {e}")
+            scan_results['error'] = str(e)
         finally:
             if self.session:
                 await self.session.close()
-
-    async def _scan_basic_structure(self, url: str) -> Dict[str, Any]:
-        """مسح البنية الأساسية"""
-        structure = {
-            'database_type': 'unknown',
-            'detected_tables': [],
-            'technology_indicators': []
-        }
-
-        async with self.session.get(url) as response:
-            html_content = await response.text()
-
-            # فحص مؤشرات قاعدة البيانات
-            db_indicators = {
-                'mysql': ['mysql', 'phpmyadmin', 'innodb'],
-                'postgresql': ['postgresql', 'postgres', 'psql'],
-                'mongodb': ['mongodb', 'mongo', 'bson'],
-                'sqlite': ['sqlite', 'sqlite3'],
-                'oracle': ['oracle', 'plsql'],
-                'sqlserver': ['sqlserver', 'mssql', 'tsql']
-            }
-
-            for db_type, indicators in db_indicators.items():
-                if any(indicator in html_content.lower() for indicator in indicators):
-                    structure['database_type'] = db_type
-                    structure['technology_indicators'].extend(indicators)
-                    break
-
-        return structure
-
-    async def _analyze_forms_for_database(self, url: str) -> List[Dict[str, Any]]:
-        """تحليل النماذج لاستنتاج بنية قاعدة البيانات"""
-        data_models = []
-
-        async with self.session.get(url) as response:
-            html_content = await response.text()
-            soup = BeautifulSoup(html_content, 'html.parser')
-
-            forms = soup.find_all('form')
-            for form in forms:
-                if isinstance(form, Tag):
-                    model = {
-                        'table_name': self._extract_table_name_from_form(form),
-                        'fields': [],
-                        'validation_rules': [],
-                        'relationships': []
-                    }
-
-                    # تحليل حقول النموذج
-                    fields = form.find_all(['input', 'select', 'textarea'])
-                    for field in fields:
-                        if isinstance(field, Tag):
-                            field_info = {
-                                'name': field.get('name', ''),
-                                'type': self._map_html_type_to_db_type(field),
-                                'required': field.has_attr('required'),
-                                'max_length': field.get('maxlength'),
-                                'validation': field.get('pattern', '')
-                            }
-                            model['fields'].append(field_info)
-
-                    if model['fields']:
-                        data_models.append(model)
-
-        return data_models
-
-    async def _discover_database_apis(self, url: str) -> List[Dict[str, Any]]:
-        """اكتشاف API endpoints المتعلقة بقاعدة البيانات"""
-        api_endpoints = []
-
-        async with self.session.get(url) as response:
-            html_content = await response.text()
-
-            # البحث عن أنماط API
-            api_patterns = [
-                r'/api/[a-zA-Z]+/?',
-                r'/rest/[a-zA-Z]+/?',
-                r'/data/[a-zA-Z]+/?',
-                r'/json/[a-zA-Z]+/?'
-            ]
-
-            for pattern in api_patterns:
-                matches = re.findall(pattern, html_content)
-                for match in matches:
-                    if match not in self.discovered_endpoints:
-                        self.discovered_endpoints.add(match)
-
-                        # محاولة الوصول للـ endpoint
-                        endpoint_info = await self._test_api_endpoint(url, match)
-                        if endpoint_info:
-                            api_endpoints.append(endpoint_info)
-
-        return api_endpoints
-
-    async def _analyze_javascript_database_calls(self, url: str) -> List[Dict[str, Any]]:
-        """تحليل استدعاءات قاعدة البيانات في JavaScript"""
-        crud_operations = []
-
-        async with self.session.get(url) as response:
-            html_content = await response.text()
-
-            # البحث عن أنماط CRUD في JavaScript
-            crud_patterns = {
-                'create': [r'\.post\s*\(', r'\.save\s*\(', r'\.create\s*\('],
-                'read': [r'\.get\s*\(', r'\.find\s*\(', r'\.fetch\s*\('],
-                'update': [r'\.put\s*\(', r'\.patch\s*\(', r'\.update\s*\('],
-                'delete': [r'\.delete\s*\(', r'\.remove\s*\(', r'\.destroy\s*\(']
-            }
-
-            for operation, patterns in crud_patterns.items():
-                for pattern in patterns:
-                    matches = re.findall(pattern, html_content, re.IGNORECASE)
-                    if matches:
-                        crud_operations.append({
-                            'operation': operation,
-                            'pattern': pattern,
-                            'occurrences': len(matches),
-                            'source': 'javascript'
-                        })
-
-        return crud_operations
-
-    async def _scan_common_database_endpoints(self, url: str) -> List[Dict[str, Any]]:
-        """مسح النقاط النهائية الشائعة لقاعدة البيانات"""
-        common_endpoints = [
-            '/api/users', '/api/products', '/api/orders', '/api/categories',
-            '/data/items', '/data/records', '/json/data', '/rest/entities'
-        ]
-
-        discovered_endpoints = []
-
-        for endpoint in common_endpoints:
-            endpoint_info = await self._test_api_endpoint(url, endpoint)
-            if endpoint_info:
-                discovered_endpoints.append(endpoint_info)
-
-        return discovered_endpoints
-
-    async def _test_api_endpoint(self, base_url: str, endpoint: str) -> Optional[Dict[str, Any]]:
-        """اختبار endpoint للحصول على معلومات"""
+        
+        return scan_results
+    
+    async def _detect_databases(self, target_url: str) -> Dict[str, Any]:
+        """كشف قواعد البيانات المستخدمة"""
+        databases = {}
+        
         try:
-            test_url = urljoin(base_url, endpoint)
-
-            async with self.session.get(test_url, timeout=aiohttp.ClientTimeout(total=self.config.timeout)) as response:
-                if response.status < 400:
-                    content_type = response.headers.get('Content-Type', '')
-
-                    endpoint_info = {
-                        'url': endpoint,
-                        'status': response.status,
-                        'content_type': content_type,
-                        'methods': ['GET']
-                    }
-
-                    # محاولة تحليل البيانات المرجعة
-                    if 'json' in content_type:
-                        try:
-                            data = await response.json()
-                            endpoint_info['sample_data'] = data
-                            endpoint_info['data_structure'] = self._analyze_json_structure(data)
-                        except:
-                            pass
-
-                    return endpoint_info
-
+            async with self.session.get(target_url) as response:
+                content = await response.text()
+                headers = dict(response.headers)
+                
+                # Check content for database signatures
+                for db_type, patterns in self.db_signatures.items():
+                    matches = []
+                    for pattern in patterns:
+                        found = re.findall(pattern, content, re.IGNORECASE)
+                        matches.extend(found)
+                    
+                    if matches:
+                        databases[db_type] = {
+                            'detected': True,
+                            'confidence': min(len(matches) * 20, 100),
+                            'evidence': matches[:5],  # First 5 matches
+                            'indicators': len(matches)
+                        }
+                
+                # Check headers for database info
+                for header, value in headers.items():
+                    if 'mysql' in value.lower():
+                        databases.setdefault('mysql', {})['header_evidence'] = f"{header}: {value}"
+                    elif 'postgres' in value.lower():
+                        databases.setdefault('postgresql', {})['header_evidence'] = f"{header}: {value}"
+                
         except Exception as e:
-            logging.debug(f"فشل في اختبار {endpoint}: {e}")
-
-        return None
-
-    def _extract_table_name_from_form(self, form: Tag) -> str:
-        """استخراج اسم الجدول من النموذج"""
-        # محاولة استخراج اسم الجدول من action أو class أو id
-        action = form.get('action', '')
-        form_id = form.get('id', '')
-        form_class = ' '.join(form.get('class', []))
-
-        # البحث عن أنماط أسماء الجداول
-        table_patterns = [
-            r'/([a-zA-Z]+)/?(?:create|edit|update|new)',
-            r'form-([a-zA-Z]+)',
-            r'([a-zA-Z]+)-form'
-        ]
-
-        for pattern in table_patterns:
-            for text in [action, form_id, form_class]:
-                match = re.search(pattern, text)
-                if match:
-                    return match.group(1)
-
-        return 'unknown_table'
-
-    def _map_html_type_to_db_type(self, field: Tag) -> str:
-        """تحويل نوع HTML إلى نوع قاعدة البيانات"""
-        html_type = field.get('type', 'text')
-        field_name = field.get('name', '').lower()
-
-        type_mapping = {
-            'email': 'VARCHAR(255)',
-            'password': 'VARCHAR(255)',
-            'number': 'INTEGER',
-            'date': 'DATE',
-            'datetime-local': 'DATETIME',
-            'time': 'TIME',
-            'url': 'VARCHAR(255)',
-            'tel': 'VARCHAR(20)',
-            'checkbox': 'BOOLEAN',
-            'file': 'VARCHAR(255)'  # للمسار
-        }
-
-        if html_type in type_mapping:
-            return type_mapping[html_type]
-
-        # تحليل أكثر تقدماً بناءً على اسم الحقل
-        if 'id' in field_name:
-            return 'INTEGER PRIMARY KEY'
-        elif 'email' in field_name:
-            return 'VARCHAR(255) UNIQUE'
-        elif 'phone' in field_name or 'tel' in field_name:
-            return 'VARCHAR(20)'
-        elif 'date' in field_name or 'time' in field_name:
-            return 'DATETIME'
-        elif 'price' in field_name or 'amount' in field_name:
-            return 'DECIMAL(10,2)'
-        else:
-            max_length = field.get('maxlength')
-            if max_length:
-                return f'VARCHAR({max_length})'
-            return 'TEXT'
-
-    def _analyze_json_structure(self, data: Any) -> Dict[str, Any]:
-        """تحليل بنية JSON للحصول على معلومات قاعدة البيانات"""
-        structure = {
-            'type': type(data).__name__,
-            'fields': {}
-        }
-
-        if isinstance(data, dict):
-            for key, value in data.items():
-                structure['fields'][key] = {
-                    'type': type(value).__name__,
-                    'nullable': value is None
-                }
-        elif isinstance(data, list) and data:
-            # تحليل العنصر الأول للحصول على البنية
-            first_item = data[0]
-            if isinstance(first_item, dict):
-                structure['fields'] = self._analyze_json_structure(first_item)['fields']
-
-        return structure
-
-    def _analyze_data_relationships(self, scan_results: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """تحليل العلاقات بين البيانات"""
-        relationships = []
-        data_models = scan_results.get('data_models', [])
-
-        # البحث عن foreign keys محتملة
-        for model in data_models:
-            for field in model.get('fields', []):
-                field_name = field.get('name', '').lower()
-
-                # البحث عن أنماط foreign key
-                if field_name.endswith('_id') or field_name.endswith('id'):
-                    related_table = field_name.replace('_id', '').replace('id', '')
-                    if related_table:
-                        relationships.append({
-                            'from_table': model.get('table_name'),
-                            'from_field': field_name,
-                            'to_table': related_table,
-                            'relationship_type': 'foreign_key',
-                            'confidence': 0.8
-                        })
-
-        return relationships
-
-    async def _analyze_database_security(self, url: str) -> Dict[str, Any]:
-        """تحليل أمان قاعدة البيانات"""
-        security_analysis = {
-            'sql_injection_risk': 'unknown',
-            'authentication_required': False,
-            'input_validation': [],
-            'security_headers': {},
-            'recommendations': []
-        }
-
-        async with self.session.get(url) as response:
-            # فحص Security Headers
-            security_headers = {
-                'X-Content-Type-Options': response.headers.get('X-Content-Type-Options'),
-                'X-Frame-Options': response.headers.get('X-Frame-Options'),
-                'Content-Security-Policy': response.headers.get('Content-Security-Policy')
-            }
-            security_analysis['security_headers'] = security_headers
-
-            html_content = await response.text()
-            soup = BeautifulSoup(html_content, 'html.parser')
-
-            # فحص Input Validation
-            forms = soup.find_all('form')
-            for form in forms:
-                if isinstance(form, Tag):
-                    inputs = form.find_all('input')
-                    for input_field in inputs:
-                        if isinstance(input_field, Tag):
-                            validation_attrs = []
-                            if input_field.has_attr('required'):
-                                validation_attrs.append('required')
-                            if input_field.has_attr('pattern'):
-                                validation_attrs.append('pattern')
-                            if input_field.has_attr('maxlength'):
-                                validation_attrs.append('maxlength')
-
-                            if validation_attrs:
-                                security_analysis['input_validation'].append({
-                                    'field': input_field.get('name', ''),
-                                    'validations': validation_attrs
+            self.logger.error(f"خطأ في كشف قواعد البيانات: {e}")
+        
+        return databases
+    
+    async def _discover_apis(self, target_url: str) -> List[Dict[str, Any]]:
+        """اكتشاف APIs ونقاط البيانات"""
+        apis = []
+        
+        try:
+            # Check common API endpoints
+            api_endpoints = [
+                '/api/', '/api/v1/', '/api/v2/', '/rest/', 
+                '/graphql', '/webhook/', '/data/', '/json/'
+            ]
+            
+            base_url = f"{urlparse(target_url).scheme}://{urlparse(target_url).netloc}"
+            
+            for endpoint in api_endpoints:
+                try:
+                    url = base_url + endpoint
+                    async with self.session.get(url) as response:
+                        if response.status == 200:
+                            content_type = response.headers.get('content-type', '')
+                            content = await response.text()
+                            
+                            apis.append({
+                                'endpoint': endpoint,
+                                'url': url,
+                                'status': response.status,
+                                'content_type': content_type,
+                                'size': len(content),
+                                'is_json': 'application/json' in content_type,
+                                'is_xml': 'application/xml' in content_type
+                            })
+                except:
+                    continue
+            
+            # Analyze main page for API references
+            async with self.session.get(target_url) as response:
+                content = await response.text()
+                soup = BeautifulSoup(content, 'html.parser')
+                
+                # Look for AJAX calls and API references
+                scripts = soup.find_all('script')
+                for script in scripts:
+                    if script.string:
+                        for pattern in self.api_patterns:
+                            matches = re.findall(pattern, script.string, re.IGNORECASE)
+                            for match in matches:
+                                apis.append({
+                                    'type': 'javascript_reference',
+                                    'pattern': pattern,
+                                    'match': match,
+                                    'source': 'script_tag'
                                 })
-
-        # إنتاج توصيات الأمان
-        security_recommendations = [
-            'استخدام Prepared Statements لمنع SQL Injection',
-            'تطبيق Input Validation على جميع الحقول',
-            'تشفير البيانات الحساسة في قاعدة البيانات',
-            'تطبيق Access Control والصلاحيات',
-            'مراقبة وتسجيل عمليات قاعدة البيانات'
+                
+        except Exception as e:
+            self.logger.error(f"خطأ في اكتشاف APIs: {e}")
+        
+        return apis
+    
+    async def _detect_cms(self, target_url: str) -> Dict[str, Any]:
+        """كشف أنظمة إدارة المحتوى"""
+        cms_detected = {}
+        
+        try:
+            async with self.session.get(target_url) as response:
+                content = await response.text()
+                headers = dict(response.headers)
+                
+                # Check content for CMS signatures
+                for cms_type, patterns in self.cms_signatures.items():
+                    matches = []
+                    confidence = 0
+                    
+                    for pattern in patterns:
+                        found = re.findall(pattern, content, re.IGNORECASE)
+                        matches.extend(found)
+                        confidence += len(found) * 15
+                    
+                    if matches:
+                        cms_detected[cms_type] = {
+                            'detected': True,
+                            'confidence': min(confidence, 100),
+                            'evidence': matches[:3],
+                            'version': await self._detect_cms_version(content, cms_type)
+                        }
+                
+                # Check specific CMS endpoints
+                cms_endpoints = {
+                    'wordpress': ['/wp-admin/', '/wp-login.php', '/wp-json/'],
+                    'drupal': ['/user/login', '/admin/', '/node/'],
+                    'joomla': ['/administrator/', '/component/', '/index.php?option='],
+                    'magento': ['/admin/', '/customer/account/', '/checkout/']
+                }
+                
+                base_url = f"{urlparse(target_url).scheme}://{urlparse(target_url).netloc}"
+                
+                for cms_type, endpoints in cms_endpoints.items():
+                    for endpoint in endpoints:
+                        try:
+                            url = base_url + endpoint
+                            async with self.session.get(url) as resp:
+                                if resp.status in [200, 302, 403]:  # Found or redirected
+                                    if cms_type not in cms_detected:
+                                        cms_detected[cms_type] = {'detected': True, 'confidence': 60}
+                                    cms_detected[cms_type]['admin_panel'] = url
+                                    break
+                        except:
+                            continue
+                
+        except Exception as e:
+            self.logger.error(f"خطأ في كشف CMS: {e}")
+        
+        return cms_detected
+    
+    async def _detect_cms_version(self, content: str, cms_type: str) -> Optional[str]:
+        """كشف إصدار نظام إدارة المحتوى"""
+        version_patterns = {
+            'wordpress': [
+                r'wp-includes/js/wp-embed\.min\.js\?ver=([\d\.]+)',
+                r'wordpress ([\d\.]+)',
+                r'wp-json/wp/v2'
+            ],
+            'drupal': [
+                r'drupal ([\d\.]+)',
+                r'sites/all/modules',
+                r'misc/drupal\.js'
+            ],
+            'joomla': [
+                r'joomla! ([\d\.]+)',
+                r'media/system/js',
+                r'administrator/templates'
+            ]
+        }
+        
+        if cms_type in version_patterns:
+            for pattern in version_patterns[cms_type]:
+                match = re.search(pattern, content, re.IGNORECASE)
+                if match and match.groups():
+                    return match.group(1)
+        
+        return None
+    
+    async def _analyze_forms(self, target_url: str) -> List[Dict[str, Any]]:
+        """تحليل النماذج وإدخال البيانات"""
+        forms = []
+        
+        try:
+            async with self.session.get(target_url) as response:
+                content = await response.text()
+                soup = BeautifulSoup(content, 'html.parser')
+                
+                form_tags = soup.find_all('form')
+                
+                for form in form_tags:
+                    form_data = {
+                        'action': form.get('action', ''),
+                        'method': form.get('method', 'get').lower(),
+                        'fields': [],
+                        'has_file_upload': False,
+                        'potential_database_interaction': False
+                    }
+                    
+                    # Analyze form fields
+                    inputs = form.find_all(['input', 'textarea', 'select'])
+                    for input_tag in inputs:
+                        field = {
+                            'type': input_tag.get('type', 'text'),
+                            'name': input_tag.get('name', ''),
+                            'required': input_tag.has_attr('required')
+                        }
+                        form_data['fields'].append(field)
+                        
+                        # Check for file uploads
+                        if field['type'] == 'file':
+                            form_data['has_file_upload'] = True
+                        
+                        # Check for database-related fields
+                        if any(keyword in field['name'].lower() for keyword in 
+                               ['user', 'pass', 'email', 'login', 'register', 'search']):
+                            form_data['potential_database_interaction'] = True
+                    
+                    forms.append(form_data)
+                
+        except Exception as e:
+            self.logger.error(f"خطأ في تحليل النماذج: {e}")
+        
+        return forms
+    
+    async def _check_data_endpoints(self, target_url: str) -> List[Dict[str, Any]]:
+        """فحص نقاط البيانات المحتملة"""
+        endpoints = []
+        
+        # Common data endpoints to check
+        common_endpoints = [
+            '/sitemap.xml', '/robots.txt', '/feeds/', '/rss/',
+            '/.env', '/config.php', '/database.php', '/wp-config.php',
+            '/admin/', '/dashboard/', '/api/users/', '/api/posts/',
+            '/data.json', '/config.json', '/manifest.json'
         ]
-
-        security_analysis['recommendations'] = security_recommendations
-
-        return security_analysis
-
-    def _generate_database_recommendations(self, scan_results: Dict[str, Any]) -> List[str]:
-        """إنتاج توصيات قاعدة البيانات"""
+        
+        base_url = f"{urlparse(target_url).scheme}://{urlparse(target_url).netloc}"
+        
+        try:
+            for endpoint in common_endpoints:
+                try:
+                    url = base_url + endpoint
+                    async with self.session.get(url) as response:
+                        endpoints.append({
+                            'endpoint': endpoint,
+                            'url': url,
+                            'status': response.status,
+                            'accessible': response.status == 200,
+                            'size': response.headers.get('content-length', 0),
+                            'content_type': response.headers.get('content-type', ''),
+                            'sensitive': endpoint in ['/.env', '/config.php', '/wp-config.php']
+                        })
+                except:
+                    continue
+                    
+        except Exception as e:
+            self.logger.error(f"خطأ في فحص نقاط البيانات: {e}")
+        
+        return endpoints
+    
+    async def _analyze_security_issues(self, scan_results: Dict[str, Any]) -> List[str]:
+        """تحليل المشاكل الأمنية"""
+        issues = []
+        
+        try:
+            # Check for exposed sensitive files
+            for endpoint in scan_results.get('data_endpoints', []):
+                if endpoint.get('sensitive') and endpoint.get('accessible'):
+                    issues.append(f"ملف حساس مكشوف: {endpoint['endpoint']}")
+            
+            # Check for outdated CMS
+            cms_detected = scan_results.get('cms_detected', {})
+            for cms_type, info in cms_detected.items():
+                if info.get('version'):
+                    # This would need a vulnerability database in real implementation
+                    issues.append(f"إصدار {cms_type} قد يحتاج تحديث: {info['version']}")
+            
+            # Check for insecure forms
+            forms = scan_results.get('forms_analysis', [])
+            for form in forms:
+                if form['method'] == 'get' and form['potential_database_interaction']:
+                    issues.append("نموذج يستخدم GET لبيانات حساسة محتملة")
+                if not any(field['type'] == 'hidden' and 'csrf' in field.get('name', '').lower() 
+                          for field in form['fields']):
+                    issues.append("نموذج قد يفتقر لحماية CSRF")
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في تحليل الأمان: {e}")
+        
+        return issues
+    
+    async def _generate_recommendations(self, scan_results: Dict[str, Any]) -> List[str]:
+        """إنشاء توصيات الأمان والتحسين"""
         recommendations = []
-
-        # توصيات بناءً على نوع قاعدة البيانات المكتشفة
-        db_type = scan_results.get('database_type', 'unknown')
-
-        if db_type == 'mysql':
-            recommendations.extend([
-                'استخدام InnoDB engine للمعاملات',
-                'تطبيق indexing على الحقول المستخدمة في البحث',
-                'تفعيل query caching لتحسين الأداء'
-            ])
-        elif db_type == 'postgresql':
-            recommendations.extend([
-                'استخدام VACUUM ANALYZE لتحسين الأداء',
-                'تطبيق partial indexes للاستعلامات المعقدة',
-                'استخدام connection pooling'
-            ])
-
-        # توصيات عامة
-        recommendations.extend([
-            'إنشاء backup منتظم لقاعدة البيانات',
-            'مراقبة أداء الاستعلامات وتحسينها',
-            'تطبيق data validation على مستوى التطبيق',
-            'استخدام environment variables للاتصال بقاعدة البيانات'
-        ])
-
+        
+        try:
+            # Database recommendations
+            databases = scan_results.get('databases_detected', {})
+            if databases:
+                recommendations.append("تأكد من تشفير اتصالات قواعد البيانات")
+                recommendations.append("استخدم prepared statements لمنع SQL injection")
+            
+            # API recommendations  
+            apis = scan_results.get('apis_discovered', [])
+            if apis:
+                recommendations.append("تطبيق rate limiting على APIs")
+                recommendations.append("استخدام authentication tokens للـ APIs")
+            
+            # CMS recommendations
+            cms_detected = scan_results.get('cms_detected', {})
+            for cms_type in cms_detected:
+                recommendations.append(f"تحديث {cms_type} لآخر إصدار آمن")
+                recommendations.append(f"تغيير كلمات مرور الافتراضية لـ {cms_type}")
+            
+            # Security recommendations
+            security_issues = scan_results.get('security_issues', [])
+            if security_issues:
+                recommendations.append("إصلاح المشاكل الأمنية المكتشفة")
+                recommendations.append("تطبيق حماية إضافية للملفات الحساسة")
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في إنشاء التوصيات: {e}")
+        
         return recommendations
