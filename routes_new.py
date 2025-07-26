@@ -39,6 +39,72 @@ def index():
                          recent_reports=recent_reports,
                          storage_info=storage_info)
 
+@app.route('/extractor')
+def extractor():
+    """Advanced content extraction page."""
+    return render_template('pages/extractor.html')
+
+@app.route('/extract-content', methods=['POST'])
+def extract_content():
+    """Handle content extraction requests."""
+    try:
+        url = request.form.get('url', '').strip()
+        mode = request.form.get('extraction_mode', 'standard')
+        export_format = request.form.get('export_format', 'json')
+        
+        if not url:
+            return jsonify({'success': False, 'error': 'URL is required'}), 400
+        
+        # Validate URL
+        if not URLValidator.is_valid_url(url):
+            return jsonify({'success': False, 'error': 'Invalid URL format'}), 400
+        
+        # Normalize URL
+        url = URLValidator.normalize_url(url)
+        
+        # Build extraction config from form
+        extraction_config = {
+            'depth': int(request.form.get('crawl_depth', 2)),
+            'include_assets': request.form.get('include_assets') == 'on',
+            'include_links': request.form.get('include_links') == 'on',
+            'include_metadata': request.form.get('include_metadata') == 'on',
+            'content_filtering': request.form.get('content_filtering') == 'on',
+            'ai_analysis': request.form.get('ai_analysis') == 'on',
+            'remove_ads': request.form.get('remove_ads') == 'on'
+        }
+        
+        # Perform extraction
+        result = advanced_extractor.extract_with_mode(url, mode, extraction_config)
+        
+        if 'error' in result:
+            return jsonify({'success': False, 'error': result['error']}), 500
+        
+        # Export data in requested format
+        export_result = advanced_extractor.export_data(result, export_format)
+        
+        # Save report
+        report_path = data_manager.save_report(
+            f"extraction_{URLValidator.extract_domain(url)}", 
+            result, 
+            'extraction'
+        )
+        
+        return jsonify({
+            'success': True,
+            'message': 'Extraction completed successfully',
+            'stats': {
+                'pages': 1,
+                'content_size': len(result.get('content', {}).get('text_content', '')),
+                'links': len(result.get('links', {}).get('internal_links', {}).get('list', []))
+            },
+            'download_url': f'/download-report/{report_path.split("/")[-1]}',
+            'export_message': export_result
+        })
+        
+    except Exception as e:
+        logger.error(f"Extraction error: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/analyze', methods=['GET', 'POST'])
 def analyze():
     """Enhanced analysis page with new features."""

@@ -207,6 +207,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('extractor') }}">
+                            <i data-feather="download"></i> أداة الاستخراج
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('ai_analysis') }}">
                             <i data-feather="cpu"></i> التحليل الذكي
                         </a>
@@ -244,6 +249,9 @@
                     </a>
                     <a class="nav-link" href="{{ url_for('analyze') }}">
                         <i data-feather="search"></i> تحليل جديد
+                    </a>
+                    <a class="nav-link" href="{{ url_for('extractor') }}">
+                        <i data-feather="download"></i> أداة الاستخراج
                     </a>
                     <a class="nav-link" href="{{ url_for('ai_analysis') }}">
                         <i data-feather="cpu"></i> التحليل الذكي
