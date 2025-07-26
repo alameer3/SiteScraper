@@ -48,6 +48,113 @@ def start_smart_replication():
         })
         
     except Exception as e:
+        logging.error(f"خطأ في النسخ الذكي: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@smart_replication_bp.route('/ai-analysis', methods=['POST'])
+def analyze_with_ai():
+    """تحليل البيانات بالذكاء الاصطناعي"""
+    try:
+        data = request.json
+        extraction_data = data.get('extraction_data', {})
+        
+        # إنشاء محرك النسخ الذكي
+        config = ReplicationConfig()
+        replication_engine = SmartReplicationEngine(config)
+        
+        # تشغيل التحليل بالذكاء الاصطناعي
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        analysis_results = loop.run_until_complete(
+            replication_engine.analyze_with_ai(extraction_data)
+        )
+        loop.close()
+        
+        return jsonify({
+            'success': True,
+            'analysis_results': analysis_results
+        })
+        
+    except Exception as e:
+        logging.error(f"خطأ في التحليل بالذكاء الاصطناعي: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@smart_replication_bp.route('/pattern-recognition', methods=['POST'])
+def recognize_patterns():
+    """التعرف على الأنماط"""
+    try:
+        data = request.json
+        extraction_data = data.get('extraction_data', {})
+        
+        config = ReplicationConfig()
+        replication_engine = SmartReplicationEngine(config)
+        
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        pattern_results = loop.run_until_complete(
+            replication_engine._advanced_pattern_recognition(extraction_data)
+        )
+        loop.close()
+        
+        return jsonify({
+            'success': True,
+            'patterns': pattern_results
+        })
+        
+    except Exception as e:
+        logging.error(f"خطأ في التعرف على الأنماط: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@smart_replication_bp.route('/quality-check', methods=['POST'])
+def quality_assurance_check():
+    """فحص ضمان الجودة"""
+    try:
+        data = request.json
+        replication_results = data.get('replication_results', {})
+        
+        config = ReplicationConfig()
+        replication_engine = SmartReplicationEngine(config)
+        
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        qa_results = loop.run_until_complete(
+            replication_engine._quality_assurance(replication_results)
+        )
+        loop.close()
+        
+        return jsonify({
+            'success': True,
+            'quality_results': qa_results
+        })
+        
+    except Exception as e:
+        logging.error(f"خطأ في فحص الجودة: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+# Error handlers
+@smart_replication_bp.errorhandler(400)
+def bad_request(error):
+    return jsonify({'error': 'طلب غير صحيح'}), 400
+
+@smart_replication_bp.errorhandler(404)
+def not_found(error):
+    return jsonify({'error': 'المورد غير موجود'}), 404
+
+@smart_replication_bp.errorhandler(500)
+def internal_error(error):
+    return jsonify({'error': 'خطأ داخلي في الخادم'}), 500ion as e:
         logger.error(f"خطأ في النسخ الذكي: {e}")
         return jsonify({
             'success': False,

@@ -1530,8 +1530,7 @@ class DeepExtractionEngine:
             logging.warning(f"فشل تحميل {asset_url}: {e}")
         return None
 
-
-        async def _download_binary_asset(self, asset_url: str) -> Optional[bytes]:
+    async def _download_binary_asset(self, asset_url: str) -> Optional[bytes]:
         """تحميل ملف ثنائي (صور، خطوط)"""
         try:
             async with self.session.get(asset_url, timeout=aiohttp.ClientTimeout(total=15)) as response:
@@ -1642,3 +1641,432 @@ class DeepExtractionEngine:
                             })
 
         return media_files
+
+    async def _analyze_javascript_events(self, url: str) -> List[Dict[str, Any]]:
+        """تحليل JavaScript Events"""
+        events = []
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # تحليل Event Handlers في HTML
+                for element in soup.find_all():
+                    if isinstance(element, Tag) and element.attrs:
+                        for attr in element.attrs:
+                            if attr.startswith('on'):
+                                events.append({
+                                    'element': element.name,
+                                    'event_type': attr,
+                                    'handler': element.get(attr, ''),
+                                    'source': 'html_attribute'
+                                })
+                
+                # تحليل JavaScript لاكتشاف addEventListener
+                scripts = soup.find_all('script', src=False)
+                for script in scripts:
+                    if isinstance(script, Tag) and script.string:
+                        script_content = str(script.string)
+                        import re
+                        
+                        # البحث عن addEventListener
+                        event_listeners = re.findall(
+                            r'addEventListener\s*\(\s*[\'"]([^\'"]+)[\'"]',
+                            script_content,
+                            re.IGNORECASE
+                        )
+                        
+                        for event_type in event_listeners:
+                            events.append({
+                                'event_type': event_type,
+                                'source': 'javascript_listener',
+                                'script_location': 'inline'
+                            })
+
+        return events
+
+    async def _analyze_ajax_calls(self, url: str) -> List[Dict[str, Any]]:
+        """تحليل AJAX calls"""
+        ajax_calls = []
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                
+                import re
+                
+                # أنماط AJAX المختلفة
+                patterns = {
+                    'fetch': r'fetch\s*\(\s*[\'"]([^\'"]+)[\'"]',
+                    'xhr': r'XMLHttpRequest',
+                    'jquery_ajax': r'\$\.ajax\s*\(',
+                    'axios': r'axios\.[get|post|put|delete|patch]+\s*\(\s*[\'"]([^\'"]+)[\'"]'
+                }
+                
+                for method, pattern in patterns.items():
+                    matches = re.findall(pattern, html_content, re.IGNORECASE)
+                    if method == 'xhr' and matches:
+                        ajax_calls.append({
+                            'method': 'XMLHttpRequest',
+                            'type': 'xhr',
+                            'count': len(matches)
+                        })
+                    elif method == 'jquery_ajax' and matches:
+                        ajax_calls.append({
+                            'method': 'jQuery AJAX',
+                            'type': 'jquery',
+                            'count': len(matches)
+                        })
+                    else:
+                        for match in matches:
+                            url_match = match if isinstance(match, str) else match[0]
+                            ajax_calls.append({
+                                'method': method,
+                                'url': url_match,
+                                'type': 'api_call'
+                            })
+
+        return ajax_calls
+
+    async def _analyze_storage_usage(self, url: str) -> Dict[str, Any]:
+        """تحليل Local Storage والكوكيز"""
+        storage_data = {
+            'localStorage_usage': [],
+            'sessionStorage_usage': [],
+            'cookies_detected': [],
+            'indexedDB_usage': False
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                
+                # البحث عن استخدام localStorage
+                if 'localStorage' in html_content:
+                    import re
+                    localStorage_calls = re.findall(
+                        r'localStorage\.(setItem|getItem|removeItem)\s*\(\s*[\'"]([^\'"]+)[\'"]',
+                        html_content,
+                        re.IGNORECASE
+                    )
+                    
+                    for method, key in localStorage_calls:
+                        storage_data['localStorage_usage'].append({
+                            'method': method,
+                            'key': key
+                        })
+                
+                # البحث عن استخدام sessionStorage
+                if 'sessionStorage' in html_content:
+                    sessionStorage_calls = re.findall(
+                        r'sessionStorage\.(setItem|getItem|removeItem)\s*\(\s*[\'"]([^\'"]+)[\'"]',
+                        html_content,
+                        re.IGNORECASE
+                    )
+                    
+                    for method, key in sessionStorage_calls:
+                        storage_data['sessionStorage_usage'].append({
+                            'method': method,
+                            'key': key
+                        })
+                
+                # فحص IndexedDB
+                if 'indexedDB' in html_content.lower():
+                    storage_data['indexedDB_usage'] = True
+                
+                # فحص الكوكيز
+                cookies = response.headers.get('Set-Cookie', '')
+                if cookies:
+                    storage_data['cookies_detected'].append({
+                        'source': 'response_header',
+                        'cookies': cookies
+                    })
+
+        return storage_data
+
+    async def _analyze_responsive_behavior(self, url: str) -> Dict[str, Any]:
+        """تحليل السلوك المتجاوب"""
+        responsive_data = {
+            'css_media_queries': [],
+            'viewport_meta': '',
+            'responsive_frameworks': [],
+            'breakpoints': []
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # استخراج viewport
+                viewport_meta = soup.find('meta', attrs={'name': 'viewport'})
+                if viewport_meta and isinstance(viewport_meta, Tag):
+                    responsive_data['viewport_meta'] = viewport_meta.get('content', '')
+                
+                # تحليل CSS للعثور على media queries
+                css_links = soup.find_all('link', rel='stylesheet')
+                for css_link in css_links:
+                    if isinstance(css_link, Tag):
+                        href = css_link.get('href')
+                        if href:
+                            try:
+                                css_url = urljoin(url, href)
+                                css_content = await self._download_asset(css_url)
+                                if css_content:
+                                    import re
+                                    media_queries = re.findall(
+                                        r'@media\s*\([^)]+\)',
+                                        css_content,
+                                        re.IGNORECASE
+                                    )
+                                    responsive_data['css_media_queries'].extend(media_queries)
+                            except:
+                                pass
+                
+                # فحص الأطر المتجاوبة
+                responsive_frameworks = {
+                    'bootstrap': ['bootstrap', 'container', 'row', 'col-'],
+                    'tailwind': ['tailwind', 'sm:', 'md:', 'lg:', 'xl:'],
+                    'foundation': ['foundation', 'grid-x', 'cell'],
+                    'bulma': ['bulma', 'columns', 'column']
+                }
+                
+                for framework, indicators in responsive_frameworks.items():
+                    if any(indicator in html_content.lower() for indicator in indicators):
+                        responsive_data['responsive_frameworks'].append(framework)
+
+        return responsive_data
+
+    async def _analyze_loading_states(self, url: str) -> Dict[str, Any]:
+        """تحليل حالات التحميل"""
+        loading_data = {
+            'loading_indicators': [],
+            'lazy_loading': False,
+            'preloading': [],
+            'async_scripts': []
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # البحث عن مؤشرات التحميل
+                loading_indicators = ['loading', 'spinner', 'loader', 'preloader']
+                for indicator in loading_indicators:
+                    elements = soup.find_all(class_=re.compile(indicator, re.I))
+                    elements += soup.find_all(id=re.compile(indicator, re.I))
+                    
+                    if elements:
+                        loading_data['loading_indicators'].append({
+                            'type': indicator,
+                            'count': len(elements)
+                        })
+                
+                # فحص lazy loading
+                lazy_elements = soup.find_all(attrs={'loading': 'lazy'})
+                lazy_elements += soup.find_all(attrs={'data-src': True})
+                
+                if lazy_elements:
+                    loading_data['lazy_loading'] = True
+                
+                # فحص preloading
+                preload_links = soup.find_all('link', rel='preload')
+                for link in preload_links:
+                    if isinstance(link, Tag):
+                        loading_data['preloading'].append({
+                            'href': link.get('href', ''),
+                            'as': link.get('as', '')
+                        })
+                
+                # فحص async scripts
+                async_scripts = soup.find_all('script', async=True)
+                for script in async_scripts:
+                    if isinstance(script, Tag):
+                        loading_data['async_scripts'].append({
+                            'src': script.get('src', ''),
+                            'defer': script.has_attr('defer')
+                        })
+
+        return loading_data
+
+    async def _analyze_error_handling(self, url: str) -> Dict[str, Any]:
+        """تحليل إدارة الأخطاء"""
+        error_handling = {
+            'error_pages': [],
+            'javascript_error_handling': [],
+            'form_validation': [],
+            'fallback_mechanisms': []
+        }
+        
+        if self.session:
+            async with self.session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                # البحث عن صفحات الأخطاء
+                error_links = soup.find_all('a', href=re.compile(r'(404|500|error)', re.I))
+                for link in error_links:
+                    if isinstance(link, Tag):
+                        error_handling['error_pages'].append({
+                            'href': link.get('href', ''),
+                            'text': self._safe_get_text(link)
+                        })
+                
+                # البحث عن JavaScript error handling
+                if 'try' in html_content and 'catch' in html_content:
+                    import re
+                    try_catch_blocks = re.findall(
+                        r'try\s*{[^}]*}\s*catch\s*\([^)]*\)\s*{[^}]*}',
+                        html_content,
+                        re.DOTALL | re.IGNORECASE
+                    )
+                    error_handling['javascript_error_handling'] = [
+                        {'type': 'try_catch', 'count': len(try_catch_blocks)}
+                    ]
+                
+                # فحص validation في النماذج
+                forms = soup.find_all('form')
+                for form in forms:
+                    if isinstance(form, Tag):
+                        required_fields = form.find_all(attrs={'required': True})
+                        pattern_fields = form.find_all(attrs={'pattern': True})
+                        
+                        if required_fields or pattern_fields:
+                            error_handling['form_validation'].append({
+                                'form_action': form.get('action', ''),
+                                'required_fields': len(required_fields),
+                                'pattern_fields': len(pattern_fields)
+                            })
+
+        return error_handling
+
+    async def _playwright_extraction(self, url: str) -> Dict[str, Any]:
+        """استخراج باستخدام Playwright"""
+        try:
+            if not PLAYWRIGHT_AVAILABLE:
+                return {'error': 'playwright_not_available'}
+            
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(headless=True)
+                page = await browser.new_page()
+                
+                await page.goto(url)
+                
+                # انتظار تحميل الصفحة
+                await page.wait_for_load_state('networkidle')
+                
+                extraction_data = {
+                    'html_content': await page.content(),
+                    'title': await page.title(),
+                    'url': page.url,
+                    'cookies': await page.context.cookies(),
+                    'local_storage': await page.evaluate('() => Object.assign({}, localStorage)'),
+                    'session_storage': await page.evaluate('() => Object.assign({}, sessionStorage)'),
+                    'network_requests': [],
+                    'console_logs': []
+                }
+                
+                # مراقبة network requests
+                requests = []
+                page.on('request', lambda request: requests.append({
+                    'url': request.url,
+                    'method': request.method,
+                    'resource_type': request.resource_type
+                }))
+                
+                # مراقبة console logs
+                logs = []
+                page.on('console', lambda msg: logs.append({
+                    'type': msg.type,
+                    'text': msg.text
+                }))
+                
+                # إعادة تحميل الصفحة لجمع البيانات
+                await page.reload()
+                await page.wait_for_load_state('networkidle')
+                
+                extraction_data['network_requests'] = requests
+                extraction_data['console_logs'] = logs
+                
+                await browser.close()
+                return extraction_data
+                
+        except Exception as e:
+            logging.error(f"خطأ في Playwright extraction: {e}")
+            return {'error': str(e)}
+
+    async def _trafilatura_extraction(self, url: str) -> Dict[str, Any]:
+        """استخراج باستخدام Trafilatura"""
+        return await self._extract_with_trafilatura(url)
+
+    async def _beautifulsoup_extraction(self, url: str) -> Dict[str, Any]:
+        """استخراج تفصيلي باستخدام BeautifulSoup"""
+        if not self.session:
+            return {'error': 'no_session'}
+        
+        async with self.session.get(url) as response:
+            html_content = await response.text()
+            soup = BeautifulSoup(html_content, 'html.parser')
+            
+            return {
+                'title': self._safe_get_text(soup.find('title')),
+                'headings': {
+                    'h1': [self._safe_get_text(h) for h in soup.find_all('h1')],
+                    'h2': [self._safe_get_text(h) for h in soup.find_all('h2')],
+                    'h3': [self._safe_get_text(h) for h in soup.find_all('h3')]
+                },
+                'paragraphs': [self._safe_get_text(p) for p in soup.find_all('p')[:10]],
+                'links': [{'text': self._safe_get_text(a), 'href': a.get('href', '')} 
+                         for a in soup.find_all('a', href=True)[:20]],
+                'images': [{'alt': img.get('alt', ''), 'src': img.get('src', '')} 
+                          for img in soup.find_all('img')[:10]],
+                'forms': len(soup.find_all('form')),
+                'tables': len(soup.find_all('table')),
+                'lists': len(soup.find_all(['ul', 'ol']))
+            }
+
+    def _calculate_extraction_statistics(self) -> Dict[str, Any]:
+        """حساب إحصائيات الاستخراج"""
+        return {
+            'total_urls_visited': len(self.visited_urls),
+            'api_endpoints_found': len(self.api_endpoints),
+            'javascript_events_detected': len(self.javascript_events),
+            'css_frameworks_detected': len(self.css_frameworks),
+            'authentication_methods_found': len(self.authentication_methods),
+            'interactive_elements_count': len(self.interactive_elements)
+        }
+
+    async def _save_extraction_results(self, results: Dict[str, Any]):
+        """حفظ نتائج الاستخراج"""
+        try:
+            # حفظ النتائج كـ JSON
+            results_file = self.paths['reports'] / f"extraction_{results['metadata']['extraction_id']}.json"
+            with open(results_file, 'w', encoding='utf-8') as f:
+                json.dump(results, f, ensure_ascii=False, indent=2)
+            
+            # حفظ تقرير مبسط
+            summary_file = self.paths['reports'] / f"summary_{results['metadata']['extraction_id']}.txt"
+            with open(summary_file, 'w', encoding='utf-8') as f:
+                f.write(f"تقرير الاستخراج العميق\n")
+                f.write(f"الموقع المستهدف: {results['metadata']['target_url']}\n")
+                f.write(f"وقت الاستخراج: {results['metadata']['extraction_time']:.2f} ثانية\n")
+                f.write(f"عدد الصفحات المزارة: {results.get('extraction_statistics', {}).get('total_urls_visited', 0)}\n")
+                f.write(f"نقاط API المكتشفة: {results.get('extraction_statistics', {}).get('api_endpoints_found', 0)}\n")
+                
+        except Exception as e:
+            logging.error(f"خطأ في حفظ النتائج: {e}")
+
+    async def _cleanup_resources(self):
+        """تنظيف الموارد"""
+        if self.session:
+            await self.session.close()
+        
+        # إغلاق drivers إذا كانت مفتوحة
+        for driver_name, driver in self.drivers.items():
+            try:
+                if hasattr(driver, 'quit'):
+                    driver.quit()
+            except:
+                pass
