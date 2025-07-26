@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أداة الاستخراج الموحدة الشاملة</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .mode-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .mode-card.selected {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 5px 0;
+            opacity: 0.9;
+        }
+        
+        .feature-list li i {
+            color: #4CAF50;
+            margin-left: 8px;
+        }
+        
+        .btn-extract {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-extract:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            color: white;
+        }
+        
+        .progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .phase-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .phase-step {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            margin: 0 5px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .phase-step.active {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4CAF50;
+        }
+        
+        .phase-step.completed {
+            background: rgba(76, 175, 80, 0.5);
+            color: white;
+        }
+        
+        .results-container {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .result-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4ECDC4;
+        }
+        
+        .animated-bg {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .config-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body class="animated-bg">
+    <div class="container my-5">
+        <!-- Header -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="glass-card p-4 text-center">
+                    <h1 class="text-white mb-3">
+                        <i class="fas fa-magic me-3"></i>
+                        أداة الاستخراج الموحدة الشاملة
+                    </h1>
+                    <p class="text-white-50 mb-0">
+                        جميع أدوات الاستخراج مدموجة في أداة واحدة قوية - من الاستخراج الأساسي إلى الذكاء الاصطناعي المتقدم
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Extraction Form -->
+        <div class="row">
+            <div class="col-12">
+                <div class="glass-card p-4">
+                    <form id="unifiedExtractionForm">
+                        <!-- URL Input -->
+                        <div class="mb-4">
+                            <label class="form-label text-white">
+                                <i class="fas fa-link me-2"></i>
+                                رابط الموقع
+                            </label>
+                            <input type="url" class="form-control form-control-lg" id="websiteUrl" 
+                                   placeholder="https://example.com" required>
+                        </div>
+
+                        <!-- Extraction Modes -->
+                        <div class="mb-4">
+                            <h5 class="text-white mb-3">
+                                <i class="fas fa-cogs me-2"></i>
+                                اختر وضع الاستخراج
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="mode-card glass-card p-3 h-100" data-mode="basic">
+                                        <div class="text-center">
+                                            <i class="fas fa-bolt fa-2x text-warning mb-2"></i>
+                                            <h6 class="text-white">أساسي سريع</h6>
+                                            <small class="text-white-50">15-30 ثانية</small>
+                                        </div>
+                                        <ul class="feature-list text-white-50 mt-3">
+                                            <li><i class="fas fa-check"></i> المحتوى النصي</li>
+                                            <li><i class="fas fa-check"></i> الروابط الأساسية</li>
+                                            <li><i class="fas fa-check"></i> البيانات الوصفية</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="mode-card glass-card p-3 h-100 selected" data-mode="comprehensive">
+                                        <div class="text-center">
+                                            <i class="fas fa-star fa-2x text-success mb-2"></i>
+                                            <h6 class="text-white">شامل متكامل</h6>
+                                            <small class="text-white-50">2-4 دقائق</small>
+                                        </div>
+                                        <ul class="feature-list text-white-50 mt-3">
+                                            <li><i class="fas fa-check"></i> كل شيء من الأساسي</li>
+                                            <li><i class="fas fa-check"></i> الأصول والصور</li>
+                                            <li><i class="fas fa-check"></i> التحليل التقني</li>
+                                            <li><i class="fas fa-check"></i> النسخ الذكي</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="mode-card glass-card p-3 h-100" data-mode="ai_powered">
+                                        <div class="text-center">
+                                            <i class="fas fa-brain fa-2x text-info mb-2"></i>
+                                            <h6 class="text-white">ذكاء اصطناعي كامل</h6>
+                                            <small class="text-white-50">5-8 دقائق</small>
+                                        </div>
+                                        <ul class="feature-list text-white-50 mt-3">
+                                            <li><i class="fas fa-check"></i> كل الميزات المتقدمة</li>
+                                            <li><i class="fas fa-check"></i> تحليل الأنماط</li>
+                                            <li><i class="fas fa-check"></i> تحليل الأمان</li>
+                                            <li><i class="fas fa-check"></i> تقييم الجودة</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Configuration -->
+                        <div class="config-section">
+                            <h5 class="text-white mb-3">
+                                <i class="fas fa-sliders-h me-2"></i>
+                                إعدادات متقدمة
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-white">استخراج الأصول</span>
+                                        <label class="switch">
+                                            <input type="checkbox" id="extractAssets" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-white">التحليل بالذكاء الاصطناعي</span>
+                                        <label class="switch">
+                                            <input type="checkbox" id="enableAI" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-white">إنشاء موقع مطابق</span>
+                                        <label class="switch">
+                                            <input type="checkbox" id="createReplica" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-white">تحليل الأمان</span>
+                                        <label class="switch">
+                                            <input type="checkbox" id="securityAnalysis">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-extract">
+                                <i class="fas fa-rocket me-2"></i>
+                                بدء الاستخراج الشامل
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Progress Indicator -->
+                    <div class="progress-container" id="progressContainer">
+                        <div class="phase-indicator">
+                            <div class="phase-step" id="phase1">
+                                <i class="fas fa-file-text"></i>
+                                <div>المحتوى الأساسي</div>
+                            </div>
+                            <div class="phase-step" id="phase2">
+                                <i class="fas fa-images"></i>
+                                <div>الأصول والملفات</div>
+                            </div>
+                            <div class="phase-step" id="phase3">
+                                <i class="fas fa-code"></i>
+                                <div>البنية التقنية</div>
+                            </div>
+                            <div class="phase-step" id="phase4">
+                                <i class="fas fa-brain"></i>
+                                <div>التحليل الذكي</div>
+                            </div>
+                            <div class="phase-step" id="phase5">
+                                <i class="fas fa-shield-alt"></i>
+                                <div>الأمان والأداء</div>
+                            </div>
+                            <div class="phase-step" id="phase6">
+                                <i class="fas fa-copy"></i>
+                                <div>النسخ والتنظيم</div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-success" id="overallProgress" style="width: 0%"></div>
+                        </div>
+                        
+                        <div class="text-center text-white" id="progressText">
+                            جاري التحضير...
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div class="results-container" id="resultsContainer">
+                        <h4 class="text-white text-center mb-4">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            نتائج الاستخراج الشامل
+                        </h4>
+                        
+                        <div class="row" id="resultsStats">
+                            <!-- Stats will be populated dynamically -->
+                        </div>
+                        
+                        <div class="result-card">
+                            <h5 class="text-white mb-3">
+                                <i class="fas fa-download me-2"></i>
+                                تحميل النتائج
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <button class="btn btn-outline-light w-100" onclick="downloadResult('json')">
+                                        <i class="fas fa-file-code me-1"></i> JSON
+                                    </button>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <button class="btn btn-outline-light w-100" onclick="downloadResult('html')">
+                                        <i class="fas fa-file-code me-1"></i> HTML Report
+                                    </button>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <button class="btn btn-outline-light w-100" onclick="openReplicatedSite()">
+                                        <i class="fas fa-external-link-alt me-1"></i> الموقع المطابق
+                                    </button>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <button class="btn btn-outline-light w-100" onclick="viewOrganizedData()">
+                                        <i class="fas fa-folder-open me-1"></i> البيانات المنظمة
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentExtractionId = null;
+        let selectedMode = 'comprehensive';
+
+        // Mode selection
+        document.querySelectorAll('.mode-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedMode = this.dataset.mode;
+                
+                // Update AI checkbox based on mode
+                const aiCheckbox = document.getElementById('enableAI');
+                if (selectedMode === 'basic') {
+                    aiCheckbox.checked = false;
+                } else {
+                    aiCheckbox.checked = true;
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('unifiedExtractionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const url = document.getElementById('websiteUrl').value;
+            const config = {
+                mode: selectedMode,
+                extract_assets: document.getElementById('extractAssets').checked,
+                enable_ai_analysis: document.getElementById('enableAI').checked,
+                create_replicated_site: document.getElementById('createReplica').checked,
+                enable_security_analysis: document.getElementById('securityAnalysis').checked
+            };
+            
+            await startExtraction(url, config);
+        });
+
+        async function startExtraction(url, config) {
+            // Show progress container
+            document.getElementById('progressContainer').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/unified-extract', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url, config })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentExtractionId = result.extraction_id;
+                    await monitorProgress();
+                } else {
+                    throw new Error(result.error || 'فشل في بدء الاستخراج');
+                }
+                
+            } catch (error) {
+                console.error('خطأ في الاستخراج:', error);
+                alert('حدث خطأ: ' + error.message);
+                document.getElementById('progressContainer').style.display = 'none';
+            }
+        }
+
+        async function monitorProgress() {
+            const phases = ['phase1', 'phase2', 'phase3', 'phase4', 'phase5', 'phase6'];
+            let currentPhase = 0;
+            
+            const interval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/extraction-status/${currentExtractionId}`);
+                    const status = await response.json();
+                    
+                    if (status.phase) {
+                        // Update phase indicators
+                        for (let i = 0; i < phases.length; i++) {
+                            const phaseElement = document.getElementById(phases[i]);
+                            if (i < status.phase) {
+                                phaseElement.classList.add('completed');
+                                phaseElement.classList.remove('active');
+                            } else if (i === status.phase) {
+                                phaseElement.classList.add('active');
+                                phaseElement.classList.remove('completed');
+                            }
+                        }
+                        
+                        // Update progress bar
+                        const progress = ((status.phase + 1) / phases.length) * 100;
+                        document.getElementById('overallProgress').style.width = progress + '%';
+                        document.getElementById('progressText').textContent = status.message || 'جاري المعالجة...';
+                    }
+                    
+                    if (status.completed) {
+                        clearInterval(interval);
+                        await showResults(status.results);
+                    }
+                    
+                } catch (error) {
+                    console.error('خطأ في مراقبة التقدم:', error);
+                    clearInterval(interval);
+                }
+            }, 2000);
+        }
+
+        async function showResults(results) {
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'block';
+            
+            // Populate statistics
+            const statsContainer = document.getElementById('resultsStats');
+            const stats = results.statistics || {};
+            
+            statsContainer.innerHTML = `
+                <div class="col-md-3 mb-3">
+                    <div class="result-card text-center">
+                        <div class="stat-number">${Math.round(stats.extraction_time || 0)}s</div>
+                        <div class="text-white-50">وقت الاستخراج</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="result-card text-center">
+                        <div class="stat-number">${stats.phases_completed || 0}</div>
+                        <div class="text-white-50">مراحل مكتملة</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="result-card text-center">
+                        <div class="stat-number">${Math.round(stats.success_rate || 0)}%</div>
+                        <div class="text-white-50">معدل النجاح</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="result-card text-center">
+                        <div class="stat-number">${Math.round((stats.total_data_size || 0) / 1024)}KB</div>
+                        <div class="text-white-50">حجم البيانات</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function downloadResult(format) {
+            if (currentExtractionId) {
+                window.open(`/api/download-result/${currentExtractionId}/${format}`, '_blank');
+            }
+        }
+
+        function openReplicatedSite() {
+            if (currentExtractionId) {
+                window.open(`/api/view-replicated/${currentExtractionId}`, '_blank');
+            }
+        }
+
+        function viewOrganizedData() {
+            if (currentExtractionId) {
+                window.open(`/api/view-organized/${currentExtractionId}`, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -71,6 +71,10 @@ def advanced_ai():
 def comprehensive_extractor():
     return render_template('pages/comprehensive_extractor.html')
 
+@app.route('/unified_extractor')
+def unified_extractor():
+    return render_template('pages/unified_extractor.html')
+
 @app.route('/ai_analysis')
 def ai_analysis():
     return render_template('pages/ai_analysis.html')
@@ -118,6 +122,84 @@ def api_recent_extractions():
                 'size': '1.2MB'
             })
     return jsonify(extractions)
+
+# API endpoints for Unified Master Extractor
+@app.route('/api/unified-extract', methods=['POST'])
+def api_unified_extract():
+    try:
+        data = request.get_json()
+        url = data.get('url', '')
+        config = data.get('config', {})
+        
+        if not url:
+            return jsonify({'error': 'يجب إدخال رابط صحيح'}), 400
+        
+        # Start extraction in background (simplified for demo)
+        extraction_id = f'unified_{int(time.time())}'
+        
+        # Here you would normally start the actual extraction
+        # For now, we'll return success and simulate progress
+        
+        return jsonify({
+            'success': True,
+            'message': 'تم بدء الاستخراج الموحد بنجاح',
+            'extraction_id': extraction_id,
+            'config': config
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/extraction-status/<extraction_id>')
+def api_extraction_status(extraction_id):
+    # Simulate progress phases
+    import random
+    phase = random.randint(0, 5)
+    
+    phases_messages = [
+        'استخراج المحتوى الأساسي...',
+        'تحميل الأصول والملفات...',
+        'تحليل البنية التقنية...',
+        'التحليل بالذكاء الاصطناعي...',
+        'فحص الأمان والأداء...',
+        'تنظيم البيانات والنسخ...'
+    ]
+    
+    return jsonify({
+        'phase': phase,
+        'message': phases_messages[phase] if phase < len(phases_messages) else 'اكتمل',
+        'completed': phase >= 5,
+        'results': {
+            'statistics': {
+                'extraction_time': 45,
+                'phases_completed': phase + 1,
+                'success_rate': 95,
+                'total_data_size': 2048000
+            }
+        } if phase >= 5 else None
+    })
+
+@app.route('/api/download-result/<extraction_id>/<format>')
+def api_download_result(extraction_id, format):
+    # Simulate download links
+    return jsonify({
+        'download_url': f'/downloads/{extraction_id}.{format}',
+        'message': f'تحميل ملف {format.upper()}'
+    })
+
+@app.route('/api/view-replicated/<extraction_id>')
+def api_view_replicated(extraction_id):
+    return jsonify({
+        'replicated_url': f'/replicated-sites/{extraction_id}/index.html',
+        'message': 'عرض الموقع المطابق'
+    })
+
+@app.route('/api/view-organized/<extraction_id>')
+def api_view_organized(extraction_id):
+    return jsonify({
+        'organized_path': f'/extracted_data/websites/{extraction_id}/',
+        'message': 'عرض البيانات المنظمة'
+    })
 
 @app.route('/api/start-extraction', methods=['POST'])
 def api_start_extraction():
