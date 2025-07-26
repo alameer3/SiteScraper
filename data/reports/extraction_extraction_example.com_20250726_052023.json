@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "report_name": "extraction_example.com",
+    "report_type": "extraction",
+    "created_at": "2025-07-26T05:20:23.337544",
+    "version": "1.0"
+  },
+  "data": {
+    "url": "https://example.com",
+    "mode": "standard",
+    "extraction_time": "2025-07-26T05:19:58.806483",
+    "config_used": {
+      "depth": 2,
+      "include_assets": true,
+      "include_links": false,
+      "include_metadata": false,
+      "content_filtering": false,
+      "download_assets": true,
+      "replicate_website": true,
+      "ai_analysis": false,
+      "remove_ads": false
+    },
+    "content": {
+      "title": "Example Domain",
+      "headings": {
+        "h1": [
+          "Example Domain"
+        ],
+        "h2": [],
+        "h3": []
+      },
+      "paragraphs": [
+        "This domain is for use in illustrative examples in documents. You may use this\n    domain in literature without prior coordination or asking for permission.",
+        "More information..."
+      ],
+      "text_content": "Example Domain\n\n\n\n\n\n\n\nExample Domain\nThis domain is for use in illustrative examples in documents. You may use this\n    domain in literature without prior coordination or asking for permission.\nMore information...",
+      "word_count": 30,
+      "reading_time": 1,
+      "content_sections": []
+    },
+    "assets": {
+      "images": {
+        "count": 0,
+        "formats": [],
+        "list": [],
+        "with_alt_text": 0
+      },
+      "stylesheets": {
+        "count": 0,
+        "external": 0,
+        "internal": 0,
+        "list": []
+      },
+      "scripts": {
+        "count": 0,
+        "external": 0,
+        "async_count": 0,
+        "defer_count": 0,
+        "list": []
+      },
+      "videos": {
+        "count": 0,
+        "list": []
+      },
+      "audios": {
+        "count": 0,
+        "list": []
+      }
+    },
+    "metadata": {},
+    "statistics": {
+      "extraction_summary": {
+        "total_elements_extracted": 0,
+        "content_size": 30,
+        "asset_count": 0,
+        "link_count": 0
+      },
+      "analysis_scores": {},
+      "quality_metrics": {},
+      "performance_summary": {}
+    },
+    "errors": [],
+    "performance": {},
+    "replication": {
+      "status": "completed",
+      "project_directory": "replicated_sites/example.com_20250726_052023",
+      "files_created": {
+        "html": "replicated_sites/example.com_20250726_052023/index.html",
+        "css": [
+          "replicated_sites/example.com_20250726_052023/css/main.css",
+          "replicated_sites/example.com_20250726_052023/css/layout.css"
+        ],
+        "js": [
+          "replicated_sites/example.com_20250726_052023/js/main.js"
+        ],
+        "assets": {
+          "copied_files": [],
+          "failed_copies": [],
+          "total_size": 0
+        },
+        "project_info": "replicated_sites/example.com_20250726_052023/project_info.json"
+      },
+      "domain": "example.com",
+      "instructions": {
+        "arabic": "تم إنشاء الموقع المطابق في: replicated_sites/example.com_20250726_052023",
+        "english": "Replicated website created in: replicated_sites/example.com_20250726_052023"
+      }
+    }
+  }
+}

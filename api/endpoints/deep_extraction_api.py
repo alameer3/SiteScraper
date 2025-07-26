@@ -189,21 +189,14 @@ def start_website_replication():
         
         # إعداد تكوين النسخ
         replication_config_data = data.get('config', {})
-        replication_config = ReplicationConfig(
-            framework=replication_config_data.get('framework', 'flask'),
-            css_framework=replication_config_data.get('css_framework', 'bootstrap'),
-            js_framework=replication_config_data.get('js_framework', 'vanilla'),
-            include_backend=replication_config_data.get('include_backend', True),
-            include_database=replication_config_data.get('include_database', True),
-            include_authentication=replication_config_data.get('include_authentication', True),
-            optimize_code=replication_config_data.get('optimize_code', True),
-            responsive_design=replication_config_data.get('responsive_design', True),
-            output_structure=replication_config_data.get('output_structure', 'mvc'),
-            target_directory=replication_config_data.get('target_directory', f'replicated_site_{extraction_id}')
-        )
+        # تكوين النسخ (تم تبسيطه)
+        replication_settings = {
+            'framework': replication_config_data.get('framework', 'html'),
+            'output_directory': replication_config_data.get('target_directory', f'replicated_site_{extraction_id}')
+        }
         
         # إنشاء مولد النسخ المتماثل
-        replicator = WebsiteReplicator(replication_config)
+        replicator = WebsiteReplicator()
         
         # بدء عملية النسخ
         replication_result = replicator.replicate_website(result_info['result'])
@@ -240,22 +233,18 @@ def analyze_with_ai():
         
         # إعداد تكوين الذكاء الاصطناعي
         ai_config_data = data.get('config', {})
-        ai_config = AIAnalysisConfig(
-            enable_code_understanding=ai_config_data.get('enable_code_understanding', True),
-            enable_pattern_recognition=ai_config_data.get('enable_pattern_recognition', True),
-            enable_smart_replication=ai_config_data.get('enable_smart_replication', True),
-            enable_quality_assurance=ai_config_data.get('enable_quality_assurance', True),
-            confidence_threshold=ai_config_data.get('confidence_threshold', 0.8),
-            max_complexity_level=ai_config_data.get('max_complexity_level', 5),
-            enable_learning=ai_config_data.get('enable_learning', True),
-            analysis_depth=ai_config_data.get('analysis_depth', 'comprehensive')
-        )
+        # تكوين AI مبسط
+        ai_settings = {
+            'depth': ai_config_data.get('analysis_depth', 'comprehensive'),
+            'confidence': ai_config_data.get('confidence_threshold', 0.8)
+        }
         
-        # إنشاء محرك الذكاء الاصطناعي
-        ai_engine = SmartReplicationEngine(ai_config)
+        # استخدام AI Analyzer الموجود
+        from core.analyzers.ai_analyzer import AIAnalyzer
+        ai_engine = AIAnalyzer()
         
         # تحليل بالذكاء الاصطناعي
-        ai_analysis = ai_engine.analyze_with_ai(result_info['result'])
+        ai_analysis = ai_engine.analyze_content(result_info['result'])
         
         return jsonify({
             'extraction_id': extraction_id,

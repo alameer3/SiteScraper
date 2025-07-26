@@ -36,7 +36,7 @@ class SimpleAssetDownloader:
     
     def download_assets(self, asset_urls: List[str], base_url: str) -> Dict[str, Any]:
         """تحميل قائمة من الأصول"""
-        self.stats['start_time'] = time.time()
+        self.stats['start_time'] = int(time.time())
         self.logger.info(f"بدء تحميل {len(asset_urls)} أصل...")
         
         downloaded_assets = {}
@@ -104,7 +104,7 @@ class SimpleAssetDownloader:
                 self.stats['failed'] += 1
                 self.logger.error(f"خطأ في تحميل {asset_url}: {e}")
         
-        self.stats['end_time'] = time.time()
+        self.stats['end_time'] = int(time.time())
         
         return {
             'downloaded_assets': downloaded_assets,

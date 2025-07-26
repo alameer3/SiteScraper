@@ -285,6 +285,23 @@ class AdvancedExtractor:
         
         return processed_assets
     
+    def _replicate_website(self, url: str, extraction_result: Dict[str, Any]) -> Dict[str, Any]:
+        """إنشاء موقع مطابق بناءً على نتائج الاستخراج"""
+        try:
+            from core.generators.website_replicator import WebsiteReplicator
+            
+            replicator = WebsiteReplicator()
+            replication_result = replicator.replicate_website(extraction_result)
+            
+            return replication_result
+            
+        except Exception as e:
+            self.logger.error(f"خطأ في إنشاء الموقع المطابق: {e}")
+            return {
+                'status': 'error',
+                'error': str(e)
+            }
+    
     def _extract_metadata(self, url: str, config: Dict) -> Dict[str, Any]:
         """Extract comprehensive metadata using real scraping."""
         from core.scrapers.smart_scraper import SmartScraper
