@@ -9,7 +9,7 @@ import logging
 import json
 from datetime import datetime
 
-# Import organized modules
+# Import all blueprints
 from core.analyzers.ai_analyzer import AIAnalyzer
 from core.extractors.advanced_extractor import AdvancedExtractor
 from data.manager import DataManager
@@ -17,10 +17,12 @@ from utils.validators import URLValidator, DataValidator
 from utils.formatters import DataFormatter, ReportFormatter
 from api.endpoints.analyzer_api import analyzer_api
 from api.endpoints.deep_extraction_api import deep_extraction_bp
+from api.endpoints.smart_replication_api import smart_replication_bp
 
-# Register API blueprints
+# Register all blueprints
 app.register_blueprint(analyzer_api)
-app.register_blueprint(deep_extraction_bp)
+app.register_blueprint(deep_extraction_bp, url_prefix='/api')
+app.register_blueprint(smart_replication_bp, url_prefix='/api')
 
 # Initialize components
 ai_analyzer = AIAnalyzer()
@@ -35,7 +37,7 @@ def index():
     cache_stats = data_manager.get_cache_statistics()
     recent_reports = data_manager.list_reports()[:5]  # Get 5 most recent
     storage_info = data_manager.get_storage_info()
-    
+
     return render_template('pages/dashboard.html', 
                          cache_stats=cache_stats,
                          recent_reports=recent_reports,
@@ -48,8 +50,13 @@ def extractor():
 
 @app.route('/deep-extraction')
 def deep_extraction():
-    """Deep extraction engine page."""
+    """Deep extraction page."""
     return render_template('pages/deep_extraction.html')
+
+@app.route('/smart-replication')
+def smart_replication():
+    """Smart replication page."""
+    return render_template('pages/smart_replication.html')
 
 @app.route('/extract-content', methods=['POST'])
 def extract_content():
@@ -58,17 +65,17 @@ def extract_content():
         url = request.form.get('url', '').strip()
         mode = request.form.get('extraction_mode', 'standard')
         export_format = request.form.get('export_format', 'json')
-        
+
         if not url:
             return jsonify({'success': False, 'error': 'URL is required'}), 400
-        
+
         # Validate URL
         if not URLValidator.is_valid_url(url):
             return jsonify({'success': False, 'error': 'Invalid URL format'}), 400
-        
+
         # Normalize URL
         url = URLValidator.normalize_url(url)
-        
+
         # Build extraction config from form
         extraction_config = {
             'depth': int(request.form.get('crawl_depth', 2)),
@@ -79,23 +86,23 @@ def extract_content():
             'ai_analysis': request.form.get('ai_analysis') == 'on',
             'remove_ads': request.form.get('remove_ads') == 'on'
         }
-        
+
         # Perform extraction
         result = advanced_extractor.extract_with_mode(url, mode, extraction_config)
-        
+
         if 'error' in result:
             return jsonify({'success': False, 'error': result['error']}), 500
-        
+
         # Export data in requested format
         export_result = advanced_extractor.export_data(result, export_format)
-        
+
         # Save report
         report_path = data_manager.save_report(
             f"extraction_{URLValidator.extract_domain(url)}", 
             result, 
             'extraction'
         )
-        
+
         return jsonify({
             'success': True,
             'message': 'Extraction completed successfully',
@@ -107,7 +114,7 @@ def extract_content():
             'download_url': f'/download-report/{report_path.split("/")[-1]}',
             'export_message': export_result
         })
-        
+
     except Exception as e:
         logger.error(f"Extraction error: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -117,71 +124,71 @@ def analyze():
     """Enhanced analysis page with new features."""
     if request.method == 'GET':
         return render_template('pages/analyze.html')
-    
+
     try:
         url = request.form.get('url', '').strip()
         mode = request.form.get('mode', 'standard')
         enable_ai = request.form.get('enable_ai') == 'on'
         enable_cache = request.form.get('enable_cache') == 'on'
-        
+
         if not url:
             flash('URL is required', 'error')
             return redirect(url_for('analyze'))
-        
+
         # Validate URL
         if not URLValidator.is_valid_url(url):
             flash('Invalid URL format', 'error')
             return redirect(url_for('analyze'))
-        
+
         # Normalize URL
         url = URLValidator.normalize_url(url)
-        
+
         # Check cache first
         result = None
         from_cache = False
-        
+
         if enable_cache:
             result = data_manager.get_cached_data(url)
             if result:
                 from_cache = True
                 logger.info(f"Retrieved cached result for {url}")
-        
+
         # Perform new analysis if not cached
         if not result:
             result = advanced_extractor.extract_with_mode(url, mode)
-            
+
             if 'error' in result:
                 flash(f'Analysis failed: {result["error"]}', 'error')
                 return redirect(url_for('analyze'))
-            
+
             # Add AI analysis if enabled
             if enable_ai and 'content' in result:
                 content_text = result['content'].get('text_content', '')
                 metadata = result.get('metadata', {})
-                
+
                 ai_analysis = ai_analyzer.analyze_content_with_ai(content_text, metadata)
                 result['ai_analysis'] = ai_analysis
-            
+
             # Cache the result
             if enable_cache:
                 data_manager.cache_data(url, result)
-        
+
         # Save report
         report_path = data_manager.save_report(
             URLValidator.extract_domain(url), 
             result, 
             'analysis'
         )
-        
+
         # Format for display
         formatted_result = ReportFormatter.format_extraction_summary(result)
-        
+
         return render_template('pages/results.html', 
                              result=result,
                              formatted_result=formatted_result,
                              from_cache=from_cache,
                              report_path=report_path)
-        
+
     except Exception as e:
         logger.error(f"Analysis error: {e}")
         flash(f'Analysis failed: {str(e)}', 'error')
@@ -192,12 +199,12 @@ def reports():
     """Reports management page."""
     report_type = request.args.get('type')
     reports_list = data_manager.list_reports(report_type)
-    
+
     # Format file sizes and dates
     for report in reports_list:
         report['size_formatted'] = DataFormatter.format_file_size(report['size'])
         report['created_formatted'] = DataFormatter.format_timestamp(report['created'])
-    
+
     return render_template('pages/reports.html', 
                          reports=reports_list,
                          current_type=report_type)
@@ -208,17 +215,17 @@ def export_data():
     try:
         export_format = request.form.get('format', 'json')
         analysis_data = json.loads(request.form.get('data', '{}'))
-        
+
         if not DataValidator.validate_export_format(export_format):
             flash('Invalid export format', 'error')
             return redirect(request.referrer or url_for('index'))
-        
+
         # Export data
         export_result = advanced_extractor.export_data(analysis_data, export_format)
-        
+
         flash(f'Export successful: {export_result}', 'success')
         return redirect(request.referrer or url_for('reports'))
-        
+
     except Exception as e:
         logger.error(f"Export error: {e}")
         flash(f'Export failed: {str(e)}', 'error')
@@ -235,7 +242,7 @@ def performance():
     # Get performance metrics
     storage_info = data_manager.get_storage_info()
     cache_stats = data_manager.get_cache_statistics()
-    
+
     return render_template('pages/performance.html',
                          storage_info=storage_info,
                          cache_stats=cache_stats)
@@ -250,12 +257,12 @@ def data_management():
     """Data organization and management."""
     storage_info = data_manager.get_storage_info()
     cache_stats = data_manager.get_cache_statistics()
-    
+
     # Format data for display
     for category, info in storage_info.items():
         if 'total_size_bytes' in info:
             info['size_formatted'] = DataFormatter.format_file_size(info['total_size_bytes'])
-    
+
     return render_template('pages/data_management.html',
                          storage_info=storage_info,
                          cache_stats=cache_stats)
@@ -265,15 +272,15 @@ def organize_data():
     """Organize and clean data storage."""
     try:
         organization_result = data_manager.organize_data()
-        
+
         flash(f"""Data organization completed:
         - Cache entries cleaned: {organization_result['cache_cleaned']}
         - Reports organized: {organization_result['reports_organized']}""", 'success')
-        
+
     except Exception as e:
         logger.error(f"Data organization error: {e}")
         flash(f'Data organization failed: {str(e)}', 'error')
-    
+
     return redirect(url_for('data_management'))
 
 @app.route('/clean-cache', methods=['POST'])
@@ -282,11 +289,11 @@ def clean_cache():
     try:
         cleaned_count = data_manager.clean_expired_cache()
         flash(f'Cleaned {cleaned_count} expired cache entries', 'success')
-        
+
     except Exception as e:
         logger.error(f"Cache cleaning error: {e}")
         flash(f'Cache cleaning failed: {str(e)}', 'error')
-    
+
     return redirect(url_for('data_management'))
 
 # Error handlers

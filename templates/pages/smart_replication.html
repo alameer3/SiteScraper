@@ -1,0 +1,217 @@
+
+{% extends "layouts/base.html" %}
+
+{% block title %}النسخ الذكي{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-feather="cpu"></i>
+                        النسخ الذكي بالذكاء الاصطناعي
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- إعدادات النسخ -->
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>إعدادات النسخ</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="replicationForm">
+                                        <div class="form-group mb-3">
+                                            <label for="extractionData">بيانات الاستخراج</label>
+                                            <textarea class="form-control" id="extractionData" rows="8" 
+                                                placeholder="الصق هنا بيانات الاستخراج بصيغة JSON"></textarea>
+                                        </div>
+                                        
+                                        <div class="form-group mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="enableAiAnalysis" checked>
+                                                <label class="form-check-label" for="enableAiAnalysis">
+                                                    تمكين تحليل الذكاء الاصطناعي
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="enablePatternRecognition" checked>
+                                                <label class="form-check-label" for="enablePatternRecognition">
+                                                    تمكين التعرف على الأنماط
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="enableSmartReplication" checked>
+                                                <label class="form-check-label" for="enableSmartReplication">
+                                                    تمكين النسخ الذكي
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="enableQualityAssurance" checked>
+                                                <label class="form-check-label" for="enableQualityAssurance">
+                                                    تمكين ضمان الجودة
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group mb-3">
+                                            <label for="optimizationLevel">مستوى التحسين</label>
+                                            <select class="form-control" id="optimizationLevel">
+                                                <option value="low">منخفض</option>
+                                                <option value="medium">متوسط</option>
+                                                <option value="high" selected>عالي</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i data-feather="play"></i>
+                                            بدء النسخ الذكي
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- النتائج والحالة -->
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>حالة النسخ والنتائج</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="replicationStatus" class="alert alert-info" style="display: none;">
+                                        <i data-feather="info"></i>
+                                        <span id="statusMessage">جاري التحضير...</span>
+                                    </div>
+                                    
+                                    <div id="progressContainer" style="display: none;">
+                                        <div class="progress mb-3">
+                                            <div id="progressBar" class="progress-bar" role="progressbar" 
+                                                style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                0%
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="resultsContainer" style="display: none;">
+                                        <h6>نتائج النسخ:</h6>
+                                        <div id="resultsContent"></div>
+                                    </div>
+                                    
+                                    <div id="qualityScore" style="display: none;">
+                                        <h6>نتيجة الجودة:</h6>
+                                        <div class="progress">
+                                            <div id="qualityProgressBar" class="progress-bar bg-success" 
+                                                role="progressbar" style="width: 0%">
+                                                0%
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="generatedFiles" style="display: none;">
+                                        <h6>الملفات المُنشأة:</h6>
+                                        <div id="filesList"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('replicationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const extractionData = document.getElementById('extractionData').value;
+    const config = {
+        enable_ai_analysis: document.getElementById('enableAiAnalysis').checked,
+        enable_pattern_recognition: document.getElementById('enablePatternRecognition').checked,
+        enable_smart_replication: document.getElementById('enableSmartReplication').checked,
+        enable_quality_assurance: document.getElementById('enableQualityAssurance').checked,
+        optimization_level: document.getElementById('optimizationLevel').value
+    };
+    
+    // إظهار حالة التحميل
+    document.getElementById('replicationStatus').style.display = 'block';
+    document.getElementById('statusMessage').textContent = 'جاري بدء النسخ الذكي...';
+    
+    try {
+        const response = await fetch('/api/smart-replication/start', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                extraction_data: JSON.parse(extractionData || '{}'),
+                config: config
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('statusMessage').textContent = 'تم بدء النسخ الذكي بنجاح!';
+            displayResults(result.results);
+        } else {
+            document.getElementById('statusMessage').textContent = 'خطأ: ' + result.error;
+            document.getElementById('replicationStatus').className = 'alert alert-danger';
+        }
+        
+    } catch (error) {
+        document.getElementById('statusMessage').textContent = 'خطأ في الاتصال: ' + error.message;
+        document.getElementById('replicationStatus').className = 'alert alert-danger';
+    }
+});
+
+function displayResults(results) {
+    // عرض النتائج
+    const resultsContainer = document.getElementById('resultsContainer');
+    const resultsContent = document.getElementById('resultsContent');
+    
+    resultsContainer.style.display = 'block';
+    resultsContent.innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                <strong>معرف النسخ:</strong> ${results.metadata?.replication_id || 'غير محدد'}
+            </div>
+            <div class="col-md-6">
+                <strong>الحالة:</strong> ${results.metadata?.status || 'غير محدد'}
+            </div>
+        </div>
+    `;
+    
+    // عرض نتيجة الجودة
+    const qualityScore = results.quality_assurance?.overall_score || 0;
+    if (qualityScore > 0) {
+        document.getElementById('qualityScore').style.display = 'block';
+        const qualityBar = document.getElementById('qualityProgressBar');
+        qualityBar.style.width = (qualityScore * 100) + '%';
+        qualityBar.textContent = Math.round(qualityScore * 100) + '%';
+    }
+    
+    // عرض الملفات المُنشأة
+    if (results.generated_files) {
+        document.getElementById('generatedFiles').style.display = 'block';
+        const filesList = document.getElementById('filesList');
+        const filesCount = Object.keys(results.generated_files).length;
+        filesList.innerHTML = `<p>تم إنشاء ${filesCount} مجموعة من الملفات</p>`;
+    }
+}
+</script>
+{% endblock %}

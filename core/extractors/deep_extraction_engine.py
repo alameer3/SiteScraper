@@ -1395,6 +1395,99 @@ class DeepExtractionEngine:
         # استخدام المحرك الجديد
         return await self._extract_website_behavior(url)
 
+    async def _selenium_extraction(self, url: str) -> Dict[str, Any]:
+        """استخراج باستخدام Selenium للمواقع المعقدة"""
+        try:
+            from selenium import webdriver
+            from selenium.webdriver.chrome.options import Options
+            from selenium.webdriver.common.by import By
+            from selenium.webdriver.support.ui import WebDriverWait
+            from selenium.webdriver.support import expected_conditions as EC
+
+            chrome_options = Options()
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-dev-shm-usage')
+
+            driver = webdriver.Chrome(options=chrome_options)
+
+            try:
+                driver.get(url)
+
+                # انتظار تحميل الصفحة
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.TAG_NAME, "body"))
+                )
+
+                extraction_data = {
+                    'page_source': driver.page_source,
+                    'current_url': driver.current_url,
+                    'title': driver.title,
+                    'cookies': driver.get_cookies(),
+                    'local_storage': {},
+                    'session_storage': {},
+                    'forms_data': [],
+                    'links_data': []
+                }
+
+                # استخراج Local Storage
+                try:
+                    local_storage = driver.execute_script("return window.localStorage;")
+                    extraction_data['local_storage'] = local_storage or {}
+                except:
+                    extraction_data['local_storage'] = {}
+
+                # استخراج Session Storage
+                try:
+                    session_storage = driver.execute_script("return window.sessionStorage;")
+                    extraction_data['session_storage'] = session_storage or {}
+                except:
+                    extraction_data['session_storage'] = {}
+
+                # تحليل النماذج
+                forms = driver.find_elements(By.TAG_NAME, "form")
+                for form in forms:
+                    form_data = {
+                        'action': form.get_attribute('action') or '',
+                        'method': form.get_attribute('method') or 'get',
+                        'fields': []
+                    }
+
+                    fields = form.find_elements(By.CSS_SELECTOR, "input, select, textarea")
+                    for field in fields:
+                        form_data['fields'].append({
+                            'tag': field.tag_name,
+                            'type': field.get_attribute('type') or '',
+                            'name': field.get_attribute('name') or '',
+                            'id': field.get_attribute('id') or '',
+                            'required': field.get_attribute('required') is not None,
+                            'placeholder': field.get_attribute('placeholder') or ''
+                        })
+
+                    extraction_data['forms_data'].append(form_data)
+
+                # تحليل الروابط
+                links = driver.find_elements(By.TAG_NAME, "a")
+                for link in links[:50]:  # تحديد العدد لتجنب البطء
+                    extraction_data['links_data'].append({
+                        'text': link.text.strip(),
+                        'href': link.get_attribute('href') or '',
+                        'title': link.get_attribute('title') or '',
+                        'target': link.get_attribute('target') or ''
+                    })
+
+                return extraction_data
+
+            finally:
+                driver.quit()
+
+        except ImportError:
+            logging.warning("Selenium غير متوفر - تم تخطي الاستخراج")
+            return {'error': 'selenium_not_available'}
+        except Exception as e:
+            logging.error(f"خطأ في Selenium extraction: {e}")
+            return {'error': str(e)}
+    
     # محركات إضافية متقدمة
     async def _playwright_extraction(self, url: str) -> Dict[str, Any]:
         """استخراج باستخدام Playwright للمواقع التفاعلية"""
@@ -2258,6 +2351,7 @@ class DeepExtractionEngine:
     async def _beautifulsoup_extraction(self, url): return {}
 
     
+        async def _download_asset(self, asset_url: str) -> Optional[str]:
         """تحميل ملف نصي (CSS, JS)"""
         try:
             async with self.session.get(asset_url, timeout=aiohttp.ClientTimeout(total=10)) as response:
@@ -2271,6 +2365,7 @@ class DeepExtractionEngine:
         return None
 
     
+        async def _download_binary_asset(self, asset_url: str) -> Optional[bytes]:
         """تحميل ملف ثنائي (صور، خطوط)"""
         try:
             async with self.session.get(asset_url, timeout=aiohttp.ClientTimeout(total=15)) as response:
