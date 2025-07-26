@@ -1,0 +1,32 @@
+{
+  "images": {
+    "count": 0,
+    "total_size_mb": 0.0,
+    "files": []
+  },
+  "styles": {
+    "count": 0,
+    "total_size_mb": 0.0,
+    "files": []
+  },
+  "scripts": {
+    "count": 0,
+    "total_size_mb": 0.0,
+    "files": []
+  },
+  "fonts": {
+    "count": 0,
+    "total_size_mb": 0.0,
+    "files": []
+  },
+  "documents": {
+    "count": 0,
+    "total_size_mb": 0.0,
+    "files": []
+  },
+  "media": {
+    "count": 0,
+    "total_size_mb": 0.0,
+    "files": []
+  }
+}
