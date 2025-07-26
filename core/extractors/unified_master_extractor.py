@@ -91,7 +91,7 @@ class UnifiedExtractionConfig:
     organize_data: bool = True
     create_replicated_site: bool = True
     generate_reports: bool = True
-    export_formats: List[str] = None
+    export_formats: Optional[List[str]] = None
     
     # Performance
     enable_playwright: bool = True

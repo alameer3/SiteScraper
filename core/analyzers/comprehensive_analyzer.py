@@ -21,7 +21,8 @@ import requests
 import logging
 import base64
 from urllib.parse import urlparse, urljoin
-from bs4 import BeautifulSoup, Tag, NavigableString
+from bs4 import BeautifulSoup, Tag
+from bs4.element import NavigableString
 from collections import defaultdict, Counter
 
 try:
