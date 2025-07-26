@@ -26,6 +26,10 @@ app.register_blueprint(deep_extraction_bp, url_prefix='/api')
 app.register_blueprint(smart_replication_bp, url_prefix='/api')
 app.register_blueprint(advanced_ai_bp)
 
+# Import and register comprehensive extraction API
+from api.endpoints.comprehensive_extraction_api import comprehensive_extraction_bp
+app.register_blueprint(comprehensive_extraction_bp, url_prefix='/api')
+
 # Initialize components
 ai_analyzer = AIAnalyzer()
 advanced_extractor = AdvancedExtractor()
@@ -302,6 +306,11 @@ def clean_cache():
         flash(f'Cache cleaning failed: {str(e)}', 'error')
 
     return redirect(url_for('data_management'))
+
+@app.route('/comprehensive_extractor')
+def comprehensive_extractor():
+    """صفحة الاستخراج الشامل المتقدم"""
+    return render_template('pages/comprehensive_extractor.html')
 
 # Error handlers
 @app.errorhandler(404)

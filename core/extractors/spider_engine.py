@@ -251,10 +251,12 @@ class SpiderEngine:
         # روابط HTML
         for link in soup.find_all(['a', 'area'], href=True):
             if isinstance(link, Tag):
-                href = link.get('href', '').strip()
-                if href and not href.startswith('#'):
-                    full_url = urljoin(base_url, href)
-                    parsed = urlparse(full_url)
+                href_attr = link.get('href')
+                if href_attr:
+                    href = str(href_attr).strip()
+                    if href and not href.startswith('#'):
+                        full_url = urljoin(base_url, href)
+                        parsed = urlparse(full_url)
                     
                     # فحص النطاق
                     if self.config.follow_external_links or parsed.netloc == base_domain:
@@ -496,12 +498,18 @@ class SpiderEngine:
     def _get_meta_content(self, soup: BeautifulSoup, name: str) -> str:
         """استخراج محتوى meta tag"""
         meta = soup.find('meta', attrs={'name': name}) or soup.find('meta', attrs={'property': name})
-        return meta.get('content', '') if meta and isinstance(meta, Tag) else ''
+        if meta and isinstance(meta, Tag):
+            content = meta.get('content')
+            return str(content) if content else ''
+        return ''
     
     def _get_canonical_url(self, soup: BeautifulSoup) -> str:
         """استخراج canonical URL"""
         canonical = soup.find('link', rel='canonical')
-        return canonical.get('href', '') if canonical and isinstance(canonical, Tag) else ''
+        if canonical and isinstance(canonical, Tag):
+            href = canonical.get('href')
+            return str(href) if href else ''
+        return ''
     
     def _extract_og_tags(self, soup: BeautifulSoup) -> Dict[str, str]:
         """استخراج Open Graph tags"""

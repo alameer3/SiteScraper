@@ -482,7 +482,7 @@ class TemplateGenerator:
     
     {js_scripts.get(css_framework, js_scripts['vanilla'])}
     
-    {% if self.config.include_interactions %}
+    {{%- if config.include_interactions %}}
     <script>
         // تفعيل التفاعلات
         document.addEventListener('DOMContentLoaded', function() {{
@@ -493,7 +493,7 @@ class TemplateGenerator:
             }});
         }});
     </script>
-    {% endif %}
+    {{%- endif %}}
     
     {{{{ extra_scripts | safe }}}}
 </body>
