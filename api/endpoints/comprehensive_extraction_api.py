@@ -58,7 +58,12 @@ def start_comprehensive_extraction():
         }
         
         # بدء الاستخراج في الخلفية
-        asyncio.create_task(run_comprehensive_extraction(extraction_id, target_url, config))
+        import threading
+        extraction_thread = threading.Thread(
+            target=lambda: asyncio.run(run_comprehensive_extraction(extraction_id, target_url, config))
+        )
+        extraction_thread.daemon = True
+        extraction_thread.start()
         
         return jsonify({
             'success': True,

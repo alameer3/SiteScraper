@@ -30,6 +30,10 @@ app.register_blueprint(advanced_ai_bp)
 from api.endpoints.comprehensive_extraction_api import comprehensive_extraction_bp
 app.register_blueprint(comprehensive_extraction_bp, url_prefix='/api')
 
+# Import simple comprehensive API
+from api.endpoints.simple_comprehensive_api import simple_comprehensive_bp
+app.register_blueprint(simple_comprehensive_bp, url_prefix='/api')
+
 # Initialize components
 ai_analyzer = AIAnalyzer()
 advanced_extractor = AdvancedExtractor()

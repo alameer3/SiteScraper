@@ -330,8 +330,8 @@ class ComprehensiveExtractor {
             this.progressModal.show();
             this.updateProgress('جاري التهيئة...', 0);
 
-            // Start extraction
-            const response = await fetch('/api/start-comprehensive-extraction', {
+            // Start extraction (using simple API for immediate results)
+            const response = await fetch('/api/simple-comprehensive-extraction', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -343,8 +343,13 @@ class ComprehensiveExtractor {
 
             if (result.success) {
                 this.currentExtractionId = result.extraction_id;
-                this.monitorExtraction();
-                this.showStatus(result);
+                this.updateProgress('اكتمل الاستخراج بنجاح!', 100);
+                
+                setTimeout(() => {
+                    this.progressModal.hide();
+                    this.displayCompletedResults(result);
+                    this.showSuccess('تم الاستخراج الشامل بنجاح!');
+                }, 1000);
             } else {
                 throw new Error(result.error || 'فشل في بدء الاستخراج');
             }
@@ -445,16 +450,12 @@ class ComprehensiveExtractor {
         this.showError('فشل في الاستخراج: ' + (status.error || 'خطأ غير معروف'));
     }
 
-    async displayResults(status) {
+    displayCompletedResults(result) {
         const resultsSection = document.getElementById('resultsSection');
         const resultsContent = document.getElementById('resultsContent');
         
-        // Get full results
-        const response = await fetch(`/api/comprehensive-result/${this.currentExtractionId}`);
-        const fullResults = await response.json();
-        
-        if (fullResults.result) {
-            const summary = fullResults.summary || {};
+        if (result.result) {
+            const summary = result.statistics || {};
             
             resultsContent.innerHTML = `
                 <div class="row">
