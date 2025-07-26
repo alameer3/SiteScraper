@@ -140,6 +140,16 @@ class AdvancedExtractor:
         # Calculate statistics
         result['statistics'] = self._calculate_statistics(result)
         
+        # تنظيم جميع البيانات في مجلد واحد مرتب
+        from core.extractors.unified_organizer import UnifiedOrganizer
+        organizer = UnifiedOrganizer()
+        organized_path = organizer.organize_extraction_data(url, result)
+        
+        result['organized_data_path'] = organized_path
+        result['organization_summary'] = organizer.get_extraction_summary(organized_path)
+        
+        self.logger.info(f"تم تنظيم جميع البيانات في: {organized_path}")
+        
         return result
     
     def _extract_content(self, url: str, config: Dict) -> Dict[str, Any]:

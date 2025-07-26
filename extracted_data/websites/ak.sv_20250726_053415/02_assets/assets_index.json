@@ -1,0 +1,135 @@
+{
+  "images": {
+    "count": 6,
+    "total_size_mb": 0.01,
+    "files": [
+      {
+        "name": "logo-white.svg",
+        "size": 2238,
+        "size_mb": 0.0
+      },
+      {
+        "name": "default.jpg",
+        "size": 847,
+        "size_mb": 0.0
+      },
+      {
+        "name": "0.gif",
+        "size": 43,
+        "size_mb": 0.0
+      },
+      {
+        "name": "logo-white_1.svg",
+        "size": 2238,
+        "size_mb": 0.0
+      },
+      {
+        "name": "default_1.jpg",
+        "size": 847,
+        "size_mb": 0.0
+      },
+      {
+        "name": "0_1.gif",
+        "size": 43,
+        "size_mb": 0.0
+      }
+    ]
+  },
+  "styles": {
+    "count": 8,
+    "total_size_mb": 0.33,
+    "files": [
+      {
+        "name": "plugins.css",
+        "size": 134885,
+        "size_mb": 0.13
+      },
+      {
+        "name": "style.css",
+        "size": 36554,
+        "size_mb": 0.03
+      },
+      {
+        "name": "akwam.css",
+        "size": 551,
+        "size_mb": 0.0
+      },
+      {
+        "name": "home.css",
+        "size": 2524,
+        "size_mb": 0.0
+      },
+      {
+        "name": "plugins_1.css",
+        "size": 134885,
+        "size_mb": 0.13
+      },
+      {
+        "name": "style_1.css",
+        "size": 36554,
+        "size_mb": 0.03
+      },
+      {
+        "name": "akwam_1.css",
+        "size": 551,
+        "size_mb": 0.0
+      },
+      {
+        "name": "home_1.css",
+        "size": 2524,
+        "size_mb": 0.0
+      }
+    ]
+  },
+  "scripts": {
+    "count": 6,
+    "total_size_mb": 0.56,
+    "files": [
+      {
+        "name": "adsbygoogle.js",
+        "size": 195762,
+        "size_mb": 0.19
+      },
+      {
+        "name": "jquery-3.2.1.min.js",
+        "size": 86659,
+        "size_mb": 0.08
+      },
+      {
+        "name": "typed.min.js",
+        "size": 11461,
+        "size_mb": 0.01
+      },
+      {
+        "name": "adsbygoogle_1.js",
+        "size": 195762,
+        "size_mb": 0.19
+      },
+      {
+        "name": "jquery-3.2.1.min_1.js",
+        "size": 86659,
+        "size_mb": 0.08
+      },
+      {
+        "name": "typed.min_1.js",
+        "size": 11461,
+        "size_mb": 0.01
+      }
+    ]
+  },
+  "fonts": {
+    "count": 0,
+    "total_size_mb": 0.0,
+    "files": []
+  },
+  "documents": {
+    "count": 0,
+    "total_size_mb": 0.0,
+    "files": []
+  },
+  "media": {
+    "count": 0,
+    "total_size_mb": 0.0,
+    "files": []
+  }
+}

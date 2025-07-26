@@ -1,2 +1,2 @@
-from app import app  # noqa: F401
-import routes_new as routes  # Import new organized routes # noqa: F401
+from app import app
+import simple_routes  # noqa: F401

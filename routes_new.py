@@ -13,8 +13,9 @@ from datetime import datetime
 from core.analyzers.ai_analyzer import AIAnalyzer
 from core.extractors.advanced_extractor import AdvancedExtractor
 from data.manager import DataManager
-from utils.validators import URLValidator, DataValidator
-from utils.formatters import DataFormatter, ReportFormatter
+# استيراد المساعدات
+from replicated_sites.utils.validators import URLValidator, DataValidator
+from replicated_sites.utils.formatters import DataFormatter, ReportFormatter
 from api.endpoints.analyzer_api import analyzer_api
 from api.endpoints.deep_extraction_api import deep_extraction_bp
 from api.endpoints.smart_replication_api import smart_replication_bp
