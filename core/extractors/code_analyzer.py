@@ -1009,7 +1009,10 @@ class CodeAnalyzer:
             'معقد جداً': 'إعادة تصميم وبناء من الصفر'
         }
         
-        return approaches.get(complexity_level, 'تحليل إضافي مطلوب') نوع endpoint"""
+        return approaches.get(complexity_level, 'تحليل إضافي مطلوب')
+    
+    def _determine_endpoint_type(self, url: str) -> str:
+        """تحديد نوع endpoint"""
         url_lower = url.lower()
         
         if 'api' in url_lower:

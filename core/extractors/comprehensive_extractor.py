@@ -53,7 +53,7 @@ class ComprehensiveExtractionConfig:
     
     # إعدادات التصدير
     output_directory: str = "extracted_websites"
-    export_formats: List[str] = None
+    export_formats: Optional[List[str]] = None
     
     def __post_init__(self):
         if self.export_formats is None:

@@ -73,7 +73,8 @@ class AdvancedExtractor:
             
             # Override with custom configuration if provided
             if custom_config:
-                config.update(custom_config)
+                if isinstance(custom_config, dict):
+                    config.update(custom_config)
             
             extraction_result = {
                 'url': url,

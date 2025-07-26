@@ -25,7 +25,7 @@ class AssetDownloadConfig:
     save_directory: str = "downloaded_assets"
     organize_by_type: bool = True
     verify_checksums: bool = True
-    allowed_extensions: Set[str] = None
+    allowed_extensions: Optional[Set[str]] = None
     
     def __post_init__(self):
         if self.allowed_extensions is None:
