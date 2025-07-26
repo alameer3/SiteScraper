@@ -1,0 +1,337 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}لوحة التحكم - أداة تحليل المواقع{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h2 mb-3">
+            <i data-feather="home"></i> لوحة التحكم الرئيسية
+        </h1>
+        <p class="text-muted">مرحباً بك في أداة تحليل المواقع المتقدمة مع الذكاء الاصطناعي</p>
+    </div>
+</div>
+
+<!-- Quick Statistics -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="metric-card">
+            <div class="metric-number">{{ cache_stats.get('active_entries', 0) }}</div>
+            <div class="metric-label">تحليلات محفوظة</div>
+            <small class="opacity-75">
+                <i data-feather="trending-up"></i> 
+                {{ cache_stats.get('total_entries', 0) }} إجمالي
+            </small>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="metric-card bg-gradient" style="background: linear-gradient(135deg, #28a745, #20c997);">
+            <div class="metric-number">{{ recent_reports|length }}</div>
+            <div class="metric-label">تقارير حديثة</div>
+            <small class="opacity-75">
+                <i data-feather="file-text"></i> 
+                آخر 30 يوماً
+            </small>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="metric-card bg-gradient" style="background: linear-gradient(135deg, #ffc107, #fd7e14);">
+            <div class="metric-number">
+                {% set total_size = 0 %}
+                {% for category, info in storage_info.items() %}
+                    {% if info.get('total_size_mb') %}
+                        {% set total_size = total_size + info.total_size_mb %}
+                    {% endif %}
+                {% endfor %}
+                {{ "%.1f"|format(total_size) }}
+            </div>
+            <div class="metric-label">ميجابايت مخزنة</div>
+            <small class="opacity-75">
+                <i data-feather="hard-drive"></i> 
+                إجمالي البيانات
+            </small>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="metric-card bg-gradient" style="background: linear-gradient(135deg, #6f42c1, #e83e8c);">
+            <div class="metric-number">{{ cache_stats.get('top_accessed_urls', [])|length }}</div>
+            <div class="metric-label">مواقع مفضلة</div>
+            <small class="opacity-75">
+                <i data-feather="star"></i> 
+                الأكثر تحليلاً
+            </small>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="zap"></i> إجراءات سريعة
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <div class="feature-icon mx-auto">
+                                <i data-feather="search"></i>
+                            </div>
+                            <h6>تحليل موقع جديد</h6>
+                            <p class="text-muted small">ابدأ تحليل شامل لموقع إلكتروني</p>
+                            <a href="{{ url_for('analyze') }}" class="btn btn-primary btn-sm">
+                                <i data-feather="arrow-left"></i> ابدأ التحليل
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <div class="feature-icon mx-auto" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                                <i data-feather="cpu"></i>
+                            </div>
+                            <h6>التحليل الذكي</h6>
+                            <p class="text-muted small">تحليل بالذكاء الاصطناعي متقدم</p>
+                            <a href="{{ url_for('ai_analysis') }}" class="btn btn-success btn-sm">
+                                <i data-feather="arrow-left"></i> التحليل الذكي
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <div class="feature-icon mx-auto" style="background: linear-gradient(135deg, #ffc107, #fd7e14);">
+                                <i data-feather="file-text"></i>
+                            </div>
+                            <h6>التقارير</h6>
+                            <p class="text-muted small">عرض وإدارة التقارير المحفوظة</p>
+                            <a href="{{ url_for('reports') }}" class="btn btn-warning btn-sm">
+                                <i data-feather="arrow-left"></i> عرض التقارير
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <div class="feature-icon mx-auto" style="background: linear-gradient(135deg, #6f42c1, #e83e8c);">
+                                <i data-feather="database"></i>
+                            </div>
+                            <h6>إدارة البيانات</h6>
+                            <p class="text-muted small">تنظيم وإدارة البيانات المخزنة</p>
+                            <a href="{{ url_for('data_management') }}" class="btn btn-info btn-sm">
+                                <i data-feather="arrow-left"></i> إدارة البيانات
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="activity"></i> النشاط الأخير
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_reports %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>نوع التقرير</th>
+                                    <th>الحجم</th>
+                                    <th>تاريخ الإنشاء</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for report in recent_reports %}
+                                <tr>
+                                    <td>
+                                        <i data-feather="file"></i>
+                                        <strong>{{ report.report_type }}</strong>
+                                    </td>
+                                    <td>{{ format_file_size(report.size) }}</td>
+                                    <td>{{ format_timestamp(report.created) }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i data-feather="eye"></i> عرض
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i data-feather="inbox" style="width: 48px; height: 48px;" class="text-muted mb-3"></i>
+                        <h6 class="text-muted">لا توجد تقارير حديثة</h6>
+                        <p class="text-muted small">ابدأ بإنشاء تحليل جديد لعرض النشاط هنا</p>
+                        <a href="{{ url_for('analyze') }}" class="btn btn-primary">
+                            <i data-feather="plus"></i> إنشاء تحليل جديد
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="trending-up"></i> إحصائيات الاستخدام
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Cache Usage -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small">استخدام التخزين المؤقت</span>
+                        <span class="small text-muted">{{ cache_stats.get('active_entries', 0) }}/{{ cache_stats.get('total_entries', 0) }}</span>
+                    </div>
+                    {% set cache_percent = (cache_stats.get('active_entries', 0) / cache_stats.get('total_entries', 1) * 100) if cache_stats.get('total_entries', 0) > 0 else 0 %}
+                    <div class="progress">
+                        <div class="progress-bar bg-primary" style="width: {{ cache_percent }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Storage Usage -->
+                {% for category, info in storage_info.items() %}
+                    {% if info.get('file_count') and info.get('total_size_mb') %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small">{{ category }}</span>
+                            <span class="small text-muted">{{ "%.1f"|format(info.total_size_mb) }} MB</span>
+                        </div>
+                        <div class="small text-muted">{{ info.file_count }} ملف</div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Top Accessed URLs -->
+                {% if cache_stats.get('top_accessed_urls') %}
+                <hr>
+                <h6 class="small text-muted mb-3">المواقع الأكثر تحليلاً</h6>
+                {% for url_data in cache_stats.top_accessed_urls[:3] %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="flex-grow-1">
+                        <div class="small fw-bold">{{ truncate_text(url_data.url, 30) }}</div>
+                        <div class="small text-muted">{{ url_data.count }} مرة</div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Health Status -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="shield"></i> حالة النظام
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="status-badge status-success mb-2">
+                                <i data-feather="check"></i> قاعدة البيانات
+                            </div>
+                            <small class="text-muted">متصلة وتعمل بشكل طبيعي</small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="status-badge status-success mb-2">
+                                <i data-feather="check"></i> التخزين المؤقت
+                            </div>
+                            <small class="text-muted">{{ cache_stats.get('active_entries', 0) }} عنصر محفوظ</small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="status-badge status-success mb-2">
+                                <i data-feather="check"></i> واجهة برمجة التطبيقات
+                            </div>
+                            <small class="text-muted">جاهزة لاستقبال الطلبات</small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="status-badge status-success mb-2">
+                                <i data-feather="check"></i> الذكاء الاصطناعي
+                            </div>
+                            <small class="text-muted">نشط ومتاح للاستخدام</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add some interactivity to the dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate metric cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe metric cards
+        document.querySelectorAll('.metric-card').forEach(card => {
+            card.style.transform = 'translateY(20px)';
+            card.style.opacity = '0';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+        
+        // Auto-refresh cache stats every 30 seconds
+        setInterval(function() {
+            fetch('/api/v1/cache/stats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update cache stats in the UI
+                        console.log('Cache stats updated:', data.cache_stats);
+                    }
+                })
+                .catch(error => console.log('Cache stats refresh failed:', error));
+        }, 30000);
+    });
+</script>
+{% endblock %}
