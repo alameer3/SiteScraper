@@ -667,9 +667,8 @@ class DeepExtractionEngine:
                         })
                         
                         # البحث عن دوال
-                        import re
-                        function_pattern = r'function\s+(\w+)\s*\([^)]*\)'
-                        functions = re.findall(function_pattern, script_content)
+                        function_pattern = re.compile(r'function\s+(\w+)\s*\([^)]*\)')
+                        functions = function_pattern.findall(script_content)
                         js_analysis['functions'].extend(functions)
                         
                         # البحث عن AJAX calls
@@ -688,8 +687,9 @@ class DeepExtractionEngine:
                                 })
                 
                 # تحليل event handlers
-                for element in soup.find_all(attrs=lambda x: x and any(attr.startswith('on') for attr in x.keys())):
-                    if isinstance(element, Tag):
+                all_elements = soup.find_all()
+                for element in all_elements:
+                    if isinstance(element, Tag) and element.attrs:
                         for attr in element.attrs:
                             if attr.startswith('on'):
                                 js_analysis['event_handlers'].append({
@@ -1603,11 +1603,21 @@ class DeepExtractionEngine:
             # استخراج البيانات الوصفية
             metadata = trafilatura.extract_metadata(downloaded)
             
-            # استخراج التعليقات إن وجدت
-            comments = trafilatura.extract_comments(downloaded)
+            # استخراج التعليقات إن وجدت (تحقق من توفر الوظيفة)
+            comments = []
+            if hasattr(trafilatura, 'extract_comments'):
+                try:
+                    comments = trafilatura.extract_comments(downloaded) or []
+                except:
+                    comments = []
             
-            # استخراج الروابط
-            links = trafilatura.extract_links(downloaded)
+            # استخراج الروابط (تحقق من توفر الوظيفة)
+            links = []
+            if hasattr(trafilatura, 'extract_links'):
+                try:
+                    links = trafilatura.extract_links(downloaded) or []
+                except:
+                    links = []
             
             extraction_data = {
                 'main_text': main_text or '',
@@ -1944,8 +1954,8 @@ class DeepExtractionEngine:
                             })
                 
                 # عد try-catch blocks في JavaScript
-                import re
-                try_catch_count = len(re.findall(r'try\s*{.*?catch', html_content, re.IGNORECASE | re.DOTALL))
+                try_catch_pattern = re.compile(r'try\s*{.*?catch', re.IGNORECASE | re.DOTALL)
+                try_catch_count = len(try_catch_pattern.findall(html_content))
                 error_data['try_catch_blocks'] = try_catch_count
                 
                 # البحث عن محتوى احتياطي
