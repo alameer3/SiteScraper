@@ -1,543 +1,0 @@
-{% extends "base.html" %}
-
-{% block title %}محلل المواقع الذكي - أداة التحليل الشامل{% endblock %}
-
-{% block content %}
-<div class="container-fluid">
-    <!-- Hero Section مطور -->
-    <div class="row justify-content-center mb-5">
-        <div class="col-xl-10">
-            <div class="hero-section glass-card p-5 text-center">
-                <!-- العنوان الرئيسي مع أنيميشن -->
-                <div class="hero-header mb-5">
-                    <h1 class="display-3 fw-bold gradient-text mb-4 animate-fade-in">
-                        <i data-feather="zap" class="me-3 text-warning hero-icon"></i>
-                        محلل المواقع الذكي
-                    </h1>
-                    <p class="lead text-light fs-4 mb-4 animate-slide-up">
-                        🚀 اكتشف أسرار التقنيات، الأداء، والأمان لأي موقع ويب بذكاء اصطناعي متطور
-                    </p>
-                    <div class="stats-bar d-flex justify-content-center gap-4 mb-4">
-                        <div class="stat-item">
-                            <span class="stat-number text-primary">50+</span>
-                            <span class="stat-label">تقنية مكتشفة</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number text-success">15+</span>
-                            <span class="stat-label">نوع تحليل</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number text-warning">99%</span>
-                            <span class="stat-label">دقة النتائج</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Flash messages -->
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        <div class="flash-messages mb-4">
-                            {% for category, message in messages %}
-                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show shadow" role="alert">
-                                    <i data-feather="alert-circle" class="me-2"></i>
-                                    {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                {% endwith %}
-
-                <!-- نموذج التحليل المطور -->
-                <div class="analysis-form-container">
-                    <form method="POST" action="/analyze" class="analysis-form" id="analysisForm">
-                        <div class="main-input-section mb-4">
-                            <div class="row g-3 align-items-end justify-content-center">
-                                <div class="col-lg-7 col-md-8">
-                                    <label for="url" class="form-label text-light fw-bold mb-3">
-                                        <i data-feather="globe" class="me-2"></i>
-                                        أدخل رابط الموقع المراد تحليله
-                                    </label>
-                                    <div class="input-group input-group-lg shadow">
-                                        <span class="input-group-text bg-primary text-white border-0">
-                                            <i data-feather="link" width="20" height="20"></i>
-                                        </span>
-                                        <input type="url" 
-                                               class="form-control form-control-lg bg-dark border-0 text-light custom-input" 
-                                               id="url" 
-                                               name="url" 
-                                               placeholder="https://example.com"
-                                               autocomplete="url"
-                                               required>
-                                    </div>
-                                    <div class="form-text text-light mt-2">
-                                        <i data-feather="info" width="16" class="me-1"></i>
-                                        مثال: https://github.com أو https://stackoverflow.com
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-3 col-md-4">
-                                    <button type="submit" class="btn btn-gradient btn-lg w-100 pulse-btn shadow-lg" id="analyzeBtn">
-                                        <i data-feather="search" class="me-2 spin-on-hover" width="20" height="20"></i>
-                                        <span class="btn-text">ابدأ التحليل</span>
-                                        <div class="btn-loading d-none">
-                                            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-                                            جاري التحليل...
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- خيارات متقدمة قابلة للطي -->
-                        <div class="advanced-options mt-4">
-                            <button class="btn btn-outline-light btn-sm mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#advancedSettings">
-                                <i data-feather="settings" class="me-2"></i>
-                                إعدادات متقدمة
-                                <i data-feather="chevron-down" class="ms-2"></i>
-                            </button>
-                            
-                            <div class="collapse" id="advancedSettings">
-                                <div class="card bg-dark border-0 shadow">
-                                    <div class="card-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-4">
-                                                <label for="max_depth" class="form-label text-light fw-bold">
-                                                    <i data-feather="layers" class="me-1"></i>
-                                                    عمق التحليل
-                                                </label>
-                                                <select class="form-select bg-dark border-primary text-light" id="max_depth" name="max_depth">
-                                                    <option value="1">🚀 سريع - صفحة واحدة</option>
-                                                    <option value="2" selected>⚡ متوسط - مستويين</option>
-                                                    <option value="3">🔥 شامل - ثلاثة مستويات</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <label class="form-label text-light fw-bold">خيارات الحماية</label>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="block_ads" name="block_ads" checked>
-                                                    <label class="form-check-label text-light" for="block_ads">
-                                                        <i data-feather="shield" class="me-1"></i>
-                                                        حجب الإعلانات والتتبع
-                                                    </label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <label class="form-label text-light fw-bold">نوع التحليل</label>
-                                                <select class="form-select bg-dark border-primary text-light" id="analysis_type" name="analysis_type">
-                                                    <option value="basic">🔍 أساسي</option>
-                                                    <option value="comprehensive" selected>🎯 شامل</option>
-                                                    <option value="security">🔒 أمان</option>
-                                                    <option value="performance">⚡ أداء</option>
-                                                    <option value="seo">📈 SEO</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- قسم الميزات الجديد والمطور -->
-    <div class="features-section mb-5">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold gradient-text mb-3">🎯 ميزات التحليل الاحترافي</h2>
-            <p class="lead text-light">تقنيات متطورة لتحليل شامل ومفصل</p>
-        </div>
-
-        <div class="row g-4">
-            <!-- تحليل التقنيات -->
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card modern-card h-100 hover-lift">
-                    <div class="card-header bg-transparent border-0 text-center p-4">
-                        <div class="feature-icon-modern mx-auto mb-3">
-                            <i data-feather="code" class="text-primary" width="48" height="48"></i>
-                        </div>
-                        <h5 class="text-white fw-bold mb-3">🔧 تحليل التقنيات</h5>
-                    </div>
-                    <div class="card-body pt-0">
-                        <ul class="feature-list text-light">
-                            <li><i data-feather="check" class="text-success me-2"></i>أطر العمل (React, Vue, Angular)</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>أنظمة إدارة المحتوى</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>خوادم الويب ولغات البرمجة</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>مكتبات JavaScript وCSS</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- تحليل الأمان -->
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card modern-card h-100 hover-lift">
-                    <div class="card-header bg-transparent border-0 text-center p-4">
-                        <div class="feature-icon-modern mx-auto mb-3">
-                            <i data-feather="shield" class="text-success" width="48" height="48"></i>
-                        </div>
-                        <h5 class="text-white fw-bold mb-3">🔒 تحليل الأمان</h5>
-                    </div>
-                    <div class="card-body pt-0">
-                        <ul class="feature-list text-light">
-                            <li><i data-feather="check" class="text-success me-2"></i>شهادات SSL/TLS</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>رؤوس الأمان HTTP</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>كشف الثغرات الشائعة</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>فحص البرمجيات الضارة</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- تحليل الأداء -->
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card modern-card h-100 hover-lift">
-                    <div class="card-header bg-transparent border-0 text-center p-4">
-                        <div class="feature-icon-modern mx-auto mb-3">
-                            <i data-feather="zap" class="text-warning" width="48" height="48"></i>
-                        </div>
-                        <h5 class="text-white fw-bold mb-3">⚡ تحليل الأداء</h5>
-                    </div>
-                    <div class="card-body pt-0">
-                        <ul class="feature-list text-light">
-                            <li><i data-feather="check" class="text-success me-2"></i>سرعة تحميل الصفحة</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>تحسين الصور والموارد</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>تحليل شبكة التوصيل</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>مؤشرات الأداء الأساسية</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- تحليل SEO -->
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card modern-card h-100 hover-lift">
-                    <div class="card-header bg-transparent border-0 text-center p-4">
-                        <div class="feature-icon-modern mx-auto mb-3">
-                            <i data-feather="trending-up" class="text-info" width="48" height="48"></i>
-                        </div>
-                        <h5 class="text-white fw-bold mb-3">📈 تحسين SEO</h5>
-                    </div>
-                    <div class="card-body pt-0">
-                        <ul class="feature-list text-light">
-                            <li><i data-feather="check" class="text-success me-2"></i>البيانات الوصفية</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>البنية المخططة</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>الكلمات المفتاحية</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>تقييم المحتوى</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- تحليل المحتوى -->
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card modern-card h-100 hover-lift">
-                    <div class="card-header bg-transparent border-0 text-center p-4">
-                        <div class="feature-icon-modern mx-auto mb-3">
-                            <i data-feather="file-text" class="text-purple" width="48" height="48"></i>
-                        </div>
-                        <h5 class="text-white fw-bold mb-3">📄 تحليل المحتوى</h5>
-                    </div>
-                    <div class="card-body pt-0">
-                        <ul class="feature-list text-light">
-                            <li><i data-feather="check" class="text-success me-2"></i>استخراج النصوص</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>تحليل الصور والوسائط</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>تحليل الروابط</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>هيكل الصفحة</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- تحليل المنافسين -->
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card modern-card h-100 hover-lift">
-                    <div class="card-header bg-transparent border-0 text-center p-4">
-                        <div class="feature-icon-modern mx-auto mb-3">
-                            <i data-feather="users" class="text-danger" width="48" height="48"></i>
-                        </div>
-                        <h5 class="text-white fw-bold mb-3">🎯 تحليل المنافسين</h5>
-                    </div>
-                    <div class="card-body pt-0">
-                        <ul class="feature-list text-light">
-                            <li><i data-feather="check" class="text-success me-2"></i>مقارنة التقنيات</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>تحليل الأداء</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>استراتيجيات SEO</li>
-                            <li><i data-feather="check" class="text-success me-2"></i>تقييم شامل</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- قسم الإحصائيات السريعة -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="stats-section glass-card p-5 text-center">
-                <h3 class="text-white mb-4">🎯 نتائج إعجابية من المحلل</h3>
-                <div class="row g-4">
-                    <div class="col-md-3 col-6">
-                        <div class="stat-card">
-                            <div class="stat-number">1000+</div>
-                            <div class="stat-label">موقع محلل</div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <div class="stat-card">
-                            <div class="stat-number">50+</div>
-                            <div class="stat-label">تقنية مكتشفة</div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <div class="stat-card">
-                            <div class="stat-number">99.9%</div>
-                            <div class="stat-label">دقة التحليل</div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <div class="stat-card">
-                            <div class="stat-number">24/7</div>
-                            <div class="stat-label">متاح دائماً</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- قسم كيفية العمل -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold gradient-text mb-3">⚙️ كيف يعمل المحلل؟</h2>
-                <p class="lead text-light">عملية بسيطة من ثلاث خطوات</p>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-lg-4">
-                    <div class="step-card text-center">
-                        <div class="step-number">1</div>
-                        <div class="step-icon mb-3">
-                            <i data-feather="edit-3" class="text-primary" width="48" height="48"></i>
-                        </div>
-                        <h5 class="text-white mb-3">أدخل الرابط</h5>
-                        <p class="text-light">ضع رابط الموقع الذي تريد تحليله في الحقل المخصص</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4">
-                    <div class="step-card text-center">
-                        <div class="step-number">2</div>
-                        <div class="step-icon mb-3">
-                            <i data-feather="cpu" class="text-success" width="48" height="48"></i>
-                        </div>
-                        <h5 class="text-white mb-3">اختر نوع التحليل</h5>
-                        <p class="text-light">حدد عمق التحليل والميزات التي تريد فحصها</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4">
-                    <div class="step-card text-center">
-                        <div class="step-number">3</div>
-                        <div class="step-icon mb-3">
-                            <i data-feather="download" class="text-warning" width="48" height="48"></i>
-                        </div>
-                        <h5 class="text-white mb-3">احصل على النتائج</h5>
-                        <p class="text-light">استلم تقرير شامل ومفصل باللغة العربية</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- قسم خريطة الموقع -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="site-map-section glass-card p-5">
-                <div class="text-center mb-4">
-                    <h3 class="text-white mb-3">🗺️ خريطة الموقع الكاملة</h3>
-                    <p class="text-light">جميع الصفحات والأدوات المتاحة</p>
-                </div>
-                
-                <div class="row g-4">
-                    <div class="col-md-3">
-                        <h6 class="text-primary mb-3">📊 التحليلات</h6>
-                        <ul class="list-unstyled">
-                            <li><a href="/security-analysis" class="text-light text-decoration-none"><i data-feather="shield" class="me-2" width="16"></i>تحليل الأمان</a></li>
-                            <li><a href="/performance-analysis" class="text-light text-decoration-none"><i data-feather="zap" class="me-2" width="16"></i>تحليل الأداء</a></li>
-                            <li><a href="/seo-analysis" class="text-light text-decoration-none"><i data-feather="trending-up" class="me-2" width="16"></i>تحليل SEO</a></li>
-                            <li><a href="/competitor-analysis" class="text-light text-decoration-none"><i data-feather="users" class="me-2" width="16"></i>تحليل المنافسين</a></li>
-                            <li><a href="/comprehensive-analysis" class="text-light text-decoration-none"><i data-feather="layers" class="me-2" width="16"></i>التحليل الشامل</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3">
-                        <h6 class="text-success mb-3">🛠️ الأدوات الموحدة الجديدة</h6>
-                        <ul class="list-unstyled">
-                            <li><a href="/unified-analyzer" class="text-light text-decoration-none"><i data-feather="cpu" class="me-2" width="16"></i>المحلل الموحد</a></li>
-                            <li><a href="/unified-extractor" class="text-light text-decoration-none"><i data-feather="download" class="me-2" width="16"></i>المستخرج الموحد</a></li>
-                            <li><a href="/unified-blocker" class="text-light text-decoration-none"><i data-feather="shield" class="me-2" width="16"></i>حاجب الإعلانات الموحد</a></li>
-                            <li><a href="/live-search" class="text-light text-decoration-none"><i data-feather="search" class="me-2" width="16"></i>البحث المتقدم</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3">
-                        <h6 class="text-info mb-3">📈 التقارير والبيانات</h6>
-                        <ul class="list-unstyled">
-
-                            <li><a href="/reports" class="text-light text-decoration-none"><i data-feather="file-text" class="me-2" width="16"></i>التقارير</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3">
-                        <h6 class="text-warning mb-3">🎯 الوصول السريع</h6>
-                        <ul class="list-unstyled">
-                            <li><a href="/settings" class="text-light text-decoration-none"><i data-feather="settings" class="me-2" width="16"></i>الإعدادات</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- قسم أدوات التحليل السريع -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="quick-tools-section glass-card p-5">
-                <div class="text-center mb-4">
-                    <h3 class="text-white mb-3">🚀 أدوات التحليل السريع</h3>
-                    <p class="text-light">ابدأ تحليل فوري لنوع معين</p>
-                </div>
-                
-                <div class="row g-3">
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <a href="/unified-analyzer" class="quick-tool-btn-large">
-                            <i data-feather="cpu"></i>
-                            <h6>🔍 المحلل الموحد</h6>
-                            <small>تحليل شامل ومتطور</small>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <a href="/unified-extractor" class="quick-tool-btn-large">
-                            <i data-feather="download"></i>
-                            <h6>📦 المستخرج الموحد</h6>
-                            <small>استخراج ذكي للمواقع</small>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <a href="/unified-blocker" class="quick-tool-btn-large">
-                            <i data-feather="shield"></i>
-                            <h6>🛡️ حاجب الإعلانات الموحد</h6>
-                            <small>حماية متطورة</small>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- الصف الثاني من الأدوات -->
-                <div class="row g-3 mt-2">
-                    <div class="col-lg-2 col-md-4 col-6">
-                        <a href="/dashboard" class="quick-tool-btn">
-                            <i data-feather="bar-chart-2"></i>
-                            <span>لوحة التحكم</span>
-                        </a>
-                    </div>
-                    <div class="col-lg-2 col-md-4 col-6">
-                        <a href="/history" class="quick-tool-btn">
-                            <i data-feather="clock"></i>
-                            <span>التاريخ</span>
-                        </a>
-                    </div>
-                    <div class="col-lg-2 col-md-4 col-6">
-                        <a href="/reports" class="quick-tool-btn">
-                            <i data-feather="file-text"></i>
-                            <span>التقارير</span>
-                        </a>
-                    </div>
-                    <div class="col-lg-2 col-md-4 col-6">
-                        <a href="/live-search" class="quick-tool-btn">
-                            <i data-feather="search"></i>
-                            <span>البحث</span>
-                        </a>
-                    </div>
-                    <div class="col-lg-2 col-md-4 col-6">
-                        <a href="/settings" class="quick-tool-btn">
-                            <i data-feather="settings"></i>
-                            <span>الإعدادات</span>
-                        </a>
-                    </div>
-                    <div class="col-lg-2 col-md-4 col-6">
-                        <a href="/test_auto_launch.html" class="quick-tool-btn">
-                            <i data-feather="play"></i>
-                            <span>اختبار</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- إضافة JavaScript للتفاعل -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // تهيئة Feather Icons
-        if (typeof feather !== 'undefined') {
-            feather.replace();
-        }
-        
-        // تأثيرات التحميل على النموذج
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const analysisForm = document.getElementById('analysisForm');
-        
-        if (analysisForm && analyzeBtn) {
-            analysisForm.addEventListener('submit', function() {
-                const btnText = analyzeBtn.querySelector('.btn-text');
-                const btnLoading = analyzeBtn.querySelector('.btn-loading');
-                
-                if (btnText && btnLoading) {
-                    btnText.classList.add('d-none');
-                    btnLoading.classList.remove('d-none');
-                    analyzeBtn.disabled = true;
-                }
-            });
-        }
-        
-        // تأثير النقر على الأدوات السريعة
-        const quickTools = document.querySelectorAll('.quick-tool-btn');
-        quickTools.forEach(tool => {
-            tool.addEventListener('click', function(e) {
-                // إضافة تأثير النقر
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 150);
-            });
-        });
-        
-        // تحديث الإحصائيات بشكل متحرك
-        const statNumbers = document.querySelectorAll('.stat-number');
-        statNumbers.forEach(stat => {
-            const finalValue = stat.textContent;
-            stat.textContent = '0';
-            
-            const increment = () => {
-                const current = parseInt(stat.textContent);
-                const target = parseInt(finalValue.replace(/[^0-9]/g, ''));
-                const step = target / 50;
-                
-                if (current < target) {
-                    stat.textContent = Math.ceil(current + step) + finalValue.replace(/[0-9]/g, '');
-                    setTimeout(increment, 50);
-                } else {
-                    stat.textContent = finalValue;
-                }
-            };
-            
-            // بدء الأنيميشن بعد ثانية واحدة
-            setTimeout(increment, 1000);
-        });
-    });
-    </script>
-</div>
-{% endblock %}

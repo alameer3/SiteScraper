@@ -1,0 +1,27 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}تحليل الأداء - أداة تحليل المواقع{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h2 mb-3">
+            <i data-feather="trending-up"></i> تحليل الأداء
+        </h1>
+        <p class="text-muted">مراقبة أداء النظام وإحصائيات الاستخدام</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body text-center py-5">
+        <div class="feature-icon mx-auto mb-4" style="width: 80px; height: 80px; font-size: 40px;">
+            <i data-feather="trending-up"></i>
+        </div>
+        <h4>لوحة تحليل الأداء</h4>
+        <p class="text-muted mb-4">ستتوفر إحصائيات الأداء التفصيلية قريباً</p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">
+            <i data-feather="home"></i> العودة للوحة التحكم
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -342,7 +342,7 @@ class AdvancedExtractor:
         
         return stats
     
-    def export_data(self, extraction_data: Dict, format_type: str, output_path: str = None) -> str:
+    def export_data(self, extraction_data: Dict, format_type: str, output_path: Optional[str] = None) -> str:
         """Export extraction data in various formats."""
         try:
             if output_path is None:

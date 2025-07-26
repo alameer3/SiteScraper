@@ -1,0 +1,135 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}إدارة البيانات - أداة تحليل المواقع{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h2 mb-3">
+            <i data-feather="database"></i> إدارة البيانات
+        </h1>
+        <p class="text-muted">تنظيم وإدارة البيانات المخزنة في النظام</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="hard-drive"></i> إحصائيات التخزين
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if storage_info %}
+                    {% for category, info in storage_info.items() %}
+                        {% if info.get('file_count') %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="mb-1">{{ category|title }}</h6>
+                                <small class="text-muted">{{ info.file_count }} ملف</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-bold">{{ "%.1f"|format(info.total_size_mb) }} MB</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">لا توجد بيانات متاحة</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="layers"></i> إحصائيات التخزين المؤقت
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if cache_stats %}
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="h4 text-primary">{{ cache_stats.get('active_entries', 0) }}</div>
+                            <small class="text-muted">عناصر نشطة</small>
+                        </div>
+                        <div class="col-6">
+                            <div class="h4 text-warning">{{ cache_stats.get('expired_entries', 0) }}</div>
+                            <small class="text-muted">عناصر منتهية</small>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <form method="POST" action="{{ url_for('clean_cache') }}" class="d-grid">
+                        <button type="submit" class="btn btn-warning">
+                            <i data-feather="trash-2"></i> تنظيف التخزين المؤقت
+                        </button>
+                    </form>
+                {% else %}
+                    <p class="text-muted">لا توجد إحصائيات متاحة</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i data-feather="tool"></i> أدوات إدارة البيانات
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="text-center">
+                            <div class="feature-icon mx-auto mb-3">
+                                <i data-feather="folder"></i>
+                            </div>
+                            <h6>تنظيم البيانات</h6>
+                            <p class="text-muted small">ترتيب الملفات والمجلدات</p>
+                            <form method="POST" action="{{ url_for('organize_data') }}">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i data-feather="folder"></i> تنظيم
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="text-center">
+                            <div class="feature-icon mx-auto mb-3" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                                <i data-feather="download"></i>
+                            </div>
+                            <h6>تصدير البيانات</h6>
+                            <p class="text-muted small">حفظ البيانات بصيغ مختلفة</p>
+                            <button class="btn btn-success btn-sm" disabled>
+                                <i data-feather="download"></i> تصدير
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="text-center">
+                            <div class="feature-icon mx-auto mb-3" style="background: linear-gradient(135deg, #ffc107, #fd7e14);">
+                                <i data-feather="archive"></i>
+                            </div>
+                            <h6>النسخ الاحتياطي</h6>
+                            <p class="text-muted small">إنشاء نسخة احتياطية</p>
+                            <button class="btn btn-warning btn-sm" disabled>
+                                <i data-feather="archive"></i> نسخ احتياطي
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

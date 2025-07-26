@@ -10,7 +10,7 @@ class DataFormatter:
     """Format data for different presentation needs."""
     
     @staticmethod
-    def format_file_size(bytes_size: int) -> str:
+    def format_file_size(bytes_size: float) -> str:
         """Format file size in human readable format."""
         for unit in ['B', 'KB', 'MB', 'GB']:
             if bytes_size < 1024:
