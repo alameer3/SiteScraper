@@ -37,7 +37,6 @@ class IntegratedExtractionConfig:
     extract_all_content: bool = True
     analyze_with_ai: bool = True
     generate_reports: bool = True
-    extract_assets: bool = True
     
     # إعدادات الأدوات المتخصصة
     use_specialized_database_scanner: bool = False
@@ -85,8 +84,7 @@ class WebsiteClonerIntegration:
                 max_pages=self.config.max_pages,
                 extract_all_content=self.config.extract_all_content,
                 analyze_with_ai=self.config.analyze_with_ai,
-                generate_reports=self.config.generate_reports,
-                extract_assets=self.config.extract_assets
+                generate_reports=self.config.generate_reports
             )
             self.website_cloner = WebsiteClonerPro(cloner_config)
             
@@ -193,7 +191,7 @@ class WebsiteClonerIntegration:
             self.website_cloner.config.target_url = target_url
             
             # Run cloning process
-            result = await self.website_cloner.clone_website()
+            result = await self.website_cloner.clone_website_complete(target_url)
             
             return {
                 'success': result.success,

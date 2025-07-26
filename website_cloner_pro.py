@@ -138,6 +138,42 @@ class CloningConfig:
     use_caching: bool = True
     optimize_images: bool = False
     compress_output: bool = False
+    
+    # Content extraction
+    extract_all_content: bool = True
+    extract_hidden_content: bool = True
+    extract_dynamic_content: bool = True
+    extract_media_files: bool = True
+    extract_documents: bool = True
+    extract_apis: bool = True
+    extract_database_structure: bool = True
+    
+    # Advanced features
+    bypass_protection: bool = True
+    handle_javascript: bool = True
+    handle_ajax: bool = True
+    detect_spa: bool = True
+    extract_source_code: bool = True
+    analyze_with_ai: bool = True
+    
+    # Security and stealth
+    use_proxy: bool = False
+    proxy_list: List[str] = field(default_factory=list)
+    rotate_user_agents: bool = True
+    respect_robots_txt: bool = False
+    handle_captcha: bool = True
+    
+    # Output formats
+    create_identical_copy: bool = True
+    generate_reports: bool = True
+    export_formats: List[str] = field(default_factory=lambda: ['html', 'json', 'csv', 'pdf', 'docx'])
+    detailed_logging: bool = True
+    
+    # Performance
+    parallel_downloads: int = 10
+    use_caching: bool = True
+    optimize_images: bool = False
+    compress_output: bool = False
 
 @dataclass 
 class CloningResult:

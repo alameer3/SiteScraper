@@ -44,8 +44,13 @@
                         <div class="mb-3">
                             <label for="targetUrl" class="form-label">رابط الموقع المستهدف</label>
                             <input type="url" class="form-control" id="targetUrl" name="target_url" 
-                                   placeholder="https://example.com" required>
+                                   value="https://example.com" placeholder="https://example.com" required>
                             <div class="form-text">أدخل الرابط الكامل للموقع المراد نسخه</div>
+                            <div class="mt-2">
+                                <small class="text-muted">للاختبار السريع:</small>
+                                <button type="button" class="btn btn-sm btn-outline-info ms-2" onclick="document.getElementById('targetUrl').value='https://example.com'">Example.com</button>
+                                <button type="button" class="btn btn-sm btn-outline-info ms-1" onclick="document.getElementById('targetUrl').value='https://httpbin.org/html'">HTTPBin</button>
+                            </div>
                         </div>
 
                         <!-- Extraction Mode -->
