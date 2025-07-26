@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i data-feather="download"></i>
+                    استخراج موقع جديد
+                </h4>
+            </div>
+            <div class="card-body">
+                <form id="extractForm" method="POST">
+                    <div class="mb-3">
+                        <label for="url" class="form-label">رابط الموقع *</label>
+                        <input type="url" class="form-control" id="url" name="url" required 
+                               placeholder="https://example.com">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="extraction_type" class="form-label">نوع الاستخراج</label>
+                        <select class="form-select" id="extraction_type" name="extraction_type">
+                            <option value="basic">أساسي - استخراج سريع للمحتوى الأساسي</option>
+                            <option value="advanced">متقدم - تحليل شامل مع الموارد</option>
+                            <option value="complete">كامل - استخراج شامل مع الذكاء الاصطناعي</option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i data-feather="play"></i>
+                            بدء الاستخراج
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="progress" class="mt-4" style="display: none;">
+                    <div class="alert alert-info">
+                        <i data-feather="loader" class="spinning"></i>
+                        جاري الاستخراج... يرجى الانتظار
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div id="result" class="mt-4" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('extractForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const progressDiv = document.getElementById('progress');
+    const resultDiv = document.getElementById('result');
+    
+    progressDiv.style.display = 'block';
+    resultDiv.style.display = 'none';
+    
+    fetch('/extract', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        progressDiv.style.display = 'none';
+        
+        if (data.status === 'success') {
+            resultDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <i data-feather="check-circle"></i>
+                    تم الاستخراج بنجاح!
+                    <a href="/result/${data.extraction_id}" class="btn btn-sm btn-outline-success ms-2">
+                        عرض النتائج
+                    </a>
+                </div>
+            `;
+        } else {
+            resultDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i data-feather="alert-circle"></i>
+                    خطأ: ${data.error}
+                </div>
+            `;
+        }
+        
+        resultDiv.style.display = 'block';
+        feather.replace();
+    })
+    .catch(error => {
+        progressDiv.style.display = 'none';
+        resultDiv.innerHTML = `
+            <div class="alert alert-danger">
+                <i data-feather="alert-circle"></i>
+                حدث خطأ في الاتصال
+            </div>
+        `;
+        resultDiv.style.display = 'block';
+        feather.replace();
+    });
+});
+</script>
+{% endblock %}

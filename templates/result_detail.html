@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">
+                    <i data-feather="file-text"></i>
+                    تفاصيل الاستخراج
+                </h4>
+                <a href="{{ url_for('results') }}" class="btn btn-outline-primary">
+                    <i data-feather="arrow-right"></i>
+                    العودة للقائمة
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6>معلومات الاستخراج</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>الرابط:</strong></td>
+                                <td><a href="{{ extraction.url }}" target="_blank">{{ extraction.url }}</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>النوع:</strong></td>
+                                <td><span class="badge bg-secondary">{{ extraction.extraction_type }}</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>الحالة:</strong></td>
+                                <td>
+                                    {% if extraction.status == 'completed' %}
+                                        <span class="badge bg-success">مكتمل</span>
+                                    {% elif extraction.status == 'failed' %}
+                                        <span class="badge bg-danger">فشل</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">{{ extraction.status }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>تاريخ البدء:</strong></td>
+                                <td>{{ extraction.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            </tr>
+                            {% if extraction.completed_at %}
+                            <tr>
+                                <td><strong>تاريخ الانتهاء:</strong></td>
+                                <td>{{ extraction.completed_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        {% if result_data and result_data.success %}
+                        <h6>إحصائيات النتائج</h6>
+                        <table class="table table-sm">
+                            {% if result_data.pages_extracted %}
+                            <tr>
+                                <td><strong>الصفحات المستخرجة:</strong></td>
+                                <td>{{ result_data.pages_extracted }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if result_data.assets_downloaded %}
+                            <tr>
+                                <td><strong>الملفات المحملة:</strong></td>
+                                <td>{{ result_data.assets_downloaded }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if result_data.total_size %}
+                            <tr>
+                                <td><strong>الحجم الإجمالي:</strong></td>
+                                <td>{{ (result_data.total_size / 1024 / 1024)|round(2) }} MB</td>
+                            </tr>
+                            {% endif %}
+                            {% if result_data.duration %}
+                            <tr>
+                                <td><strong>المدة:</strong></td>
+                                <td>{{ result_data.duration|round(2) }} ثانية</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if result_data %}
+                <div class="mt-4">
+                    <h6>البيانات الكاملة</h6>
+                    <pre class="bg-light p-3" style="max-height: 400px; overflow-y: auto;"><code>{{ result_data | tojson(indent=2) }}</code></pre>
+                </div>
+                {% endif %}
+                
+                {% if extraction.status == 'failed' and result_data and result_data.error %}
+                <div class="mt-4">
+                    <div class="alert alert-danger">
+                        <h6><i data-feather="alert-triangle"></i> خطأ في الاستخراج</h6>
+                        <p class="mb-0">{{ result_data.error }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

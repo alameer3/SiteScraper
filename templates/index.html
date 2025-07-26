@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i data-feather="globe" style="width: 64px; height: 64px; color: #667eea;"></i>
+                <h1 class="mt-3 mb-4">أداة استخراج المواقع المتقدمة</h1>
+                <p class="lead text-muted mb-4">
+                    استخرج وحلل المواقع بتقنيات متقدمة تشمل الذكاء الاصطناعي والتحليل العميق
+                </p>
+                
+                <div class="row g-3 mt-4">
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i data-feather="download" class="text-primary mb-3"></i>
+                                <h5>استخراج شامل</h5>
+                                <p class="small text-muted">استخراج جميع ملفات الموقع والموارد</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i data-feather="cpu" class="text-success mb-3"></i>
+                                <h5>تحليل ذكي</h5>
+                                <p class="small text-muted">تحليل بالذكاء الاصطناعي لفهم الموقع</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i data-feather="copy" class="text-warning mb-3"></i>
+                                <h5>نسخ متطابق</h5>
+                                <p class="small text-muted">إنشاء نسخة مطابقة للموقع الأصلي</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-5">
+                    <a href="{{ url_for('extract') }}" class="btn btn-primary btn-lg px-5">
+                        <i data-feather="play"></i>
+                        ابدأ الاستخراج
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
