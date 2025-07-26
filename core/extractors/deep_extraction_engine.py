@@ -1881,7 +1881,7 @@ class DeepExtractionEngine:
                         })
                 
                 # فحص async scripts
-                async_scripts = soup.find_all('script', async=True)
+                async_scripts = soup.find_all('script', attrs={'async': True})
                 for script in async_scripts:
                     if isinstance(script, Tag):
                         loading_data['async_scripts'].append({
