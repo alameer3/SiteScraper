@@ -1349,6 +1349,7 @@ dependencies = [
     { name = "selenium" },
     { name = "sqlalchemy" },
     { name = "trafilatura" },
+    { name = "urllib3" },
     { name = "werkzeug" },
 ]
 
@@ -1373,6 +1374,7 @@ requires-dist = [
     { name = "selenium", specifier = ">=4.34.2" },
     { name = "sqlalchemy", specifier = ">=2.0.41" },
     { name = "trafilatura", specifier = ">=2.0.0" },
+    { name = "urllib3", specifier = ">=2.5.0" },
     { name = "werkzeug", specifier = ">=3.1.3" },
 ]
 
