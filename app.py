@@ -15,8 +15,10 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 # إضافة المسار الحالي
 sys.path.insert(0, os.path.dirname(__file__))
 
-# استيراد النظام العامل
+# استيراد الأنظمة المتقدمة
 from working_extractor import WebsiteExtractor
+from unified_extractor import UnifiedWebsiteExtractor
+from advanced_tools_manager import AdvancedToolsManager
 
 class Base(DeclarativeBase):
     pass
@@ -49,8 +51,10 @@ class ExtractionResult(db.Model):
     def get_data(self):
         return json.loads(self.result_data) if self.result_data else {}
 
-# إنشاء مستخرج المواقع
-extractor = WebsiteExtractor()
+# إنشاء مستخرجات المواقع والأدوات المتقدمة
+basic_extractor = WebsiteExtractor()
+unified_extractor = UnifiedWebsiteExtractor()
+advanced_tools = AdvancedToolsManager()
 
 @app.route('/')
 def index():
@@ -72,16 +76,18 @@ def extract():
         url = 'https://' + url
     
     try:
-        # استخراج الموقع
-        result = extractor.extract_website(url, extraction_type)
+        # اختيار المستخرج المناسب حسب النوع
+        if extraction_type in ['advanced', 'complete']:
+            result = unified_extractor.extract_website(url, extraction_type)
+        else:
+            result = basic_extractor.extract_website(url, extraction_type)
         
         # حفظ النتيجة
-        extraction_result = ExtractionResult(
-            url=url,
-            title=result.get('title', 'No title'),
-            extraction_type=extraction_type,
-            result_data=json.dumps(result, ensure_ascii=False, indent=2)
-        )
+        extraction_result = ExtractionResult()
+        extraction_result.url = url
+        extraction_result.title = result.get('title', 'No title')
+        extraction_result.extraction_type = extraction_type
+        extraction_result.result_data = json.dumps(result, ensure_ascii=False, indent=2)
         db.session.add(extraction_result)
         db.session.commit()
         
@@ -106,6 +112,13 @@ def result_detail(result_id):
     result = ExtractionResult.query.get_or_404(result_id)
     return render_template('result_detail.html', result=result)
 
+# APIs متقدمة لجميع الأدوات
+
+@app.route('/api/tools/status')
+def api_tools_status():
+    """حالة جميع الأدوات"""
+    return jsonify(advanced_tools.get_tools_status())
+
 @app.route('/api/extract', methods=['POST'])
 def api_extract():
     """API لاستخراج الموقع"""
@@ -120,7 +133,11 @@ def api_extract():
         url = 'https://' + url
     
     try:
-        result = extractor.extract_website(url, extraction_type)
+        # اختيار المستخرج المناسب
+        if extraction_type in ['advanced', 'complete']:
+            result = unified_extractor.extract_website(url, extraction_type)
+        else:
+            result = basic_extractor.extract_website(url, extraction_type)
         return jsonify({
             'success': True,
             'data': result
@@ -134,11 +151,86 @@ def api_extract():
 @app.route('/health')
 def health():
     """فحص صحة النظام"""
+    tools_status = advanced_tools.get_tools_status()
     return jsonify({
         'status': 'healthy',
         'app': 'website-analyzer',
-        'database': 'connected'
+        'database': 'connected',
+        'tools': tools_status['available_tools'],
+        'active_tools': tools_status['active_tools']
     })
+
+# APIs متقدمة للأدوات
+@app.route('/api/cloner-pro', methods=['POST'])
+def api_cloner_pro():
+    """API لـ Website Cloner Pro"""
+    data = request.get_json()
+    if not data or 'url' not in data:
+        return jsonify({'error': 'URL is required'}), 400
+    
+    url = data['url']
+    config = data.get('config', {})
+    
+    try:
+        result = advanced_tools.extract_with_cloner_pro(url, config)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/ai-analyze', methods=['POST'])
+def api_ai_analyze():
+    """API لتحليل المحتوى بالذكاء الاصطناعي"""
+    data = request.get_json()
+    if not data or 'content' not in data:
+        return jsonify({'error': 'Content is required'}), 400
+    
+    content = data['content']
+    analysis_type = data.get('analysis_type', 'comprehensive')
+    
+    try:
+        result = advanced_tools.analyze_with_ai(content, analysis_type)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/spider-crawl', methods=['POST'])
+def api_spider_crawl():
+    """API لـ Spider Engine"""
+    data = request.get_json()
+    if not data or 'url' not in data:
+        return jsonify({'error': 'URL is required'}), 400
+    
+    url = data['url']
+    max_depth = data.get('max_depth', 2)
+    
+    try:
+        result = advanced_tools.extract_with_spider(url, max_depth)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/download-assets', methods=['POST'])
+def api_download_assets():
+    """API لتحميل الأصول"""
+    data = request.get_json()
+    if not data or 'url' not in data:
+        return jsonify({'error': 'URL is required'}), 400
+    
+    url = data['url']
+    asset_types = data.get('asset_types', ['images', 'css', 'js'])
+    
+    try:
+        result = advanced_tools.download_assets(url, asset_types)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# صفحات الأدوات المتقدمة
+@app.route('/advanced-tools')
+def advanced_tools_page():
+    """صفحة الأدوات المتقدمة"""
+    tools_status = advanced_tools.get_tools_status()
+    return render_template('advanced_tools.html', tools_status=tools_status)
 
 # إنشاء الجداول
 with app.app_context():

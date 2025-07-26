@@ -20,11 +20,10 @@ def extract():
             return jsonify({'error': 'URL is required'}), 400
             
         # Create extraction record
-        extraction = ExtractionResult(
-            url=url,
-            extraction_type=extraction_type,
-            status='processing'
-        )
+        extraction = ExtractionResult()
+        extraction.url = url
+        extraction.extraction_type = extraction_type
+        extraction.status = 'processing'
         db.session.add(extraction)
         db.session.commit()
         

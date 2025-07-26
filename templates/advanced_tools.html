@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأدوات المتقدمة - مستخرج المواقع</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            margin-top: 2rem;
+        }
+        .tool-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+        }
+        .tool-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px 15px 0 0;
+        }
+        .tool-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .status-active {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+        .status-inactive {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+        .btn-tool {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .btn-tool:hover {
+            background: linear-gradient(45deg, #5a6fd8, #6a42a0);
+            color: white;
+            transform: scale(1.05);
+        }
+        .api-endpoint {
+            background: #f8f9fa;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="text-white mb-3">
+                <i data-feather="tool" class="me-2"></i>
+                الأدوات المتقدمة
+            </h1>
+            <p class="text-white">مجموعة شاملة من الأدوات المتقدمة لاستخراج وتحليل المواقع</p>
+        </div>
+
+        <!-- حالة الأدوات العامة -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <h3><i data-feather="activity" class="me-2"></i>حالة النظام</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>إجمالي الأدوات:</strong> {{ tools_status.total_tools }}</p>
+                        <p><strong>الأدوات النشطة:</strong> {{ tools_status.active_tools }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>مسار الأدوات:</strong></p>
+                        <code>{{ tools_status.tools_pro_path }}</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Website Cloner Pro -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3><i data-feather="copy" class="me-2"></i>Website Cloner Pro</h3>
+                    <span class="tool-status {{ 'status-active' if tools_status.available_tools.website_cloner_pro else 'status-inactive' }}">
+                        {{ 'نشط' if tools_status.available_tools.website_cloner_pro else 'غير نشط' }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>أداة شاملة لاستنساخ المواقع وإنشاء نسخ طبق الأصل</p>
+                <div class="api-endpoint">POST /api/cloner-pro</div>
+                <h6>المميزات:</h6>
+                <ul>
+                    <li>استخراج شامل لجميع محتويات الموقع</li>
+                    <li>نسخ طبق الأصل للمواقع</li>
+                    <li>تحليل بالذكاء الاصطناعي</li>
+                    <li>استخراج قواعد البيانات والـ APIs</li>
+                </ul>
+                <button class="btn btn-tool" onclick="testTool('cloner-pro')">
+                    <i data-feather="play" class="me-1"></i>اختبار الأداة
+                </button>
+            </div>
+        </div>
+
+        <!-- AI Analyzer -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3><i data-feather="brain" class="me-2"></i>AI Analyzer</h3>
+                    <span class="tool-status {{ 'status-active' if tools_status.available_tools.ai_analyzer else 'status-inactive' }}">
+                        {{ 'نشط' if tools_status.available_tools.ai_analyzer else 'غير نشط' }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>تحليل المحتوى بالذكاء الاصطناعي مع تصنيف وكشف الأنماط</p>
+                <div class="api-endpoint">POST /api/ai-analyze</div>
+                <h6>المميزات:</h6>
+                <ul>
+                    <li>تصنيف المحتوى الذكي</li>
+                    <li>كشف اللغة والجودة</li>
+                    <li>تحليل الهيكل والبنية</li>
+                    <li>نقاط الجودة والتقييم</li>
+                </ul>
+                <button class="btn btn-tool" onclick="testTool('ai-analyze')">
+                    <i data-feather="play" class="me-1"></i>اختبار الأداة
+                </button>
+            </div>
+        </div>
+
+        <!-- Spider Engine -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3><i data-feather="globe" class="me-2"></i>Spider Engine</h3>
+                    <span class="tool-status {{ 'status-active' if tools_status.available_tools.spider_engine else 'status-inactive' }}">
+                        {{ 'نشط' if tools_status.available_tools.spider_engine else 'غير نشط' }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>محرك الزحف الذكي لاستكشاف المواقع بعمق</p>
+                <div class="api-endpoint">POST /api/spider-crawl</div>
+                <h6>المميزات:</h6>
+                <ul>
+                    <li>زحف متعدد المستويات</li>
+                    <li>تصنيف الروابط الذكي</li>
+                    <li>خرائط المواقع التلقائية</li>
+                    <li>تحليل هيكل التنقل</li>
+                </ul>
+                <button class="btn btn-tool" onclick="testTool('spider-crawl')">
+                    <i data-feather="play" class="me-1"></i>اختبار الأداة
+                </button>
+            </div>
+        </div>
+
+        <!-- Asset Downloader -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3><i data-feather="download" class="me-2"></i>Asset Downloader</h3>
+                    <span class="tool-status {{ 'status-active' if tools_status.available_tools.asset_downloader else 'status-inactive' }}">
+                        {{ 'نشط' if tools_status.available_tools.asset_downloader else 'غير نشط' }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>تحميل جميع أصول الموقع بطريقة منظمة</p>
+                <div class="api-endpoint">POST /api/download-assets</div>
+                <h6>المميزات:</h6>
+                <ul>
+                    <li>تحميل الصور والوسائط</li>
+                    <li>ملفات CSS و JavaScript</li>
+                    <li>الخطوط والأيقونات</li>
+                    <li>تنظيم تلقائي للملفات</li>
+                </ul>
+                <button class="btn btn-tool" onclick="testTool('download-assets')">
+                    <i data-feather="play" class="me-1"></i>اختبار الأداة
+                </button>
+            </div>
+        </div>
+
+        <!-- Database Scanner -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3><i data-feather="database" class="me-2"></i>Database Scanner</h3>
+                    <span class="tool-status {{ 'status-active' if tools_status.available_tools.database_scanner else 'status-inactive' }}">
+                        {{ 'نشط' if tools_status.available_tools.database_scanner else 'غير نشط' }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>فحص وتحليل هياكل قواعد البيانات المحتملة</p>
+                <div class="api-endpoint">POST /api/scan-database</div>
+                <h6>المميزات:</h6>
+                <ul>
+                    <li>كشف هياكل الجداول</li>
+                    <li>تحليل النماذج والحقول</li>
+                    <li>اكتشاف API endpoints</li>
+                    <li>تقييم الأمان</li>
+                </ul>
+                <button class="btn btn-tool" onclick="testTool('scan-database')">
+                    <i data-feather="play" class="me-1"></i>اختبار الأداة
+                </button>
+            </div>
+        </div>
+
+        <!-- منطقة النتائج -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <h3><i data-feather="bar-chart" class="me-2"></i>نتائج الاختبار</h3>
+            </div>
+            <div class="card-body">
+                <div id="test-results">
+                    <p class="text-muted">سيتم عرض نتائج الاختبارات هنا...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-outline-light">
+                <i data-feather="home" class="me-1"></i>العودة للصفحة الرئيسية
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+
+        async function testTool(toolName) {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="text-info">جاري اختبار الأداة...</div>';
+
+            let apiEndpoint, testData;
+
+            switch (toolName) {
+                case 'cloner-pro':
+                    apiEndpoint = '/api/cloner-pro';
+                    testData = { url: 'https://example.com', config: { max_depth: 1 } };
+                    break;
+                case 'ai-analyze':
+                    apiEndpoint = '/api/ai-analyze';
+                    testData = { content: 'هذا نص تجريبي للاختبار', analysis_type: 'basic' };
+                    break;
+                case 'spider-crawl':
+                    apiEndpoint = '/api/spider-crawl';
+                    testData = { url: 'https://example.com', max_depth: 1 };
+                    break;
+                case 'download-assets':
+                    apiEndpoint = '/api/download-assets';
+                    testData = { url: 'https://example.com', asset_types: ['images'] };
+                    break;
+                case 'scan-database':
+                    apiEndpoint = '/api/scan-database';
+                    testData = { url: 'https://example.com' };
+                    break;
+            }
+
+            try {
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                const result = await response.json();
+                
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <h6>نتيجة اختبار ${toolName}:</h6>
+                        <pre style="white-space: pre-wrap; max-height: 300px; overflow-y: auto;">${JSON.stringify(result, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h6>خطأ في اختبار ${toolName}:</h6>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
