@@ -62,9 +62,12 @@ def index():
     recent_results = ExtractionResult.query.order_by(ExtractionResult.created_at.desc()).limit(5).all()
     return render_template('index.html', recent_results=recent_results)
 
-@app.route('/extract', methods=['POST'])
+@app.route('/extract', methods=['GET', 'POST'])
 def extract():
-    """استخراج موقع جديد"""
+    """صفحة/API استخراج موقع جديد"""
+    if request.method == 'GET':
+        return render_template('extract.html')
+    
     url = request.form.get('url')
     extraction_type = request.form.get('extraction_type', 'basic')
     
