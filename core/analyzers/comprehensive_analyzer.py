@@ -132,7 +132,7 @@ class ComprehensiveAnalyzer:
             soup = BeautifulSoup(response.content, 'html.parser')
             
             basic_info = {
-                'title': soup.find('title').get_text().strip() if soup.find('title') else '',
+                'title': soup.find('title').get_text().strip() if soup.find('title') and soup.find('title').get_text() else '',
                 'description': self._get_meta_content(soup, 'description'),
                 'language': soup.find('html').get('lang', 'unknown') if soup.find('html') else 'unknown',
                 'status_code': response.status_code,

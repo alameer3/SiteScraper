@@ -139,87 +139,194 @@ class AdvancedExtractor:
         return result
     
     def _extract_content(self, url: str, config: Dict) -> Dict[str, Any]:
-        """Extract main content from the website."""
+        """Extract main content from the website using real scraping."""
+        from core.scrapers.smart_scraper import SmartScraper
+        
+        scraper = SmartScraper()
+        scraping_config = {
+            'timeout': 10,
+            'extract_text': True,
+            'extract_metadata': True,
+            'extract_assets': config.get('include_assets', False),
+            'extract_links': config.get('include_links', False)
+        }
+        
+        scraped_data = scraper.scrape_website(url, scraping_config)
+        
+        if 'error' in scraped_data:
+            return {'error': scraped_data['error']}
+        
+        content = scraped_data.get('content', {})
+        word_count = content.get('word_count', 0)
+        
         return {
-            'title': 'Sample Title',
-            'headings': ['Heading 1', 'Heading 2'],
-            'paragraphs': ['Sample paragraph content'],
-            'text_content': 'Sample text content for analysis',
-            'word_count': 150,
-            'reading_time': 2
+            'title': scraped_data.get('page_info', {}).get('title', ''),
+            'headings': content.get('headings', {}),
+            'paragraphs': content.get('paragraphs', []),
+            'text_content': content.get('text_content', ''),
+            'word_count': word_count,
+            'reading_time': max(1, word_count // 200),  # Average reading speed
+            'content_sections': content.get('content_sections', [])
         }
     
     def _extract_assets(self, url: str, config: Dict) -> Dict[str, Any]:
-        """Extract and catalog website assets."""
-        return {
+        """Extract and catalog website assets using real scraping."""
+        from core.scrapers.smart_scraper import SmartScraper
+        
+        scraper = SmartScraper()
+        scraping_config = {
+            'timeout': 10,
+            'extract_assets': True,
+            'extract_text': False,
+            'extract_metadata': False
+        }
+        
+        scraped_data = scraper.scrape_website(url, scraping_config)
+        
+        if 'error' in scraped_data:
+            return {'error': scraped_data['error']}
+        
+        assets = scraped_data.get('assets', {})
+        
+        # Process and enhance asset information
+        processed_assets = {
             'images': {
-                'count': 5,
-                'total_size': '2.5MB',
-                'formats': ['jpg', 'png', 'svg'],
-                'list': []
+                'count': len(assets.get('images', [])),
+                'formats': list(set([img['src'].split('.')[-1].lower() for img in assets.get('images', []) if '.' in img['src']])),
+                'list': assets.get('images', []),
+                'with_alt_text': len([img for img in assets.get('images', []) if img.get('alt')])
             },
             'stylesheets': {
-                'count': 3,
-                'total_size': '150KB',
-                'external': 2,
-                'inline': 1
+                'count': len(assets.get('stylesheets', [])),
+                'external': len([css for css in assets.get('stylesheets', []) if css['href'].startswith('http')]),
+                'internal': len([css for css in assets.get('stylesheets', []) if not css['href'].startswith('http')]),
+                'list': assets.get('stylesheets', [])
             },
             'scripts': {
-                'count': 4,
-                'total_size': '300KB',
-                'external': 3,
-                'inline': 1
+                'count': len(assets.get('scripts', [])),
+                'external': len([js for js in assets.get('scripts', []) if js['src'].startswith('http')]),
+                'async_count': len([js for js in assets.get('scripts', []) if js.get('async')]),
+                'defer_count': len([js for js in assets.get('scripts', []) if js.get('defer')]),
+                'list': assets.get('scripts', [])
             },
-            'fonts': {
-                'count': 2,
-                'total_size': '200KB',
-                'families': ['Open Sans', 'Roboto']
+            'videos': {
+                'count': len(assets.get('videos', [])),
+                'list': assets.get('videos', [])
+            },
+            'audios': {
+                'count': len(assets.get('audios', [])),
+                'list': assets.get('audios', [])
             }
         }
+        
+        return processed_assets
     
     def _extract_metadata(self, url: str, config: Dict) -> Dict[str, Any]:
-        """Extract comprehensive metadata."""
-        return {
-            'basic': {
-                'title': 'Website Title',
-                'description': 'Website description',
-                'keywords': 'keyword1, keyword2',
-                'author': 'Website Author',
-                'viewport': 'width=device-width, initial-scale=1'
-            },
-            'social': {
-                'og_title': 'Open Graph Title',
-                'og_description': 'Open Graph Description',
-                'og_image': 'https://example.com/image.jpg',
-                'twitter_card': 'summary'
-            },
-            'technical': {
-                'charset': 'UTF-8',
-                'language': 'en',
-                'canonical_url': url,
-                'robots': 'index, follow'
-            }
+        """Extract comprehensive metadata using real scraping."""
+        from core.scrapers.smart_scraper import SmartScraper
+        
+        scraper = SmartScraper()
+        scraping_config = {
+            'timeout': 10,
+            'extract_metadata': True,
+            'extract_text': False,
+            'extract_assets': False
         }
+        
+        scraped_data = scraper.scrape_website(url, scraping_config)
+        
+        if 'error' in scraped_data:
+            return {'error': scraped_data['error']}
+        
+        metadata = scraped_data.get('metadata', {})
+        page_info = scraped_data.get('page_info', {})
+        
+        # Combine and organize metadata
+        organized_metadata = {
+            'basic': {
+                'title': page_info.get('title', ''),
+                'charset': page_info.get('charset', 'UTF-8'),
+                'language': page_info.get('language', 'unknown'),
+                'doctype': page_info.get('doctype', 'unknown'),
+                **metadata.get('basic', {})
+            },
+            'social': metadata.get('social', {}),
+            'technical': {
+                'final_url': scraped_data.get('final_url', url),
+                'status_code': scraped_data.get('status_code', 0),
+                'response_time': page_info.get('response_time', 0),
+                'page_size': page_info.get('page_size', 0),
+                **metadata.get('technical', {})
+            },
+            'links': metadata.get('links', [])
+        }
+        
+        return organized_metadata
     
     def _extract_links(self, url: str, config: Dict) -> Dict[str, Any]:
-        """Extract and analyze website links."""
-        return {
+        """Extract and analyze website links using real scraping."""
+        from core.scrapers.smart_scraper import SmartScraper
+        from urllib.parse import urlparse
+        
+        scraper = SmartScraper()
+        scraping_config = {
+            'timeout': 10,
+            'extract_links': True,
+            'extract_text': False,
+            'extract_assets': False,
+            'extract_metadata': False
+        }
+        
+        scraped_data = scraper.scrape_website(url, scraping_config)
+        
+        if 'error' in scraped_data:
+            return {'error': scraped_data['error']}
+        
+        links_data = scraped_data.get('links', {})
+        
+        # Analyze link patterns and extract navigation elements
+        internal_links = links_data.get('internal', [])
+        external_links = links_data.get('external', [])
+        
+        # Extract unique domains from external links
+        external_domains = list(set([urlparse(link['url']).netloc for link in external_links if link.get('url')]))
+        
+        # Try to identify navigation patterns
+        navigation_links = []
+        footer_links = []
+        
+        for link in internal_links:
+            link_text = link.get('text', '').lower().strip()
+            if link_text in ['home', 'about', 'services', 'contact', 'products', 'blog']:
+                navigation_links.append(link_text.title())
+            elif link_text in ['privacy', 'terms', 'support', 'help', 'policy']:
+                footer_links.append(link_text.title())
+        
+        processed_links = {
             'internal_links': {
-                'count': 15,
-                'unique': 12,
-                'list': ['/page1', '/page2', '/contact']
+                'count': len(internal_links),
+                'unique': len(set([link['url'] for link in internal_links])),
+                'list': internal_links[:20]  # Limit to first 20 for performance
             },
             'external_links': {
-                'count': 5,
-                'unique': 4,
-                'domains': ['example.com', 'google.com']
+                'count': len(external_links),
+                'unique': len(set([link['url'] for link in external_links])),
+                'domains': external_domains[:10],  # Limit to first 10
+                'list': external_links[:10]
             },
             'navigation': {
-                'main_menu': ['Home', 'About', 'Services', 'Contact'],
-                'breadcrumbs': ['Home', 'Category', 'Current Page'],
-                'footer_links': ['Privacy', 'Terms', 'Support']
+                'detected_menu_items': navigation_links,
+                'detected_footer_links': footer_links,
+                'total_navigation_elements': len(navigation_links) + len(footer_links)
+            },
+            'link_analysis': {
+                'total_links': links_data.get('total_count', 0),
+                'internal_ratio': len(internal_links) / max(1, links_data.get('total_count', 1)),
+                'external_ratio': len(external_links) / max(1, links_data.get('total_count', 1))
             }
         }
+        
+        return processed_links
     
     def _analyze_performance(self, url: str, config: Dict) -> Dict[str, Any]:
         """Analyze website performance metrics."""
