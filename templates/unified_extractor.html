@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المستخرج الموحد المتطور - استخراج المواقع</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.css">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        .extraction-form {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .form-control {
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            padding: 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-extract {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-extract:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        .extraction-mode {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .extraction-mode:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .extraction-mode.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+        
+        .extraction-mode input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .mode-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-container {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .progress-step {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .progress-step.active {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .progress-step.completed {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .step-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 1rem;
+            color: white;
+            font-size: 0.8rem;
+        }
+        
+        .step-icon.active {
+            background: #667eea;
+            animation: pulse 2s infinite;
+        }
+        
+        .step-icon.completed {
+            background: #4CAF50;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .results-container {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .result-metric {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 0.5rem;
+            text-align: center;
+        }
+        
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .result-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .download-btn {
+            background: var(--success-gradient);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            margin: 0.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        .alert-custom {
+            border: none;
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+        }
+        
+        .alert-success-custom {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .alert-error-custom {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="glass-card">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="text-white mb-2">
+                        <i data-feather="download"></i>
+                        المستخرج الموحد المتطور
+                    </h1>
+                    <p class="text-white-50 mb-0">
+                        استخراج شامل ومتطور للمواقع مع تحليل AI وتنظيم ذكي للملفات
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a href="/unified-dashboard" class="btn btn-outline-light">
+                        <i data-feather="arrow-right"></i>
+                        العودة للوحة التحكم
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Extraction Form -->
+        <div class="extraction-form">
+            <form id="extractionForm">
+                <div class="row">
+                    <div class="col-12">
+                        <h3 class="mb-4">
+                            <i data-feather="globe"></i>
+                            إعدادات الاستخراج
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- URL Input -->
+                <div class="mb-4">
+                    <label for="url" class="form-label">رابط الموقع</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i data-feather="link"></i>
+                        </span>
+                        <input type="url" class="form-control" id="url" name="url" 
+                               placeholder="https://example.com" required>
+                    </div>
+                </div>
+
+                <!-- Extraction Modes -->
+                <div class="mb-4">
+                    <label class="form-label">نوع الاستخراج</label>
+                    
+                    <div class="extraction-mode" onclick="selectMode('basic')">
+                        <input type="radio" name="extraction_type" value="basic" id="basic" checked>
+                        <div class="mode-icon">
+                            <i data-feather="zap"></i>
+                        </div>
+                        <h5>استخراج أساسي سريع</h5>
+                        <p class="mb-0 text-muted">استخراج المحتوى والروابط الأساسية (30-60 ثانية)</p>
+                    </div>
+
+                    <div class="extraction-mode" onclick="selectMode('standard')">
+                        <input type="radio" name="extraction_type" value="standard" id="standard">
+                        <div class="mode-icon">
+                            <i data-feather="layers"></i>
+                        </div>
+                        <h5>استخراج معياري شامل</h5>
+                        <p class="mb-0 text-muted">استخراج المحتوى والأصول والصور (1-2 دقيقة)</p>
+                    </div>
+
+                    <div class="extraction-mode" onclick="selectMode('advanced')">
+                        <input type="radio" name="extraction_type" value="advanced" id="advanced">
+                        <div class="mode-icon">
+                            <i data-feather="cpu"></i>
+                        </div>
+                        <h5>استخراج متقدم مع تحليل</h5>
+                        <p class="mb-0 text-muted">استخراج شامل مع تحليل SEO والأداء (2-3 دقائق)</p>
+                    </div>
+
+                    <div class="extraction-mode" onclick="selectMode('complete')">
+                        <input type="radio" name="extraction_type" value="complete" id="complete">
+                        <div class="mode-icon">
+                            <i data-feather="database"></i>
+                        </div>
+                        <h5>استخراج كامل مع قواعد البيانات</h5>
+                        <p class="mb-0 text-muted">استخراج كامل مع تحليل APIs وقواعد البيانات (3-5 دقائق)</p>
+                    </div>
+
+                    <div class="extraction-mode" onclick="selectMode('ai_powered')">
+                        <input type="radio" name="extraction_type" value="ai_powered" id="ai_powered">
+                        <div class="mode-icon">
+                            <i data-feather="brain"></i>
+                        </div>
+                        <h5>استخراج بالذكاء الاصطناعي</h5>
+                        <p class="mb-0 text-muted">استخراج متطور مع تحليل AI وإنشاء نسخة طبق الأصل (5-10 دقائق)</p>
+                    </div>
+                </div>
+
+                <!-- Advanced Options -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="extractAssets" checked>
+                            <label class="form-check-label" for="extractAssets">
+                                استخراج الأصول (صور، CSS، JS)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="analyzeContent" checked>
+                            <label class="form-check-label" for="analyzeContent">
+                                تحليل المحتوى والهيكل
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="generateReports" checked>
+                            <label class="form-check-label" for="generateReports">
+                                إنشاء تقارير تفصيلية
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="organizeFiles" checked>
+                            <label class="form-check-label" for="organizeFiles">
+                                تنظيم ذكي للملفات
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="aiAnalysis">
+                            <label class="form-check-label" for="aiAnalysis">
+                                تحليل بالذكاء الاصطناعي
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="extractMedia">
+                            <label class="form-check-label" for="extractMedia">
+                                تحميل ملفات الوسائط
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Max Depth -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="maxDepth" class="form-label">عمق الاستخراج</label>
+                        <select class="form-control" id="maxDepth">
+                            <option value="1">صفحة واحدة فقط</option>
+                            <option value="2">مستوى واحد (موصى)</option>
+                            <option value="3" selected>مستويين</option>
+                            <option value="5">عميق (5 مستويات)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exportFormats" class="form-label">صيغ التصدير</label>
+                        <select class="form-control" id="exportFormats" multiple>
+                            <option value="json" selected>JSON</option>
+                            <option value="html" selected>HTML Report</option>
+                            <option value="csv">CSV</option>
+                            <option value="pdf">PDF</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn-extract">
+                        <i data-feather="play"></i>
+                        بدء الاستخراج
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Progress Container -->
+        <div class="progress-container" id="progressContainer">
+            <h3 class="mb-4">
+                <i data-feather="activity"></i>
+                تقدم الاستخراج
+            </h3>
+            
+            <div class="progress-step" id="step1">
+                <div class="step-icon">1</div>
+                <div>
+                    <strong>تحضير الاستخراج</strong>
+                    <br><small class="text-muted">تحليل الرابط وإعداد الإعدادات</small>
+                </div>
+            </div>
+            
+            <div class="progress-step" id="step2">
+                <div class="step-icon">2</div>
+                <div>
+                    <strong>استخراج المحتوى</strong>
+                    <br><small class="text-muted">تحميل وتحليل محتوى الصفحات</small>
+                </div>
+            </div>
+            
+            <div class="progress-step" id="step3">
+                <div class="step-icon">3</div>
+                <div>
+                    <strong>تحميل الأصول</strong>
+                    <br><small class="text-muted">تحميل الصور والملفات والوسائط</small>
+                </div>
+            </div>
+            
+            <div class="progress-step" id="step4">
+                <div class="step-icon">4</div>
+                <div>
+                    <strong>تحليل البيانات</strong>
+                    <br><small class="text-muted">تحليل الهيكل والتقنيات المستخدمة</small>
+                </div>
+            </div>
+            
+            <div class="progress-step" id="step5">
+                <div class="step-icon">5</div>
+                <div>
+                    <strong>إنشاء التقارير</strong>
+                    <br><small class="text-muted">تجميع البيانات وإنشاء التقارير</small>
+                </div>
+            </div>
+            
+            <div class="progress-step" id="step6">
+                <div class="step-icon">6</div>
+                <div>
+                    <strong>تنظيم الملفات</strong>
+                    <br><small class="text-muted">تنظيم وحفظ النتائج النهائية</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div class="results-container" id="resultsContainer">
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-success-custom" id="successAlert">
+                        <i data-feather="check-circle"></i>
+                        <strong>تم الاستخراج بنجاح!</strong>
+                        <span id="successMessage"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="resultsMetrics">
+                <!-- Metrics will be populated by JavaScript -->
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4>التحميلات والتقارير</h4>
+                    <div id="downloadLinks">
+                        <!-- Download links will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h5>معلومات الاستخراج</h5>
+                    <div id="extractionInfo">
+                        <!-- Extraction info will be populated -->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>التقنيات المكتشفة</h5>
+                    <div id="detectedTechnologies">
+                        <!-- Technologies will be populated -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Container -->
+        <div class="results-container" id="errorContainer" style="display: none;">
+            <div class="alert alert-error-custom">
+                <i data-feather="alert-circle"></i>
+                <strong>حدث خطأ في الاستخراج</strong>
+                <div id="errorMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
+    
+    <script>
+        feather.replace();
+        
+        function selectMode(mode) {
+            // Remove selected class from all modes
+            document.querySelectorAll('.extraction-mode').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked mode
+            event.currentTarget.classList.add('selected');
+            
+            // Check the radio button
+            document.getElementById(mode).checked = true;
+            
+            // Update AI analysis checkbox based on mode
+            const aiCheckbox = document.getElementById('aiAnalysis');
+            if (mode === 'ai_powered') {
+                aiCheckbox.checked = true;
+                aiCheckbox.disabled = true;
+            } else {
+                aiCheckbox.disabled = false;
+            }
+        }
+        
+        // Form submission
+        document.getElementById('extractionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const config = {
+                url: formData.get('url'),
+                extraction_type: formData.get('extraction_type'),
+                max_depth: parseInt(document.getElementById('maxDepth').value),
+                extract_assets: document.getElementById('extractAssets').checked,
+                analyze_content: document.getElementById('analyzeContent').checked,
+                generate_reports: document.getElementById('generateReports').checked,
+                organize_files: document.getElementById('organizeFiles').checked,
+                ai_analysis: document.getElementById('aiAnalysis').checked,
+                extract_media: document.getElementById('extractMedia').checked,
+                export_formats: Array.from(document.getElementById('exportFormats').selectedOptions)
+                    .map(option => option.value)
+            };
+            
+            // Show progress
+            document.querySelector('.extraction-form').style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'block';
+            
+            // Simulate progress
+            startProgressSimulation();
+            
+            try {
+                const response = await fetch('/api/unified/extract', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showResults(result);
+                } else {
+                    showError(result.error || 'حدث خطأ غير معروف');
+                }
+                
+            } catch (error) {
+                showError('خطأ في الاتصال: ' + error.message);
+            }
+        });
+        
+        function startProgressSimulation() {
+            const steps = ['step1', 'step2', 'step3', 'step4', 'step5', 'step6'];
+            let currentStep = 0;
+            
+            function nextStep() {
+                if (currentStep > 0) {
+                    // Mark previous step as completed
+                    const prevStep = document.getElementById(steps[currentStep - 1]);
+                    prevStep.classList.remove('active');
+                    prevStep.classList.add('completed');
+                    prevStep.querySelector('.step-icon').classList.remove('active');
+                    prevStep.querySelector('.step-icon').classList.add('completed');
+                    prevStep.querySelector('.step-icon').innerHTML = '✓';
+                }
+                
+                if (currentStep < steps.length) {
+                    // Mark current step as active
+                    const currentStepEl = document.getElementById(steps[currentStep]);
+                    currentStepEl.classList.add('active');
+                    currentStepEl.querySelector('.step-icon').classList.add('active');
+                    
+                    currentStep++;
+                    setTimeout(nextStep, 2000); // 2 seconds per step
+                }
+            }
+            
+            nextStep();
+        }
+        
+        function showResults(result) {
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'block';
+            
+            // Update success message
+            document.getElementById('successMessage').textContent = 
+                `تم استخراج ${result.url} في ${result.duration_seconds} ثانية`;
+            
+            // Update metrics
+            const metricsContainer = document.getElementById('resultsMetrics');
+            metricsContainer.innerHTML = `
+                <div class="col-md-3">
+                    <div class="result-metric">
+                        <div class="result-value">${result.data.pages_extracted || 1}</div>
+                        <div class="result-label">صفحات مستخرجة</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="result-metric">
+                        <div class="result-value">${result.data.assets_downloaded || 0}</div>
+                        <div class="result-label">أصول محملة</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="result-metric">
+                        <div class="result-value">${result.total_size_mb}MB</div>
+                        <div class="result-label">حجم البيانات</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="result-metric">
+                        <div class="result-value">${result.duration_seconds}s</div>
+                        <div class="result-label">وقت الاستخراج</div>
+                    </div>
+                </div>
+            `;
+            
+            // Update download links
+            const downloadContainer = document.getElementById('downloadLinks');
+            downloadContainer.innerHTML = `
+                <a href="/download/${result.extraction_id}/json" class="download-btn">
+                    <i data-feather="download"></i> تحميل JSON
+                </a>
+                <a href="/download/${result.extraction_id}/html" class="download-btn">
+                    <i data-feather="file-text"></i> تحميل التقرير
+                </a>
+                <a href="/view-result/${result.extraction_id}" class="download-btn">
+                    <i data-feather="eye"></i> عرض التفاصيل
+                </a>
+            `;
+            
+            // Update extraction info
+            document.getElementById('extractionInfo').innerHTML = `
+                <p><strong>الموقع:</strong> ${result.url}</p>
+                <p><strong>نوع الاستخراج:</strong> ${result.extraction_type}</p>
+                <p><strong>مسار الحفظ:</strong> ${result.output_path}</p>
+                <p><strong>التاريخ:</strong> ${new Date(result.timestamp).toLocaleString('ar')}</p>
+            `;
+            
+            // Update technologies
+            const techContainer = document.getElementById('detectedTechnologies');
+            const technologies = result.data.technologies || {};
+            let techHtml = '';
+            
+            for (const [key, value] of Object.entries(technologies)) {
+                techHtml += `<span class="badge bg-primary me-1 mb-1">${key}: ${value}</span>`;
+            }
+            
+            techContainer.innerHTML = techHtml || '<span class="text-muted">لم يتم اكتشاف تقنيات محددة</span>';
+            
+            // Re-initialize feather icons
+            feather.replace();
+        }
+        
+        function showError(errorMessage) {
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('errorContainer').style.display = 'block';
+            document.getElementById('errorMessage').textContent = errorMessage;
+        }
+        
+        // Initialize default mode selection
+        document.addEventListener('DOMContentLoaded', function() {
+            selectMode('basic');
+        });
+    </script>
+</body>
+</html>

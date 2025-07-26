@@ -115,6 +115,12 @@ def result_detail(result_id):
     result = ExtractionResult.query.get_or_404(result_id)
     return render_template('result_detail.html', result=result)
 
+# دمج النظام الموحد
+from unified_website_system import unified_system, create_flask_integration
+
+# تطبيق التكامل مع Flask
+create_flask_integration(app)
+
 # APIs متقدمة لجميع الأدوات
 
 @app.route('/api/tools/status')
@@ -228,12 +234,47 @@ def api_download_assets():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# صفحات الأدوات المتقدمة
+# صفحات الأدوات المتقدمة والموحدة
 @app.route('/advanced-tools')
 def advanced_tools_page():
     """صفحة الأدوات المتقدمة"""
     tools_status = advanced_tools.get_tools_status()
     return render_template('advanced_tools.html', tools_status=tools_status)
+
+@app.route('/unified-dashboard')
+def unified_dashboard():
+    """لوحة التحكم الموحدة المتطورة"""
+    system_stats = unified_system.get_system_stats()
+    recent_extractions = unified_system.get_recent_extractions(5)
+    return render_template('unified_dashboard.html', 
+                         system_stats=system_stats,
+                         recent_extractions=recent_extractions)
+
+@app.route('/unified-extractor')
+def unified_extractor_page():
+    """صفحة المستخرج الموحد المتطور"""
+    return render_template('unified_extractor.html')
+
+@app.route('/cloner-pro')
+def cloner_pro_page():
+    """صفحة Website Cloner Pro"""
+    return render_template('cloner_pro.html')
+
+@app.route('/ai-analyzer')
+def ai_analyzer_page():
+    """صفحة محلل الذكاء الاصطناعي"""
+    return render_template('ai_analyzer.html')
+
+@app.route('/file-manager')
+def file_manager_page():
+    """صفحة إدارة الملفات"""
+    from file_manager_api import FileManagerAPI
+    file_manager = FileManagerAPI()
+    storage_stats = file_manager.get_storage_stats()
+    recent_extractions = file_manager.get_recent_extractions()
+    return render_template('file_manager.html',
+                         storage_stats=storage_stats,
+                         recent_extractions=recent_extractions)
 
 # إنشاء الجداول
 with app.app_context():

@@ -121,7 +121,7 @@ class AdvancedToolsManager:
             return {
                 'success': False,
                 'error': f'خطأ في Website Cloner Pro: {str(e)}',
-                'extraction_id': extraction_id if 'extraction_id' in locals() else None
+                'extraction_id': None
             }
     
     def analyze_with_ai(self, content, analysis_type='comprehensive'):
@@ -201,7 +201,8 @@ class AdvancedToolsManager:
             score = sum(content_lower.count(keyword) for keyword in keywords)
             scores[category] = score
         
-        best_category = max(scores, key=scores.get) if max(scores.values()) > 0 else 'unknown'
+        max_score = max(scores.values()) if scores.values() else 0
+        best_category = max(scores, key=scores.get) if max_score > 0 else 'unknown'
         
         return {
             'primary_category': best_category,
