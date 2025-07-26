@@ -16,9 +16,11 @@ from data.manager import DataManager
 from utils.validators import URLValidator, DataValidator
 from utils.formatters import DataFormatter, ReportFormatter
 from api.endpoints.analyzer_api import analyzer_api
+from api.endpoints.deep_extraction_api import deep_extraction_bp
 
-# Register API blueprint
+# Register API blueprints
 app.register_blueprint(analyzer_api)
+app.register_blueprint(deep_extraction_bp)
 
 # Initialize components
 ai_analyzer = AIAnalyzer()
@@ -43,6 +45,11 @@ def index():
 def extractor():
     """Advanced content extraction page."""
     return render_template('pages/extractor.html')
+
+@app.route('/deep-extraction')
+def deep_extraction():
+    """Deep extraction engine page."""
+    return render_template('pages/deep_extraction.html')
 
 @app.route('/extract-content', methods=['POST'])
 def extract_content():

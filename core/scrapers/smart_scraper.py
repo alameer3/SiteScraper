@@ -8,7 +8,8 @@ import requests
 import time
 from typing import Dict, Any, Optional, List
 from urllib.parse import urljoin, urlparse
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag, NavigableString
+from bs4.element import PageElement
 import random
 from datetime import datetime
 
@@ -162,24 +163,30 @@ class SmartScraper:
         
         # Basic metadata
         for meta in soup.find_all('meta'):
-            name = meta.get('name') or meta.get('property') or meta.get('http-equiv')
-            content = meta.get('content')
-            if name and content:
-                if name.startswith('og:'):
-                    metadata['social'][name] = content
-                elif name in ['description', 'keywords', 'author', 'viewport']:
-                    metadata['basic'][name] = content
-                else:
-                    metadata['technical'][name] = content
+            if isinstance(meta, Tag):
+                name = meta.get('name') or meta.get('property') or meta.get('http-equiv')
+                content = meta.get('content')
+                if name and content:
+                    name_str = str(name) if isinstance(name, list) else name
+                    content_str = str(content) if isinstance(content, list) else content
+                    if name_str and name_str.startswith('og:'):
+                        metadata['social'][name_str] = content_str
+                    elif name_str in ['description', 'keywords', 'author', 'viewport']:
+                        metadata['basic'][name_str] = content_str
+                    else:
+                        metadata['technical'][name_str] = content_str
         
         # Link metadata
         metadata['links'] = []
         for link in soup.find_all('link'):
-            if link.get('rel') and link.get('href'):
+            if isinstance(link, Tag) and link.get('rel') and link.get('href'):
+                rel_val = link.get('rel')
+                href_val = link.get('href')
+                type_val = link.get('type')
                 metadata['links'].append({
-                    'rel': link.get('rel'),
-                    'href': link.get('href'),
-                    'type': link.get('type')
+                    'rel': str(rel_val) if isinstance(rel_val, list) else rel_val,
+                    'href': str(href_val) if isinstance(href_val, list) else href_val,
+                    'type': str(type_val) if isinstance(type_val, list) else type_val
                 })
         
         return metadata
@@ -197,36 +204,49 @@ class SmartScraper:
         
         # Images
         for img in soup.find_all('img'):
-            src = img.get('src') or img.get('data-src')
-            if src:
-                assets['images'].append({
-                    'src': urljoin(base_url, src),
-                    'alt': img.get('alt', ''),
-                    'title': img.get('title', ''),
-                    'width': img.get('width'),
-                    'height': img.get('height')
-                })
+            if isinstance(img, Tag):
+                src = img.get('src') or img.get('data-src')
+                if src:
+                    src_str = str(src) if isinstance(src, list) else str(src)
+                    alt_val = img.get('alt', '')
+                    title_val = img.get('title', '')
+                    width_val = img.get('width')
+                    height_val = img.get('height')
+                    assets['images'].append({
+                        'src': urljoin(base_url, src_str),
+                        'alt': str(alt_val) if isinstance(alt_val, list) else str(alt_val),
+                        'title': str(title_val) if isinstance(title_val, list) else str(title_val),
+                        'width': str(width_val) if width_val else None,
+                        'height': str(height_val) if height_val else None
+                    })
         
         # Stylesheets
         for link in soup.find_all('link', rel='stylesheet'):
-            href = link.get('href')
-            if href:
-                assets['stylesheets'].append({
-                    'href': urljoin(base_url, href),
-                    'media': link.get('media', 'all'),
-                    'type': link.get('type', 'text/css')
-                })
+            if isinstance(link, Tag):
+                href = link.get('href')
+                if href:
+                    href_str = str(href) if isinstance(href, list) else str(href)
+                    media_val = link.get('media', 'all')
+                    type_val = link.get('type', 'text/css')
+                    assets['stylesheets'].append({
+                        'href': urljoin(base_url, href_str),
+                        'media': str(media_val) if isinstance(media_val, list) else str(media_val),
+                        'type': str(type_val) if isinstance(type_val, list) else str(type_val)
+                    })
         
         # Scripts
         for script in soup.find_all('script'):
-            src = script.get('src')
-            if src:
-                assets['scripts'].append({
-                    'src': urljoin(base_url, src),
-                    'type': script.get('type', 'text/javascript'),
-                    'async': script.has_attr('async'),
-                    'defer': script.has_attr('defer')
-                })
+            if isinstance(script, Tag):
+                src = script.get('src')
+                if src:
+                    src_str = str(src) if isinstance(src, list) else str(src)
+                    type_val = script.get('type', 'text/javascript')
+                    assets['scripts'].append({
+                        'src': urljoin(base_url, src_str),
+                        'type': str(type_val) if isinstance(type_val, list) else str(type_val),
+                        'async': script.has_attr('async') if hasattr(script, 'has_attr') else False,
+                        'defer': script.has_attr('defer') if hasattr(script, 'has_attr') else False
+                    })
         
         return assets
     
@@ -237,21 +257,26 @@ class SmartScraper:
         base_domain = urlparse(base_url).netloc
         
         for link in soup.find_all('a', href=True):
-            href = link['href']
-            full_url = urljoin(base_url, href)
-            link_domain = urlparse(full_url).netloc
+            if isinstance(link, Tag):
+                href = link.get('href')
+                if href:
+                    href_str = str(href) if isinstance(href, list) else str(href)
+                    full_url = urljoin(base_url, href_str)
+                    link_domain = urlparse(full_url).netloc
+                    
+                    title_val = link.get('title', '')
+                    rel_val = link.get('rel', [])
+                    link_data = {
+                        'url': full_url,
+                        'text': self._safe_get_text(link),
+                        'title': str(title_val) if isinstance(title_val, list) else str(title_val),
+                        'rel': rel_val if isinstance(rel_val, list) else [rel_val] if rel_val else []
+                    }
             
-            link_data = {
-                'url': full_url,
-                'text': self._safe_get_text(link),
-                'title': link.get('title', ''),
-                'rel': link.get('rel', [])
-            }
-            
-            if link_domain == base_domain or not link_domain:
-                internal_links.append(link_data)
-            else:
-                external_links.append(link_data)
+                    if link_domain == base_domain or not link_domain:
+                        internal_links.append(link_data)
+                    else:
+                        external_links.append(link_data)
         
         return {
             'internal': internal_links,
@@ -274,10 +299,16 @@ class SmartScraper:
     
     def _calculate_extraction_stats(self, soup: BeautifulSoup, response: requests.Response) -> Dict[str, Any]:
         """Calculate extraction statistics."""
+        all_tags = soup.find_all()
+        tag_names = []
+        for tag in all_tags:
+            if isinstance(tag, Tag) and hasattr(tag, 'name'):
+                tag_names.append(tag.name)
+        
         return {
-            'total_elements': len(soup.find_all()),
+            'total_elements': len(all_tags),
             'text_elements': len(soup.find_all(text=True)),
-            'unique_tags': len(set(tag.name for tag in soup.find_all())),
+            'unique_tags': len(set(tag_names)),
             'response_size': len(response.content),
             'processing_time': response.elapsed.total_seconds() if hasattr(response, 'elapsed') else 0
         }
@@ -293,33 +324,39 @@ class SmartScraper:
     def _extract_charset(self, soup: BeautifulSoup) -> str:
         """Extract page charset."""
         charset_meta = soup.find('meta', charset=True)
-        if charset_meta:
-            return charset_meta.get('charset', 'UTF-8')
+        if charset_meta and isinstance(charset_meta, Tag):
+            charset_val = charset_meta.get('charset', 'UTF-8')
+            return str(charset_val) if charset_val else 'UTF-8'
         
         content_type_meta = soup.find('meta', {'http-equiv': 'Content-Type'})
-        if content_type_meta:
+        if content_type_meta and isinstance(content_type_meta, Tag):
             content = content_type_meta.get('content', '')
-            if 'charset=' in content:
-                return content.split('charset=')[1].split(';')[0]
+            content_str = str(content) if isinstance(content, list) else str(content) if content else ''
+            if 'charset=' in content_str:
+                return content_str.split('charset=')[1].split(';')[0]
         
         return 'UTF-8'
     
     def _extract_language(self, soup: BeautifulSoup) -> str:
         """Extract page language."""
         html_tag = soup.find('html')
-        if html_tag and html_tag.get('lang'):
-            return html_tag.get('lang')
+        if html_tag and isinstance(html_tag, Tag):
+            lang_val = html_tag.get('lang')
+            if lang_val:
+                return str(lang_val) if isinstance(lang_val, list) else str(lang_val)
         
         lang_meta = soup.find('meta', {'http-equiv': 'Content-Language'})
-        if lang_meta and lang_meta.get('content'):
-            return lang_meta.get('content')
+        if lang_meta and isinstance(lang_meta, Tag):
+            content_val = lang_meta.get('content')
+            if content_val:
+                return str(content_val) if isinstance(content_val, list) else str(content_val)
         
         return 'unknown'
     
     def _extract_doctype(self, soup: BeautifulSoup) -> str:
         """Extract document type."""
         doctype = soup.contents[0] if soup.contents else None
-        if doctype and hasattr(doctype, 'string'):
+        if doctype and hasattr(doctype, 'string') and doctype.string:
             return str(doctype.string)
         return 'unknown'
     
@@ -329,11 +366,14 @@ class SmartScraper:
         
         # Look for semantic HTML5 elements
         for section in soup.find_all(['section', 'article', 'main', 'aside', 'nav', 'header', 'footer']):
-            sections.append({
-                'tag': section.name,
-                'id': section.get('id', ''),
-                'class': section.get('class', []),
-                'text_length': len(self._safe_get_text(section))
-            })
+            if isinstance(section, Tag):
+                id_val = section.get('id', '')
+                class_val = section.get('class', [])
+                sections.append({
+                    'tag': section.name if hasattr(section, 'name') else 'unknown',
+                    'id': str(id_val) if isinstance(id_val, list) else str(id_val),
+                    'class': class_val if isinstance(class_val, list) else [class_val] if class_val else [],
+                    'text_length': len(self._safe_get_text(section))
+                })
         
         return sections
