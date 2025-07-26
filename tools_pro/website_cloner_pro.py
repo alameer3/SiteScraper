@@ -208,6 +208,15 @@ class CloningResult:
     extracted_content: Dict[str, Any] = field(default_factory=dict)
     error_log: List[str] = field(default_factory=list)
     recommendations: List[str] = field(default_factory=list)
+    
+    # Additional fields for compatibility
+    integration_status: Dict[str, Any] = field(default_factory=dict)
+    replication_data: Dict[str, Any] = field(default_factory=dict)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """تحويل النتيجة إلى dictionary"""
+        return asdict(self)
 
 class WebsiteClonerPro:
     """أداة استنساخ المواقع المتقدمة الموحدة"""
@@ -289,6 +298,32 @@ class WebsiteClonerPro:
         
         return url
         
+    async def clone_website(self, target_url: str = None) -> CloningResult:
+        """الوظيفة الرئيسية لاستنساخ الموقع - متوافقة مع unified_tools_manager"""
+        if target_url:
+            self.config.target_url = target_url
+        return await self.clone_website_complete(self.config.target_url)
+    
+    async def cleanup(self):
+        """تنظيف الموارد"""
+        if self.session:
+            await self.session.close()
+        if self.selenium_driver:
+            self.selenium_driver.quit()
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """تحويل النتيجة إلى dictionary"""
+        return {
+            'success': self.result.success,
+            'pages_extracted': self.result.pages_extracted,
+            'assets_downloaded': self.result.assets_downloaded,
+            'total_size': self.result.total_size,
+            'duration': self.result.duration,
+            'technologies_detected': self.result.technologies_detected,
+            'output_path': self.result.output_path,
+            'metadata': getattr(self.result, 'metadata', {})
+        }
+
     async def clone_website_complete(self, target_url: str) -> CloningResult:
         """الوظيفة الرئيسية لاستنساخ الموقع بشكل كامل"""
         
