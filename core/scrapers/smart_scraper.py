@@ -8,8 +8,8 @@ import requests
 import time
 from typing import Dict, Any, Optional, List
 from urllib.parse import urljoin, urlparse
-from bs4 import BeautifulSoup, Tag, NavigableString
-from bs4.element import PageElement
+from bs4 import BeautifulSoup, Tag
+from bs4.element import PageElement, NavigableString
 import random
 from datetime import datetime
 
@@ -177,17 +177,18 @@ class SmartScraper:
                         metadata['technical'][name_str] = content_str
         
         # Link metadata
-        metadata['links'] = []
+        metadata['links'] = {}
         for link in soup.find_all('link'):
             if isinstance(link, Tag) and link.get('rel') and link.get('href'):
                 rel_val = link.get('rel')
                 href_val = link.get('href')
                 type_val = link.get('type')
-                metadata['links'].append({
+                key = f"link_{len(metadata['links'])}"
+                metadata['links'][key] = {
                     'rel': str(rel_val) if isinstance(rel_val, list) else rel_val,
                     'href': str(href_val) if isinstance(href_val, list) else href_val,
                     'type': str(type_val) if isinstance(type_val, list) else type_val
-                })
+                }
         
         return metadata
     
@@ -264,8 +265,8 @@ class SmartScraper:
                     full_url = urljoin(base_url, href_str)
                     link_domain = urlparse(full_url).netloc
                     
-                    title_val = link.get('title', '')
-                    rel_val = link.get('rel', [])
+                    title_val = link.get('title') or ''
+                    rel_val = link.get('rel') or []
                     link_data = {
                         'url': full_url,
                         'text': self._safe_get_text(link),
@@ -356,8 +357,9 @@ class SmartScraper:
     def _extract_doctype(self, soup: BeautifulSoup) -> str:
         """Extract document type."""
         doctype = soup.contents[0] if soup.contents else None
-        if doctype and hasattr(doctype, 'string') and doctype.string:
-            return str(doctype.string)
+        if doctype and hasattr(doctype, 'string'):
+            string_val = getattr(doctype, 'string', None)
+            return str(string_val) if string_val else 'unknown'
         return 'unknown'
     
     def _identify_content_sections(self, soup: BeautifulSoup) -> List[Dict]:
@@ -367,8 +369,8 @@ class SmartScraper:
         # Look for semantic HTML5 elements
         for section in soup.find_all(['section', 'article', 'main', 'aside', 'nav', 'header', 'footer']):
             if isinstance(section, Tag):
-                id_val = section.get('id', '')
-                class_val = section.get('class', [])
+                id_val = section.get('id') or ''
+                class_val = section.get('class') or []
                 sections.append({
                     'tag': section.name if hasattr(section, 'name') else 'unknown',
                     'id': str(id_val) if isinstance(id_val, list) else str(id_val),

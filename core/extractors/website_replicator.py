@@ -23,7 +23,7 @@ import logging
 
 try:
     import cssutils
-    cssutils.log.setLevel(logging.CRITICAL)  # Suppress cssutils warnings
+    cssutils.log.setLevel('CRITICAL')  # Suppress cssutils warnings
     CSSUTILS_AVAILABLE = True
 except ImportError:
     cssutils = None
@@ -46,7 +46,7 @@ class ReplicationConfig:
 class WebsiteReplicator:
     """مولد الموقع المطابق الذكي"""
     
-    def __init__(self, config: ReplicationConfig = None):
+    def __init__(self, config: Optional[ReplicationConfig] = None):
         self.config = config or ReplicationConfig()
         self.templates_env = None
         self.generated_files = {}
