@@ -146,7 +146,7 @@ class AdvancedExtractor:
         organizer = UnifiedOrganizer()
         organized_path = organizer.organize_extraction_data(url, result)
         
-        result['organized_data_path'] = organized_path
+        result['organized_data_path'] = str(organized_path)
         result['organization_summary'] = organizer.get_extraction_summary(organized_path)
         
         self.logger.info(f"تم تنظيم جميع البيانات في: {organized_path}")
@@ -295,23 +295,6 @@ class AdvancedExtractor:
                 }
         
         return processed_assets
-    
-    def _replicate_website(self, url: str, extraction_result: Dict[str, Any]) -> Dict[str, Any]:
-        """إنشاء موقع مطابق بناءً على نتائج الاستخراج"""
-        try:
-            from core.generators.website_replicator import WebsiteReplicator
-            
-            replicator = WebsiteReplicator()
-            replication_result = replicator.replicate_website(extraction_result)
-            
-            return replication_result
-            
-        except Exception as e:
-            self.logger.error(f"خطأ في إنشاء الموقع المطابق: {e}")
-            return {
-                'status': 'error',
-                'error': str(e)
-            }
     
     def _extract_metadata(self, url: str, config: Dict) -> Dict[str, Any]:
         """Extract comprehensive metadata using real scraping."""
