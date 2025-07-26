@@ -2,7 +2,15 @@
 
 ## Overview
 
-This is a Flask-based web application that provides comprehensive website analysis capabilities. The application allows users to input a URL and receive detailed insights about the website's structure, technology stack, SEO optimization, and navigation patterns. It combines web scraping, content analysis, and technology detection to provide actionable intelligence for understanding and potentially replicating website architectures.
+This is a Flask-based web application that provides comprehensive website analysis capabilities with advanced extraction tools. The application allows users to input a URL and receive detailed insights about the website's structure, technology stack, SEO optimization, and navigation patterns. It combines web scraping, content analysis, and technology detection to provide actionable intelligence for understanding and potentially replicating website architectures.
+
+**Key Features:**
+- **Advanced Website Extraction**: 5 extraction modes (Basic, Standard, Advanced, Ultra, Secure)
+- **Interactive Content Support**: JavaScript-powered sites with Playwright/Selenium integration  
+- **SEO Analysis**: Comprehensive SEO scoring with technical, content, social, and accessibility metrics
+- **API Integration**: Async extraction APIs for automated workflows
+- **Multi-format Export**: JSON, CSV, XML, PDF, and Word document export capabilities
+- **Security Analysis**: Built-in security scanning and vulnerability detection
 
 ## User Preferences
 
