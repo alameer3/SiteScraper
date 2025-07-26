@@ -133,6 +133,10 @@ class AdvancedExtractor:
         if config.get('include_security_data'):
             result['security'] = self._analyze_security(url, config)
         
+        # Website replication if enabled
+        if config.get('replicate_website', False):
+            result['replication'] = self._replicate_website(url, result)
+        
         # Calculate statistics
         result['statistics'] = self._calculate_statistics(result)
         
@@ -170,8 +174,10 @@ class AdvancedExtractor:
         }
     
     def _extract_assets(self, url: str, config: Dict) -> Dict[str, Any]:
-        """Extract and catalog website assets using real scraping."""
+        """Extract and catalog website assets using real scraping with actual downloading."""
         from core.scrapers.smart_scraper import SmartScraper
+        from core.extractors.asset_downloader import AssetDownloader, AssetDownloadConfig
+        import asyncio
         
         scraper = SmartScraper()
         scraping_config = {
@@ -219,6 +225,64 @@ class AdvancedExtractor:
             }
         }
         
+        # تحميل الأصول الفعلي إذا كان مطلوباً
+        if config.get('download_assets', False):
+            try:
+                from core.extractors.simple_asset_downloader import SimpleAssetDownloader
+                
+                # جمع جميع روابط الأصول
+                asset_urls = []
+                
+                # إضافة الصور
+                for img in assets.get('images', []):
+                    if img.get('src'):
+                        asset_urls.append(img['src'])
+                
+                # إضافة CSS
+                for css in assets.get('stylesheets', []):
+                    if css.get('href'):
+                        asset_urls.append(css['href'])
+                
+                # إضافة JavaScript
+                for js in assets.get('scripts', []):
+                    if js.get('src'):
+                        asset_urls.append(js['src'])
+                
+                # إضافة ملفات الوسائط
+                for video in assets.get('videos', []):
+                    if video.get('src'):
+                        asset_urls.append(video['src'])
+                
+                for audio in assets.get('audios', []):
+                    if audio.get('src'):
+                        asset_urls.append(audio['src'])
+                
+                if asset_urls:
+                    # إنشاء محمل الأصول المبسط
+                    downloader = SimpleAssetDownloader()
+                    
+                    # تحميل الأصول
+                    download_result = downloader.download_assets(asset_urls, url)
+                    
+                    processed_assets['download_info'] = {
+                        'status': 'completed',
+                        'downloaded_count': download_result.get('statistics', {}).get('downloaded', 0),
+                        'failed_count': download_result.get('statistics', {}).get('failed', 0),
+                        'total_size': download_result.get('statistics', {}).get('total_size', 0),
+                        'save_directory': download_result.get('save_directory'),
+                        'downloaded_assets': download_result.get('downloaded_assets', {}),
+                        'failed_downloads': download_result.get('failed_downloads', [])
+                    }
+                    
+                    self.logger.info(f"تم تحميل {download_result.get('statistics', {}).get('downloaded', 0)} ملف بنجاح")
+                    
+            except Exception as e:
+                self.logger.error(f"خطأ في تحميل الأصول: {e}")
+                processed_assets['download_info'] = {
+                    'status': 'failed',
+                    'error': str(e)
+                }
+        
         return processed_assets
     
     def _extract_metadata(self, url: str, config: Dict) -> Dict[str, Any]:
@@ -262,6 +326,52 @@ class AdvancedExtractor:
         }
         
         return organized_metadata
+    
+    def _replicate_website(self, url: str, extraction_data: Dict[str, Any]) -> Dict[str, Any]:
+        """إنشاء موقع مطابق للموقع المستخرج"""
+        try:
+            from core.generators.website_replicator import WebsiteReplicator
+            
+            replicator = WebsiteReplicator()
+            
+            # إعداد بيانات الاستخراج للنسخ
+            replication_data = {
+                'url': url,
+                'content': extraction_data.get('content', {}),
+                'assets': extraction_data.get('assets', {}),
+                'metadata': extraction_data.get('metadata', {}),
+                'links': extraction_data.get('links', {}),
+                'mode': extraction_data.get('mode', 'standard'),
+                'statistics': extraction_data.get('statistics', {})
+            }
+            
+            # إنشاء الموقع المطابق
+            replication_result = replicator.replicate_website(replication_data)
+            
+            if replication_result.get('status') == 'success':
+                self.logger.info(f"تم إنشاء موقع مطابق بنجاح: {replication_result.get('project_directory')}")
+                return {
+                    'status': 'completed',
+                    'project_directory': replication_result.get('project_directory'),
+                    'files_created': replication_result.get('files_created', {}),
+                    'domain': replication_result.get('domain', ''),
+                    'instructions': {
+                        'arabic': f"تم إنشاء الموقع المطابق في: {replication_result.get('project_directory')}",
+                        'english': f"Replicated website created in: {replication_result.get('project_directory')}"
+                    }
+                }
+            else:
+                return {
+                    'status': 'failed',
+                    'error': replication_result.get('error', 'Unknown error')
+                }
+                
+        except Exception as e:
+            self.logger.error(f"خطأ في إنشاء الموقع المطابق: {e}")
+            return {
+                'status': 'failed',
+                'error': str(e)
+            }
     
     def _extract_links(self, url: str, config: Dict) -> Dict[str, Any]:
         """Extract and analyze website links using real scraping."""

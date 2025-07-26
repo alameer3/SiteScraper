@@ -95,6 +95,8 @@ def extract_content():
         extraction_config = {
             'depth': int(request.form.get('crawl_depth', 2)),
             'include_assets': request.form.get('include_assets') == 'on',
+            'download_assets': request.form.get('download_assets') == 'on',
+            'replicate_website': request.form.get('replicate_website') == 'on',
             'include_links': request.form.get('include_links') == 'on',
             'include_metadata': request.form.get('include_metadata') == 'on',
             'content_filtering': request.form.get('content_filtering') == 'on',
