@@ -15,7 +15,7 @@ from typing import Dict, Any, Optional
 # استيراد محركات الاستخراج
 from core.extractors.deep_extraction_engine import DeepExtractionEngine, ExtractionConfig
 from core.extractors.website_replicator import WebsiteReplicator, ReplicationConfig
-from core.ai.smart_replication_engine import SmartReplicationEngine, AIAnalysisConfig
+from core.ai.smart_replication_engine import SmartReplicationEngine, ReplicationConfig
 
 # إنشاء Blueprint
 deep_extraction_bp = Blueprint('deep_extraction', __name__, url_prefix='/api/deep-extraction')
