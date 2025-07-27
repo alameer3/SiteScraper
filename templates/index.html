@@ -12,10 +12,16 @@
         <p class="lead text-white-75 mb-4">
             استخراج وتحليل شامل للمواقع الإلكترونية مع تقنيات الذكاء الاصطناعي المتقدمة
         </p>
-        <a href="{{ url_for('extract') }}" class="btn btn-primary btn-lg">
-            <i data-feather="search" class="me-2"></i>
-            ابدأ الاستخراج الآن
-        </a>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a href="{{ url_for('extract') }}" class="btn btn-primary btn-lg">
+                <i data-feather="search" class="me-2"></i>
+                ابدأ الاستخراج الآن
+            </a>
+            <a href="{{ url_for('results') }}" class="btn btn-outline-light btn-lg">
+                <i data-feather="list" class="me-2"></i>
+                عرض النتائج
+            </a>
+        </div>
     </div>
 </div>
 
@@ -37,7 +43,7 @@
         <div class="card h-100 text-center">
             <div class="card-body">
                 <div class="feature-icon mx-auto">
-                    <i data-feather="brain"></i>
+                    <i data-feather="cpu"></i>
                 </div>
                 <h5 class="card-title">تحليل بالذكاء الاصطناعي</h5>
                 <p class="card-text">تحليل المحتوى والهيكل باستخدام تقنيات الذكاء الاصطناعي المتطورة</p>
@@ -83,6 +89,91 @@
                     <div class="col-md-3">
                         <h3 class="text-primary fw-bold">24/7</h3>
                         <p class="text-muted">متاح دائماً</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Available Tools Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-4">
+                    <i data-feather="tool" class="me-2"></i>
+                    الأدوات والصفحات المتاحة
+                </h5>
+                <div class="row">
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <a href="{{ url_for('extract') }}" class="text-decoration-none">
+                            <div class="card border-primary h-100">
+                                <div class="card-body text-center">
+                                    <i data-feather="search" class="text-primary mb-2" style="width: 32px; height: 32px;"></i>
+                                    <h6 class="card-title text-primary">استخراج موقع جديد</h6>
+                                    <p class="card-text text-muted small">ابدأ عملية استخراج جديدة لأي موقع إلكتروني</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <a href="{{ url_for('results') }}" class="text-decoration-none">
+                            <div class="card border-success h-100">
+                                <div class="card-body text-center">
+                                    <i data-feather="list" class="text-success mb-2" style="width: 32px; height: 32px;"></i>
+                                    <h6 class="card-title text-success">عرض النتائج</h6>
+                                    <p class="card-text text-muted small">تصفح جميع عمليات الاستخراج السابقة</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <a href="{{ url_for('cloner_pro_page') }}" class="text-decoration-none">
+                            <div class="card border-info h-100">
+                                <div class="card-body text-center">
+                                    <i data-feather="copy" class="text-info mb-2" style="width: 32px; height: 32px;"></i>
+                                    <h6 class="card-title text-info">Website Cloner Pro</h6>
+                                    <p class="card-text text-muted small">أداة متقدمة لنسخ المواقع بالكامل</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <a href="{{ url_for('ai_analyzer_page') }}" class="text-decoration-none">
+                            <div class="card border-warning h-100">
+                                <div class="card-body text-center">
+                                    <i data-feather="cpu" class="text-warning mb-2" style="width: 32px; height: 32px;"></i>
+                                    <h6 class="card-title text-warning">محلل الذكاء الاصطناعي</h6>
+                                    <p class="card-text text-muted small">تحليل المواقع باستخدام الذكاء الاصطناعي</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <a href="{{ url_for('file_manager_page') }}" class="text-decoration-none">
+                            <div class="card border-secondary h-100">
+                                <div class="card-body text-center">
+                                    <i data-feather="folder" class="text-secondary mb-2" style="width: 32px; height: 32px;"></i>
+                                    <h6 class="card-title text-secondary">إدارة الملفات</h6>
+                                    <p class="card-text text-muted small">إدارة وتنظيم ملفات الاستخراج</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card border-light h-100">
+                            <div class="card-body text-center">
+                                <i data-feather="settings" class="text-muted mb-2" style="width: 32px; height: 32px;"></i>
+                                <h6 class="card-title text-muted">أدوات إضافية</h6>
+                                <p class="card-text text-muted small">المزيد من الأدوات قريباً</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

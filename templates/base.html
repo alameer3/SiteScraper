@@ -91,6 +91,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('results') }}">النتائج</a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown">
+                            الأدوات المتقدمة
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('cloner_pro_page') }}">Website Cloner Pro</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('ai_analyzer_page') }}">محلل الذكاء الاصطناعي</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('file_manager_page') }}">إدارة الملفات</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
