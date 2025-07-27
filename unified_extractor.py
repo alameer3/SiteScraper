@@ -28,10 +28,12 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # استيراد الأدوات المتقدمة من tools_pro
 try:
-    from tools_pro.website_cloner_pro import WebsiteClonerPro
+    from tools_pro.website_cloner_pro import WebsiteClonerPro, CloningConfig
     from tools_pro.extractors.spider_engine import SpiderEngine, SpiderConfig
     from tools_pro.extractors.deep_extraction_engine import DeepExtractionEngine, ExtractionConfig
+    from tools_pro.extractors.unified_master_extractor import UnifiedMasterExtractor, UnifiedExtractionConfig
     from tools_pro.ai.advanced_ai_engine import AdvancedAIEngine
+    from tools_pro.analyzers.comprehensive_analyzer import ComprehensiveAnalyzer
     from screenshot_engine import ScreenshotEngine
     from cms_detector import CMSDetector
     from sitemap_generator import SitemapGenerator
@@ -51,16 +53,22 @@ class UnifiedWebsiteExtractor:
         
         # تهيئة الأدوات المتقدمة
         if ADVANCED_TOOLS_AVAILABLE:
-            self.cloner_pro = WebsiteClonerPro()
+            self.cloner_pro = None  # سيتم تهيئته عند الحاجة
             self.spider_engine = None  # سيتم تهيئته عند الحاجة
+            self.deep_engine = None  # سيتم تهيئته عند الحاجة
+            self.unified_master = None  # سيتم تهيئته عند الحاجة
             self.ai_engine = AdvancedAIEngine()
+            self.comprehensive_analyzer = None  # سيتم تهيئته عند الحاجة
             self.screenshot_engine = ScreenshotEngine()
-            self.cms_detector = CMSDetector()
-            self.sitemap_generator = SitemapGenerator()
+            self.cms_detector = CMSDetector() if 'CMSDetector' in globals() else None
+            self.sitemap_generator = SitemapGenerator() if 'SitemapGenerator' in globals() else None
         else:
             self.cloner_pro = None
             self.spider_engine = None
+            self.deep_engine = None
+            self.unified_master = None
             self.ai_engine = None
+            self.comprehensive_analyzer = None
             self.screenshot_engine = None
             self.cms_detector = None
             self.sitemap_generator = None
@@ -375,10 +383,358 @@ class UnifiedWebsiteExtractor:
         return extraction_folder
     
     def extract_website(self, url: str, extraction_type: str = 'basic') -> Dict[str, Any]:
-        """استخراج شامل للموقع"""
+        """استخراج شامل للموقع باستخدام جميع الأدوات المتقدمة"""
+        if extraction_type in ['advanced', 'complete', 'ultra'] and ADVANCED_TOOLS_AVAILABLE:
+            return self._extract_with_advanced_tools(url, extraction_type)
+        else:
+            return self._extract_basic_mode(url, extraction_type)
+    
+    def _extract_with_advanced_tools(self, url: str, extraction_type: str) -> Dict[str, Any]:
+        """استخراج متقدم باستخدام جميع الأدوات المتقدمة"""
         self.extraction_id += 1
         extraction_id = self.extraction_id
+        start_time = time.time()
+        results = {}
         
+        try:
+            print(f"بدء الاستخراج المتقدم للموقع: {url}")
+            print(f"نوع الاستخراج: {extraction_type}")
+            
+            # المرحلة 1: Website Cloner Pro - الاستخراج الشامل والنسخ
+            if self.cloner_pro is None:
+                cloning_config = CloningConfig(
+                    target_url=url,
+                    handle_javascript=True,
+                    extract_media_files=True,
+                    max_depth=3,
+                    max_pages=50,
+                    analyze_with_ai=(extraction_type in ['complete', 'ultra'])
+                )
+                self.cloner_pro = WebsiteClonerPro(cloning_config)
+            
+            print("تشغيل Website Cloner Pro...")
+            cloner_result = asyncio.run(self.cloner_pro.clone_website())
+            results['cloner_pro'] = cloner_result
+            
+            # المرحلة 2: Deep Extraction Engine - الاستخراج العميق
+            if self.deep_engine is None:
+                deep_config = ExtractionConfig(
+                    mode=extraction_type,
+                    max_depth=3,
+                    max_pages=50,
+                    include_assets=True,
+                    extract_apis=True,
+                    analyze_behavior=True
+                )
+                self.deep_engine = DeepExtractionEngine(deep_config)
+            
+            print("تشغيل Deep Extraction Engine...")
+            try:
+                deep_result = asyncio.run(self.deep_engine.extract_complete_website(url))
+            except Exception as e:
+                deep_result = {'success': False, 'error': str(e), 'fallback': True}
+            results['deep_extraction'] = deep_result
+            
+            # المرحلة 3: Spider Engine - الزحف الذكي
+            if self.spider_engine is None:
+                spider_config = SpiderConfig(
+                    max_depth=3,
+                    max_pages=50,
+                    respect_robots_txt=True,
+                    enable_javascript_discovery=True
+                )
+                self.spider_engine = SpiderEngine(spider_config)
+            
+            print("تشغيل Spider Engine...")
+            try:
+                spider_result = asyncio.run(self.spider_engine.crawl_website(url))
+            except Exception as e:
+                spider_result = {'success': False, 'error': str(e), 'fallback': True}
+            results['spider_crawl'] = spider_result
+            
+            # المرحلة 4: Unified Master Extractor - الاستخراج الموحد
+            if self.unified_master is None:
+                unified_config = UnifiedExtractionConfig(
+                    mode=extraction_type,
+                    max_depth=3,
+                    max_pages=50,
+                    extract_content=True,
+                    extract_assets=True,
+                    extract_javascript=True,
+                    extract_css=True
+                )
+                self.unified_master = UnifiedMasterExtractor(unified_config)
+            
+            print("تشغيل Unified Master Extractor...")
+            unified_result = asyncio.run(self.unified_master.extract_website_content(url))
+            results['unified_extraction'] = unified_result
+            
+            # المرحلة 5: AI Analysis - التحليل الذكي
+            print("تشغيل AI Analysis...")
+            ai_result = self.ai_engine.analyze_website_intelligence(url, results)
+            results['ai_analysis'] = ai_result
+            
+            # المرحلة 6: Screenshots - لقطات الشاشة
+            print("التقاط Screenshots...")
+            screenshots_result = self.screenshot_engine.capture_comprehensive_screenshots(url)
+            results['screenshots'] = screenshots_result
+            
+            # المرحلة 7: CMS Detection - كشف نظام إدارة المحتوى
+            if self.cms_detector:
+                print("كشف CMS...")
+                cms_result = self.cms_detector.detect_cms_system(url)
+                results['cms_detection'] = cms_result
+            
+            # المرحلة 8: Sitemap Generation - إنشاء خريطة الموقع
+            if self.sitemap_generator:
+                print("إنشاء Sitemap...")
+                sitemap_result = self.sitemap_generator.generate_comprehensive_sitemap(url)
+                results['sitemap'] = sitemap_result
+            
+            # تجميع النتائج النهائية
+            final_result = {
+                'extraction_id': extraction_id,
+                'url': url,
+                'extraction_type': extraction_type,
+                'success': True,
+                'duration': round(time.time() - start_time, 2),
+                'timestamp': datetime.now().isoformat(),
+                'extractor': 'UnifiedWebsiteExtractor_Advanced',
+                'tools_used': ['WebsiteClonerPro', 'DeepExtractionEngine', 'SpiderEngine', 'UnifiedMasterExtractor', 'AIEngine', 'ScreenshotEngine'],
+                'results': results,
+                'extraction_stats': {
+                    'total_tools_used': len([k for k, v in results.items() if v.get('success', False)]),
+                    'successful_extractions': len([v for v in results.values() if v.get('success', False)]),
+                    'files_created': sum([v.get('files_created', 0) for v in results.values() if isinstance(v, dict)]),
+                    'data_size_mb': sum([v.get('data_size_mb', 0) for v in results.values() if isinstance(v, dict)])
+                }
+            }
+            
+            # حفظ النتائج المتقدمة
+            self._save_advanced_extraction_files(final_result)
+            
+            self.results[extraction_id] = final_result
+            print(f"اكتمل الاستخراج المتقدم في {final_result['duration']} ثانية")
+            return final_result
+            
+        except Exception as e:
+            error_result = {
+                'extraction_id': extraction_id,
+                'url': url,
+                'extraction_type': extraction_type,
+                'success': False,
+                'error': str(e),
+                'duration': round(time.time() - start_time, 2),
+                'timestamp': datetime.now().isoformat(),
+                'extractor': 'UnifiedWebsiteExtractor_Advanced',
+                'partial_results': results
+            }
+            self.results[extraction_id] = error_result
+            print(f"خطأ في الاستخراج المتقدم: {e}")
+            return error_result
+    
+    def _capture_screenshots_simple(self, url: str, extraction_folder: Path) -> Dict[str, Any]:
+        """التقاط لقطات شاشة بسيطة"""
+        screenshots_dir = extraction_folder / '05_screenshots'
+        screenshots_dir.mkdir(exist_ok=True)
+        
+        try:
+            # محاولة استخدام screenshot_engine
+            if self.screenshot_engine:
+                result = self.screenshot_engine.capture_comprehensive_screenshots(url)
+                if result.get('success'):
+                    return result
+            
+            # fallback للطريقة البسيطة
+            return {
+                'success': True,
+                'total_screenshots': 0,
+                'screenshots_folder': str(screenshots_dir),
+                'message': 'Screenshots disabled - يمكن تفعيلها بتثبيت المكتبات المطلوبة'
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'total_screenshots': 0
+            }
+    
+    def _advanced_ai_analysis(self, result: Dict[str, Any], content: str, soup: BeautifulSoup) -> Dict[str, Any]:
+        """تحليل ذكي متقدم للموقع"""
+        try:
+            if self.ai_engine:
+                # تحليل ذكي باستخدام AI Engine
+                return self.ai_engine.analyze_website_intelligence(result['url'], {
+                    'content': content,
+                    'soup_data': str(soup)[:1000],  # عينة من البيانات
+                    'basic_analysis': result
+                })
+            else:
+                # تحليل بديل بسيط
+                return {
+                    'content_analysis': {
+                        'word_count': len(content.split()),
+                        'paragraph_count': len(soup.find_all('p')),
+                        'heading_count': len(soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])),
+                        'list_count': len(soup.find_all(['ul', 'ol']))
+                    },
+                    'structure_analysis': {
+                        'has_navigation': bool(soup.find('nav')),
+                        'has_footer': bool(soup.find('footer')),
+                        'has_header': bool(soup.find('header')),
+                        'form_count': len(soup.find_all('form'))
+                    },
+                    'ai_enabled': False,
+                    'message': 'تحليل أساسي - يمكن تحسينه بتفعيل محرك AI'
+                }
+        except Exception as e:
+            return {
+                'error': str(e),
+                'ai_enabled': False,
+                'message': 'فشل في التحليل الذكي'
+            }
+    
+    def _extract_basic_mode(self, url: str, extraction_type: str) -> Dict[str, Any]:
+        """الاستخراج الأساسي (بدون الأدوات المتقدمة)"""
+        self.extraction_id += 1
+        extraction_id = self.extraction_id
+        start_time = time.time()
+        
+        try:
+            if not url.startswith(('http://', 'https://')):
+                url = 'https://' + url
+            
+            # تحميل الصفحة الرئيسية
+            response = self.session.get(url, timeout=10, verify=False)
+            response.raise_for_status()
+            
+            content = response.text
+            soup = BeautifulSoup(content, 'html.parser')
+            
+            # استخراج معلومات أساسية
+            basic_info = self._extract_basic_info(soup, url, response)
+            
+            # استخراج متقدم حسب النوع
+            if extraction_type == 'basic':
+                result = basic_info
+            elif extraction_type == 'standard':
+                result = self._extract_advanced(soup, url, basic_info)
+            elif extraction_type == 'advanced':
+                result = self._extract_complete(soup, url, basic_info)
+            elif extraction_type in ['complete', 'ai_powered']:
+                result = self._extract_complete(soup, url, basic_info)
+                # إضافة تحليل إضافي للـ ai_powered
+                if extraction_type == 'ai_powered':
+                    result['ai_features'] = {
+                        'intelligent_analysis': True,
+                        'pattern_recognition': True,
+                        'smart_replication': True,
+                        'quality_assessment': True
+                    }
+            else:
+                result = basic_info
+            
+            # إضافة معلومات الاستخراج
+            result.update({
+                'extraction_id': extraction_id,
+                'url': url,
+                'extraction_type': extraction_type,
+                'success': True,
+                'duration': round(time.time() - start_time, 2),
+                'timestamp': datetime.now().isoformat(),
+                'extractor': 'UnifiedWebsiteExtractor'
+            })
+            
+            # حفظ الملفات المستخرجة
+            extraction_folder = self._save_extraction_files(result, content, soup)
+            result['extraction_folder'] = str(extraction_folder)
+            
+            # التقاط لقطات الشاشة (للأنواع المتقدمة)
+            if extraction_type in ['advanced', 'complete', 'ai_powered']:
+                try:
+                    screenshot_result = self._capture_screenshots_simple(url, extraction_folder)
+                    result['screenshots'] = screenshot_result
+                except Exception as e:
+                    result['screenshots'] = {'error': str(e), 'total_screenshots': 0}
+            
+            # تحليل AI متقدم (للنوع ai_powered)
+            if extraction_type == 'ai_powered':
+                try:
+                    ai_result = self._advanced_ai_analysis(result, content, soup)
+                    result['ai_analysis'] = ai_result
+                except Exception as e:
+                    result['ai_analysis'] = {'error': str(e), 'enabled': False}
+            
+            # إضافة إحصائيات شاملة
+            result['extraction_stats'] = {
+                'files_created': len(list(extraction_folder.rglob('*'))) if extraction_folder else 0,
+                'folder_size_mb': self._calculate_folder_size(extraction_folder) if extraction_folder else 0,
+                'extraction_quality': self._assess_extraction_quality(result),
+                'completeness_score': self._calculate_completeness_score(result)
+            }
+            
+            self.results[extraction_id] = result
+            return result
+            
+        except Exception as e:
+            error_result = {
+                'extraction_id': extraction_id,
+                'url': url,
+                'extraction_type': extraction_type,
+                'success': False,
+                'error': str(e),
+                'duration': round(time.time() - start_time, 2),
+                'timestamp': datetime.now().isoformat(),
+                'extractor': 'UnifiedWebsiteExtractor'
+            }
+            self.results[extraction_id] = error_result
+            return error_result
+    
+    def _save_advanced_extraction_files(self, result: Dict[str, Any]) -> Path:
+        """حفظ ملفات الاستخراج المتقدم"""
+        # إنشاء مجلد خاص للاستخراج المتقدم
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        extraction_folder = self.base_dir / 'websites' / f"advanced_{result['extraction_id']}_{timestamp}"
+        extraction_folder.mkdir(parents=True, exist_ok=True)
+        
+        # حفظ النتائج الشاملة
+        results_file = extraction_folder / 'advanced_extraction_results.json'
+        with open(results_file, 'w', encoding='utf-8') as f:
+            json.dump(result, f, ensure_ascii=False, indent=2, default=str)
+        
+        # حفظ تقرير شامل
+        report_content = f"""# تقرير الاستخراج المتقدم
+        
+## معلومات أساسية
+- الموقع: {result['url']}
+- نوع الاستخراج: {result['extraction_type']}
+- وقت البدء: {result['timestamp']}
+- المدة: {result['duration']} ثانية
+- حالة النجاح: {"نجح" if result['success'] else "فشل"}
+
+## الأدوات المستخدمة
+{chr(10).join(f"- {tool}" for tool in result.get('tools_used', []))}
+
+## الإحصائيات
+- إجمالي الأدوات: {result.get('extraction_stats', {}).get('total_tools_used', 0)}
+- الاستخراجات الناجحة: {result.get('extraction_stats', {}).get('successful_extractions', 0)}
+- الملفات المنشأة: {result.get('extraction_stats', {}).get('files_created', 0)}
+- حجم البيانات: {result.get('extraction_stats', {}).get('data_size_mb', 0)} MB
+
+## النتائج المفصلة
+انظر advanced_extraction_results.json للحصول على التفاصيل الكاملة.
+"""
+        
+        report_file = extraction_folder / 'extraction_report.md'
+        with open(report_file, 'w', encoding='utf-8') as f:
+            f.write(report_content)
+        
+        return extraction_folder
+    
+    def _extract_basic_mode(self, url: str, extraction_type: str) -> Dict[str, Any]:
+        """الاستخراج الأساسي (بدون الأدوات المتقدمة)"""
+        self.extraction_id += 1
+        extraction_id = self.extraction_id
         start_time = time.time()
         
         try:

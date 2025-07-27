@@ -694,6 +694,10 @@ class WebsiteClonerPro:
     async def _setup_selenium(self):
         """إعداد متصفح Selenium"""
         try:
+            if not SELENIUM_AVAILABLE or not webdriver or not ChromeOptions:
+                self.selenium_driver = None
+                return
+                
             options = ChromeOptions()
             options.add_argument('--headless')
             options.add_argument('--no-sandbox')
@@ -844,6 +848,7 @@ class WebsiteClonerPro:
         
         # تحليل العلامات الوصفية
         for meta in soup.find_all('meta'):
+            if not isinstance(meta, Tag): continue
             name_attr = meta.get('name')
             property_attr = meta.get('property')
             content_attr = meta.get('content')
@@ -855,6 +860,7 @@ class WebsiteClonerPro:
         
         # كشف المكتبات من خلال السكريبت
         for script in soup.find_all('script'):
+            if not isinstance(script, Tag): continue
             src_attr = script.get('src')
             if src_attr:
                 src = str(src_attr).lower()
@@ -873,6 +879,7 @@ class WebsiteClonerPro:
         
         # كشف CSS frameworks
         for link in soup.find_all('link'):
+            if not isinstance(link, Tag): continue
             rel_attr = link.get('rel')
             href_attr = link.get('href')
             if rel_attr and href_attr and 'stylesheet' in str(rel_attr):
@@ -1570,6 +1577,7 @@ class WebsiteClonerPro:
                 
                 # تحليل النماذج
                 for form in soup.find_all('form'):
+                    if not isinstance(form, Tag): continue
                     form_data = {
                         'action': str(form.get('action', '')),
                         'method': str(form.get('method', 'GET')),
@@ -1577,6 +1585,7 @@ class WebsiteClonerPro:
                     }
                     
                     for input_tag in form.find_all(['input', 'textarea', 'select']):
+                        if not isinstance(input_tag, Tag): continue
                         input_data = {
                             'type': str(input_tag.get('type', 'text')),
                             'name': str(input_tag.get('name', '')),
@@ -1588,6 +1597,7 @@ class WebsiteClonerPro:
                 
                 # تحليل click handlers
                 for element in soup.find_all(attrs={'onclick': True}):
+                    if not isinstance(element, Tag): continue
                     onclick_attr = element.get('onclick')
                     if onclick_attr:
                         interactions['click_handlers'].append({
@@ -1671,19 +1681,22 @@ class WebsiteClonerPro:
         # البحث عن أنماط التنقل
         nav_elements = soup.find_all(['nav', 'div'], class_=re.compile(r'nav|menu'))
         for nav in nav_elements:
+            if not isinstance(nav, Tag): continue
             # تحليل بنية التنقل
             if nav.find('ul'):
-                if nav.find('ul').find('ul'):  # قائمة متداخلة
+                ul = nav.find('ul')
+                if ul and ul.find('ul'):  # قائمة متداخلة
                     patterns.append('dropdown_menu')
                 else:
                     patterns.append('horizontal_menu')
             
             # البحث عن breadcrumbs
-            if 'breadcrumb' in str(nav.get('class', [])).lower():
+            nav_class = nav.get('class')
+            if nav_class and 'breadcrumb' in str(nav_class).lower():
                 patterns.append('breadcrumb_navigation')
             
             # البحث عن pagination
-            if 'pag' in str(nav.get('class', [])).lower():
+            if nav_class and 'pag' in str(nav_class).lower():
                 patterns.append('pagination')
         
         return patterns
@@ -1807,6 +1820,7 @@ class WebsiteClonerPro:
         # فحص الروابط
         links = soup.find_all('a')
         for link in links:
+            if not isinstance(link, Tag): continue
             href = link.get('href')
             text = link.get_text().strip()
             if href and not text:
@@ -1815,6 +1829,7 @@ class WebsiteClonerPro:
         # فحص النماذج
         inputs = soup.find_all('input')
         for input_tag in inputs:
+            if not isinstance(input_tag, Tag): continue
             if input_tag.get('type') not in ['hidden', 'submit', 'button']:
                 if not input_tag.get('label') and not input_tag.get('aria-label'):
                     issues.append('Form input without label')
@@ -1934,6 +1949,7 @@ class WebsiteClonerPro:
         
         # تعديل مسارات الصور
         for img in soup.find_all('img'):
+            if not isinstance(img, Tag): continue
             src_attr = img.get('src')
             if src_attr:
                 original_src = str(src_attr)
@@ -1944,6 +1960,7 @@ class WebsiteClonerPro:
         
         # تعديل مسارات CSS
         for link in soup.find_all('link'):
+            if not isinstance(link, Tag): continue
             href_attr = link.get('href')
             rel_attr = link.get('rel')
             if href_attr and rel_attr and 'stylesheet' in str(rel_attr):
@@ -1954,6 +1971,7 @@ class WebsiteClonerPro:
         
         # تعديل مسارات JavaScript
         for script in soup.find_all('script'):
+            if not isinstance(script, Tag): continue
             src_attr = script.get('src')
             if src_attr:
                 original_src = str(src_attr)
@@ -2177,6 +2195,7 @@ function getDatabase() {{
                 
                 # اختبار روابط الصور
                 for img in soup.find_all('img'):
+                    if not isinstance(img, Tag): continue
                     src_attr = img.get('src')
                     if src_attr:
                         img_url = urljoin(self.config.target_url, str(src_attr))
@@ -2185,6 +2204,7 @@ function getDatabase() {{
                 
                 # اختبار الروابط النصية
                 for link in soup.find_all('a'):
+                    if not isinstance(link, Tag): continue
                     href_attr = link.get('href')
                     if href_attr:
                         link_url = urljoin(self.config.target_url, str(href_attr))
@@ -2196,8 +2216,10 @@ function getDatabase() {{
     async def _test_url(self, url: str) -> bool:
         """اختبار رابط واحد"""
         try:
-            async with self.session.head(url) as response:
-                return response.status < 400
+            if self.session:
+                async with self.session.head(url) as response:
+                    return response.status < 400
+            return False
         except:
             return False
     

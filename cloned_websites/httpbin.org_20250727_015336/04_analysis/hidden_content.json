@@ -1,0 +1,12 @@
+[
+  {
+    "type": "html_comment",
+    "content": "ADDS THE LOADER SPINNER",
+    "file": "index.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Example form from HTML5 spec http://www.w3.org/TR/html5/forms.html#writing-a-form's-user-interface",
+    "file": "forms_post.html"
+  }
+]

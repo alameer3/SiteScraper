@@ -1,0 +1,109 @@
+{
+  "domain": "httpbin.org",
+  "title": "httpbin.org",
+  "description": "",
+  "keywords": "",
+  "content_length": 9591,
+  "status_code": 200,
+  "content_type": "text/html; charset=utf-8",
+  "server": "gunicorn/19.9.0",
+  "links_count": 5,
+  "images_count": 0,
+  "scripts_count": 4,
+  "stylesheets_count": 2,
+  "technologies": [
+    "React",
+    "jQuery"
+  ],
+  "performance": {
+    "response_time": 0.031035,
+    "content_size": 9591,
+    "compression": false,
+    "cache_control": "",
+    "expires": "",
+    "etag": "",
+    "last_modified": ""
+  },
+  "links_analysis": {
+    "total_links": 5,
+    "internal_links": [
+      {
+        "href": "https://httpbin.org/forms/post",
+        "text": "HTML form"
+      }
+    ],
+    "external_links": [
+      {
+        "href": "https://github.com/requests/httpbin",
+        "text": ""
+      },
+      {
+        "href": "https://kennethreitz.org",
+        "text": "the developer - Website"
+      },
+      {
+        "href": "https://github.com/rochacbruno/flasgger",
+        "text": "Flasgger"
+      }
+    ],
+    "email_links": [
+      {
+        "href": "mailto:me@kennethreitz.org",
+        "text": "Send email to the developer"
+      }
+    ],
+    "internal_count": 1,
+    "external_count": 3,
+    "email_count": 1
+  },
+  "images_analysis": {
+    "total_images": 0,
+    "images": [],
+    "lazy_loading": 0
+  },
+  "seo_analysis": {
+    "meta_tags": {},
+    "headings_structure": {
+      "h1": 0,
+      "h2": 2,
+      "h3": 0,
+      "h4": 0,
+      "h5": 0,
+      "h6": 0
+    },
+    "schema_markup": [],
+    "canonical_url": null,
+    "robots_meta": "",
+    "open_graph": {},
+    "twitter_cards": {}
+  },
+  "structure_analysis": {
+    "has_header": false,
+    "has_nav": false,
+    "has_main": false,
+    "has_aside": false,
+    "has_footer": false,
+    "sections_count": 3,
+    "articles_count": 0,
+    "divs_count": 16,
+    "forms_count": 0,
+    "inputs_count": 0,
+    "buttons_count": 0
+  },
+  "security_analysis": {
+    "https_used": true,
+    "external_scripts": [],
+    "inline_scripts": 1,
+    "external_stylesheets": [
+      "https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700"
+    ],
+    "forms_analysis": []
+  },
+  "extraction_id": 2,
+  "url": "https://httpbin.org",
+  "extraction_type": "standard",
+  "success": true,
+  "duration": 0.04,
+  "timestamp": "2025-07-27T01:53:35.873516",
+  "extractor": "UnifiedWebsiteExtractor"
+}

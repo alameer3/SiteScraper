@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "target_url": "https://httpbin.org",
+    "extraction_timestamp": "2025-07-27T01:53:48.068885",
+    "extraction_time": 4.814828395843506,
+    "config": {
+      "mode": "advanced",
+      "max_depth": 3,
+      "max_pages": 50,
+      "include_assets": true,
+      "include_javascript": true,
+      "include_css": true,
+      "extract_apis": true,
+      "analyze_behavior": true,
+      "extract_database_schema": false,
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      "timeout": 30,
+      "delay_between_requests": 1.0,
+      "respect_robots_txt": true,
+      "enable_playwright": true,
+      "enable_selenium": true,
+      "output_directory": "extracted_sites"
+    },
+    "extraction_id": "d08d8fdecd7296e6e0c63ffef582701c"
+  },
+  "initial_analysis": {
+    "basic_info": {
+      "title": "httpbin.org",
+      "description": "",
+      "keywords": "",
+      "language": "en",
+      "charset": "UTF-8",
+      "viewport": ""
+    },
+    "document_structure": {
+      "doctype": "html",
+      "html_attributes": {
+        "lang": "en"
+      },
+      "head_elements": 

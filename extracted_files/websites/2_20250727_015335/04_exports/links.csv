@@ -1,0 +1,5 @@
+Type,URL,Text
+Internal,https://httpbin.org/forms/post,HTML form
+External,https://github.com/requests/httpbin,
+External,https://kennethreitz.org,the developer - Website
+External,https://github.com/rochacbruno/flasgger,Flasgger

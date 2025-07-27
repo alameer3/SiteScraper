@@ -1,0 +1,14 @@
+{
+  "python": {
+    "command": "python -m http.server 8000",
+    "description": "Python HTTP Server - للتطوير السريع"
+  },
+  "node": {
+    "command": "npx serve . -p 8000",
+    "description": "Node.js Serve - للاختبار المحلي"
+  },
+  "php": {
+    "command": "php -S localhost:8000",
+    "description": "PHP Built-in Server - للتطوير"
+  }
+}

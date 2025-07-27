@@ -1,0 +1,260 @@
+{
+  "metadata": {
+    "target_url": "https://httpbin.org",
+    "extraction_date": "2025-07-27T01:53:43.188565",
+    "duration": 0.0,
+    "success": false
+  },
+  "statistics": {
+    "pages_extracted": 2,
+    "assets_downloaded": 5,
+    "total_size": 0,
+    "errors_count": 0
+  },
+  "technologies": {
+    "cms": "unknown",
+    "frameworks": [],
+    "libraries": [
+      "jQuery"
+    ],
+    "analytics": [],
+    "server_technology": "unknown",
+    "hosting_provider": "unknown",
+    "ssl_info": {},
+    "performance_tools": [],
+    "cdn_usage": [],
+    "database_indicators": []
+  },
+  "security_analysis": {
+    "ssl_certificate": {
+      "enabled": true,
+      "protocol": "HTTPS",
+      "secure_connection": true
+    },
+    "security_headers": {
+      "Content-Security-Policy": null,
+      "X-Frame-Options": null,
+      "X-Content-Type-Options": null,
+      "Strict-Transport-Security": null,
+      "X-XSS-Protection": null,
+      "Referrer-Policy": null
+    },
+    "vulnerabilities_detected": [
+      "Missing Content-Security-Policy header",
+      "Missing X-Frame-Options header",
+      "Missing X-Content-Type-Options header",
+      "Missing Strict-Transport-Security header",
+      "Missing X-XSS-Protection header",
+      "Missing Referrer-Policy header"
+    ],
+    "authentication_methods": [],
+    "data_protection_measures": [],
+    "secure_practices": [],
+    "security_score": 30,
+    "recommendations": [
+      "إضافة Content-Security-Policy header للحماية",
+      "إضافة X-Frame-Options header للحماية",
+      "إضافة X-Content-Type-Options header للحماية",
+      "إضافة Strict-Transport-Security header للحماية",
+      "إضافة X-XSS-Protection header للحماية",
+      "إضافة Referrer-Policy header للحماية"
+    ]
+  },
+  "performance_metrics": {
+    "page_load_time": 0.12,
+    "page_size_kb": 9.37,
+    "total_requests": 5,
+    "asset_breakdown": {
+      "images": {
+        "count": 0,
+        "size_kb": 0
+      },
+      "css": {
+        "count": 2,
+        "size_kb": 168.92
+      },
+      "js": {
+        "count": 3,
+        "size_kb": 1909.01
+      },
+      "other": {
+        "count": 0,
+        "size_kb": 0
+      }
+    },
+    "optimization_opportunities": [],
+    "performance_score": 100,
+    "loading_recommendations": [],
+    "comparison": {
+      "original_load_time": 0.03145337104797363,
+      "replica_load_time": 0,
+      "size_difference": 0,
+      "functionality_preservation": "unknown"
+    }
+  },
+  "ai_analysis": {},
+  "extracted_content": {
+    "site_type": "Business/Corporate Site",
+    "discovered_links": 1,
+    "robots_analysis": {
+      "exists": true,
+      "content": "User-agent: *\nDisallow: /deny\n",
+      "disallowed_paths": [
+        "/deny"
+      ],
+      "allowed_paths": [],
+      "sitemaps": []
+    },
+    "sitemap_urls": [],
+    "structure_analysis": {
+      "total_pages": 2,
+      "navigation_structure": {},
+      "page_hierarchy": {},
+      "internal_links": [],
+      "external_links": [],
+      "broken_links": [],
+      "sitemap_exists": false,
+      "robots_txt_exists": true,
+      "main_sections": []
+    },
+    "api_endpoints": [
+      "https://httpbin.org/spec.json",
+      "https://httpbin.org/openapi",
+      "https://httpbin.org/,{value:!0});var r=l(n(28));t.default=function(){return{afterLoad:function(e){this.rootInjects=this.rootInjects||{},this.rootInjects.initOAuth=e.authActions.configureAuth,this.rootInjects.preauthorizeApiKey=p.bind(null,e),this.rootInjects.preauthorizeBasic=c.bind(null,e)},statePlugins:{auth:{reducers:i.default,actions:o,selectors:a},spec:{wrapActions:s}}}},t.preauthorizeBasic=c,t.preauthorizeApiKey=p;var i=l(n(267)),o=u(n(164)),a=u(n(268)),s=u(n(269));function u(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}function l(e){return e&&e.__esModule?e:{default:e}}function c(e,t,n,i){var o=e.authActions.authorize,a=e.specSelectors,s=a.specJson,u=(0,a.isOAS3)()?[",
+      "https://httpbin.org/apiKey",
+      "https://httpbin.org/,apid:",
+      "https://httpbin.org/,CapitalDifferentialD:",
+      "https://httpbin.org/,napid:",
+      "https://httpbin.org/,{value:!0});var l=r(n(17)),c=r(n(1));t.isOAS3=function(e){var t=e.openapi;return!!t&&(0,f.default)(t,",
+      "https://httpbin.org/==typeof e?n.url=e:n=e,!(this instanceof i))return new i(n);(0,a.default)(this,n);var r=this.resolve().then(function(){return t.disableInterfaces||(0,a.default)(t,i.makeApisTagOperation(t)),t});return r.client=this,r}var o=r(n(3)),a=r((r(n(24)),n(6))),s=r(n(14)),u=r(n(10)),l=n(7),c=r(l),p=n(15),f=r(p),h=r(n(47)),d=n(48),m=n(50),v=n(5);i.http=c.default,i.makeHttp=l.makeHttp.bind(null,i.http),i.resolve=f.default,i.resolveSubtree=h.default,i.execute=m.execute,i.serializeRes=l.serializeRes,i.serializeHeaders=l.serializeHeaders,i.clearCache=p.clearCache,i.parameterBuilders=m.PARAMETER_BUILDERS,i.makeApisTagOperation=d.makeApisTagOperation,i.buildRequest=m.buildRequest,i.helpers={opId:v.opId},e.exports=i,i.prototype={http:c.default,execute:function(e){return this.applyDefaults(),i.execute((0,o.default)({spec:this.spec,http:this.http,securities:{authorized:this.authorizations},contextUrl:",
+      "https://httpbin.org/,{value:!0}),t.self=void 0;var a=r(n(3));t.makeExecute=i,t.makeApisTagOperationsOperationExecute=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=p.makeExecute(e),n=p.mapTagOperations({v2OperationIdCompatibilityMode:e.v2OperationIdCompatibilityMode,spec:e.spec,cb:t}),r={};for(var i in n)for(var o in r[i]={operations:{}},n[i])r[i].operations[o]={execute:n[i][o]};return{apis:r}},t.makeApisTagOperation=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=p.makeExecute(e);return{apis:p.mapTagOperations({v2OperationIdCompatibilityMode:e.v2OperationIdCompatibilityMode,spec:e.spec,cb:t})}},t.mapTagOperations=o;var s=r(n(49)),u=n(5),l=function(){return null},c=function(e){return Array.isArray(e)?e:[e]},p=t.self={mapTagOperations:o,makeExecute:i}},function(e,t){e.exports=n(923)},function(e,t,n){",
+      "https://httpbin.org/);return x},w=n.config||f.configUrl;return!w||!x.specActions.getConfigByUrl||x.specActions.getConfigByUrl&&!x.specActions.getConfigByUrl({url:w,loadRemoteConfig:!0,requestInterceptor:f.requestInterceptor,responseInterceptor:f.responseInterceptor},k)?k():x},e.exports.presets={apis:l.default},e.exports.plugins=c},function(e,t,n){",
+      "https://httpbin.org/  (apiKey)",
+      "https://httpbin.org/apiKeyAuth",
+      "https://httpbin.org/Scopes are used to grant an application different levels of access to data on behalf of the end user. Each API may declare one or more scopes.",
+      "https://httpbin.org/API requires the following scopes. Select which ones you want to grant to Swagger UI.",
+      "https://httpbin.org/capitalize",
+      "https://httpbin.org/No API definition provided.",
+      "https://httpbin.org/,{value:!0}),t.default=function(){var e={components:{App:b.default,authorizationPopup:x.default,authorizeBtn:k.default,authorizeOperationBtn:w.default,auths:E.default,AuthItem:S.default,authError:C.default,oauth2:M.default,apiKeyAuth:A.default,basicAuth:D.default,clear:O.default,liveResponse:T.default,info:Y.default,onlineValidatorBadge:P.default,operations:I.default,operation:R.default,highlightCode:j.default,responses:B.default,response:L.default,responseBody:q.default,parameters:z.default,parameterRow:W.default,execute:V.default,headers:H.default,errors:J.default,contentType:G.default,overview:K.default,footer:$.default,ParamBody:Z.default,curl:Q.default,schemes:ee.default,modelExample:ne.default,ModelWrapper:re.default,ModelCollapse:te.default,Model:ie.default,Models:oe.default,EnumModel:ae.default,ObjectModel:se.default,ArrayModel:ue.default,PrimitiveModel:le.default,Property:ce.default,TryItOutButton:pe.default,Markdown:me.default,BaseLayout:ve.default,VersionStamp:fe.default,OperationExt:F.default,OperationExtRow:N.default,ParameterExt:U.default,OperationContainer:_.default,DeepLink:he.default,InfoUrl:X.InfoUrl,InfoBasePath:X.InfoBasePath,SvgAssets:de.default}},t={components:ge},n={components:ye};return[m.default,f.default,u.default,a.default,o.default,r.default,i.default,s.default,e,t,c.default,n,p.default,l.default,h.default,d.default,v.default,g.default,y.default]};var r=be(n(283)),i=be(n(288)),o=be(n(315)),a=be(n(322)),s=be(n(314)),u=be(n(291)),l=be(n(264)),c=be(n(320)),p=be(n(266)),f=be(n(321)),h=be(n(319)),d=be(n(278)),m=be(n(270)),v=be(n(275)),g=be(n(286)),y=be(n(313)),_=be(n(540)),b=be(n(492)),x=be(n(496)),k=be(n(497)),w=be(n(498)),E=be(n(499)),S=be(n(495)),C=be(n(501)),A=be(n(494)),D=be(n(500)),M=be(n(502)),O=be(n(503)),T=be(n(515)),P=be(n(521)),I=be(n(525)),R=be(n(524)),F=be(n(523)),N=be(n(522)),j=be(n(512)),B=be(n(535)),L=be(n(534)),q=be(n(533)),z=be(n(530)),U=be(n(528)),W=be(n(529)),V=be(n(509)),H=be(n(511)),J=be(n(508)),G=be(n(504)),K=be(n(526)),X=n(513),Y=be(X),$=be(n(510)),Z=be(n(527)),Q=be(n(505)),ee=be(n(536)),te=be(n(516)),ne=be(n(517)),re=be(n(518)),ie=be(n(260)),oe=be(n(519)),ae=be(n(507)),se=be(n(520)),ue=be(n(493)),le=be(n(531)),ce=be(n(532)),pe=be(n(538)),fe=be(n(539)),he=be(n(506)),de=be(n(537)),me=be(n(261)),ve=be(n(514)),ge=_e(n(259)),ye=_e(n(542));function _e(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}function be(e){return e&&e.__esModule?e:{default:e}}},function(e,t,n){",
+      "https://httpbin.org/)),Properties:{accept:0,acceptCharset:0,accessKey:0,action:0,allowFullScreen:o,allowTransparency:0,alt:0,as:0,async:o,autoComplete:0,autoPlay:o,capture:o,cellPadding:0,cellSpacing:0,charSet:0,challenge:0,checked:i|o,cite:0,classID:0,className:0,cols:s,colSpan:0,content:0,contentEditable:0,contextMenu:0,controls:o,controlsList:0,coords:0,crossOrigin:0,data:0,dateTime:0,default:o,defer:o,dir:0,disabled:o,download:u,draggable:0,encType:0,form:0,formAction:0,formEncType:0,formMethod:0,formNoValidate:o,formTarget:0,frameBorder:0,headers:0,height:0,hidden:o,high:0,href:0,hrefLang:0,htmlFor:0,httpEquiv:0,icon:0,id:0,inputMode:0,integrity:0,is:0,keyParams:0,keyType:0,kind:0,label:0,lang:0,list:0,loop:o,low:0,manifest:0,marginHeight:0,marginWidth:0,max:0,maxLength:0,media:0,mediaGroup:0,method:0,min:0,minLength:0,multiple:i|o,muted:i|o,name:0,nonce:0,noValidate:o,open:o,optimum:0,pattern:0,placeholder:0,playsInline:o,poster:0,preload:0,profile:0,radioGroup:0,readOnly:o,referrerPolicy:0,rel:0,required:o,reversed:o,role:0,rows:s,rowSpan:a,sandbox:0,scope:0,scoped:o,scrolling:0,seamless:o,selected:i|o,shape:0,size:s,sizes:0,span:s,spellCheck:0,src:0,srcDoc:0,srcLang:0,srcSet:0,start:a,step:0,style:0,summary:0,tabIndex:0,target:0,title:0,type:0,useMap:0,value:0,width:0,wmode:0,wrap:0,about:0,datatype:0,inlist:0,prefix:0,property:0,resource:0,typeof:0,vocab:0,autoCapitalize:0,autoCorrect:0,autoSave:0,color:0,itemProp:0,itemScope:o,itemType:0,itemID:0,itemRef:0,results:0,security:0,unselectable:0},DOMAttributeNames:{acceptCharset:",
+      "https://httpbin.org/);var s=h.getPooled(t,o,r,i);a(e,d,s),h.release(s)}function v(e,t,n){return null}p.prototype.destructor=function(){this.func=null,this.context=null,this.count=0},r.addPoolingTo(p,s),h.prototype.destructor=function(){this.result=null,this.keyPrefix=null,this.func=null,this.context=null,this.count=0},r.addPoolingTo(h,u);var g={forEach:function(e,t,n){if(null==e)return e;var r=p.getPooled(t,n);a(e,f,r),p.release(r)},map:function(e,t,n){if(null==e)return e;var r=[];return m(e,r,null,t,n),r},mapIntoWithKeyPrefixInternal:m,count:function(e,t){return a(e,v,null)},toArray:function(e){var t=[];return m(e,t,null,o.thatReturnsArgument),t}};e.exports=g},function(e,t,n){"
+    ],
+    "database_structure": {
+      "database_indicators": [],
+      "data_storage_methods": [],
+      "potential_tables": [],
+      "data_relationships": [],
+      "storage_technologies": [],
+      "data_patterns": []
+    },
+    "source_code_analysis": {
+      "html_files": [
+        {
+          "filename": "index.html",
+          "size_kb": 9.37,
+          "lines_of_code": 208,
+          "elements_count": 74
+        },
+        {
+          "filename": "forms_post.html",
+          "size_kb": 1.36,
+          "lines_of_code": 29,
+          "elements_count": 46
+        }
+      ],
+      "css_files": [
+        {
+          "filename": "swagger-ui.css",
+          "size_kb": 150.32,
+          "lines_of_code": 3,
+          "css_rules_count": 2388
+        }
+      ],
+      "js_files": [
+        {
+          "filename": "swagger-ui-bundle.js",
+          "size_kb": 1379.05,
+          "lines_of_code": 140,
+          "functions_count": 1196
+        },
+        {
+          "filename": "jquery.min.js",
+          "size_kb": 83.57,
+          "lines_of_code": 4,
+          "functions_count": 69
+        },
+        {
+          "filename": "swagger-ui-standalone-preset.js",
+          "size_kb": 429.53,
+          "lines_of_code": 19,
+          "functions_count": 414
+        }
+      ],
+      "code_structure": {},
+      "programming_languages": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
+      "frameworks_detected": [],
+      "total_lines_of_code": 403,
+      "code_quality_metrics": {
+        "total_files": 6,
+        "average_file_size_kb": 342.2,
+        "code_organization_score": 100
+      }
+    },
+    "interactions": {
+      "forms": [],
+      "buttons": [],
+      "links": [
+        {
+          "href": "https://github.com/requests/httpbin",
+          "text": "",
+          "target": "",
+          "is_external": true
+        },
+        {
+          "href": "https://kennethreitz.org",
+          "text": "the developer - Website",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "mailto:me@kennethreitz.org",
+          "text": "Send email to the developer",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://github.com/rochacbruno/flasgger",
+          "text": "Flasgger",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "/forms/post",
+          "text": "HTML form",
+          "target": "",
+          "is_external": false
+        }
+      ],
+      "interactive_elements": [],
+      "javascript_events": [],
+      "user_input_fields": [],
+      "navigation_elements": [],
+      "interactivity_score": 0
+    },
+    "broken_links": [],
+    "missing_assets": [],
+    "quality_score": {
+      "overall_score": 36.0,
+      "completeness": 20.0,
+      "accuracy": 100,
+      "performance": 0,
+      "functionality": 0
+    }
+  },
+  "errors": [],
+  "recommendations": []
+}

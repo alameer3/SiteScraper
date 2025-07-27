@@ -106,7 +106,7 @@ class ScreenshotEngine:
                 
                 # التقاط الشاشة الأساسية (سطح المكتب)
                 desktop_file = screenshots_dir / f"desktop_{int(time.time())}.png"
-                await page.set_viewport_size(width=self.supported_sizes['desktop']['width'], height=self.supported_sizes['desktop']['height'])
+                await page.set_viewport_size({'width': self.supported_sizes['desktop']['width'], 'height': self.supported_sizes['desktop']['height']})
                 await page.screenshot(path=str(desktop_file), full_page=True)
                 results['screenshot_files'].append({
                     'type': 'desktop',
@@ -121,7 +121,7 @@ class ScreenshotEngine:
                         if device_name == 'desktop':
                             continue
                             
-                        await page.set_viewport_size(width=size['width'], height=size['height'])
+                        await page.set_viewport_size({'width': size['width'], 'height': size['height']})
                         await page.wait_for_timeout(1000)  # انتظار إعادة التخطيط
                         
                         device_file = screenshots_dir / f"{device_name}_{int(time.time())}.png"
@@ -140,7 +140,7 @@ class ScreenshotEngine:
                     results['interactions'] = interaction_results
                 
                 # التقاط لقطة للجزء المرئي فقط (above fold)
-                await page.set_viewport_size(width=self.supported_sizes['desktop']['width'], height=self.supported_sizes['desktop']['height'])
+                await page.set_viewport_size({'width': self.supported_sizes['desktop']['width'], 'height': self.supported_sizes['desktop']['height']})
                 fold_file = screenshots_dir / f"above_fold_{int(time.time())}.png"
                 await page.screenshot(path=str(fold_file), full_page=False)
                 results['screenshot_files'].append({
