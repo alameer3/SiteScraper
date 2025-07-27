@@ -112,6 +112,24 @@ The system analyzes and stores five main categories of website data:
 
 ## Recent Changes
 
+### Fixed File Extraction System (July 27, 2025) ✅
+
+✅ **إصلاح نظام حفظ الملفات المستخرجة**
+- **إنشاء مجلد extracted_files**: تم إنشاء النظام الكامل لحفظ الملفات
+- **هيكل منظم**: 9 مجلدات منظمة (websites, cloner_pro, ai_analysis, إلخ)
+- **حفظ تلقائي**: جميع عمليات الاستخراج تحفظ الملفات تلقائياً الآن
+- **معلومات شاملة**: كل استخراج يتضمن README.md وملفات JSON وHTML
+- **اختبار ناجح**: تم اختبار الاستخراج مع example.com وحفظ الملفات بنجاح
+
+✅ **نظام الملفات المحسّن**
+- مجلد منظم لكل استخراج مع timestamp ومعرف فريد
+- 4 مجلدات فرعية: content, assets, analysis, exports
+- ملف README.md تلقائي مع تفاصيل الاستخراج
+- ملف extraction_info.json مع بيانات منظمة
+- ملف analysis_results.json مع نتائج التحليل
+
+## Recent Changes
+
 ### Complete Error Analysis and Resolution (July 27, 2025) ✅
 
 ✅ **إصلاح شامل لجميع المشاكل والأخطاء**

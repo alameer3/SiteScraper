@@ -31,6 +31,7 @@ class UnifiedWebsiteExtractor:
         self.results = {}
         self.extraction_id = 0
         self.session = self._create_session()
+        self.base_dir = self._setup_extraction_directories()
         
     def _create_session(self):
         """إنشاء جلسة HTTP محسنة"""
@@ -58,6 +59,117 @@ class UnifiedWebsiteExtractor:
         })
         
         return session
+    
+    def _setup_extraction_directories(self):
+        """إعداد مجلدات الاستخراج"""
+        from pathlib import Path
+        
+        base_dir = Path("extracted_files")
+        base_dir.mkdir(exist_ok=True)
+        
+        # إنشاء المجلدات الفرعية
+        folders = {
+            'websites': base_dir / 'websites',
+            'cloner_pro': base_dir / 'cloner_pro', 
+            'ai_analysis': base_dir / 'ai_analysis',
+            'spider_crawl': base_dir / 'spider_crawl',
+            'assets': base_dir / 'assets',
+            'database_scans': base_dir / 'database_scans',
+            'reports': base_dir / 'reports',
+            'temp': base_dir / 'temp',
+            'archives': base_dir / 'archives'
+        }
+        
+        for folder in folders.values():
+            folder.mkdir(exist_ok=True)
+            
+        return base_dir
+    
+    def _save_extraction_files(self, result, content, soup):
+        """حفظ الملفات المستخرجة في مجلد منظم"""
+        from pathlib import Path
+        import json
+        
+        # إنشاء مجلد للاستخراج
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        domain = urlparse(result['url']).netloc.replace('.', '_')
+        extraction_folder = self.base_dir / 'websites' / f"{result['extraction_id']}_{domain}_{timestamp}"
+        
+        # إنشاء الهيكل المنظم
+        folders = {
+            'content': extraction_folder / '01_content',
+            'assets': extraction_folder / '02_assets',
+            'analysis': extraction_folder / '03_analysis',
+            'exports': extraction_folder / '04_exports'
+        }
+        
+        for folder in folders.values():
+            folder.mkdir(parents=True, exist_ok=True)
+        
+        # حفظ المحتوى الأساسي
+        html_file = folders['content'] / 'page.html'
+        with open(html_file, 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        # حفظ النتائج JSON
+        json_file = folders['analysis'] / 'analysis_results.json'
+        with open(json_file, 'w', encoding='utf-8') as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        
+        # حفظ معلومات الاستخراج
+        info_file = extraction_folder / 'extraction_info.json'
+        extraction_info = {
+            'extraction_id': result['extraction_id'],
+            'url': result['url'],
+            'extraction_type': result['extraction_type'],
+            'timestamp': result['timestamp'],
+            'duration': result['duration'],
+            'domain': domain,
+            'extractor': result['extractor'],
+            'folder_structure': {
+                'content': '01_content - الصفحات والمحتوى المستخرج',
+                'assets': '02_assets - الصور والملفات المساعدة',
+                'analysis': '03_analysis - تحليل النتائج والبيانات',
+                'exports': '04_exports - التصديرات بصيغ مختلفة'
+            }
+        }
+        
+        with open(info_file, 'w', encoding='utf-8') as f:
+            json.dump(extraction_info, f, ensure_ascii=False, indent=2)
+        
+        # حفظ ملف readme مع التعليمات
+        readme_file = extraction_folder / 'README.md'
+        readme_content = f"""# استخراج الموقع: {result.get('title', 'بدون عنوان')}
+
+## معلومات الاستخراج
+- **الرابط**: {result['url']}
+- **النوع**: {result['extraction_type']}
+- **التاريخ**: {result['timestamp']}
+- **المدة**: {result['duration']} ثانية
+- **ID**: {result['extraction_id']}
+
+## هيكل المجلد
+- `01_content/` - المحتوى المستخرج من الصفحة
+- `02_assets/` - الصور والملفات المساعدة
+- `03_analysis/` - نتائج التحليل وتقارير JSON
+- `04_exports/` - التصديرات بصيغ مختلفة
+
+## الملفات الرئيسية
+- `extraction_info.json` - معلومات أساسية عن الاستخراج
+- `01_content/page.html` - الصفحة المستخرجة كاملة
+- `03_analysis/analysis_results.json` - نتائج التحليل التفصيلية
+
+## إحصائيات سريعة
+- العنوان: {result.get('title', 'غير متوفر')}
+- الحالة: {result.get('status_code', 'غير معروف')}
+- عدد الروابط: {result.get('links_count', 0)}
+- عدد الصور: {result.get('images_count', 0)}
+"""
+        
+        with open(readme_file, 'w', encoding='utf-8') as f:
+            f.write(readme_content)
+        
+        return extraction_folder
     
     def extract_website(self, url, extraction_type='basic'):
         """استخراج شامل للموقع"""
@@ -100,6 +212,10 @@ class UnifiedWebsiteExtractor:
                 'timestamp': datetime.now().isoformat(),
                 'extractor': 'UnifiedWebsiteExtractor'
             })
+            
+            # حفظ الملفات المستخرجة
+            extraction_folder = self._save_extraction_files(result, content, soup)
+            result['extraction_folder'] = str(extraction_folder)
             
             self.results[extraction_id] = result
             return result
