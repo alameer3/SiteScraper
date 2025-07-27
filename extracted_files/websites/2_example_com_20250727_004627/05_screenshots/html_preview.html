@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معاينة الموقع - https://example.com</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .info {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .preview-frame {
+            width: 100%;
+            height: 600px;
+            border: none;
+            background: white;
+        }
+        .devices {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+        .device {
+            text-align: center;
+            flex: 1;
+        }
+        .device iframe {
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .desktop {
+            height: 400px;
+        }
+        .tablet {
+            height: 300px;
+            max-width: 768px;
+        }
+        .mobile {
+            height: 250px;
+            max-width: 375px;
+        }
+        .timestamp {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🖼️ معاينة موقع الويب</h1>
+            <p>https://example.com</p>
+            <div class="timestamp">تم الإنشاء: 2025-07-27 00:46:27</div>
+        </div>
+        
+        <div class="info">
+            <p><strong>الحالة:</strong> 200</p>
+            <p><strong>نوع المحتوى:</strong> text/html</p>
+            <p><strong>حجم الصفحة:</strong> 1256 بايت</p>
+            <p><strong>الخادم:</strong> غير معروف</p>
+        </div>
+        
+        <div class="devices">
+            <div class="device">
+                <h3>🖥️ سطح المكتب</h3>
+                <iframe src="https://example.com" class="desktop"></iframe>
+            </div>
+            <div class="device">
+                <h3>📱 جهاز لوحي</h3>
+                <iframe src="https://example.com" class="tablet"></iframe>
+            </div>
+            <div class="device">
+                <h3>📱 هاتف</h3>
+                <iframe src="https://example.com" class="mobile"></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+            

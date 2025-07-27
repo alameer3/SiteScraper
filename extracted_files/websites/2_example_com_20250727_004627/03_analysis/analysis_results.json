@@ -1,0 +1,88 @@
+{
+  "domain": "example.com",
+  "title": "Example Domain",
+  "description": "",
+  "keywords": "",
+  "content_length": 1256,
+  "status_code": 200,
+  "content_type": "text/html",
+  "server": "",
+  "links_count": 1,
+  "images_count": 0,
+  "scripts_count": 0,
+  "stylesheets_count": 0,
+  "technologies": [],
+  "performance": {
+    "response_time": 0.141192,
+    "content_size": 1256,
+    "compression": true,
+    "cache_control": "max-age=451",
+    "expires": "",
+    "etag": "\"84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134\"",
+    "last_modified": "Mon, 13 Jan 2025 20:11:20 GMT"
+  },
+  "links_analysis": {
+    "total_links": 1,
+    "internal_links": [],
+    "external_links": [
+      {
+        "href": "https://www.iana.org/domains/example",
+        "text": "More information..."
+      }
+    ],
+    "email_links": [],
+    "internal_count": 0,
+    "external_count": 1,
+    "email_count": 0
+  },
+  "images_analysis": {
+    "total_images": 0,
+    "images": [],
+    "lazy_loading": 0
+  },
+  "seo_analysis": {
+    "meta_tags": {
+      "viewport": "width=device-width, initial-scale=1"
+    },
+    "headings_structure": {
+      "h1": 1,
+      "h2": 0,
+      "h3": 0,
+      "h4": 0,
+      "h5": 0,
+      "h6": 0
+    },
+    "schema_markup": [],
+    "canonical_url": null,
+    "robots_meta": "",
+    "open_graph": {},
+    "twitter_cards": {}
+  },
+  "structure_analysis": {
+    "has_header": false,
+    "has_nav": false,
+    "has_main": false,
+    "has_aside": false,
+    "has_footer": false,
+    "sections_count": 0,
+    "articles_count": 0,
+    "divs_count": 1,
+    "forms_count": 0,
+    "inputs_count": 0,
+    "buttons_count": 0
+  },
+  "security_analysis": {
+    "https_used": true,
+    "external_scripts": [],
+    "inline_scripts": 0,
+    "external_stylesheets": [],
+    "forms_analysis": []
+  },
+  "extraction_id": 2,
+  "url": "https://example.com",
+  "extraction_type": "advanced",
+  "success": true,
+  "duration": 0.14,
+  "timestamp": "2025-07-27T00:46:27.337863",
+  "extractor": "UnifiedWebsiteExtractor"
+}

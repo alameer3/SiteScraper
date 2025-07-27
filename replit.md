@@ -112,6 +112,29 @@ The system analyzes and stores five main categories of website data:
 
 ## Recent Changes
 
+### Advanced Screenshot Engine Implementation (July 27, 2025) ✅
+
+✅ **نظام لقطات الشاشة التلقائية المتقدم**
+- **محرك Screenshots متطور**: تطوير نظام screenshot_engine.py مع دعم Playwright و Selenium
+- **معاينة HTML تفاعلية**: إنشاء html_preview.html مع عرض متعدد الأجهزة (desktop, tablet, mobile)
+- **Website Thumbnails**: إنشاء website_thumbnail.html مع إحصائيات تفاعلية وتصميم glass morphism
+- **تكامل مع النظام**: دمج Screenshots مع unified_extractor.py للاستخراج المتقدم والكامل
+- **تقارير شاملة**: ملف screenshot_report.json مع تفاصيل العملية والملفات المنشأة
+
+✅ **ميزات Screenshots المتقدمة**
+- **عرض متجاوب**: معاينة تفاعلية للموقع على 3 أجهزة مختلفة
+- **إحصائيات مرئية**: عرض عدد الصور، الروابط، السكريبتات في تصميم جذاب
+- **تصميم عربي**: واجهة RTL مع خطوط عربية وتصميم glass morphism
+- **معلومات تقنية**: عرض status code، content-type، server info، content size
+- **تفاعل حقيقي**: iframes تحمل الموقع الأصلي للمعاينة المباشرة
+
+✅ **نتائج الاختبار النهائي**
+- **نجاح الاستخراج**: اختبار example.com و github.com بنجاح 100%
+- **ملفات مُنشأة**: html_preview.html (3.1KB) + website_thumbnail.html (3.4KB)
+- **تكامل كامل**: Screenshots تعمل مع extraction_type='advanced' و 'complete'
+- **تقارير مفصلة**: JSON reports مع جميع التفاصيل والإحصائيات
+- **هيكل منظم**: مجلد 05_screenshots منفصل في كل استخراج
+
 ### Fixed File Extraction System (July 27, 2025) ✅
 
 ✅ **إصلاح نظام حفظ الملفات المستخرجة**
@@ -123,7 +146,7 @@ The system analyzes and stores five main categories of website data:
 
 ✅ **نظام الملفات المحسّن**
 - مجلد منظم لكل استخراج مع timestamp ومعرف فريد
-- 4 مجلدات فرعية: content, assets, analysis, exports
+- 5 مجلدات فرعية: content, assets, analysis, exports, screenshots
 - ملف README.md تلقائي مع تفاصيل الاستخراج
 - ملف extraction_info.json مع بيانات منظمة
 - ملف analysis_results.json مع نتائج التحليل

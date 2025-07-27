@@ -171,6 +171,60 @@ class UnifiedWebsiteExtractor:
         
         return extraction_folder
     
+    def _capture_screenshots_simple(self, url, extraction_folder):
+        """التقاط لقطات شاشة بسيط"""
+        screenshots_dir = extraction_folder / '05_screenshots'
+        screenshots_dir.mkdir(exist_ok=True)
+        
+        try:
+            from simple_screenshot import SimpleScreenshotEngine
+            
+            # إنشاء محرك لقطات الشاشة البسيط
+            screenshot_engine = SimpleScreenshotEngine()
+            
+            # إنشاء معاينة HTML
+            preview_result = screenshot_engine.capture_html_preview(url, screenshots_dir)
+            
+            # إنشاء thumbnail للموقع
+            content_file = extraction_folder / '01_content' / 'page.html'
+            if content_file.exists():
+                with open(content_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                thumbnail_result = screenshot_engine.create_website_thumbnail(url, content, screenshots_dir)
+                preview_result.update(thumbnail_result)
+            
+            # إنشاء تقرير شامل
+            report = {
+                'url': url,
+                'method': 'html_preview_and_thumbnail',
+                'preview_result': preview_result,
+                'total_screenshots': 2,  # HTML preview + thumbnail
+                'timestamp': datetime.now().isoformat(),
+                'note': 'تم إنشاء معاينة HTML تفاعلية و thumbnail للموقع',
+                'files_created': [
+                    'html_preview.html',
+                    'website_thumbnail.html',
+                    'screenshot_report.json'
+                ]
+            }
+            
+        except Exception as e:
+            report = {
+                'url': url,
+                'method': 'failed',
+                'error': str(e),
+                'total_screenshots': 0,
+                'timestamp': datetime.now().isoformat(),
+                'note': 'فشل في إنشاء لقطات الشاشة'
+            }
+        
+        # حفظ التقرير
+        report_file = screenshots_dir / 'screenshot_report.json'
+        with open(report_file, 'w', encoding='utf-8') as f:
+            json.dump(report, f, ensure_ascii=False, indent=2)
+        
+        return report
+    
     def extract_website(self, url, extraction_type='basic'):
         """استخراج شامل للموقع"""
         self.extraction_id += 1
@@ -216,6 +270,14 @@ class UnifiedWebsiteExtractor:
             # حفظ الملفات المستخرجة
             extraction_folder = self._save_extraction_files(result, content, soup)
             result['extraction_folder'] = str(extraction_folder)
+            
+            # التقاط لقطات الشاشة التلقائية (معطل مؤقتاً)
+            if extraction_type in ['advanced', 'complete']:
+                try:
+                    screenshot_result = self._capture_screenshots_simple(url, extraction_folder)
+                    result['screenshots'] = screenshot_result
+                except Exception as e:
+                    result['screenshots'] = {'error': str(e), 'total_screenshots': 0}
             
             self.results[extraction_id] = result
             return result
