@@ -9,6 +9,7 @@ import time
 import asyncio
 import threading
 from datetime import datetime
+from pathlib import Path
 from urllib.parse import urlparse, urljoin
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
@@ -20,6 +21,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import urllib3
+from typing import Dict, List, Set, Optional, Any, Union, Tuple
 
 # تعطيل تحذيرات SSL للاختبار
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -223,9 +225,56 @@ class UnifiedWebsiteExtractor:
         with open(report_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, ensure_ascii=False, indent=2)
         
+        return report
 
+    def _save_extraction_files(self, result: Dict[str, Any], content: str, soup) -> Path:
+        """حفظ ملفات الاستخراج"""
+        # إنشاء مجلد الاستخراج
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        extraction_id = result.get('extraction_id', 'unknown')
+        extraction_folder = self.base_dir / 'websites' / f"{extraction_id}_{timestamp}"
+        extraction_folder.mkdir(parents=True, exist_ok=True)
+        
+        # إنشاء المجلدات الفرعية
+        (extraction_folder / '01_content').mkdir(exist_ok=True)
+        (extraction_folder / '02_assets').mkdir(exist_ok=True)
+        (extraction_folder / '03_analysis').mkdir(exist_ok=True)
+        (extraction_folder / '04_exports').mkdir(exist_ok=True)
+        (extraction_folder / '05_screenshots').mkdir(exist_ok=True)
+        
+        # حفظ المحتوى
+        with open(extraction_folder / '01_content' / 'page.html', 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        # حفظ النتائج
+        with open(extraction_folder / '03_analysis' / 'extraction_results.json', 'w', encoding='utf-8') as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        
+        # حفظ README
+        readme_content = f"""# استخراج الموقع - {result.get('url', '')}
+
+تاريخ الاستخراج: {result.get('timestamp', '')}
+نوع الاستخراج: {result.get('extraction_type', '')}
+المدة: {result.get('duration', 0)} ثانية
+
+## الملفات المُنشأة:
+- 01_content/page.html - المحتوى الخام
+- 03_analysis/extraction_results.json - نتائج التحليل
+- 05_screenshots/ - لقطات الشاشة (إن وُجدت)
+
+## إحصائيات:
+- الروابط: {result.get('links_count', 0)}
+- الصور: {result.get('images_count', 0)}
+- السكريبتات: {result.get('scripts_count', 0)}
+- الأنماط: {result.get('stylesheets_count', 0)}
+"""
+        
+        with open(extraction_folder / 'README.md', 'w', encoding='utf-8') as f:
+            f.write(readme_content)
+        
+        return extraction_folder
     
-    def extract_website(self, url, extraction_type='basic'):
+    def extract_website(self, url: str, extraction_type: str = 'basic') -> Dict[str, Any]:
         """استخراج شامل للموقع"""
         self.extraction_id += 1
         extraction_id = self.extraction_id
@@ -296,7 +345,7 @@ class UnifiedWebsiteExtractor:
             self.results[extraction_id] = error_result
             return error_result
     
-    def _extract_basic_info(self, soup, url, response):
+    def _extract_basic_info(self, soup: BeautifulSoup, url: str, response) -> Dict[str, Any]:
         """استخراج المعلومات الأساسية"""
         domain = urlparse(url).netloc
         
@@ -341,7 +390,7 @@ class UnifiedWebsiteExtractor:
             'performance': performance
         }
     
-    def _extract_advanced(self, soup, url, basic_info):
+    def _extract_advanced(self, soup: BeautifulSoup, url: str, basic_info: Dict[str, Any]) -> Dict[str, Any]:
         """استخراج متقدم"""
         result = basic_info.copy()
         
@@ -370,7 +419,7 @@ class UnifiedWebsiteExtractor:
         
         return result
     
-    def _extract_complete(self, soup, url, basic_info):
+    def _extract_complete(self, soup: BeautifulSoup, url: str, basic_info: Dict[str, Any]) -> Dict[str, Any]:
         """استخراج كامل مع جميع الوظائف"""
         result = self._extract_advanced(soup, url, basic_info)
         
@@ -400,7 +449,7 @@ class UnifiedWebsiteExtractor:
         
         return result
     
-    def _detect_technologies(self, soup, content):
+    def _detect_technologies(self, soup: BeautifulSoup, content: str) -> List[str]:
         """اكتشاف التقنيات المستخدمة"""
         technologies = []
         content_lower = content.lower()
@@ -449,7 +498,7 @@ class UnifiedWebsiteExtractor:
             'last_modified': response.headers.get('Last-Modified', '')
         }
     
-    def _analyze_links(self, soup, base_url):
+    def _analyze_links(self, soup: BeautifulSoup, base_url: str) -> Dict[str, Any]:
         """تحليل الروابط"""
         links = soup.find_all('a', href=True)
         
@@ -482,7 +531,7 @@ class UnifiedWebsiteExtractor:
             'email_count': len(email_links)
         }
     
-    def _analyze_images(self, soup, base_url):
+    def _analyze_images(self, soup: BeautifulSoup, base_url: str) -> Dict[str, Any]:
         """تحليل الصور"""
         images = soup.find_all('img', src=True)
         
@@ -508,7 +557,7 @@ class UnifiedWebsiteExtractor:
             'lazy_loading': len(soup.find_all('img', loading='lazy'))
         }
     
-    def _analyze_seo(self, soup):
+    def _analyze_seo(self, soup: BeautifulSoup) -> Dict[str, Any]:
         """تحليل SEO"""
         # Meta tags
         meta_tags = {}
@@ -542,7 +591,7 @@ class UnifiedWebsiteExtractor:
             'twitter_cards': {k: v for k, v in meta_tags.items() if k.startswith('twitter:')}
         }
     
-    def _analyze_structure(self, soup):
+    def _analyze_structure(self, soup: BeautifulSoup) -> Dict[str, Any]:
         """تحليل هيكل الصفحة"""
         return {
             'has_header': bool(soup.find('header')),
@@ -558,7 +607,7 @@ class UnifiedWebsiteExtractor:
             'buttons_count': len(soup.find_all('button'))
         }
     
-    def _analyze_security(self, soup, url):
+    def _analyze_security(self, soup: BeautifulSoup, url: str) -> Dict[str, Any]:
         """تحليل الأمان"""
         security_analysis = {
             'https_used': url.startswith('https://'),
@@ -595,7 +644,7 @@ class UnifiedWebsiteExtractor:
         
         return security_analysis
     
-    def _find_api_endpoints(self, soup):
+    def _find_api_endpoints(self, soup: BeautifulSoup) -> List[str]:
         """البحث عن API endpoints"""
         endpoints = []
         
@@ -610,7 +659,7 @@ class UnifiedWebsiteExtractor:
         
         return list(set(endpoints))
     
-    def _analyze_database_structure(self, soup):
+    def _analyze_database_structure(self, soup: BeautifulSoup) -> Dict[str, Any]:
         """تحليل هيكل قاعدة البيانات المحتمل"""
         database_hints = {
             'forms_suggest_tables': [],
@@ -637,7 +686,7 @@ class UnifiedWebsiteExtractor:
         
         return database_hints
     
-    def _analyze_interactive_elements(self, soup):
+    def _analyze_interactive_elements(self, soup: BeautifulSoup) -> Dict[str, Any]:
         """تحليل العناصر التفاعلية"""
         return {
             'buttons': len(soup.find_all('button')),
@@ -650,7 +699,7 @@ class UnifiedWebsiteExtractor:
             'accordions': len(soup.find_all(['div'], class_=re.compile('accordion|collapse', re.I)))
         }
     
-    def _ai_content_analysis(self, soup):
+    def _ai_content_analysis(self, soup: BeautifulSoup) -> Dict[str, Any]:
         """تحليل المحتوى بالذكاء الاصطناعي (بسيط)"""
         text_content = soup.get_text()
         word_count = len(text_content.split())
@@ -682,7 +731,7 @@ class UnifiedWebsiteExtractor:
         
         return analysis
     
-    def _generate_clone_strategy(self, soup, url):
+    def _generate_clone_strategy(self, soup: BeautifulSoup, url: str) -> Dict[str, Any]:
         """إنشاء استراتيجية النسخ"""
         return {
             'recommended_approach': 'static_html',
