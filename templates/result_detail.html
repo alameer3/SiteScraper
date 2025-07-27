@@ -21,38 +21,37 @@
                         <table class="table table-sm">
                             <tr>
                                 <td><strong>الرابط:</strong></td>
-                                <td><a href="{{ extraction.url }}" target="_blank">{{ extraction.url }}</a></td>
+                                <td><a href="{{ result.url }}" target="_blank">{{ result.url }}</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>العنوان:</strong></td>
+                                <td>{{ result.title or 'بدون عنوان' }}</td>
                             </tr>
                             <tr>
                                 <td><strong>النوع:</strong></td>
-                                <td><span class="badge bg-secondary">{{ extraction.extraction_type }}</span></td>
+                                <td><span class="badge bg-secondary">{{ result.extraction_type }}</span></td>
                             </tr>
                             <tr>
                                 <td><strong>الحالة:</strong></td>
                                 <td>
-                                    {% if extraction.status == 'completed' %}
+                                    {% if result.status == 'completed' %}
                                         <span class="badge bg-success">مكتمل</span>
-                                    {% elif extraction.status == 'failed' %}
+                                    {% elif result.status == 'failed' %}
                                         <span class="badge bg-danger">فشل</span>
                                     {% else %}
-                                        <span class="badge bg-warning">{{ extraction.status }}</span>
+                                        <span class="badge bg-warning">{{ result.status }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
                             <tr>
                                 <td><strong>تاريخ البدء:</strong></td>
-                                <td>{{ extraction.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>{{ result.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                             </tr>
-                            {% if extraction.completed_at %}
-                            <tr>
-                                <td><strong>تاريخ الانتهاء:</strong></td>
-                                <td>{{ extraction.completed_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                            </tr>
-                            {% endif %}
                         </table>
                     </div>
                     <div class="col-md-6">
-                        {% if result_data and result_data.success %}
+                        {% set result_data = result.get_data() %}
+                        {% if result_data %}
                         <h6>إحصائيات النتائج</h6>
                         <table class="table table-sm">
                             {% if result_data.pages_extracted %}
@@ -87,11 +86,11 @@
                 {% if result_data %}
                 <div class="mt-4">
                     <h6>البيانات الكاملة</h6>
-                    <pre class="bg-light p-3" style="max-height: 400px; overflow-y: auto;"><code>{{ result_data | tojson(indent=2) }}</code></pre>
+                    <pre class="bg-light p-3" style="max-height: 400px; overflow-y: auto;"><code>{{ result_data | safe }}</code></pre>
                 </div>
                 {% endif %}
                 
-                {% if extraction.status == 'failed' and result_data and result_data.error %}
+                {% if result.status == 'failed' and result_data and result_data.error %}
                 <div class="mt-4">
                     <div class="alert alert-danger">
                         <h6><i data-feather="alert-triangle"></i> خطأ في الاستخراج</h6>
