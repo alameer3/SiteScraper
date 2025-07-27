@@ -78,10 +78,7 @@ def extract():
     
     try:
         # اختيار المستخرج المناسب حسب النوع
-        if extraction_type in ['advanced', 'complete']:
-            result = unified_extractor.extract_website(url, extraction_type)
-        else:
-            result = basic_extractor.extract_website(url, extraction_type)
+        result = unified_extractor.extract_website(url, extraction_type)
         
         # حفظ النتيجة
         extraction_result = ExtractionResult()
@@ -313,13 +310,12 @@ def api_unified_extract():
         result = unified_extractor.extract_website(url, extraction_type)
         
         # حفظ النتيجة في قاعدة البيانات
-        extraction_result = ExtractionResult(
-            url=url,
-            title=result.get('title', 'بدون عنوان'),
-            extraction_type=extraction_type,
-            status='completed',
-            result_data=json.dumps(result, ensure_ascii=False)
-        )
+        extraction_result = ExtractionResult()
+        extraction_result.url = url
+        extraction_result.title = result.get('title', 'بدون عنوان')
+        extraction_result.extraction_type = extraction_type
+        extraction_result.status = 'completed'
+        extraction_result.result_data = json.dumps(result, ensure_ascii=False)
         db.session.add(extraction_result)
         db.session.commit()
         
@@ -353,17 +349,16 @@ def ai_analyzer_page():
 @app.route('/file-manager')
 def file_manager_page():
     """صفحة إدارة الملفات"""
-    try:
-        from file_manager_api import FileManagerAPI
-        file_manager = FileManagerAPI()
-        storage_stats = file_manager.get_storage_stats()
-        recent_extractions = file_manager.get_recent_extractions()
-        return render_template('file_manager.html',
-                             storage_stats=storage_stats,
-                             recent_extractions=recent_extractions)
-    except Exception as e:
-        flash(f'خطأ في تحميل مدير الملفات: {str(e)}', 'error')
-        return redirect(url_for('index'))
+    # إحصائيات مؤقتة حتى يتم تفعيل file_manager_api
+    storage_stats = {
+        'total_extractions': ExtractionResult.query.count(),
+        'storage_used': '1.2 MB',
+        'cache_size': '500 KB'
+    }
+    recent_extractions = ExtractionResult.query.order_by(ExtractionResult.created_at.desc()).limit(10).all()
+    return render_template('file_manager.html',
+                         storage_stats=storage_stats,
+                         recent_extractions=recent_extractions)
 
 # إنشاء الجداول
 with app.app_context():

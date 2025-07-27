@@ -4,54 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}أداة استخراج المواقع المتقدمة{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap CSS (RTL) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    
+    <!-- Custom CSS -->
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
         }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+        
         .card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border: none;
             border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
-        .navbar {
-            background: rgba(255, 255, 255, 0.1) !important;
-            backdrop-filter: blur(10px);
-        }
+        
         .btn-primary {
             background: linear-gradient(45deg, #667eea, #764ba2);
             border: none;
-            border-radius: 25px;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .feature-icon {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            border: none;
+            border-radius: 10px;
         }
     </style>
+    
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i data-feather="layers"></i>
-                أداة استخراج المواقع
+            <a class="navbar-brand fw-bold text-primary" href="{{ url_for('index') }}">
+                <i data-feather="globe" class="me-2"></i>
+                مستخرج المواقع المتقدم
             </a>
-            <div class="navbar-nav me-auto">
-                <a class="nav-link" href="{{ url_for('index') }}">الرئيسية</a>
-                <a class="nav-link" href="{{ url_for('extract') }}">استخراج</a>
-                <a class="nav-link" href="{{ url_for('results') }}">النتائج</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('extract') }}">استخراج جديد</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('results') }}">النتائج</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
 
-    <main class="container mt-4">
-        {% block content %}{% endblock %}
-    </main>
+    <!-- Main Content -->
+    <div style="padding-top: 100px;">
+        <div class="container">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <!-- Page Content -->
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 
+    <!-- Footer -->
+    <footer class="mt-5 py-4 text-center">
+        <div class="container">
+            <p class="text-white-50 mb-0">
+                © 2025 أداة استخراج المواقع المتقدمة - جميع الحقوق محفوظة
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.js"></script>
-    <script>feather.replace();</script>
-    {% block scripts %}{% endblock %}
+    
+    <!-- Initialize Feather Icons -->
+    <script>
+        feather.replace();
+    </script>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
