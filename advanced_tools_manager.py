@@ -1,358 +1,449 @@
 #!/usr/bin/env python3
 """
-مدير الأدوات المتقدمة - يدير جميع وظائف tools_pro
+مدير الأدوات المتقدمة - يجمع جميع النظم المطورة
 """
-import os
-import sys
-import json
 import asyncio
-import threading
-from pathlib import Path
+import json
 from datetime import datetime
-from typing import Dict, List, Any, Optional
+from pathlib import Path
+from typing import Dict, Any, Optional
+import requests
+from bs4 import BeautifulSoup
+
+# النظم المتقدمة
+try:
+    from cms_detector import CMSDetector
+    from sitemap_generator import SitemapGenerator
+    from security_scanner import SecurityScanner
+    from simple_screenshot import SimpleScreenshotEngine
+except ImportError as e:
+    print(f"تحذير: لم يتم تحميل بعض النظم المتقدمة: {e}")
+    CMSDetector = None
+    SitemapGenerator = None
+    SecurityScanner = None
+    SimpleScreenshotEngine = None
 
 class AdvancedToolsManager:
-    """مدير الأدوات المتقدمة"""
+    """مدير شامل لجميع الأدوات المتقدمة"""
     
     def __init__(self):
-        self.tools_available = self._check_tools_availability()
-        self.active_extractions = {}
+        self.cms_detector = CMSDetector() if CMSDetector else None
+        self.sitemap_generator = SitemapGenerator() if SitemapGenerator else None
+        self.security_scanner = SecurityScanner() if SecurityScanner else None
+        self.screenshot_engine = SimpleScreenshotEngine() if SimpleScreenshotEngine else None
         
-    def _check_tools_availability(self):
-        """فحص توفر الأدوات"""
-        tools_status = {
-            'website_cloner_pro': False,
-            'ai_analyzer': False,
-            'advanced_extractor': False,
-            'spider_engine': False,
-            'asset_downloader': False,
-            'database_scanner': False
+    def run_comprehensive_analysis(self, url: str, output_dir: Path, analysis_types: list = None) -> Dict[str, Any]:
+        """تشغيل تحليل شامل متقدم"""
+        
+        if analysis_types is None:
+            analysis_types = ['cms', 'sitemap', 'security', 'screenshots']
+        
+        results = {
+            'url': url,
+            'analysis_timestamp': datetime.now().isoformat(),
+            'completed_analyses': [],
+            'failed_analyses': [],
+            'comprehensive_results': {}
         }
         
-        tools_pro_path = Path('tools_pro')
-        if tools_pro_path.exists():
+        # إنشاء مجلدات فرعية للتحليلات
+        analysis_dir = output_dir / '03_analysis'
+        analysis_dir.mkdir(exist_ok=True)
+        
+        # 1. كشف CMS
+        if 'cms' in analysis_types and self.cms_detector:
             try:
-                # فحص website_cloner_pro
-                cloner_path = tools_pro_path / 'website_cloner_pro.py'
-                if cloner_path.exists():
-                    tools_status['website_cloner_pro'] = True
+                print("🔍 تشغيل كشف نظام إدارة المحتوى...")
+                cms_results = self.cms_detector.detect_cms(url)
                 
-                # فحص الأدوات الأخرى
-                analyzers_path = tools_pro_path / 'analyzers'
-                if analyzers_path.exists():
-                    tools_status['ai_analyzer'] = True
+                # حفظ التقرير
+                cms_report_file = self.cms_detector.generate_cms_report(cms_results, analysis_dir)
                 
-                extractors_path = tools_pro_path / 'extractors'
-                if extractors_path.exists():
-                    tools_status['advanced_extractor'] = True
-                    tools_status['spider_engine'] = True
-                    tools_status['asset_downloader'] = True
-                    tools_status['database_scanner'] = True
-                    
+                results['comprehensive_results']['cms_detection'] = cms_results
+                results['completed_analyses'].append('CMS Detection')
+                print(f"✅ تم كشف CMS: {cms_results.get('detected_cms', [])}")
+                
             except Exception as e:
-                print(f"خطأ في فحص الأدوات: {e}")
+                results['failed_analyses'].append(f'CMS Detection: {str(e)}')
+                print(f"❌ فشل كشف CMS: {e}")
         
-        return tools_status
+        # 2. إنشاء خريطة الموقع
+        if 'sitemap' in analysis_types and self.sitemap_generator:
+            try:
+                print("🗺️ إنشاء خريطة الموقع...")
+                sitemap_results = self.sitemap_generator.generate_sitemap(url, analysis_dir)
+                
+                results['comprehensive_results']['sitemap_generation'] = sitemap_results
+                results['completed_analyses'].append('Sitemap Generation')
+                print(f"✅ تم إنشاء خريطة الموقع: {sitemap_results.get('total_pages_found', 0)} صفحة")
+                
+            except Exception as e:
+                results['failed_analyses'].append(f'Sitemap Generation: {str(e)}')
+                print(f"❌ فشل إنشاء الخريطة: {e}")
+        
+        # 3. فحص الأمان
+        if 'security' in analysis_types and self.security_scanner:
+            try:
+                print("🔒 فحص الأمان والثغرات...")
+                security_results = self.security_scanner.scan_website_security(url, analysis_dir)
+                
+                results['comprehensive_results']['security_scan'] = security_results
+                results['completed_analyses'].append('Security Scan')
+                print(f"✅ تم فحص الأمان: نتيجة {security_results.get('overall_security_score', 0)}/100")
+                
+            except Exception as e:
+                results['failed_analyses'].append(f'Security Scan: {str(e)}')
+                print(f"❌ فشل فحص الأمان: {e}")
+        
+        # 4. لقطات الشاشة المتقدمة
+        if 'screenshots' in analysis_types and self.screenshot_engine:
+            try:
+                print("📸 إنشاء لقطات شاشة تفاعلية...")
+                screenshots_dir = output_dir / '05_screenshots'
+                screenshots_dir.mkdir(exist_ok=True)
+                
+                # إنشاء معاينة HTML
+                preview_result = self.screenshot_engine.capture_html_preview(url, screenshots_dir)
+                
+                # إنشاء thumbnail إذا وُجد محتوى
+                content_file = output_dir / '01_content' / 'page.html'
+                if content_file.exists():
+                    with open(content_file, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    thumbnail_result = self.screenshot_engine.create_website_thumbnail(url, content, screenshots_dir)
+                    preview_result.update(thumbnail_result)
+                
+                results['comprehensive_results']['screenshots'] = preview_result
+                results['completed_analyses'].append('Screenshots')
+                print("✅ تم إنشاء لقطات الشاشة التفاعلية")
+                
+            except Exception as e:
+                results['failed_analyses'].append(f'Screenshots: {str(e)}')
+                print(f"❌ فشل إنشاء لقطات الشاشة: {e}")
+        
+        # إنشاء تقرير شامل
+        comprehensive_report = self._create_comprehensive_report(results, analysis_dir)
+        results['comprehensive_report_file'] = comprehensive_report
+        
+        return results
     
-    def get_tools_status(self):
-        """الحصول على حالة الأدوات"""
-        return {
-            'available_tools': self.tools_available,
-            'total_tools': len(self.tools_available),
-            'active_tools': sum(self.tools_available.values()),
-            'tools_pro_path': str(Path('tools_pro').absolute()),
-            'last_check': datetime.now().isoformat()
-        }
+    def _create_comprehensive_report(self, results: Dict[str, Any], output_dir: Path) -> str:
+        """إنشاء تقرير شامل لجميع التحليلات"""
+        
+        # تقرير JSON
+        json_report_file = output_dir / 'comprehensive_analysis_report.json'
+        with open(json_report_file, 'w', encoding='utf-8') as f:
+            json.dump(results, f, ensure_ascii=False, indent=2)
+        
+        # تقرير HTML تفاعلي
+        html_report_file = output_dir / 'comprehensive_analysis_report.html'
+        html_content = self._generate_html_report(results)
+        
+        with open(html_report_file, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        return str(html_report_file.name)
     
-    def extract_with_cloner_pro(self, url, config=None):
-        """استخراج باستخدام Website Cloner Pro"""
-        if not self.tools_available.get('website_cloner_pro'):
-            return {
-                'success': False,
-                'error': 'Website Cloner Pro غير متوفر',
-                'available_tools': list(self.tools_available.keys())
-            }
+    def _generate_html_report(self, results: Dict[str, Any]) -> str:
+        """إنشاء تقرير HTML شامل ومتقدم"""
         
-        try:
-            # محاولة استيراد واستخدام Website Cloner Pro
-            extraction_id = f"cloner_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-            
-            # إعداد افتراضي للتكوين
-            if not config:
-                config = {
-                    'target_url': url,
-                    'max_depth': 3,
-                    'extract_all_content': True,
-                    'extract_media_files': True,
-                    'analyze_with_ai': False,
-                    'create_identical_copy': False
-                }
-            
-            # تسجيل العملية
-            self.active_extractions[extraction_id] = {
-                'url': url,
-                'config': config,
-                'status': 'processing',
-                'start_time': datetime.now(),
-                'tool': 'website_cloner_pro'
-            }
-            
-            # محاكاة النتيجة (سيتم تحديثها لاستخدام الأداة الفعلية)
-            result = {
-                'extraction_id': extraction_id,
-                'success': True,
-                'url': url,
-                'tool': 'website_cloner_pro',
-                'pages_extracted': 1,
-                'assets_downloaded': 0,
-                'total_size': 0,
-                'duration': 0.0,
-                'technologies_detected': {'framework': 'Detected by Cloner Pro'},
-                'output_path': f'extracted_data/{extraction_id}',
-                'timestamp': datetime.now().isoformat()
-            }
-            
-            self.active_extractions[extraction_id]['status'] = 'completed'
-            self.active_extractions[extraction_id]['result'] = result
-            
-            return result
-            
-        except Exception as e:
-            return {
-                'success': False,
-                'error': f'خطأ في Website Cloner Pro: {str(e)}',
-                'extraction_id': None
-            }
+        comprehensive_results = results.get('comprehensive_results', {})
+        completed = len(results.get('completed_analyses', []))
+        failed = len(results.get('failed_analyses', []))
+        
+        # استخراج نتائج محددة
+        cms_results = comprehensive_results.get('cms_detection', {})
+        sitemap_results = comprehensive_results.get('sitemap_generation', {})
+        security_results = comprehensive_results.get('security_scan', {})
+        screenshots_results = comprehensive_results.get('screenshots', {})
+        
+        html_content = f"""
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير التحليل الشامل - {results['url']}</title>
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            direction: rtl;
+        }}
+        .container {{
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }}
+        .header {{
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            padding-bottom: 30px;
+        }}
+        .header h1 {{
+            font-size: 36px;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }}
+        .stats-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }}
+        .stat-card {{
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }}
+        .stat-card:hover {{
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }}
+        .stat-number {{
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }}
+        .stat-label {{
+            font-size: 16px;
+            opacity: 0.9;
+        }}
+        .analysis-section {{
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            border-right: 5px solid;
+        }}
+        .cms-section {{ border-right-color: #4CAF50; }}
+        .sitemap-section {{ border-right-color: #2196F3; }}
+        .security-section {{ border-right-color: #FF9800; }}
+        .screenshots-section {{ border-right-color: #9C27B0; }}
+        .section-title {{
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }}
+        .results-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }}
+        .result-card {{
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+        }}
+        .success {{ background: rgba(76,175,80,0.2); }}
+        .warning {{ background: rgba(255,152,0,0.2); }}
+        .error {{ background: rgba(244,67,54,0.2); }}
+        .tag {{
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 2px;
+            background: rgba(255,255,255,0.2);
+        }}
+        .cms-tag {{ background: rgba(76,175,80,0.3); }}
+        .tech-tag {{ background: rgba(33,150,243,0.3); }}
+        .vuln-tag {{ background: rgba(244,67,54,0.3); }}
+        .timestamp {{
+            text-align: center;
+            opacity: 0.7;
+            margin-top: 40px;
+            font-size: 14px;
+        }}
+        .progress-bar {{
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }}
+        .progress-fill {{
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 تقرير التحليل الشامل المتقدم</h1>
+            <h2>{results['url']}</h2>
+            <p>تحليل شامل متعدد الطبقات لاستخراج ونسخ المواقع</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card success">
+                <div class="stat-number">{completed}</div>
+                <div class="stat-label">تحليل مكتمل</div>
+            </div>
+            <div class="stat-card {'error' if failed > 0 else 'success'}">
+                <div class="stat-number">{failed}</div>
+                <div class="stat-label">تحليل فاشل</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{len(cms_results.get('detected_cms', []))}</div>
+                <div class="stat-label">نظام CMS مكتشف</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{security_results.get('overall_security_score', 0)}/100</div>
+                <div class="stat-label">نتيجة الأمان</div>
+            </div>
+        </div>
+        
+        {self._format_cms_section(cms_results) if cms_results else ''}
+        {self._format_sitemap_section(sitemap_results) if sitemap_results else ''}
+        {self._format_security_section(security_results) if security_results else ''}
+        {self._format_screenshots_section(screenshots_results) if screenshots_results else ''}
+        
+        <div class="timestamp">
+            تم إنشاء التقرير: {results.get('analysis_timestamp', '')}
+        </div>
+    </div>
+</body>
+</html>
+        """
+        
+        return html_content
     
-    def analyze_with_ai(self, content, analysis_type='comprehensive'):
-        """تحليل المحتوى بالذكاء الاصطناعي"""
-        if not self.tools_available.get('ai_analyzer'):
-            return {
-                'success': False,
-                'error': 'AI Analyzer غير متوفر'
-            }
+    def _format_cms_section(self, cms_results: Dict[str, Any]) -> str:
+        """تنسيق قسم CMS"""
+        detected_cms = cms_results.get('detected_cms', [])
+        confidence_scores = cms_results.get('confidence_scores', {})
+        additional_info = cms_results.get('additional_info', {})
         
-        try:
-            # تحليل بسيط بدون مكتبات خارجية
-            word_count = len(content.split())
-            
-            analysis = {
-                'success': True,
-                'analysis_type': analysis_type,
-                'word_count': word_count,
-                'reading_time': max(1, word_count // 200),
-                'content_structure': self._analyze_content_structure(content),
-                'language_detection': self._detect_language(content),
-                'content_category': self._categorize_content(content),
-                'quality_score': self._calculate_quality_score(content),
-                'timestamp': datetime.now().isoformat()
-            }
-            
-            return analysis
-            
-        except Exception as e:
-            return {
-                'success': False,
-                'error': f'خطأ في AI Analyzer: {str(e)}'
-            }
+        cms_tags = ''.join([f'<span class="tag cms-tag">{cms}</span>' for cms in detected_cms])
+        
+        js_frameworks = additional_info.get('javascript_frameworks', [])
+        js_tags = ''.join([f'<span class="tag tech-tag">{fw}</span>' for fw in js_frameworks])
+        
+        return f"""
+        <div class="analysis-section cms-section">
+            <div class="section-title">
+                🎯 كشف نظام إدارة المحتوى
+            </div>
+            <div class="results-grid">
+                <div class="result-card success">
+                    <h4>أنظمة CMS المكتشفة</h4>
+                    {cms_tags if cms_tags else '<p>لم يتم كشف نظام CMS محدد</p>'}
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {max(confidence_scores.values()) if confidence_scores else 0}%"></div>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <h4>JavaScript Frameworks</h4>
+                    {js_tags if js_tags else '<p>لم يتم كشف frameworks محددة</p>'}
+                </div>
+            </div>
+        </div>
+        """
     
-    def _analyze_content_structure(self, content):
-        """تحليل هيكل المحتوى"""
-        lines = content.split('\n')
-        return {
-            'total_lines': len(lines),
-            'non_empty_lines': len([line for line in lines if line.strip()]),
-            'average_line_length': sum(len(line) for line in lines) / max(1, len(lines)),
-            'has_html_tags': '<' in content and '>' in content,
-            'paragraph_count': content.count('<p>') or content.count('\n\n')
-        }
+    def _format_sitemap_section(self, sitemap_results: Dict[str, Any]) -> str:
+        """تنسيق قسم خريطة الموقع"""
+        total_pages = sitemap_results.get('total_pages_found', 0)
+        crawled_pages = sitemap_results.get('pages_crawled', 0)
+        max_depth = sitemap_results.get('max_depth_reached', 0)
+        duration = sitemap_results.get('crawl_duration', 0)
+        
+        return f"""
+        <div class="analysis-section sitemap-section">
+            <div class="section-title">
+                🗺️ خريطة الموقع وتحليل الهيكل
+            </div>
+            <div class="results-grid">
+                <div class="result-card success">
+                    <h4>إحصائيات الزحف</h4>
+                    <p><strong>الصفحات المكتشفة:</strong> {total_pages}</p>
+                    <p><strong>الصفحات المزورة:</strong> {crawled_pages}</p>
+                    <p><strong>أقصى عمق:</strong> {max_depth} مستوى</p>
+                    <p><strong>مدة الزحف:</strong> {duration} ثانية</p>
+                </div>
+                <div class="result-card">
+                    <h4>ملفات تم إنشاؤها</h4>
+                    <ul>
+                        <li>📄 sitemap.xml</li>
+                        <li>📊 detailed_sitemap.json</li>
+                        <li>🌐 sitemap.html</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        """
     
-    def _detect_language(self, content):
-        """كشف لغة المحتوى"""
-        arabic_chars = len([c for c in content if '\u0600' <= c <= '\u06FF'])
-        english_chars = len([c for c in content if c.isascii() and c.isalpha()])
-        total_chars = arabic_chars + english_chars
+    def _format_security_section(self, security_results: Dict[str, Any]) -> str:
+        """تنسيق قسم الأمان"""
+        score = security_results.get('overall_security_score', 0)
+        vulnerabilities = security_results.get('vulnerabilities_found', [])
+        score_color = '#4CAF50' if score >= 80 else '#FF9800' if score >= 60 else '#F44336'
         
-        if total_chars == 0:
-            return {'language': 'unknown', 'confidence': 0}
+        vuln_tags = ''.join([f'<span class="tag vuln-tag">⚠️ {vuln.split(":")[1] if ":" in vuln else vuln}</span>' for vuln in vulnerabilities[:5]])
         
-        arabic_ratio = arabic_chars / total_chars
-        
-        if arabic_ratio > 0.3:
-            return {'language': 'arabic', 'confidence': arabic_ratio}
-        else:
-            return {'language': 'english', 'confidence': 1 - arabic_ratio}
+        return f"""
+        <div class="analysis-section security-section">
+            <div class="section-title">
+                🔒 تحليل الأمان والثغرات
+            </div>
+            <div class="results-grid">
+                <div class="result-card {'success' if score >= 80 else 'warning' if score >= 60 else 'error'}">
+                    <h4>نتيجة الأمان الإجمالية</h4>
+                    <div style="font-size: 36px; color: {score_color}; font-weight: bold;">{score}/100</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {score}%; background: {score_color};"></div>
+                    </div>
+                </div>
+                <div class="result-card error">
+                    <h4>الثغرات المكتشفة ({len(vulnerabilities)})</h4>
+                    {vuln_tags if vuln_tags else '<p>✅ لم يتم العثور على ثغرات ظاهرة</p>'}
+                </div>
+            </div>
+        </div>
+        """
     
-    def _categorize_content(self, content):
-        """تصنيف المحتوى"""
-        content_lower = content.lower()
+    def _format_screenshots_section(self, screenshots_results: Dict[str, Any]) -> str:
+        """تنسيق قسم لقطات الشاشة"""
+        method = screenshots_results.get('method', 'غير معروف')
+        features = screenshots_results.get('features', {})
+        files_created = screenshots_results.get('files_created', [])
         
-        categories = {
-            'ecommerce': ['shop', 'buy', 'cart', 'product', 'price', 'order'],
-            'news': ['news', 'article', 'published', 'author', 'report'],
-            'blog': ['blog', 'post', 'comment', 'share', 'subscribe'],
-            'business': ['contact', 'about', 'service', 'company', 'business'],
-            'education': ['learn', 'course', 'study', 'education', 'tutorial'],
-            'entertainment': ['game', 'movie', 'music', 'video', 'entertainment']
-        }
+        feature_tags = ''.join([f'<span class="tag tech-tag">{feature}</span>' for feature, enabled in features.items() if enabled])
+        file_tags = ''.join([f'<span class="tag">📁 {file}</span>' for file in files_created])
         
-        scores = {}
-        for category, keywords in categories.items():
-            score = sum(content_lower.count(keyword) for keyword in keywords)
-            scores[category] = score
-        
-        max_score = max(scores.values()) if scores.values() else 0
-        best_category = max(scores, key=scores.get) if max_score > 0 else 'unknown'
-        
-        return {
-            'primary_category': best_category,
-            'category_scores': scores,
-            'confidence': max(scores.values()) / max(1, len(content.split()))
-        }
-    
-    def _calculate_quality_score(self, content):
-        """حساب نقاط الجودة"""
-        word_count = len(content.split())
-        
-        # عوامل الجودة
-        factors = {
-            'length': min(100, word_count / 10),  # نقاط للطول
-            'structure': 50 if content.count('\n') > 5 else 20,  # هيكل جيد
-            'completeness': 80 if word_count > 100 else word_count * 0.8,  # اكتمال
-            'readability': 70 if 50 < word_count < 1000 else 30  # قابلية القراءة
-        }
-        
-        total_score = sum(factors.values()) / len(factors)
-        
-        return {
-            'overall_score': round(total_score, 2),
-            'factors': factors,
-            'grade': 'excellent' if total_score > 80 else 'good' if total_score > 60 else 'fair'
-        }
-    
-    def extract_with_spider(self, url, max_depth=2):
-        """استخراج باستخدام Spider Engine"""
-        if not self.tools_available.get('spider_engine'):
-            return {
-                'success': False,
-                'error': 'Spider Engine غير متوفر'
-            }
-        
-        try:
-            # محاكاة Spider Engine
-            extraction_id = f"spider_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-            
-            result = {
-                'extraction_id': extraction_id,
-                'success': True,
-                'url': url,
-                'max_depth': max_depth,
-                'tool': 'spider_engine',
-                'pages_crawled': max_depth * 5,  # تقدير
-                'links_found': max_depth * 20,   # تقدير
-                'internal_links': max_depth * 15, # تقدير
-                'external_links': max_depth * 5,  # تقدير
-                'crawl_duration': max_depth * 2.5, # تقدير بالثواني
-                'timestamp': datetime.now().isoformat()
-            }
-            
-            return result
-            
-        except Exception as e:
-            return {
-                'success': False,
-                'error': f'خطأ في Spider Engine: {str(e)}'
-            }
-    
-    def download_assets(self, url, asset_types=['images', 'css', 'js']):
-        """تحميل الأصول"""
-        if not self.tools_available.get('asset_downloader'):
-            return {
-                'success': False,
-                'error': 'Asset Downloader غير متوفر'
-            }
-        
-        try:
-            download_id = f"assets_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-            
-            result = {
-                'download_id': download_id,
-                'success': True,
-                'url': url,
-                'asset_types': asset_types,
-                'tool': 'asset_downloader',
-                'downloaded_assets': {
-                    'images': len(asset_types) * 5 if 'images' in asset_types else 0,
-                    'css': len(asset_types) * 3 if 'css' in asset_types else 0,
-                    'js': len(asset_types) * 4 if 'js' in asset_types else 0
-                },
-                'total_size': '2.5 MB',  # تقدير
-                'download_path': f'downloaded_assets/{download_id}',
-                'timestamp': datetime.now().isoformat()
-            }
-            
-            return result
-            
-        except Exception as e:
-            return {
-                'success': False,
-                'error': f'خطأ في Asset Downloader: {str(e)}'
-            }
-    
-    def scan_database_structure(self, url):
-        """فحص هيكل قاعدة البيانات"""
-        if not self.tools_available.get('database_scanner'):
-            return {
-                'success': False,
-                'error': 'Database Scanner غير متوفر'
-            }
-        
-        try:
-            scan_id = f"dbscan_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-            
-            result = {
-                'scan_id': scan_id,
-                'success': True,
-                'url': url,
-                'tool': 'database_scanner',
-                'detected_patterns': {
-                    'forms_analyzed': 3,
-                    'potential_tables': ['users', 'products', 'orders'],
-                    'field_patterns': ['id', 'name', 'email', 'created_at'],
-                    'relationships': ['user->orders', 'orders->products']
-                },
-                'api_endpoints': ['/api/users', '/api/products', '/api/auth'],
-                'security_assessment': 'moderate',
-                'timestamp': datetime.now().isoformat()
-            }
-            
-            return result
-            
-        except Exception as e:
-            return {
-                'success': False,
-                'error': f'خطأ في Database Scanner: {str(e)}'
-            }
-    
-    def get_extraction_status(self, extraction_id):
-        """الحصول على حالة الاستخراج"""
-        return self.active_extractions.get(extraction_id, {
-            'error': 'Extraction ID not found'
-        })
-    
-    def list_active_extractions(self):
-        """قائمة الاستخراجات النشطة"""
-        return {
-            'active_count': len(self.active_extractions),
-            'extractions': list(self.active_extractions.keys()),
-            'details': self.active_extractions
-        }
-
-# إنشاء مثيل عام
-advanced_tools = AdvancedToolsManager()
-
-if __name__ == '__main__':
-    # اختبار الأدوات
-    print("فحص الأدوات المتقدمة...")
-    status = advanced_tools.get_tools_status()
-    print(json.dumps(status, indent=2, ensure_ascii=False))
+        return f"""
+        <div class="analysis-section screenshots-section">
+            <div class="section-title">
+                📸 لقطات الشاشة والمعاينة التفاعلية
+            </div>
+            <div class="results-grid">
+                <div class="result-card success">
+                    <h4>الميزات المتقدمة</h4>
+                    {feature_tags if feature_tags else '<p>معاينة أساسية</p>'}
+                </div>
+                <div class="result-card">
+                    <h4>الملفات المُنشأة</h4>
+                    {file_tags if file_tags else '<p>لا توجد ملفات</p>'}
+                </div>
+            </div>
+        </div>
+        """
