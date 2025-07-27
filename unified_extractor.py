@@ -62,9 +62,8 @@ class UnifiedWebsiteExtractor:
         
         return session
     
-    def _setup_extraction_directories(self):
+    def _setup_extraction_directories(self) -> Path:
         """إعداد مجلدات الاستخراج"""
-        from pathlib import Path
         
         base_dir = Path("extracted_files")
         base_dir.mkdir(exist_ok=True)
@@ -87,91 +86,147 @@ class UnifiedWebsiteExtractor:
             
         return base_dir
     
-    def _save_extraction_files(self, result, content, soup):
-        """حفظ الملفات المستخرجة في مجلد منظم"""
-        from pathlib import Path
-        import json
-        
-        # إنشاء مجلد للاستخراج
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        domain = urlparse(result['url']).netloc.replace('.', '_')
-        extraction_folder = self.base_dir / 'websites' / f"{result['extraction_id']}_{domain}_{timestamp}"
-        
-        # إنشاء الهيكل المنظم
-        folders = {
-            'content': extraction_folder / '01_content',
-            'assets': extraction_folder / '02_assets',
-            'analysis': extraction_folder / '03_analysis',
-            'exports': extraction_folder / '04_exports'
+    def download_assets(self, soup: BeautifulSoup, base_url: str, assets_folder: Path) -> Dict[str, List[str]]:
+        """تحميل الأصول (الصور، CSS، JS)"""
+        downloaded_assets = {
+            'images': [],
+            'css': [],
+            'js': [],
+            'failed': []
         }
         
-        for folder in folders.values():
-            folder.mkdir(parents=True, exist_ok=True)
+        try:
+            # تحميل الصور
+            for img in soup.find_all('img', src=True)[:10]:  # أول 10 صور
+                src = img.get('src')
+                if src and not src.startswith('data:'):
+                    try:
+                        img_url = urljoin(base_url, src)
+                        response = self.session.get(img_url, timeout=10)
+                        if response.status_code == 200:
+                            filename = Path(src).name or 'image.jpg'
+                            filepath = assets_folder / 'images' / filename
+                            filepath.parent.mkdir(exist_ok=True)
+                            with open(filepath, 'wb') as f:
+                                f.write(response.content)
+                            downloaded_assets['images'].append(str(filepath))
+                    except Exception:
+                        downloaded_assets['failed'].append(src)
+            
+            # تحميل CSS files
+            for link in soup.find_all('link', rel='stylesheet')[:5]:  # أول 5 ملفات CSS
+                href = link.get('href')
+                if href and not href.startswith('data:'):
+                    try:
+                        css_url = urljoin(base_url, href)
+                        response = self.session.get(css_url, timeout=10)
+                        if response.status_code == 200:
+                            filename = Path(href).name or 'style.css'
+                            filepath = assets_folder / 'css' / filename
+                            filepath.parent.mkdir(exist_ok=True)
+                            with open(filepath, 'w', encoding='utf-8') as f:
+                                f.write(response.text)
+                            downloaded_assets['css'].append(str(filepath))
+                    except Exception:
+                        downloaded_assets['failed'].append(href)
+            
+            # تحميل JS files
+            for script in soup.find_all('script', src=True)[:5]:  # أول 5 سكريبتات
+                src = script.get('src')
+                if src and not src.startswith('data:'):
+                    try:
+                        js_url = urljoin(base_url, src)
+                        response = self.session.get(js_url, timeout=10)
+                        if response.status_code == 200:
+                            filename = Path(src).name or 'script.js'
+                            filepath = assets_folder / 'js' / filename
+                            filepath.parent.mkdir(exist_ok=True)
+                            with open(filepath, 'w', encoding='utf-8') as f:
+                                f.write(response.text)
+                            downloaded_assets['js'].append(str(filepath))
+                    except Exception:
+                        downloaded_assets['failed'].append(src)
+                        
+        except Exception as e:
+            downloaded_assets['error'] = str(e)
         
-        # حفظ المحتوى الأساسي
-        html_file = folders['content'] / 'page.html'
-        with open(html_file, 'w', encoding='utf-8') as f:
-            f.write(content)
+        return downloaded_assets
+    
+    def export_to_formats(self, result: Dict[str, Any], exports_folder: Path) -> Dict[str, str]:
+        """تصدير النتائج بصيغ مختلفة"""
+        exports = {}
         
-        # حفظ النتائج JSON
-        json_file = folders['analysis'] / 'analysis_results.json'
-        with open(json_file, 'w', encoding='utf-8') as f:
-            json.dump(result, f, ensure_ascii=False, indent=2)
+        try:
+            # تصدير JSON (مُنسق)
+            json_file = exports_folder / 'results.json'
+            with open(json_file, 'w', encoding='utf-8') as f:
+                json.dump(result, f, ensure_ascii=False, indent=2)
+            exports['json'] = str(json_file)
+            
+            # تصدير CSV (للروابط والصور)
+            if 'links_analysis' in result:
+                import csv
+                csv_file = exports_folder / 'links.csv'
+                with open(csv_file, 'w', newline='', encoding='utf-8') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(['Type', 'URL', 'Text'])
+                    
+                    for link in result['links_analysis'].get('internal_links', []):
+                        writer.writerow(['Internal', link.get('href', ''), link.get('text', '')])
+                    for link in result['links_analysis'].get('external_links', []):
+                        writer.writerow(['External', link.get('href', ''), link.get('text', '')])
+                
+                exports['csv'] = str(csv_file)
+            
+            # تصدير HTML تقرير
+            html_file = exports_folder / 'report.html'
+            html_content = f"""<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>تقرير تحليل الموقع - {result.get('domain', '')}</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 20px; direction: rtl; }}
+        .header {{ background: #f8f9fa; padding: 20px; border-radius: 5px; }}
+        .section {{ margin: 20px 0; padding: 15px; border: 1px solid #dee2e6; }}
+        .stats {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }}
+        .stat {{ background: #e9ecef; padding: 10px; text-align: center; }}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>تقرير تحليل الموقع</h1>
+        <p><strong>الرابط:</strong> {result.get('url', '')}</p>
+        <p><strong>العنوان:</strong> {result.get('title', '')}</p>
+        <p><strong>التاريخ:</strong> {result.get('timestamp', '')}</p>
+    </div>
+    
+    <div class="section">
+        <h2>إحصائيات سريعة</h2>
+        <div class="stats">
+            <div class="stat"><strong>{result.get('links_count', 0)}</strong><br>روابط</div>
+            <div class="stat"><strong>{result.get('images_count', 0)}</strong><br>صور</div>
+            <div class="stat"><strong>{result.get('scripts_count', 0)}</strong><br>سكريبتات</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>التقنيات المستخدمة</h2>
+        <ul>
+            {"".join(f"<li>{tech}</li>" for tech in result.get('technologies', []))}
+        </ul>
+    </div>
+</body>
+</html>"""
+            
+            with open(html_file, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+            exports['html'] = str(html_file)
+            
+        except Exception as e:
+            exports['error'] = str(e)
         
-        # حفظ معلومات الاستخراج
-        info_file = extraction_folder / 'extraction_info.json'
-        extraction_info = {
-            'extraction_id': result['extraction_id'],
-            'url': result['url'],
-            'extraction_type': result['extraction_type'],
-            'timestamp': result['timestamp'],
-            'duration': result['duration'],
-            'domain': domain,
-            'extractor': result['extractor'],
-            'folder_structure': {
-                'content': '01_content - الصفحات والمحتوى المستخرج',
-                'assets': '02_assets - الصور والملفات المساعدة',
-                'analysis': '03_analysis - تحليل النتائج والبيانات',
-                'exports': '04_exports - التصديرات بصيغ مختلفة'
-            }
-        }
-        
-        with open(info_file, 'w', encoding='utf-8') as f:
-            json.dump(extraction_info, f, ensure_ascii=False, indent=2)
-        
-        # حفظ ملف readme مع التعليمات
-        readme_file = extraction_folder / 'README.md'
-        readme_content = f"""# استخراج الموقع: {result.get('title', 'بدون عنوان')}
-
-## معلومات الاستخراج
-- **الرابط**: {result['url']}
-- **النوع**: {result['extraction_type']}
-- **التاريخ**: {result['timestamp']}
-- **المدة**: {result['duration']} ثانية
-- **ID**: {result['extraction_id']}
-
-## هيكل المجلد
-- `01_content/` - المحتوى المستخرج من الصفحة
-- `02_assets/` - الصور والملفات المساعدة
-- `03_analysis/` - نتائج التحليل وتقارير JSON
-- `04_exports/` - التصديرات بصيغ مختلفة
-
-## الملفات الرئيسية
-- `extraction_info.json` - معلومات أساسية عن الاستخراج
-- `01_content/page.html` - الصفحة المستخرجة كاملة
-- `03_analysis/analysis_results.json` - نتائج التحليل التفصيلية
-
-## إحصائيات سريعة
-- العنوان: {result.get('title', 'غير متوفر')}
-- الحالة: {result.get('status_code', 'غير معروف')}
-- عدد الروابط: {result.get('links_count', 0)}
-- عدد الصور: {result.get('images_count', 0)}
-"""
-        
-        with open(readme_file, 'w', encoding='utf-8') as f:
-            f.write(readme_content)
-        
-        return extraction_folder
+        return exports
     
     def _capture_screenshots_simple(self, url, extraction_folder):
         """التقاط لقطات شاشة بسيط"""
@@ -250,6 +305,21 @@ class UnifiedWebsiteExtractor:
         with open(extraction_folder / '03_analysis' / 'extraction_results.json', 'w', encoding='utf-8') as f:
             json.dump(result, f, ensure_ascii=False, indent=2)
         
+        # تحميل الأصول (للاستخراج المتقدم)
+        if result.get('extraction_type') in ['advanced', 'complete']:
+            try:
+                assets_result = self.download_assets(soup, result['url'], extraction_folder / '02_assets')
+                result['downloaded_assets'] = assets_result
+            except Exception as e:
+                result['assets_error'] = str(e)
+        
+        # تصدير بصيغ مختلفة
+        try:
+            exports_result = self.export_to_formats(result, extraction_folder / '04_exports')
+            result['exports'] = exports_result
+        except Exception as e:
+            result['exports_error'] = str(e)
+        
         # حفظ README
         readme_content = f"""# استخراج الموقع - {result.get('url', '')}
 
@@ -320,13 +390,21 @@ class UnifiedWebsiteExtractor:
             extraction_folder = self._save_extraction_files(result, content, soup)
             result['extraction_folder'] = str(extraction_folder)
             
-            # التقاط لقطات الشاشة التلقائية (معطل مؤقتاً)
+            # التقاط لقطات الشاشة
             if extraction_type in ['advanced', 'complete']:
                 try:
                     screenshot_result = self._capture_screenshots_simple(url, extraction_folder)
                     result['screenshots'] = screenshot_result
                 except Exception as e:
                     result['screenshots'] = {'error': str(e), 'total_screenshots': 0}
+            
+            # إضافة إحصائيات شاملة
+            result['extraction_stats'] = {
+                'files_created': len(list(extraction_folder.rglob('*'))) if extraction_folder else 0,
+                'folder_size_mb': self._calculate_folder_size(extraction_folder) if extraction_folder else 0,
+                'extraction_quality': self._assess_extraction_quality(result),
+                'completeness_score': self._calculate_completeness_score(result)
+            }
             
             self.results[extraction_id] = result
             return result
@@ -486,7 +564,7 @@ class UnifiedWebsiteExtractor:
         
         return technologies
     
-    def _analyze_performance(self, response, content_size):
+    def _analyze_performance(self, response, content_size: int) -> Dict[str, Any]:
         """تحليل الأداء"""
         return {
             'response_time': response.elapsed.total_seconds(),
@@ -749,18 +827,171 @@ class UnifiedWebsiteExtractor:
             ]
         }
     
-    def get_results(self):
+    def _calculate_folder_size(self, folder: Path) -> float:
+        """حساب حجم المجلد بالميجابايت"""
+        try:
+            total_size = 0
+            for file_path in folder.rglob('*'):
+                if file_path.is_file():
+                    total_size += file_path.stat().st_size
+            return round(total_size / (1024 * 1024), 2)  # تحويل إلى MB
+        except Exception:
+            return 0.0
+    
+    def _assess_extraction_quality(self, result: Dict[str, Any]) -> str:
+        """تقييم جودة الاستخراج"""
+        score = 0
+        
+        # فحص وجود البيانات الأساسية
+        if result.get('title'): score += 1
+        if result.get('description'): score += 1
+        if result.get('links_count', 0) > 0: score += 1
+        if result.get('images_count', 0) > 0: score += 1
+        if result.get('technologies'): score += 1
+        
+        # فحص البيانات المتقدمة
+        if result.get('seo_analysis'): score += 1
+        if result.get('structure_analysis'): score += 1
+        if result.get('security_analysis'): score += 1
+        
+        if score >= 7:
+            return 'ممتازة'
+        elif score >= 5:
+            return 'جيدة'
+        elif score >= 3:
+            return 'متوسطة'
+        else:
+            return 'ضعيفة'
+    
+    def _calculate_completeness_score(self, result: Dict[str, Any]) -> int:
+        """حساب نسبة اكتمال الاستخراج من 100"""
+        total_possible = 20  # إجمالي النقاط الممكنة
+        score = 0
+        
+        # البيانات الأساسية (10 نقاط)
+        if result.get('title'): score += 2
+        if result.get('description'): score += 2
+        if result.get('links_count', 0) > 0: score += 2
+        if result.get('images_count', 0) > 0: score += 2
+        if result.get('technologies'): score += 2
+        
+        # التحليل المتقدم (10 نقاط)
+        if result.get('seo_analysis'): score += 2
+        if result.get('structure_analysis'): score += 2
+        if result.get('security_analysis'): score += 2
+        if result.get('performance'): score += 2
+        if result.get('screenshots'): score += 2
+        
+        return int((score / total_possible) * 100)
+    
+    def clear_cache(self, older_than_days: int = 7) -> Dict[str, int]:
+        """تنظيف الملفات القديمة"""
+        from datetime import datetime, timedelta
+        
+        deleted_files = 0
+        deleted_folders = 0
+        cutoff_date = datetime.now() - timedelta(days=older_than_days)
+        
+        try:
+            for website_folder in (self.base_dir / 'websites').iterdir():
+                if website_folder.is_dir():
+                    folder_time = datetime.fromtimestamp(website_folder.stat().st_mtime)
+                    if folder_time < cutoff_date:
+                        import shutil
+                        shutil.rmtree(website_folder)
+                        deleted_folders += 1
+                        
+            # تنظيف الملفات المؤقتة
+            temp_folder = self.base_dir / 'temp'
+            if temp_folder.exists():
+                for temp_file in temp_folder.iterdir():
+                    if temp_file.is_file():
+                        file_time = datetime.fromtimestamp(temp_file.stat().st_mtime)
+                        if file_time < cutoff_date:
+                            temp_file.unlink()
+                            deleted_files += 1
+                            
+        except Exception as e:
+            return {'error': str(e), 'deleted_files': deleted_files, 'deleted_folders': deleted_folders}
+        
+        return {'deleted_files': deleted_files, 'deleted_folders': deleted_folders}
+    
+    def get_extraction_statistics(self) -> Dict[str, Any]:
+        """إحصائيات شاملة للاستخراجات"""
+        stats = {
+            'total_extractions': len(self.results),
+            'successful_extractions': 0,
+            'failed_extractions': 0,
+            'total_websites_folder_size_mb': 0,
+            'avg_extraction_time': 0,
+            'extraction_types': {},
+            'top_technologies': {},
+            'recent_activity': []
+        }
+        
+        total_time = 0
+        successful_times = []
+        
+        for result in self.results.values():
+            if result.get('success'):
+                stats['successful_extractions'] += 1
+                if result.get('duration'):
+                    successful_times.append(result['duration'])
+                    total_time += result['duration']
+                
+                # إحصائيات أنواع الاستخراج
+                ext_type = result.get('extraction_type', 'unknown')
+                stats['extraction_types'][ext_type] = stats['extraction_types'].get(ext_type, 0) + 1
+                
+                # إحصائيات التقنيات
+                for tech in result.get('technologies', []):
+                    stats['top_technologies'][tech] = stats['top_technologies'].get(tech, 0) + 1
+                    
+                # النشاط الأخير
+                stats['recent_activity'].append({
+                    'url': result.get('url', ''),
+                    'timestamp': result.get('timestamp', ''),
+                    'type': ext_type,
+                    'duration': result.get('duration', 0)
+                })
+            else:
+                stats['failed_extractions'] += 1
+        
+        # متوسط وقت الاستخراج
+        if successful_times:
+            stats['avg_extraction_time'] = round(sum(successful_times) / len(successful_times), 2)
+        
+        # حجم مجلد المواقع
+        websites_folder = self.base_dir / 'websites'
+        if websites_folder.exists():
+            stats['total_websites_folder_size_mb'] = self._calculate_folder_size(websites_folder)
+        
+        # أحدث النشاطات (آخر 10)
+        stats['recent_activity'] = sorted(
+            stats['recent_activity'], 
+            key=lambda x: x['timestamp'], 
+            reverse=True
+        )[:10]
+        
+        # ترتيب التقنيات الأكثر استخداماً
+        stats['top_technologies'] = dict(
+            sorted(stats['top_technologies'].items(), key=lambda x: x[1], reverse=True)[:10]
+        )
+        
+        return stats
+    
+    def get_results(self) -> List[Dict[str, Any]]:
         """الحصول على جميع النتائج"""
         return list(self.results.values())
     
-    def get_result(self, extraction_id):
+    def get_result(self, extraction_id: int) -> Optional[Dict[str, Any]]:
         """الحصول على نتيجة محددة"""
         return self.results.get(extraction_id)
 
 # إنشاء مثيل عام
 unified_extractor = UnifiedWebsiteExtractor()
 
-def extract_website_unified(url, extraction_type='basic'):
+def extract_website_unified(url: str, extraction_type: str = 'basic') -> Dict[str, Any]:
     """دالة سهلة للاستخدام"""
     return unified_extractor.extract_website(url, extraction_type)
 
