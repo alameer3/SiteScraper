@@ -283,7 +283,7 @@
                 <div class="mb-4">
                     <label class="form-label">نوع الاستخراج</label>
                     
-                    <div class="extraction-mode" onclick="selectMode('basic')">
+                    <div class="extraction-mode" onclick="selectMode('basic', this)">
                         <input type="radio" name="extraction_type" value="basic" id="basic" checked>
                         <div class="mode-icon">
                             <i data-feather="zap"></i>
@@ -292,7 +292,7 @@
                         <p class="mb-0 text-muted">استخراج المحتوى والروابط الأساسية (30-60 ثانية)</p>
                     </div>
 
-                    <div class="extraction-mode" onclick="selectMode('standard')">
+                    <div class="extraction-mode" onclick="selectMode('standard', this)">
                         <input type="radio" name="extraction_type" value="standard" id="standard">
                         <div class="mode-icon">
                             <i data-feather="layers"></i>
@@ -301,7 +301,7 @@
                         <p class="mb-0 text-muted">استخراج المحتوى والأصول والصور (1-2 دقيقة)</p>
                     </div>
 
-                    <div class="extraction-mode" onclick="selectMode('advanced')">
+                    <div class="extraction-mode" onclick="selectMode('advanced', this)">
                         <input type="radio" name="extraction_type" value="advanced" id="advanced">
                         <div class="mode-icon">
                             <i data-feather="cpu"></i>
@@ -310,7 +310,7 @@
                         <p class="mb-0 text-muted">استخراج شامل مع تحليل SEO والأداء (2-3 دقائق)</p>
                     </div>
 
-                    <div class="extraction-mode" onclick="selectMode('complete')">
+                    <div class="extraction-mode" onclick="selectMode('complete', this)">
                         <input type="radio" name="extraction_type" value="complete" id="complete">
                         <div class="mode-icon">
                             <i data-feather="database"></i>
@@ -319,7 +319,7 @@
                         <p class="mb-0 text-muted">استخراج كامل مع تحليل APIs وقواعد البيانات (3-5 دقائق)</p>
                     </div>
 
-                    <div class="extraction-mode" onclick="selectMode('ai_powered')">
+                    <div class="extraction-mode" onclick="selectMode('ai_powered', this)">
                         <input type="radio" name="extraction_type" value="ai_powered" id="ai_powered">
                         <div class="mode-icon">
                             <i data-feather="cpu"></i>
@@ -518,14 +518,22 @@
     <script>
         feather.replace();
         
-        function selectMode(mode) {
+        function selectMode(mode, element) {
             // Remove selected class from all modes
             document.querySelectorAll('.extraction-mode').forEach(el => {
                 el.classList.remove('selected');
             });
             
             // Add selected class to clicked mode
-            event.currentTarget.classList.add('selected');
+            if (element) {
+                element.classList.add('selected');
+            } else {
+                // Fallback: find the element by mode
+                const modeElement = document.querySelector(`[onclick*="${mode}"]`);
+                if (modeElement) {
+                    modeElement.classList.add('selected');
+                }
+            }
             
             // Check the radio button
             document.getElementById(mode).checked = true;
