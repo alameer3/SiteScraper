@@ -117,12 +117,12 @@ class SecurityScanner:
                         ssl_results['ssl_version'] = ssock.version()
                         
                         ssl_results['certificate_info'] = {
-                            'subject': dict(x[0] for x in cert.get('subject', [])),
-                            'issuer': dict(x[0] for x in cert.get('issuer', [])),
-                            'not_before': cert.get('notBefore'),
-                            'not_after': cert.get('notAfter'),
-                            'serial_number': cert.get('serialNumber'),
-                            'version': cert.get('version')
+                            'subject': dict(x[0] for x in cert.get('subject', [])) if cert.get('subject') else {},
+                            'issuer': dict(x[0] for x in cert.get('issuer', [])) if cert.get('issuer') else {},
+                            'not_before': str(cert.get('notBefore', '')),
+                            'not_after': str(cert.get('notAfter', '')),
+                            'serial_number': str(cert.get('serialNumber', '')),
+                            'version': str(cert.get('version', ''))
                         }
                 
                 # فحص إعادة التوجيه HTTPS
@@ -211,17 +211,21 @@ class SecurityScanner:
             forms_results['total_forms'] = len(forms)
             
             for i, form in enumerate(forms):
+                action_attr = form.get('action') if hasattr(form, 'get') else ''
+                method_attr = form.get('method') if hasattr(form, 'get') else 'GET'
                 form_analysis = {
                     'form_index': i,
-                    'action': form.get('action', ''),
-                    'method': form.get('method', 'GET').upper(),
+                    'action': str(action_attr or ''),
+                    'method': str(method_attr or 'GET').upper(),
                     'has_csrf_token': False,
                     'uses_https': False,
                     'vulnerabilities': []
                 }
                 
                 # فحص CSRF token
-                csrf_inputs = form.find_all('input', attrs={'name': re.compile(r'csrf|token', re.I)})
+                csrf_inputs = []
+                if hasattr(form, 'find_all'):
+                    csrf_inputs = form.find_all('input', attrs={'name': re.compile(r'csrf|token', re.I)})
                 if csrf_inputs:
                     form_analysis['has_csrf_token'] = True
                     forms_results['forms_with_csrf'] += 1
@@ -230,7 +234,9 @@ class SecurityScanner:
                     form_analysis['vulnerabilities'].append('No CSRF protection')
                 
                 # فحص استخدام HTTPS للنماذج الحساسة
-                password_inputs = form.find_all('input', type='password')
+                password_inputs = []
+                if hasattr(form, 'find_all'):
+                    password_inputs = form.find_all('input', type='password')
                 if password_inputs:
                     action_url = urljoin(url, form_analysis['action'])
                     if not action_url.startswith('https://'):
@@ -238,9 +244,12 @@ class SecurityScanner:
                         forms_results['vulnerabilities'].append(f'Form {i}: Password transmitted over insecure connection')
                 
                 # فحص autocomplete على الحقول الحساسة
-                sensitive_inputs = form.find_all('input', type=['password', 'email'])
+                sensitive_inputs = []
+                if hasattr(form, 'find_all'):
+                    sensitive_inputs = form.find_all('input', type=['password', 'email'])
                 for inp in sensitive_inputs:
-                    if inp.get('autocomplete') != 'off':
+                    autocomplete_attr = inp.get('autocomplete') if hasattr(inp, 'get') else None
+                    if autocomplete_attr != 'off':
                         form_analysis['vulnerabilities'].append('Sensitive input allows autocomplete')
                 
                 if form_analysis['vulnerabilities']:

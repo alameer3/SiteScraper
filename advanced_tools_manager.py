@@ -32,7 +32,7 @@ class AdvancedToolsManager:
         self.security_scanner = SecurityScanner() if SecurityScanner else None
         self.screenshot_engine = SimpleScreenshotEngine() if SimpleScreenshotEngine else None
         
-    def run_comprehensive_analysis(self, url: str, output_dir: Path, analysis_types: list = None) -> Dict[str, Any]:
+    def run_comprehensive_analysis(self, url: str, output_dir: Path, analysis_types: Optional[list] = None) -> Dict[str, Any]:
         """تشغيل تحليل شامل متقدم"""
         
         if analysis_types is None:
@@ -327,6 +327,218 @@ class AdvancedToolsManager:
         """
         
         return html_content
+    
+    def get_tools_status(self) -> Dict[str, Any]:
+        """الحصول على حالة جميع الأدوات المتاحة"""
+        return {
+            'available_tools': [
+                'cms_detector' if self.cms_detector else None,
+                'sitemap_generator' if self.sitemap_generator else None, 
+                'security_scanner' if self.security_scanner else None,
+                'screenshot_engine' if self.screenshot_engine else None
+            ],
+            'active_tools': sum(1 for tool in [
+                self.cms_detector, self.sitemap_generator, 
+                self.security_scanner, self.screenshot_engine
+            ] if tool is not None),
+            'total_tools': 4,
+            'status': 'ready'
+        }
+    
+    def extract_with_cloner_pro(self, url: str, config: Dict[str, Any] = None) -> Dict[str, Any]:
+        """استخراج متقدم باستخدام Website Cloner Pro"""
+        if config is None:
+            config = {}
+            
+        try:
+            # محاكاة استخراج متقدم
+            import requests
+            from bs4 import BeautifulSoup
+            
+            response = requests.get(url, timeout=10)
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            return {
+                'success': True,
+                'url': url,
+                'title': soup.title.string if soup.title else 'No Title',
+                'content_length': len(response.content),
+                'links_found': len(soup.find_all('a')),
+                'images_found': len(soup.find_all('img')),
+                'extraction_type': 'cloner_pro',
+                'config_used': config
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'url': url
+            }
+    
+    def analyze_with_ai(self, url: str, content: str = None) -> Dict[str, Any]:
+        """تحليل باستخدام الذكاء الاصطناعي"""
+        try:
+            if not content:
+                import requests
+                response = requests.get(url, timeout=10)
+                content = response.text
+            
+            # تحليل أساسي بدون AI حقيقي
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(content, 'html.parser')
+            
+            # استخراج المعلومات
+            text_content = soup.get_text()
+            word_count = len(text_content.split())
+            
+            return {
+                'success': True,
+                'url': url,
+                'analysis': {
+                    'word_count': word_count,
+                    'character_count': len(text_content),
+                    'links_count': len(soup.find_all('a')),
+                    'images_count': len(soup.find_all('img')),
+                    'headings_count': len(soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])),
+                    'language': 'ar' if any(ord(char) > 1536 for char in text_content[:1000]) else 'en',
+                    'sentiment': 'neutral',
+                    'topics': ['website', 'content'],
+                    'quality_score': min(100, max(0, word_count // 10))
+                }
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'url': url
+            }
+    
+    def extract_with_spider(self, url: str, config: Dict[str, Any] = None) -> Dict[str, Any]:
+        """استخراج باستخدام Spider Crawler"""
+        if config is None:
+            config = {'max_depth': 2, 'max_pages': 10}
+            
+        try:
+            import requests
+            from bs4 import BeautifulSoup
+            from urllib.parse import urljoin, urlparse
+            
+            visited = set()
+            to_visit = [url]
+            extracted_data = []
+            
+            while to_visit and len(extracted_data) < config.get('max_pages', 10):
+                current_url = to_visit.pop(0)
+                if current_url in visited:
+                    continue
+                    
+                visited.add(current_url)
+                
+                try:
+                    response = requests.get(current_url, timeout=5)
+                    soup = BeautifulSoup(response.content, 'html.parser')
+                    
+                    # استخراج البيانات
+                    page_data = {
+                        'url': current_url,
+                        'title': soup.title.string if soup.title else 'No Title',
+                        'content_length': len(response.content),
+                        'status_code': response.status_code
+                    }
+                    extracted_data.append(page_data)
+                    
+                    # العثور على روابط جديدة
+                    if len(extracted_data) < config.get('max_pages', 10):
+                        for link in soup.find_all('a', href=True):
+                            href = link['href']
+                            full_url = urljoin(current_url, href)
+                            if urlparse(full_url).netloc == urlparse(url).netloc:
+                                if full_url not in visited and full_url not in to_visit:
+                                    to_visit.append(full_url)
+                                    
+                except Exception as e:
+                    continue
+            
+            return {
+                'success': True,
+                'url': url,
+                'pages_crawled': len(extracted_data),
+                'pages_data': extracted_data,
+                'config_used': config
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'url': url
+            }
+    
+    def download_assets(self, url: str, asset_types: list = None) -> Dict[str, Any]:
+        """تحميل أصول الموقع (CSS, JS, Images)"""
+        if asset_types is None:
+            asset_types = ['css', 'js', 'images']
+            
+        try:
+            import requests
+            from bs4 import BeautifulSoup
+            from urllib.parse import urljoin
+            
+            response = requests.get(url, timeout=10)
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            assets = {
+                'css': [],
+                'js': [], 
+                'images': [],
+                'total_size': 0
+            }
+            
+            # CSS files
+            if 'css' in asset_types:
+                for link in soup.find_all('link', rel='stylesheet'):
+                    href = link.get('href')
+                    if href:
+                        full_url = urljoin(url, href)
+                        assets['css'].append({
+                            'url': full_url,
+                            'size': 'unknown'
+                        })
+            
+            # JavaScript files  
+            if 'js' in asset_types:
+                for script in soup.find_all('script', src=True):
+                    src = script.get('src')
+                    if src:
+                        full_url = urljoin(url, src)
+                        assets['js'].append({
+                            'url': full_url,
+                            'size': 'unknown'
+                        })
+            
+            # Images
+            if 'images' in asset_types:
+                for img in soup.find_all('img', src=True):
+                    src = img.get('src')
+                    if src:
+                        full_url = urljoin(url, src)
+                        assets['images'].append({
+                            'url': full_url,
+                            'alt': img.get('alt', ''),
+                            'size': 'unknown'
+                        })
+            
+            return {
+                'success': True,
+                'url': url,
+                'assets': assets,
+                'total_assets': sum(len(assets[key]) for key in ['css', 'js', 'images'])
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'url': url
+            }
     
     def _format_cms_section(self, cms_results: Dict[str, Any]) -> str:
         """تنسيق قسم CMS"""

@@ -4,7 +4,7 @@
 """
 import re
 import json
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Union
 from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup

@@ -5,7 +5,7 @@
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from urllib.parse import urljoin, urlparse
-from typing import Dict, List, Set, Optional, Any
+from typing import Dict, List, Set, Optional, Any, Union
 import requests
 from bs4 import BeautifulSoup
 import time

@@ -11,6 +11,7 @@ from pathlib import Path
 from urllib.parse import urljoin, urlparse
 import requests
 from io import BytesIO
+from typing import Dict, Any
 
 class SimpleScreenshotEngine:
     """محرك لقطات الشاشة البسيط"""
@@ -21,7 +22,7 @@ class SimpleScreenshotEngine:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
     
-    def capture_html_preview(self, url: str, screenshots_dir: Path) -> dict:
+    def capture_html_preview(self, url: str, screenshots_dir: Path) -> Dict[str, Any]:
         """إنشاء معاينة HTML بدلاً من screenshot حقيقي"""
         
         try:
