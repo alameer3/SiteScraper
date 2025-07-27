@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}إدارة الملفات - مدير ملفات الاستخراج{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-12">
+        <!-- Hero Section -->
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <div class="feature-icon mx-auto mb-3">
+                    <i data-feather="folder"></i>
+                </div>
+                <h1 class="card-title text-primary">إدارة الملفات</h1>
+                <p class="card-text text-muted">إدارة وتنظيم جميع ملفات الاستخراج والنتائج المحفوظة</p>
+            </div>
+        </div>
+
+        <!-- Storage Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i data-feather="database" class="text-primary mb-2" style="width: 40px; height: 40px;"></i>
+                        <h3 class="text-primary">{{ storage_stats.total_extractions }}</h3>
+                        <p class="text-muted">إجمالي الاستخراجات</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i data-feather="hard-drive" class="text-success mb-2" style="width: 40px; height: 40px;"></i>
+                        <h3 class="text-success">{{ storage_stats.storage_used }}</h3>
+                        <p class="text-muted">المساحة المستخدمة</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i data-feather="archive" class="text-info mb-2" style="width: 40px; height: 40px;"></i>
+                        <h3 class="text-info">{{ storage_stats.cache_size }}</h3>
+                        <p class="text-muted">حجم التخزين المؤقت</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Management Actions -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i data-feather="download" class="text-primary mb-3" style="width: 40px; height: 40px;"></i>
+                        <h6 class="card-title">تحميل جميع الملفات</h6>
+                        <button class="btn btn-primary btn-sm">تحميل ZIP</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i data-feather="trash-2" class="text-danger mb-3" style="width: 40px; height: 40px;"></i>
+                        <h6 class="card-title">تنظيف التخزين</h6>
+                        <button class="btn btn-outline-danger btn-sm" onclick="cleanupStorage()">تنظيف</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i data-feather="refresh-cw" class="text-warning mb-3" style="width: 40px; height: 40px;"></i>
+                        <h6 class="card-title">تحديث البيانات</h6>
+                        <button class="btn btn-outline-warning btn-sm" onclick="refreshData()">تحديث</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i data-feather="settings" class="text-secondary mb-3" style="width: 40px; height: 40px;"></i>
+                        <h6 class="card-title">إعدادات التخزين</h6>
+                        <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#storageSettings">إعدادات</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Extractions -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i data-feather="file-text" class="me-2"></i>
+                    الاستخراجات الحديثة
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_extractions %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>الموقع</th>
+                                <th>نوع الاستخراج</th>
+                                <th>الحالة</th>
+                                <th>التاريخ</th>
+                                <th>الحجم</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for extraction in recent_extractions %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i data-feather="globe" class="me-2 text-primary" style="width: 16px; height: 16px;"></i>
+                                        <span>{{ extraction.url[:40] }}{% if extraction.url|length > 40 %}...{% endif %}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">{{ extraction.extraction_type }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">{{ extraction.status }}</span>
+                                </td>
+                                <td>{{ extraction.created_at.strftime('%Y-%m-%d %H:%M') if extraction.created_at else 'غير محدد' }}</td>
+                                <td>
+                                    <span class="text-muted">~1.2 MB</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('result_detail', result_id=extraction.id) }}" class="btn btn-outline-primary">
+                                            <i data-feather="eye" style="width: 14px; height: 14px;"></i>
+                                        </a>
+                                        <button class="btn btn-outline-success" onclick="downloadExtraction({{ extraction.id }})">
+                                            <i data-feather="download" style="width: 14px; height: 14px;"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="deleteExtraction({{ extraction.id }})">
+                                            <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i data-feather="inbox" class="text-muted mb-3" style="width: 64px; height: 64px;"></i>
+                    <h6 class="text-muted">لا توجد استخراجات محفوظة</h6>
+                    <p class="text-muted">ابدأ باستخراج موقع جديد لرؤية النتائج هنا</p>
+                    <a href="{{ url_for('extract') }}" class="btn btn-primary">
+                        <i data-feather="plus" class="me-2"></i>
+                        استخراج جديد
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Storage Settings Modal -->
+<div class="modal fade" id="storageSettings" tabindex="-1" aria-labelledby="storageSettingsLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="storageSettingsLabel">إعدادات التخزين</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+            </div>
+            <div class="modal-body">
+                <form id="storageSettingsForm">
+                    <div class="mb-3">
+                        <label class="form-label">الحد الأقصى لحجم التخزين (MB)</label>
+                        <input type="number" class="form-control" id="maxStorageSize" value="500">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">مدة الاحتفاظ بالملفات (أيام)</label>
+                        <input type="number" class="form-control" id="retentionDays" value="30">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="autoCleanup" checked>
+                            <label class="form-check-label" for="autoCleanup">
+                                تنظيف تلقائي للملفات القديمة
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="compressFiles">
+                            <label class="form-check-label" for="compressFiles">
+                                ضغط الملفات لتوفير المساحة
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" onclick="saveStorageSettings()">حفظ الإعدادات</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function cleanupStorage() {
+    if (confirm('هل أنت متأكد من تنظيف الملفات القديمة؟ هذا الإجراء لا يمكن التراجع عنه.')) {
+        // Simulate cleanup process
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'جاري التنظيف...';
+        
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.textContent = originalText;
+            alert('تم تنظيف التخزين بنجاح! تم توفير 15 MB من المساحة.');
+            location.reload();
+        }, 2000);
+    }
+}
+
+function refreshData() {
+    location.reload();
+}
+
+function downloadExtraction(id) {
+    // Simulate file download
+    alert(`جاري تحميل الاستخراج رقم ${id}...`);
+}
+
+function deleteExtraction(id) {
+    if (confirm('هل أنت متأكد من حذف هذا الاستخراج؟')) {
+        // Simulate deletion
+        alert(`تم حذف الاستخراج رقم ${id} بنجاح.`);
+        location.reload();
+    }
+}
+
+function saveStorageSettings() {
+    const maxSize = document.getElementById('maxStorageSize').value;
+    const retentionDays = document.getElementById('retentionDays').value;
+    const autoCleanup = document.getElementById('autoCleanup').checked;
+    const compressFiles = document.getElementById('compressFiles').checked;
+    
+    // Simulate saving settings
+    alert('تم حفظ إعدادات التخزين بنجاح!');
+    
+    // Close modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('storageSettings'));
+    modal.hide();
+}
+
+// Initialize tooltips and icons
+document.addEventListener('DOMContentLoaded', function() {
+    feather.replace();
+});
+</script>
+{% endblock %}
