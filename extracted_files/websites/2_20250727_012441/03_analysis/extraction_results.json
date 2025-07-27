@@ -1,0 +1,34 @@
+{
+  "domain": "ak.sv",
+  "title": "Ø§ÙÙØ§Ù | ÙÙÙØ¹ Ø§ÙØªØ­ÙÙÙ Ù Ø§ÙÙØ´Ø§ÙØ¯Ø© Ø§ÙØ¹Ø±Ø¨Ù Ø§ÙØ§ÙÙ",
+  "description": "Ø´ÙØ³ Ø§ÙÙÙØ§ÙØ¹Ø Ø§ÙÙÙÙØ¹ Ø§ÙØ¹Ø±Ø¨Ù Ø§ÙØ§ÙÙ ÙØªØ­ÙÙÙ Ù ÙØ´Ø§ÙØ¯Ø© Ø§ÙØ§ÙÙØ§Ù, Ø§ÙÙØ³ÙØ³ÙØ§Øª, Ø§ÙØ§ÙØ¹Ø§Ø¨, Ø§ÙØ¨Ø±Ø§ÙØ¬ Ù Ø§ÙØªØ·Ø¨ÙÙØ§Øª, Ø§ÙØªÙÙØ²ÙÙÙ, Ø§ÙÙØ³Ø±Ø­ÙØ§Øª, Ø§ÙÙØµØ§Ø±Ø¹Ø©, Ø§ÙØ±ÙØ§Ø¶Ø©, ØªØ­ÙÙÙ Ù ÙØ´Ø§ÙØ¯Ø© ÙØ¨Ø§Ø´Ø±Ø©",
+  "keywords": "Ø£ÙÙØ§Ù,ÙØ³ÙØ³ÙØ§Øª,Ø­ÙÙØ§Øª,ÙØµØ§Ø±Ø¹Ø©,Ø¨Ø±Ø§ÙØ¬,Ø§ÙØ¹Ø§Ø¨,ÙØ´Ø§ÙØ¯Ø© ÙØ¨Ø§Ø´Ø±Ø©,ØªØ­ÙÙÙ ÙØ¨Ø§Ø´Ø±,ÙØ´Ø§ÙØ¯Ø©,ØªØ­ÙÙÙ,ÙØªÙÙÙØ³,Ø§ÙÙ ÙØ§ÙÙ,ÙØ¨Ø§Ø´Ø±,ÙØ¯Ø¨ÙØ¬,ÙØªØ±Ø¬Ù,Ø±ÙØ¶Ø§Ù,ÙØµØ±Ù,Ø®ÙÙØ¬Ù,Ø³ÙØ±Ù,Ø§Ù Ø§Ø³ Ø§Ù,Ø§Ù Ø¨Ù Ø³Ù,ØªØ±ÙÙ,Ø¨Ø±Ø§ÙØ¬ ØªÙÙØ²ÙÙÙÙØ©,ØªÙÙ Ø´Ù,ØªØ¨Ø¹ ÙÙÙ,akwam,akoam",
+  "content_length": 19616,
+  "status_code": 200,
+  "content_type": "text/html",
+  "server": "cloudflare",
+  "links_count": 38,
+  "images_count": 3,
+  "scripts_count": 8,
+  "stylesheets_count": 4,
+  "technologies": [
+    "jQuery",
+    "Google Analytics"
+  ],
+  "performance": {
+    "response_time": 0.151975,
+    "content_size": 19616,
+    "compression": true,
+    "cache_control": "max-age=0, no-cache, no-store, must-revalidate",
+    "expires": "Wed, 11 Jan 1984 05:00:00 GMT",
+    "etag": "",
+    "last_modified": ""
+  },
+  "extraction_id": 2,
+  "url": "https://ak.sv/",
+  "extraction_type": "ai_powered",
+  "success": true,
+  "duration": 0.17,
+  "timestamp": "2025-07-27T01:24:41.741631",
+  "extractor": "UnifiedWebsiteExtractor"
+}

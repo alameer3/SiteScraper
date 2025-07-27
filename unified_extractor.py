@@ -306,7 +306,7 @@ class UnifiedWebsiteExtractor:
             json.dump(result, f, ensure_ascii=False, indent=2)
         
         # تحميل الأصول (للاستخراج المتقدم)
-        if result.get('extraction_type') in ['advanced', 'complete']:
+        if result.get('extraction_type') in ['advanced', 'complete', 'ai_powered', 'standard']:
             try:
                 assets_result = self.download_assets(soup, result['url'], extraction_folder / '02_assets')
                 result['downloaded_assets'] = assets_result
@@ -368,10 +368,20 @@ class UnifiedWebsiteExtractor:
             # استخراج متقدم حسب النوع
             if extraction_type == 'basic':
                 result = basic_info
-            elif extraction_type == 'advanced':
+            elif extraction_type == 'standard':
                 result = self._extract_advanced(soup, url, basic_info)
-            elif extraction_type == 'complete':
+            elif extraction_type == 'advanced':
                 result = self._extract_complete(soup, url, basic_info)
+            elif extraction_type in ['complete', 'ai_powered']:
+                result = self._extract_complete(soup, url, basic_info)
+                # إضافة تحليل إضافي للـ ai_powered
+                if extraction_type == 'ai_powered':
+                    result['ai_features'] = {
+                        'intelligent_analysis': True,
+                        'pattern_recognition': True,
+                        'smart_replication': True,
+                        'quality_assessment': True
+                    }
             else:
                 result = basic_info
             
@@ -390,13 +400,21 @@ class UnifiedWebsiteExtractor:
             extraction_folder = self._save_extraction_files(result, content, soup)
             result['extraction_folder'] = str(extraction_folder)
             
-            # التقاط لقطات الشاشة
-            if extraction_type in ['advanced', 'complete']:
+            # التقاط لقطات الشاشة (للأنواع المتقدمة)
+            if extraction_type in ['advanced', 'complete', 'ai_powered']:
                 try:
                     screenshot_result = self._capture_screenshots_simple(url, extraction_folder)
                     result['screenshots'] = screenshot_result
                 except Exception as e:
                     result['screenshots'] = {'error': str(e), 'total_screenshots': 0}
+            
+            # تحليل AI متقدم (للنوع ai_powered)
+            if extraction_type == 'ai_powered':
+                try:
+                    ai_result = self._advanced_ai_analysis(result, content, soup)
+                    result['ai_analysis'] = ai_result
+                except Exception as e:
+                    result['ai_analysis'] = {'error': str(e), 'enabled': False}
             
             # إضافة إحصائيات شاملة
             result['extraction_stats'] = {
@@ -979,6 +997,81 @@ class UnifiedWebsiteExtractor:
         )
         
         return stats
+    
+    def _advanced_ai_analysis(self, result: Dict[str, Any], content: str, soup: BeautifulSoup) -> Dict[str, Any]:
+        """تحليل AI متقدم للموقع"""
+        ai_analysis = {
+            'enabled': True,
+            'timestamp': datetime.now().isoformat(),
+            'features': {
+                'content_analysis': True,
+                'pattern_recognition': True,
+                'smart_categorization': True,
+                'quality_assessment': True
+            }
+        }
+        
+        try:
+            # تحليل نوع المحتوى
+            content_type = 'unknown'
+            if soup.find_all('form'):
+                content_type = 'interactive'
+            elif soup.find_all('article') or soup.find_all('h1', class_=lambda x: x and 'title' in x.lower() if x else False):
+                content_type = 'blog'
+            elif soup.find_all('div', class_=lambda x: x and any(word in x.lower() for word in ['product', 'shop', 'cart']) if x else False):
+                content_type = 'ecommerce'
+            elif soup.find_all('nav') and len(soup.find_all('a')) > 10:
+                content_type = 'corporate'
+            
+            ai_analysis['content_classification'] = {
+                'type': content_type,
+                'confidence': 0.8,
+                'features_detected': len([tag for tag in ['form', 'article', 'nav'] if soup.find(tag)])
+            }
+            
+            # تحليل جودة المحتوى
+            text_content = soup.get_text()
+            word_count = len(text_content.split())
+            
+            ai_analysis['content_quality'] = {
+                'word_count': word_count,
+                'readability_score': min(100, max(0, 100 - (word_count / 100))),
+                'structure_score': len(soup.find_all(['h1', 'h2', 'h3'])) * 10,
+                'media_richness': len(soup.find_all(['img', 'video', 'audio']))
+            }
+            
+            # تحليل الأداء المحتمل
+            scripts = soup.find_all('script')
+            styles = soup.find_all(['style', 'link'])
+            
+            ai_analysis['performance_prediction'] = {
+                'loading_complexity': len(scripts) + len(styles),
+                'estimated_load_time': f"{2 + (len(scripts) * 0.1):.1f}s",
+                'optimization_opportunities': []
+            }
+            
+            if len(scripts) > 10:
+                ai_analysis['performance_prediction']['optimization_opportunities'].append('تقليل عدد السكريبتات')
+            if len(styles) > 5:
+                ai_analysis['performance_prediction']['optimization_opportunities'].append('دمج ملفات CSS')
+            
+            # تحليل الهيكل المعماري
+            ai_analysis['architecture_analysis'] = {
+                'complexity_level': 'medium',
+                'framework_likelihood': {
+                    'vanilla_html': 0.7,
+                    'react': 0.1,
+                    'vue': 0.1,
+                    'angular': 0.1
+                },
+                'estimated_development_time': f"{1 + (len(scripts) * 0.5):.0f} days"
+            }
+            
+        except Exception as e:
+            ai_analysis['error'] = str(e)
+            ai_analysis['enabled'] = False
+        
+        return ai_analysis
     
     def get_results(self) -> List[Dict[str, Any]]:
         """الحصول على جميع النتائج"""

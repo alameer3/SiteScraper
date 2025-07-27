@@ -1,0 +1,627 @@
+{
+  "domain": "github.com",
+  "title": "GitHub · Build and ship software on a single, collaborative platform · GitHub",
+  "description": "Join the world's most widely adopted, AI-powered developer platform where millions of developers, businesses, and the largest open source community build software that advances humanity.",
+  "keywords": "",
+  "content_length": 546652,
+  "status_code": 200,
+  "content_type": "text/html; charset=utf-8",
+  "server": "github.com",
+  "links_count": 132,
+  "images_count": 24,
+  "scripts_count": 61,
+  "stylesheets_count": 29,
+  "technologies": [
+    "React"
+  ],
+  "performance": {
+    "response_time": 0.049667,
+    "content_size": 546652,
+    "compression": true,
+    "cache_control": "max-age=0, private, must-revalidate",
+    "expires": "",
+    "etag": "W/\"8cbf4ab9867dbfdb75432634e6ac0581\"",
+    "last_modified": ""
+  },
+  "links_analysis": {
+    "total_links": 132,
+    "internal_links": [
+      {
+        "href": "https://github.com#start-of-content",
+        "text": "Skip to content"
+      },
+      {
+        "href": "https://github.com/",
+        "text": ""
+      },
+      {
+        "href": "https://github.com/login",
+        "text": "Sign in"
+      },
+      {
+        "href": "https://github.com/features/copilot",
+        "text": "GitHub Copilot\n          \n        Write better code with AI"
+      },
+      {
+        "href": "https://github.com/features/spark",
+        "text": "GitHub Spark\n              \n                New\n              \n\n        Build and deploy intelligent apps"
+      },
+      {
+        "href": "https://github.com/features/models",
+        "text": "GitHub Models\n              \n                New\n              \n\n        Manage and compare prompts"
+      },
+      {
+        "href": "https://github.com/security/advanced-security",
+        "text": "GitHub Advanced Security\n          \n        Find and fix vulnerabilities"
+      },
+      {
+        "href": "https://github.com/features/actions",
+        "text": "Actions\n          \n        Automate any workflow"
+      },
+      {
+        "href": "https://github.com/features/codespaces",
+        "text": "Codespaces\n          \n        Instant dev environments"
+      },
+      {
+        "href": "https://github.com/features/issues",
+        "text": "Issues\n          \n        Plan and track work"
+      },
+      {
+        "href": "https://github.com/features/code-review",
+        "text": "Code Review\n          \n        Manage code changes"
+      },
+      {
+        "href": "https://github.com/features/discussions",
+        "text": "Discussions\n          \n        Collaborate outside of code"
+      },
+      {
+        "href": "https://github.com/features/code-search",
+        "text": "Code Search\n          \n        Find more, search less"
+      },
+      {
+        "href": "https://github.com/why-github",
+        "text": "Why GitHub"
+      },
+      {
+        "href": "https://github.com/features",
+        "text": "All features"
+      },
+      {
+        "href": "https://github.com/enterprise",
+        "text": "Enterprises"
+      },
+      {
+        "href": "https://github.com/team",
+        "text": "Small and medium teams"
+      },
+      {
+        "href": "https://github.com/enterprise/startups",
+        "text": "Startups"
+      },
+      {
+        "href": "https://github.com/solutions/industry/nonprofits",
+        "text": "Nonprofits"
+      },
+      {
+        "href": "https://github.com/solutions/use-case/devsecops",
+        "text": "DevSecOps"
+      },
+      {
+        "href": "https://github.com/solutions/use-case/devops",
+        "text": "DevOps"
+      },
+      {
+        "href": "https://github.com/solutions/use-case/ci-cd",
+        "text": "CI/CD"
+      },
+      {
+        "href": "https://github.com/solutions/use-case",
+        "text": "View all use cases"
+      },
+      {
+        "href": "https://github.com/solutions/industry/healthcare",
+        "text": "Healthcare"
+      },
+      {
+        "href": "https://github.com/solutions/industry/financial-services",
+        "text": "Financial services"
+      },
+      {
+        "href": "https://github.com/solutions/industry/manufacturing",
+        "text": "Manufacturing"
+      },
+      {
+        "href": "https://github.com/solutions/industry/government",
+        "text": "Government"
+      },
+      {
+        "href": "https://github.com/solutions/industry",
+        "text": "View all industries"
+      },
+      {
+        "href": "https://github.com/solutions",
+        "text": "View all solutions"
+      },
+      {
+        "href": "https://github.com/resources/articles/ai",
+        "text": "AI"
+      },
+      {
+        "href": "https://github.com/resources/articles/devops",
+        "text": "DevOps"
+      },
+      {
+        "href": "https://github.com/resources/articles/security",
+        "text": "Security"
+      },
+      {
+        "href": "https://github.com/resources/articles/software-development",
+        "text": "Software Development"
+      },
+      {
+        "href": "https://github.com/resources/articles",
+        "text": "View all"
+      },
+      {
+        "href": "https://github.com/resources/whitepapers",
+        "text": "Ebooks & Whitepapers"
+      },
+      {
+        "href": "https://github.com/customer-stories",
+        "text": "Customer Stories"
+      },
+      {
+        "href": "https://github.com/solutions/executive-insights",
+        "text": "Executive Insights"
+      },
+      {
+        "href": "https://github.com/sponsors",
+        "text": "GitHub Sponsors\n          \n        Fund open source developers"
+      },
+      {
+        "href": "https://github.com/readme",
+        "text": "The ReadME Project\n          \n        GitHub community articles"
+      },
+      {
+        "href": "https://github.com/topics",
+        "text": "Topics"
+      },
+      {
+        "href": "https://github.com/trending",
+        "text": "Trending"
+      },
+      {
+        "href": "https://github.com/collections",
+        "text": "Collections"
+      },
+      {
+        "href": "https://github.com/enterprise",
+        "text": "Enterprise platform\n          \n        AI-powered developer platform"
+      },
+      {
+        "href": "https://github.com/security/advanced-security",
+        "text": "GitHub Advanced Security\n          \n        Enterprise-grade security features"
+      },
+      {
+        "href": "https://github.com/features/copilot/copilot-business",
+        "text": "Copilot for business\n          \n        Enterprise-grade AI features"
+      },
+      {
+        "href": "https://github.com/premium-support",
+        "text": "Premium Support\n          \n        Enterprise-grade 24/7 support"
+      },
+      {
+        "href": "https://github.com/pricing",
+        "text": "Pricing"
+      },
+      {
+        "href": "https://github.com/login",
+        "text": "Sign in"
+      },
+      {
+        "href": "https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home",
+        "text": "Sign up"
+      },
+      {
+        "href": "https://github.com",
+        "text": "Reload"
+      }
+    ],
+    "external_links": [
+      {
+        "href": "https://docs.github.com",
+        "text": "Documentation"
+      },
+      {
+        "href": "https://skills.github.com",
+        "text": "GitHub Skills"
+      },
+      {
+        "href": "https://github.blog",
+        "text": "Blog"
+      },
+      {
+        "href": "https://resources.github.com/learn/pathways",
+        "text": "Learning Pathways"
+      },
+      {
+        "href": "https://resources.github.com",
+        "text": "Events & Webinars"
+      },
+      {
+        "href": "https://partner.github.com",
+        "text": "Partners"
+      },
+      {
+        "href": "https://docs.github.com/search-github/github-code-search/understanding-github-code-search-syntax",
+        "text": "Search syntax tips"
+      },
+      {
+        "href": "https://docs.github.com/search-github/github-code-search/understanding-github-code-search-syntax",
+        "text": "documentation"
+      },
+      {
+        "href": "https://www.gartner.com/doc/reprints?id=1-2IKO4MPE&ct=240819&st=sb",
+        "text": "Read industry report"
+      },
+      {
+        "href": "https://docs.github.com/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning-with-codeql#about-codeql",
+        "text": "all supported languages with Copilot Autofix"
+      },
+      {
+        "href": "https://resources.github.com/newsletter/",
+        "text": "Subscribe"
+      },
+      {
+        "href": "https://resources.github.com",
+        "text": "Resources"
+      },
+      {
+        "href": "https://resources.github.com/devops/tools/compare",
+        "text": "Compare GitHub"
+      },
+      {
+        "href": "https://docs.github.com/get-started/exploring-integrations/about-building-integrations",
+        "text": "Developer API"
+      },
+      {
+        "href": "https://partner.github.com",
+        "text": "Partners"
+      },
+      {
+        "href": "https://cli.github.com",
+        "text": "GitHub CLI"
+      },
+      {
+        "href": "https://desktop.github.com",
+        "text": "GitHub Desktop"
+      },
+      {
+        "href": "https://docs.github.com",
+        "text": "Docs"
+      },
+      {
+        "href": "https://github.community",
+        "text": "Community Forum"
+      },
+      {
+        "href": "https://services.github.com",
+        "text": "Professional Services"
+      },
+      {
+        "href": "https://skills.github.com",
+        "text": "Skills"
+      },
+      {
+        "href": "https://www.githubstatus.com",
+        "text": "Status"
+      },
+      {
+        "href": "https://support.github.com?tags=dotcom-footer",
+        "text": "Contact GitHub"
+      },
+      {
+        "href": "https://github.blog",
+        "text": "Blog"
+      },
+      {
+        "href": "https://github.careers",
+        "text": "Careers"
+      },
+      {
+        "href": "https://socialimpact.github.com",
+        "text": "Social Impact"
+      },
+      {
+        "href": "https://shop.github.com",
+        "text": "Shop"
+      },
+      {
+        "href": "https://docs.github.com/site-policy/github-terms/github-terms-of-service",
+        "text": "Terms"
+      },
+      {
+        "href": "https://docs.github.com/site-policy/privacy-policies/github-privacy-statement",
+        "text": "Privacy"
+      },
+      {
+        "href": "https://www.linkedin.com/company/github",
+        "text": "GitHub on LinkedIn"
+      },
+      {
+        "href": "https://www.instagram.com/github",
+        "text": "Instagram\nGitHub on Instagram"
+      },
+      {
+        "href": "https://www.youtube.com/github",
+        "text": "GitHub on YouTube"
+      },
+      {
+        "href": "https://x.com/github",
+        "text": "GitHub on X"
+      },
+      {
+        "href": "https://www.tiktok.com/@github",
+        "text": "TikTok\nGitHub on TikTok"
+      },
+      {
+        "href": "https://www.twitch.tv/github",
+        "text": "Twitch\nGitHub on Twitch"
+      }
+    ],
+    "email_links": [],
+    "internal_count": 97,
+    "external_count": 35,
+    "email_count": 0
+  },
+  "images_analysis": {
+    "total_images": 24,
+    "images": [
+      {
+        "src": "https://github.githubassets.com/assets/particles-de1dd20f3008.png",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "particles"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/g1XhuDG7foMyNWIEIpGJj/b40a790b854d0803704deb7905b1bd82/logo-duolingo-14477f9e54a6.svg",
+        "alt": "Duolingo",
+        "width": "",
+        "height": "32",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/6Qr8Snm4JceoMFRJhapgFa/802ded1d2c486a9d0a4c073d9f8f38f4/logo-gartner-aa8c2e452b64.svg",
+        "alt": "Gartner",
+        "width": "",
+        "height": "32",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/1Dt1ncaR6ZM4dQvknFzfBI/e5c2092be5bd53881622eced4fd37564/accordion-1-ce487d44c0bf.webp",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK",
+          "lp-SectionTemplate-accordionVisual-image--current"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/1uXZYDy7dMcH9QwxuAU06F/1cb167cc60d725b8cf7089faf9a4ed06/accordion-2-730955545f07.webp",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/3xzVZaJhqo3B62R8NeHjX2/e37c81e4f26e9dac2aff1f23a0243087/accordion-3-52ca331d22ea.webp",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/3cgNgdKFqflI27vyDh4Gpa/c459dc8690133e7663b8db2626cf2045/accordion-4-a26744b70ff7.webp",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK"
+        ]
+      },
+      {
+        "src": "https://github.githubassets.com/assets/particles-de1dd20f3008.png",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "particles"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/5mzhSO4avmXBwkFsMzgXkW/91991e6258f14f54d23840b6c13c3013/hero-64ecd484397f.webp",
+        "alt": "Copilot Autofix identifies vulnerable code and provides an explanation, together with a secure code suggestion to remediate the vulnerability.",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK",
+          "lp-SectionHero-visual-media",
+          "lp-SectionHero-visual-media--current"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/6WnLu9nlnemjCltZkd8lCi/b18034be25552e118a36f6617e1f84df/pillar-1-dd667a921f55.webp",
+        "alt": "A security campaign screen displays the campaign’s progress bar with 97% completed of 701 alerts. A total of 23 alerts are left with 13 in progress, and the campaign started 20 days ago. The status below shows that there are 7 days left in the campaign with a due date of November 15, 2024.",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK",
+          "Security-gridImage"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/1o2Eid4RQteCr6iZ7wVauW/3c04a760442c81036d98e70c0c986a8b/pillar-2-ff69e872920a.webp",
+        "alt": "List of dependencies defined in a requirements .txt file.",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK",
+          "Security-gridImage"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/3WaMDk5JuZzhaKfpRgibKz/c179c5841373ec1fd37c839bdb24a7b4/pillar-3-0a063e2daae2.webp",
+        "alt": "GitHub push protection confirms and displays an active secret, and blocks the push.",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK",
+          "Security-gridImage"
+        ]
+      },
+      {
+        "src": "https://github.githubassets.com/assets/particles-de1dd20f3008.png",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "particles"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/3ip0mnsbUMonRTsbnnIkOh/a940b7a975a801c8829c113d9799873d/hero-961322485af6.webp",
+        "alt": "A project management dashboard showing tasks for the ‘OctoArcade Invaders’ project, with tasks grouped under project phase categories like ‘Prototype,’ ‘Beta,’ and ‘Launch’ in a table layout. One of the columns displays sub-issue progress bars with percentages for each issue.",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK",
+          "lp-SectionHero-visual-media",
+          "lp-SectionHero-visual-media--current"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/5suLHnkyPm3laA8qENQmMZ/6b267a9e449ae94968dd85c8f96fb64e/accordion-1-38ad6b6d1b20.webp",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK",
+          "lp-SectionTemplate-accordionVisual-image--current"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/20DkYnWbPsbb8mdDnIs32f/a43850b7e0e8e45ec87761d1ba91e19b/accordion-2-c0a62cfc31a1.webp",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/39mo3IRGhK995HzuwZANhY/cabfd393551e0d2aae92bc105121ca9c/accordion-3-5d5d222f1830.webp",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/7GOAeyecyEQqY12hHwvwXg/69877012458c9d42916b2a18e0e36a37/accordion-4-7abff9233556.webp",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/5m9WKL1QJeiDrnxuL9pBux/f7336610c32283d86c71235c0d54ee16/figma.webp",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK"
+        ]
+      },
+      {
+        "src": "https://images.ctfassets.net/8aevphvgewt8/2xNJHobFMxrvAwj534sNMo/753fcd3beb5fd223d1d2ed918b868a5f/figma.svg",
+        "alt": "",
+        "width": "",
+        "height": "",
+        "class": [
+          "Primer_Brand__Image-module__Image___FgVuK",
+          "lp-CustomerStories-logo"
+        ]
+      }
+    ],
+    "lazy_loading": 24
+  },
+  "seo_analysis": {
+    "meta_tags": {
+      "route-pattern": "/",
+      "route-controller": "dashboard",
+      "route-action": "index",
+      "fetch-nonce": "v2:a2676edb-f562-3b47-4b8d-3fecdbac5835",
+      "current-catalog-service-hash": "40dc28bd654b20f337468a532ff456ed5863889cfbb4e982b793597321d48d3f",
+      "request-id": "BC44:305798:17C60C:1D0315:68858077",
+      "html-safe-nonce": "2361fdf6aeefe26b52ac85d6500f9313b26bb45b8afcec968702974a084a1873",
+      "visitor-payload": "eyJyZWZlcnJlciI6IiIsInJlcXVlc3RfaWQiOiJCQzQ0OjMwNTc5ODoxN0M2MEM6MUQwMzE1OjY4ODU4MDc3IiwidmlzaXRvcl9pZCI6IjEyNzEzNzQ0NjI0MTExNzgxMDMiLCJyZWdpb25fZWRnZSI6ImlhZCIsInJlZ2lvbl9yZW5kZXIiOiJpYWQifQ==",
+      "visitor-hmac": "7f917a38bf6dc63a2596794ba7d7dc7e3638a69cdfa53f4f854c204e14f151d1",
+      "page-subject": "GitHub",
+      "github-keyboard-shortcuts": "dashboards,copilot",
+      "google-site-verification": "Apib7-x98H0j5cPqHWwSMm6dNU4GmODRoqxLiDzdx9I",
+      "octolytics-url": "https://collector.github.com/github/collect",
+      "viewport": "width=device-width",
+      "description": "Join the world's most widely adopted, AI-powered developer platform where millions of developers, businesses, and the largest open source community build software that advances humanity.",
+      "fb:app_id": "1401488693436528",
+      "apple-itunes-app": "app-id=1477376905, app-argument=https://github.com/",
+      "twitter:image": "https://images.ctfassets.net/8aevphvgewt8/4UxhHBs2XnuyZ4lYQ83juV/b61529b087aeb4a318bda311edf4c345/home24.jpg",
+      "twitter:site": "@github",
+      "twitter:card": "summary_large_image",
+      "twitter:title": "GitHub · Build and ship software on a single, collaborative platform",
+      "twitter:description": "Join the world's most widely adopted, AI-powered developer platform where millions of developers, businesses, and the largest open source community build software that advances humanity.",
+      "og:image": "https://images.ctfassets.net/8aevphvgewt8/4UxhHBs2XnuyZ4lYQ83juV/b61529b087aeb4a318bda311edf4c345/home24.jpg",
+      "og:image:alt": "Join the world's most widely adopted, AI-powered developer platform where millions of developers, businesses, and the largest open source community build software that advances humanity.",
+      "og:site_name": "GitHub",
+      "og:type": "object",
+      "og:title": "GitHub · Build and ship software on a single, collaborative platform",
+      "og:url": "https://github.com/",
+      "og:description": "Join the world's most widely adopted, AI-powered developer platform where millions of developers, businesses, and the largest open source community build software that advances humanity.",
+      "hostname": "github.com",
+      "expected-hostname": "github.com",
+      "turbo-cache-control": "no-cache",
+      "is_logged_out_page": "true",
+      "octolytics-page-type": "marketing",
+      "octolytics-revenue-play": "Platform",
+      "turbo-body-classes": "logged-out env-production page-responsive header-overlay header-overlay-fixed js-header-overlay-fixed",
+      "browser-stats-url": "https://api.github.com/_private/browser/stats",
+      "browser-errors-url": "https://api.github.com/_private/browser/errors",
+      "release": "4165f2995f318a2884d6986a1688bae337d08322",
+      "ui-target": "full",
+      "theme-color": "#1e2327",
+      "color-scheme": "light dark"
+    },
+    "headings_structure": {
+      "h1": 4,
+      "h2": 10,
+      "h3": 16,
+      "h4": 0,
+      "h5": 0,
+      "h6": 0
+    },
+    "schema_markup": [],
+    "canonical_url": 

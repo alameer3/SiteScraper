@@ -1,0 +1,37 @@
+{
+  "url": "https://example.com",
+  "method": "html_preview_and_thumbnail",
+  "preview_result": {
+    "url": "https://example.com",
+    "method": "html_thumbnail",
+    "status_code": 200,
+    "content_type": "text/html",
+    "content_size": 1256,
+    "server": null,
+    "preview_file": "html_preview.html",
+    "timestamp": "2025-07-27T01:25:57.522098",
+    "note": "تم إنشاء معاينة HTML تفاعلية للموقع",
+    "features": {
+      "responsive_preview": true,
+      "multiple_devices": true,
+      "interactive_frames": true,
+      "real_time_loading": true
+    },
+    "devices_supported": [
+      "desktop",
+      "tablet",
+      "mobile"
+    ],
+    "thumbnail_file": "website_thumbnail.html",
+    "images_found": 0,
+    "title": "Example Domain"
+  },
+  "total_screenshots": 2,
+  "timestamp": "2025-07-27T01:25:57.524266",
+  "note": "تم إنشاء معاينة HTML تفاعلية و thumbnail للموقع",
+  "files_created": [
+    "html_preview.html",
+    "website_thumbnail.html",
+    "screenshot_report.json"
+  ]
+}

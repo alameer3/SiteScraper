@@ -713,35 +713,6 @@
     </script>
 </body>
 </html>
-            feather.replace();
-            
-            // Add selected class to clicked mode
-            if (element) {
-                element.classList.add('selected');
-            } else {
-                // Fallback: find the element by mode
-                const modeElement = document.querySelector(`[onclick*="${mode}"]`);
-                if (modeElement) {
-                    modeElement.classList.add('selected');
-                }
-            }
-            
-            // Check the radio button
-            document.getElementById(mode).checked = true;
-            
-            // Update AI analysis checkbox based on mode
-            const aiCheckbox = document.getElementById('aiAnalysis');
-            if (mode === 'ai_powered') {
-                aiCheckbox.checked = true;
-                aiCheckbox.disabled = true;
-            } else {
-                aiCheckbox.disabled = false;
-            }
-        }
-        
-        // Form submission
-        document.getElementById('extractionForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
             
             const formData = new FormData(this);
             const config = {
