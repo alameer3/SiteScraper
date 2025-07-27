@@ -3,6 +3,9 @@ from datetime import datetime
 import json
 
 class ExtractionResult(db.Model):
+    __tablename__ = 'extraction_result'
+    __table_args__ = {'extend_existing': True}
+    
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(500), nullable=False)
     title = db.Column(db.String(200))
@@ -10,7 +13,6 @@ class ExtractionResult(db.Model):
     status = db.Column(db.String(20), default='completed')
     result_data = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    completed_at = db.Column(db.DateTime)
     
     def get_data(self):
         """الحصول على البيانات المحفوظة"""

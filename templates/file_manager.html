@@ -133,10 +133,10 @@
                                         <a href="{{ url_for('result_detail', result_id=extraction.id) }}" class="btn btn-outline-primary">
                                             <i data-feather="eye" style="width: 14px; height: 14px;"></i>
                                         </a>
-                                        <button class="btn btn-outline-success" onclick="downloadExtraction({{ extraction.id }})">
+                                        <button class="btn btn-outline-success" onclick="downloadExtraction('{{ extraction.id }}')">
                                             <i data-feather="download" style="width: 14px; height: 14px;"></i>
                                         </button>
-                                        <button class="btn btn-outline-danger" onclick="deleteExtraction({{ extraction.id }})">
+                                        <button class="btn btn-outline-danger" onclick="deleteExtraction('{{ extraction.id }}')">
                                             <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
                                         </button>
                                     </div>
