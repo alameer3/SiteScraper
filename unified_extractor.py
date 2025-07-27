@@ -26,6 +26,20 @@ from typing import Dict, List, Set, Optional, Any, Union, Tuple
 # تعطيل تحذيرات SSL للاختبار
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# استيراد الأدوات المتقدمة من tools_pro
+try:
+    from tools_pro.website_cloner_pro import WebsiteClonerPro
+    from tools_pro.extractors.spider_engine import SpiderEngine, SpiderConfig
+    from tools_pro.extractors.deep_extraction_engine import DeepExtractionEngine, ExtractionConfig
+    from tools_pro.ai.advanced_ai_engine import AdvancedAIEngine
+    from screenshot_engine import ScreenshotEngine
+    from cms_detector import CMSDetector
+    from sitemap_generator import SitemapGenerator
+    ADVANCED_TOOLS_AVAILABLE = True
+except ImportError as e:
+    print(f"تحذير: لا يمكن استيراد الأدوات المتقدمة: {e}")
+    ADVANCED_TOOLS_AVAILABLE = False
+
 class UnifiedWebsiteExtractor:
     """مستخرج المواقع الموحد مع جميع الوظائف المتقدمة"""
     
@@ -34,6 +48,22 @@ class UnifiedWebsiteExtractor:
         self.extraction_id = 0
         self.session = self._create_session()
         self.base_dir = self._setup_extraction_directories()
+        
+        # تهيئة الأدوات المتقدمة
+        if ADVANCED_TOOLS_AVAILABLE:
+            self.cloner_pro = WebsiteClonerPro()
+            self.spider_engine = None  # سيتم تهيئته عند الحاجة
+            self.ai_engine = AdvancedAIEngine()
+            self.screenshot_engine = ScreenshotEngine()
+            self.cms_detector = CMSDetector()
+            self.sitemap_generator = SitemapGenerator()
+        else:
+            self.cloner_pro = None
+            self.spider_engine = None
+            self.ai_engine = None
+            self.screenshot_engine = None
+            self.cms_detector = None
+            self.sitemap_generator = None
         
     def _create_session(self):
         """إنشاء جلسة HTTP محسنة"""
@@ -98,30 +128,30 @@ class UnifiedWebsiteExtractor:
         try:
             # تحميل الصور
             for img in soup.find_all('img', src=True)[:10]:  # أول 10 صور
-                src = img.get('src')
-                if src and not src.startswith('data:'):
+                src = img.get('src') if hasattr(img, 'get') else None
+                if src and str(src) and not str(src).startswith('data:'):
                     try:
-                        img_url = urljoin(base_url, src)
+                        img_url = urljoin(base_url, str(src))
                         response = self.session.get(img_url, timeout=10)
                         if response.status_code == 200:
-                            filename = Path(src).name or 'image.jpg'
+                            filename = Path(str(src)).name or 'image.jpg'
                             filepath = assets_folder / 'images' / filename
                             filepath.parent.mkdir(exist_ok=True)
                             with open(filepath, 'wb') as f:
                                 f.write(response.content)
                             downloaded_assets['images'].append(str(filepath))
                     except Exception:
-                        downloaded_assets['failed'].append(src)
+                        downloaded_assets['failed'].append(str(src))
             
             # تحميل CSS files
             for link in soup.find_all('link', rel='stylesheet')[:5]:  # أول 5 ملفات CSS
-                href = link.get('href')
-                if href and not href.startswith('data:'):
+                href = link.get('href') if hasattr(link, 'get') else None
+                if href and str(href) and not str(href).startswith('data:'):
                     try:
-                        css_url = urljoin(base_url, href)
+                        css_url = urljoin(base_url, str(href))
                         response = self.session.get(css_url, timeout=10)
                         if response.status_code == 200:
-                            filename = Path(href).name or 'style.css'
+                            filename = Path(str(href)).name or 'style.css'
                             filepath = assets_folder / 'css' / filename
                             filepath.parent.mkdir(exist_ok=True)
                             with open(filepath, 'w', encoding='utf-8') as f:
@@ -132,20 +162,20 @@ class UnifiedWebsiteExtractor:
             
             # تحميل JS files
             for script in soup.find_all('script', src=True)[:5]:  # أول 5 سكريبتات
-                src = script.get('src')
-                if src and not src.startswith('data:'):
+                src = script.get('src') if hasattr(script, 'get') else None
+                if src and str(src) and not str(src).startswith('data:'):
                     try:
-                        js_url = urljoin(base_url, src)
+                        js_url = urljoin(base_url, str(src))
                         response = self.session.get(js_url, timeout=10)
                         if response.status_code == 200:
-                            filename = Path(src).name or 'script.js'
+                            filename = Path(str(src)).name or 'script.js'
                             filepath = assets_folder / 'js' / filename
                             filepath.parent.mkdir(exist_ok=True)
                             with open(filepath, 'w', encoding='utf-8') as f:
                                 f.write(response.text)
                             downloaded_assets['js'].append(str(filepath))
                     except Exception:
-                        downloaded_assets['failed'].append(src)
+                        downloaded_assets['failed'].append(str(src))
                         
         except Exception as e:
             downloaded_assets['error'] = str(e)
@@ -934,6 +964,82 @@ class UnifiedWebsiteExtractor:
         
         return {'deleted_files': deleted_files, 'deleted_folders': deleted_folders}
     
+    # ================== الدوال الجديدة المتقدمة ==================
+    
+    async def advanced_website_extraction(self, url: str, extraction_type: str = 'complete') -> Dict[str, Any]:
+        """استخراج شامل متقدم للموقع باستخدام جميع الأدوات"""
+        
+        extraction_id = f"extract_{int(time.time())}_{hash(url) % 10000}"
+        
+        result = {
+            'extraction_id': extraction_id,
+            'url': url,
+            'extraction_type': extraction_type,
+            'start_time': datetime.now().isoformat(),
+            'tools_used': [],
+            'status': 'running',
+            'progress': 0
+        }
+        
+        try:
+            # المرحلة 1: الاستخراج الأساسي
+            basic_result = self.extract_website(url, extraction_type)
+            result.update(basic_result)
+            result['progress'] = 20
+            result['tools_used'].append('basic_extractor')
+            
+            if ADVANCED_TOOLS_AVAILABLE and extraction_type in ['advanced', 'complete', 'ultra']:
+                
+                # المرحلة 2: Screenshots
+                if self.screenshot_engine:
+                    screenshots_result = await self._capture_advanced_screenshots(url, extraction_id)
+                    result['screenshots'] = screenshots_result
+                    result['progress'] = 35
+                    result['tools_used'].append('screenshot_engine')
+                
+                # المرحلة 3: CMS Detection
+                if self.cms_detector:
+                    cms_result = self._detect_cms_advanced(url)
+                    result['cms_analysis'] = cms_result
+                    result['progress'] = 50
+                    result['tools_used'].append('cms_detector')
+                
+                # المرحلة 4: Sitemap Generation
+                if self.sitemap_generator:
+                    sitemap_result = self._generate_advanced_sitemap(url, extraction_id)
+                    result['sitemap_analysis'] = sitemap_result
+                    result['progress'] = 65
+                    result['tools_used'].append('sitemap_generator')
+                
+                # المرحلة 5: Spider Engine (للاستخراج العميق)
+                if extraction_type in ['complete', 'ultra']:
+                    spider_result = await self._run_spider_engine(url, extraction_id)
+                    result['spider_analysis'] = spider_result
+                    result['progress'] = 80
+                    result['tools_used'].append('spider_engine')
+                
+                # المرحلة 6: AI Analysis (للاستخراج الشامل)
+                if self.ai_engine and extraction_type == 'ultra':
+                    ai_result = await self._run_ai_analysis(result)
+                    result['ai_analysis'] = ai_result
+                    result['progress'] = 95
+                    result['tools_used'].append('ai_engine')
+            
+            result['status'] = 'completed'
+            result['progress'] = 100
+            result['end_time'] = datetime.now().isoformat()
+            result['completion_score'] = self._calculate_completeness_score(result)
+            
+        except Exception as e:
+            result['status'] = 'failed'
+            result['error'] = str(e)
+            result['end_time'] = datetime.now().isoformat()
+        
+        # حفظ النتيجة
+        self.results[extraction_id] = result
+        
+        return result
+    
     def get_extraction_statistics(self) -> Dict[str, Any]:
         """إحصائيات شاملة للاستخراجات"""
         stats = {
@@ -997,6 +1103,122 @@ class UnifiedWebsiteExtractor:
         )
         
         return stats
+        
+    async def _capture_advanced_screenshots(self, url: str, extraction_id: str) -> Dict[str, Any]:
+        """التقاط لقطات شاشة متقدمة"""
+        if not self.screenshot_engine:
+            return {'error': 'Screenshot engine not available'}
+            
+        try:
+            extraction_folder = self.base_dir / 'websites' / extraction_id
+            screenshots_result = await self.screenshot_engine.capture_website_screenshots(
+                url, extraction_folder, capture_responsive=True, capture_interactions=True
+            )
+            return screenshots_result
+        except Exception as e:
+            return {'error': str(e)}
+    
+    def _detect_cms_advanced(self, url: str) -> Dict[str, Any]:
+        """كشف CMS متقدم"""
+        if not self.cms_detector:
+            return {'error': 'CMS detector not available'}
+            
+        try:
+            cms_result = self.cms_detector.detect_cms(url)
+            return cms_result
+        except Exception as e:
+            return {'error': str(e)}
+    
+    def _generate_advanced_sitemap(self, url: str, extraction_id: str) -> Dict[str, Any]:
+        """إنشاء خريطة موقع متقدمة"""
+        if not self.sitemap_generator:
+            return {'error': 'Sitemap generator not available'}
+            
+        try:
+            output_dir = self.base_dir / 'websites' / extraction_id
+            sitemap_result = self.sitemap_generator.generate_sitemap(url, output_dir)
+            return sitemap_result
+        except Exception as e:
+            return {'error': str(e)}
+    
+    async def _run_spider_engine(self, url: str, extraction_id: str) -> Dict[str, Any]:
+        """تشغيل محرك الزحف المتقدم"""
+        try:
+            if not ADVANCED_TOOLS_AVAILABLE:
+                return {'error': 'Spider engine not available'}
+                
+            # تهيئة محرك الزحف
+            spider_config = SpiderConfig(
+                max_depth=3,
+                max_pages=50,
+                delay_between_requests=1.0,
+                respect_robots_txt=True,
+                extract_sitemap=True
+            )
+            
+            self.spider_engine = SpiderEngine(spider_config)
+            
+            # تشغيل الزحف
+            spider_result = await self.spider_engine.crawl_website(url)
+            return spider_result
+            
+        except Exception as e:
+            return {'error': str(e)}
+    
+    async def _run_ai_analysis(self, extraction_data: Dict[str, Any]) -> Dict[str, Any]:
+        """تشغيل التحليل بالذكاء الاصطناعي"""
+        if not self.ai_engine:
+            return {'error': 'AI engine not available'}
+            
+        try:
+            ai_result = await self.ai_engine.analyze_website_intelligence(extraction_data)
+            return ai_result
+        except Exception as e:
+            return {'error': str(e)}
+    
+    async def website_cloner_pro_extraction(self, url: str, extraction_config: Dict[str, Any] = None) -> Dict[str, Any]:
+        """استخدام Website Cloner Pro للاستخراج الشامل"""
+        if not self.cloner_pro:
+            return {'error': 'Website Cloner Pro not available'}
+            
+        try:
+            # إعداد التكوين الافتراضي
+            if not extraction_config:
+                extraction_config = {
+                    'extraction_mode': 'comprehensive',
+                    'max_depth': 3,
+                    'include_assets': True,
+                    'include_database_analysis': True,
+                    'enable_ai_analysis': True,
+                    'generate_replica': True
+                }
+            
+            # تشغيل Website Cloner Pro
+            cloner_result = await self.cloner_pro.clone_website_complete(url, extraction_config)
+            
+            return {
+                'cloner_pro_result': cloner_result,
+                'extraction_method': 'website_cloner_pro',
+                'timestamp': datetime.now().isoformat(),
+                'url': url,
+                'config_used': extraction_config
+            }
+            
+        except Exception as e:
+            return {'error': str(e), 'extraction_method': 'website_cloner_pro_failed'}
+    
+    def get_available_tools(self) -> Dict[str, bool]:
+        """الحصول على قائمة الأدوات المتاحة"""
+        return {
+            'basic_extractor': True,
+            'advanced_tools_available': ADVANCED_TOOLS_AVAILABLE,
+            'website_cloner_pro': self.cloner_pro is not None,
+            'spider_engine': ADVANCED_TOOLS_AVAILABLE,
+            'ai_engine': self.ai_engine is not None,
+            'screenshot_engine': self.screenshot_engine is not None,
+            'cms_detector': self.cms_detector is not None,
+            'sitemap_generator': self.sitemap_generator is not None
+        }
     
     def _advanced_ai_analysis(self, result: Dict[str, Any], content: str, soup: BeautifulSoup) -> Dict[str, Any]:
         """تحليل AI متقدم للموقع"""
