@@ -16,7 +16,6 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 sys.path.insert(0, os.path.dirname(__file__))
 
 # استيراد الأنظمة المتقدمة
-from working_extractor import WebsiteExtractor
 from unified_extractor import UnifiedWebsiteExtractor
 from advanced_tools_manager import AdvancedToolsManager
 
@@ -52,7 +51,6 @@ class ExtractionResult(db.Model):
         return json.loads(self.result_data) if self.result_data else {}
 
 # إنشاء مستخرجات المواقع والأدوات المتقدمة
-basic_extractor = WebsiteExtractor()
 unified_extractor = UnifiedWebsiteExtractor()
 advanced_tools = AdvancedToolsManager()
 
@@ -115,15 +113,8 @@ def result_detail(result_id):
     result = ExtractionResult.query.get_or_404(result_id)
     return render_template('result_detail.html', result=result)
 
-# دمج النظام الموحد (مع معالجة الأخطاء)
-try:
-    from unified_website_system import unified_system, create_flask_integration
-    # تطبيق التكامل مع Flask
-    create_flask_integration(app)
-    UNIFIED_SYSTEM_AVAILABLE = True
-except Exception as e:
-    print(f"تحذير: النظام الموحد غير متوفر: {e}")
-    UNIFIED_SYSTEM_AVAILABLE = False
+# النظام الموحد مبسط
+UNIFIED_SYSTEM_AVAILABLE = False
 
 # APIs متقدمة لجميع الأدوات
 
@@ -146,11 +137,8 @@ def api_extract():
         url = 'https://' + url
     
     try:
-        # اختيار المستخرج المناسب
-        if extraction_type in ['advanced', 'complete']:
-            result = unified_extractor.extract_website(url, extraction_type)
-        else:
-            result = basic_extractor.extract_website(url, extraction_type)
+        # استخدام المستخرج الموحد
+        result = unified_extractor.extract_website(url, extraction_type)
         return jsonify({
             'success': True,
             'data': result
@@ -321,11 +309,8 @@ def api_unified_extract():
         url = 'https://' + url
     
     try:
-        # استخدام المستخرج المناسب
-        if extraction_type in ['advanced', 'complete']:
-            result = unified_extractor.extract_website(url, extraction_type)
-        else:
-            result = basic_extractor.extract_website(url, extraction_type)
+        # استخدام المستخرج الموحد
+        result = unified_extractor.extract_website(url, extraction_type)
         
         # حفظ النتيجة في قاعدة البيانات
         extraction_result = ExtractionResult(
@@ -384,5 +369,4 @@ def file_manager_page():
 with app.app_context():
     db.create_all()
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+# تم نقل التشغيل إلى main.py
