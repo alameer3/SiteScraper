@@ -1,0 +1,31 @@
+{
+  "domain": "example.com",
+  "title": "Example Domain",
+  "description": "",
+  "keywords": "",
+  "content_length": 1256,
+  "status_code": 200,
+  "content_type": "text/html",
+  "server": "",
+  "links_count": 1,
+  "images_count": 0,
+  "scripts_count": 0,
+  "stylesheets_count": 0,
+  "technologies": [],
+  "performance": {
+    "response_time": 0.104613,
+    "content_size": 1256,
+    "compression": true,
+    "cache_control": "max-age=1577",
+    "expires": "",
+    "etag": "\"84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134\"",
+    "last_modified": "Mon, 13 Jan 2025 20:11:20 GMT"
+  },
+  "extraction_id": 1,
+  "url": "https://example.com",
+  "extraction_type": "basic",
+  "success": true,
+  "duration": 0.11,
+  "timestamp": "2025-07-27T01:21:41.297666",
+  "extractor": "UnifiedWebsiteExtractor"
+}

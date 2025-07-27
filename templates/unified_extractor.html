@@ -525,6 +525,197 @@
             });
             
             // Add selected class to clicked mode
+            element.classList.add('selected');
+            
+            // Update radio button
+            document.getElementById(mode).checked = true;
+        }
+        
+        // Handle form submission
+        document.getElementById('extractionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const url = formData.get('url');
+            const extraction_type = formData.get('extraction_type');
+            
+            if (!url) {
+                alert('يرجى إدخال رابط صحيح');
+                return;
+            }
+            
+            startExtraction(url, extraction_type);
+        });
+        
+        function startExtraction(url, extraction_type) {
+            // Hide previous results and errors
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('errorContainer').style.display = 'none';
+            
+            // Show progress
+            const progressContainer = document.getElementById('progressContainer');
+            progressContainer.style.display = 'block';
+            
+            // Reset all steps
+            document.querySelectorAll('.progress-step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            
+            // Start animation
+            let currentStep = 1;
+            animateStep(currentStep);
+            
+            // Prepare data
+            const data = {
+                url: url,
+                extraction_type: extraction_type
+            };
+            
+            // Send request
+            fetch('/api/unified-extract', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                // Complete all steps
+                for(let i = 1; i <= 6; i++) {
+                    document.getElementById('step' + i).classList.add('completed');
+                }
+                
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    
+                    if (result.success) {
+                        showResults(result);
+                    } else {
+                        showError(result.error || 'حدث خطأ غير متوقع');
+                    }
+                }, 1000);
+            })
+            .catch(error => {
+                progressContainer.style.display = 'none';
+                showError('خطأ في الاتصال: ' + error.message);
+            });
+        }
+        
+        function animateStep(stepNumber) {
+            if (stepNumber > 6) return;
+            
+            const step = document.getElementById('step' + stepNumber);
+            step.classList.add('active');
+            
+            setTimeout(() => {
+                step.classList.remove('active');
+                step.classList.add('completed');
+                animateStep(stepNumber + 1);
+            }, 800);
+        }
+        
+        function showResults(result) {
+            const container = document.getElementById('resultsContainer');
+            container.style.display = 'block';
+            
+            // Update success message
+            document.getElementById('successMessage').textContent = 
+                `تم استخراج ${result.title || 'الموقع'} بنجاح في ${result.duration || 0} ثانية`;
+            
+            // Update metrics
+            const metricsHtml = `
+                <div class="col-md-3">
+                    <div class="result-metric">
+                        <div class="result-value">${result.links_count || 0}</div>
+                        <div class="result-label">روابط</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="result-metric">
+                        <div class="result-value">${result.images_count || 0}</div>
+                        <div class="result-label">صور</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="result-metric">
+                        <div class="result-value">${result.scripts_count || 0}</div>
+                        <div class="result-label">سكريبتات</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="result-metric">
+                        <div class="result-value">${result.extraction_stats?.completeness_score || 0}%</div>
+                        <div class="result-label">نسبة الاكتمال</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('resultsMetrics').innerHTML = metricsHtml;
+            
+            // Update download links
+            let downloadsHtml = '';
+            if (result.exports) {
+                if (result.exports.json) {
+                    downloadsHtml += `<a href="/download/json/${result.extraction_id}" class="download-btn">
+                        <i data-feather="download"></i> تحميل JSON
+                    </a>`;
+                }
+                if (result.exports.html) {
+                    downloadsHtml += `<a href="/download/html/${result.extraction_id}" class="download-btn">
+                        <i data-feather="download"></i> تحميل التقرير HTML
+                    </a>`;
+                }
+                if (result.exports.csv) {
+                    downloadsHtml += `<a href="/download/csv/${result.extraction_id}" class="download-btn">
+                        <i data-feather="download"></i> تحميل CSV
+                    </a>`;
+                }
+            }
+            
+            if (result.extraction_folder) {
+                downloadsHtml += `<a href="/view-extracted/${result.extraction_id}" class="download-btn" target="_blank">
+                    <i data-feather="external-link"></i> عرض الملفات
+                </a>`;
+            }
+            
+            document.getElementById('downloadLinks').innerHTML = downloadsHtml;
+            
+            // Update extraction info
+            const infoHtml = `
+                <p><strong>الرابط:</strong> ${result.url}</p>
+                <p><strong>النوع:</strong> ${result.extraction_type}</p>
+                <p><strong>الحالة:</strong> ${result.status_code || 'غير معروف'}</p>
+                <p><strong>حجم المحتوى:</strong> ${(result.content_size || 0 / 1024).toFixed(1)} KB</p>
+                <p><strong>جودة الاستخراج:</strong> ${result.extraction_stats?.extraction_quality || 'جيدة'}</p>
+            `;
+            document.getElementById('extractionInfo').innerHTML = infoHtml;
+            
+            // Update technologies
+            let techHtml = '';
+            if (result.technologies && result.technologies.length > 0) {
+                result.technologies.forEach(tech => {
+                    techHtml += `<span class="badge bg-primary me-1 mb-1">${tech}</span>`;
+                });
+            } else {
+                techHtml = '<p class="text-muted">لم يتم العثور على تقنيات محددة</p>';
+            }
+            document.getElementById('detectedTechnologies').innerHTML = techHtml;
+            
+            // Refresh icons
+            feather.replace();
+        }
+        
+        function showError(errorMessage) {
+            document.getElementById('errorContainer').style.display = 'block';
+            document.getElementById('errorMessage').textContent = errorMessage;
+            feather.replace();
+        }
+    </script>
+</body>
+</html>
+            feather.replace();
+            
+            // Add selected class to clicked mode
             if (element) {
                 element.classList.add('selected');
             } else {

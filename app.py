@@ -256,7 +256,18 @@ def unified_dashboard():
 @app.route('/unified-extractor')
 def unified_extractor_page():
     """صفحة المستخرج الموحد المتطور"""
-    return render_template('unified_extractor.html')
+    # إحصائيات سريعة
+    total_extractions = unified_extractor.extraction_id
+    recent_results = list(unified_extractor.results.values())[-5:] if unified_extractor.results else []
+    
+    stats = {
+        'total_extractions': total_extractions,
+        'recent_extractions': len(recent_results),
+        'available_modes': 5,  # basic, standard, advanced, complete, secure
+        'system_status': 'active'
+    }
+    
+    return render_template('unified_extractor.html', stats=stats, recent_results=recent_results)
 
 # API للنظام الموحد البسيط
 @app.route('/api/unified/stats')
@@ -292,49 +303,61 @@ def api_unified_recent():
     
     return jsonify(results)
 
-@app.route('/api/unified/extract', methods=['POST'])
+@app.route('/api/unified-extract', methods=['POST'])
 def api_unified_extract():
-    """API موحد للاستخراج"""
-    data = request.get_json()
-    if not data or 'url' not in data:
-        return jsonify({'error': 'URL is required'}), 400
-    
-    url = data['url']
-    extraction_type = data.get('extraction_type', 'basic')
-    
-    if not url.startswith(('http://', 'https://')):
-        url = 'https://' + url
-    
+    """API موحد للاستخراج - الإصدار المحسن"""
     try:
-        # استخدام المستخرج الموحد
+        # التحقق من البيانات المرسلة
+        if request.is_json:
+            data = request.get_json()
+        else:
+            data = request.form.to_dict()
+            
+        if not data or 'url' not in data:
+            return jsonify({'error': 'URL is required'}), 400
+        
+        url = data['url']
+        extraction_type = data.get('extraction_type', 'basic')
+        
+        # تصحيح URL
+        if not url.startswith(('http://', 'https://')):
+            url = 'https://' + url
+        
+        # تشغيل الاستخراج
         result = unified_extractor.extract_website(url, extraction_type)
         
-        # حفظ النتيجة في قاعدة البيانات
-        extraction_result = ExtractionResult()
-        extraction_result.url = url
-        extraction_result.title = result.get('title', 'بدون عنوان')
-        extraction_result.extraction_type = extraction_type
-        extraction_result.status = 'completed'
-        extraction_result.result_data = json.dumps(result, ensure_ascii=False)
-        db.session.add(extraction_result)
-        db.session.commit()
+        if result.get('success'):
+            # حفظ النتيجة في قاعدة البيانات
+            try:
+                extraction_result = ExtractionResult()
+                extraction_result.url = url
+                extraction_result.title = result.get('title', 'بدون عنوان')
+                extraction_result.extraction_type = extraction_type
+                extraction_result.status = 'completed'
+                extraction_result.result_data = json.dumps(result, ensure_ascii=False)
+                db.session.add(extraction_result)
+                db.session.commit()
+                
+                # إضافة ID النتيجة
+                result['database_id'] = extraction_result.id
+                
+            except Exception as db_error:
+                # إذا فشل حفظ قاعدة البيانات، لا نفشل العملية
+                result['database_error'] = str(db_error)
         
-        return jsonify({
-            'extraction_id': f"extract_{extraction_result.id}",
-            'success': True,
-            'url': url,
-            'extraction_type': extraction_type,
-            'duration_seconds': result.get('extraction_time', 0),
-            'total_size_mb': 0.1,
-            'timestamp': datetime.now().isoformat(),
-            'data': result
-        })
+        return jsonify(result)
         
     except Exception as e:
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': str(e),
+            'extraction_id': 0
         }), 500
+
+@app.route('/api/unified/extract', methods=['POST'])
+def api_unified_extract_legacy():
+    """API legacy للاستخراج"""
+    return api_unified_extract()
 
 @app.route('/cloner-pro')
 def cloner_pro_page():
