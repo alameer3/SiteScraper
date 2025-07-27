@@ -187,12 +187,13 @@ class SimpleScreenshotEngine:
             images = soup.find_all('img')
             image_info = []
             for img in images[:5]:  # أول 5 صور فقط
-                src = img.get('src', '')
-                alt = img.get('alt', '')
-                if src:
-                    if not src.startswith('http'):
-                        src = urljoin(url, src)
-                    image_info.append({'src': src, 'alt': alt})
+                if hasattr(img, 'get'):
+                    src = img.get('src', '') or ''
+                    alt = img.get('alt', '') or ''
+                    if src and isinstance(src, str):
+                        if not src.startswith('http'):
+                            src = urljoin(url, src)
+                        image_info.append({'src': src, 'alt': alt})
             
             # إنشاء thumbnail HTML
             thumbnail_file = screenshots_dir / 'website_thumbnail.html'
