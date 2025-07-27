@@ -18,6 +18,7 @@ This is a Flask-based web application that provides comprehensive website analys
 - **Technical approach**: Thorough debugging and complete solutions
 - **Code quality**: Fix all errors completely, no incomplete implementations
 - **Development approach**: Always ask for user approval before starting new development work
+- **Analysis preference**: Comprehensive analysis of all project files and components
 
 ## System Architecture
 
