@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "target_url": "https://ak.sv/",
+    "extraction_timestamp": "2025-07-28T20:49:05.829457",
+    "extraction_time": 11.013592720031738,
+    "config": {
+      "mode": "advanced",
+      "max_depth": 3,
+      "max_pages": 50,
+      "include_assets": true,
+      "include_javascript": true,
+      "include_css": true,
+      "extract_apis": true,
+      "analyze_behavior": true,
+      "extract_database_schema": false,
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      "timeout": 30,
+      "delay_between_requests": 1.0,
+      "respect_robots_txt": true,
+      "enable_playwright": true,
+      "enable_selenium": true,
+      "output_directory": "extracted_sites"
+    },
+    "extraction_id": "032cecdc3c0edf114a74f77b2d6ef2a2"
+  },
+  "initial_analysis": {
+    "basic_info": {
+      "title": "اكوام | موقع التحميل و المشاهدة العربي الاول",
+      "description": "شمس المواقع، الموقع العربي الاول لتحميل و مشاهدة الافلام, المسلسلات, الالعاب, البرامج و التطبيقات, التلفزيون, المسرحيات, المصارعة, الرياضة, تحميل و مشاهدة مباشرة",
+      "keywords": "أفلام,مسلسلات,حلقات,مصارعة,برامج,العاب,مشاهدة مباشرة,تحميل مباشر,مشاهدة,تحميل,نتفلكس,اون لاين,مباشر,مدبلج,مترجم,رمضان,مصري,خليجي,سوري,او اس ان,ام بي سي,تركي,برامج تلفزيونية,توك شو,تبع كلو,akwam,akoam",
+      "language": "ar",
+      "charset": "UTF-8",
+      "viewport": "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    },
+    "document_structure": {
+      "doctype": "html",
+      "html_attributes": {
+        "lang": "ar"
+      },
+      "head_elements": 

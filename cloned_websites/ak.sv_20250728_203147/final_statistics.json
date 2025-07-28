@@ -1,0 +1,30 @@
+{
+  "folder_sizes": {
+    "01_extracted_content": 2335174,
+    "02_assets": 2279398,
+    "03_source_code": 0,
+    "04_analysis": 145779,
+    "05_cloned_site": 1014,
+    "06_reports": 65360
+  },
+  "file_types": {
+    ".md": 1,
+    ".html": 21,
+    "": 2,
+    ".js": 29,
+    ".png": 5,
+    ".svg": 2,
+    ".jpg": 40,
+    ".jpeg": 3,
+    ".webp": 5,
+    ".gif": 1,
+    ".css": 14,
+    ".json": 4,
+    ".csv": 2,
+    ".pdf": 1,
+    ".docx": 1,
+    ".db": 1
+  },
+  "total_files": 132,
+  "completion_rate": 42.0
+}

@@ -1,0 +1,878 @@
+{
+  "metadata": {
+    "target_url": "https://ak.sv",
+    "extraction_date": "2025-07-28T20:48:54.770235",
+    "duration": 0.0,
+    "success": false
+  },
+  "statistics": {
+    "pages_extracted": 21,
+    "assets_downloaded": 108,
+    "total_size": 0,
+    "errors_count": 0
+  },
+  "technologies": {
+    "cms": "unknown",
+    "frameworks": [],
+    "libraries": [
+      "jQuery"
+    ],
+    "analytics": [
+      "Google Analytics"
+    ],
+    "server_technology": "unknown",
+    "hosting_provider": "unknown",
+    "ssl_info": {},
+    "performance_tools": [],
+    "cdn_usage": [
+      "Cloudflare"
+    ],
+    "database_indicators": []
+  },
+  "security_analysis": {
+    "ssl_certificate": {
+      "enabled": true,
+      "protocol": "HTTPS",
+      "secure_connection": true
+    },
+    "security_headers": {
+      "Content-Security-Policy": null,
+      "X-Frame-Options": null,
+      "X-Content-Type-Options": null,
+      "Strict-Transport-Security": null,
+      "X-XSS-Protection": null,
+      "Referrer-Policy": null
+    },
+    "vulnerabilities_detected": [
+      "Missing Content-Security-Policy header",
+      "Missing X-Frame-Options header",
+      "Missing X-Content-Type-Options header",
+      "Missing Strict-Transport-Security header",
+      "Missing X-XSS-Protection header",
+      "Missing Referrer-Policy header",
+      "External scripts loaded: 4"
+    ],
+    "authentication_methods": [],
+    "data_protection_measures": [],
+    "secure_practices": [],
+    "security_score": 30,
+    "recommendations": [
+      "إضافة Content-Security-Policy header للحماية",
+      "إضافة X-Frame-Options header للحماية",
+      "إضافة X-Content-Type-Options header للحماية",
+      "إضافة Strict-Transport-Security header للحماية",
+      "إضافة X-XSS-Protection header للحماية",
+      "إضافة Referrer-Policy header للحماية",
+      "مراجعة الملفات الخارجية المحملة"
+    ]
+  },
+  "performance_metrics": {
+    "page_load_time": 0.51,
+    "page_size_kb": 19.16,
+    "total_requests": 100,
+    "asset_breakdown": {
+      "images": {
+        "count": 56,
+        "size_kb": 519.86
+      },
+      "css": {
+        "count": 14,
+        "size_kb": 235.5
+      },
+      "js": {
+        "count": 30,
+        "size_kb": 1470.61
+      },
+      "other": {
+        "count": 0,
+        "size_kb": 0
+      }
+    },
+    "optimization_opportunities": [
+      "عدد كبير من الصور"
+    ],
+    "performance_score": 90,
+    "loading_recommendations": [
+      "تحسين الصور واستخدام lazy loading"
+    ],
+    "comparison": {
+      "original_load_time": 0.2188577651977539,
+      "replica_load_time": 0,
+      "size_difference": 0,
+      "functionality_preservation": "unknown"
+    }
+  },
+  "ai_analysis": {},
+  "extracted_content": {
+    "site_type": "Business/Corporate Site",
+    "discovered_links": 17,
+    "robots_analysis": {
+      "exists": true,
+      "content": "Sitemap: https://ak.sv/sitemap.xml\nUser-agent: *\nDisallow: /o2cp/\nDisallow: /admin/\nDisallow: /ajax/\nDisallow: /ads/\nDisallow: /comments/\nDisallow: /search?q*\nDisallow: /movies?tag=*\nDisallow: /series?tag=*\nDisallow: /shows?tag=*\nDisallow: /mix?tag=*\n",
+      "disallowed_paths": [
+        "/o2cp/",
+        "/admin/",
+        "/ajax/",
+        "/ads/",
+        "/comments/",
+        "/search?q*",
+        "/movies?tag=*",
+        "/series?tag=*",
+        "/shows?tag=*",
+        "/mix?tag=*"
+      ],
+      "allowed_paths": [],
+      "sitemaps": [
+        "https://ak.sv/sitemap.xml"
+      ]
+    },
+    "sitemap_urls": [
+      "https://ak.sv/sitemap.xml"
+    ],
+    "structure_analysis": {
+      "total_pages": 20,
+      "navigation_structure": {},
+      "page_hierarchy": {},
+      "internal_links": [],
+      "external_links": [],
+      "broken_links": [],
+      "sitemap_exists": true,
+      "robots_txt_exists": true,
+      "main_sections": []
+    },
+    "api_endpoints": [
+      "https://ak.sv/,enablejsapi:1},type:"
+    ],
+    "database_structure": {
+      "database_indicators": [
+        "schema"
+      ],
+      "data_storage_methods": [],
+      "potential_tables": [],
+      "data_relationships": [],
+      "storage_technologies": [],
+      "data_patterns": []
+    },
+    "source_code_analysis": {
+      "html_files": [
+        {
+          "filename": "index.html",
+          "size_kb": 17.63,
+          "lines_of_code": 370,
+          "elements_count": 213
+        },
+        {
+          "filename": "recent.html",
+          "size_kb": 191.94,
+          "lines_of_code": 2778,
+          "elements_count": 1834
+        },
+        {
+          "filename": "profile.html",
+          "size_kb": 75.88,
+          "lines_of_code": 458,
+          "elements_count": 182
+        },
+        {
+          "filename": "shows.html",
+          "size_kb": 139.23,
+          "lines_of_code": 1615,
+          "elements_count": 1059
+        },
+        {
+          "filename": "main.html",
+          "size_kb": 204.04,
+          "lines_of_code": 2950,
+          "elements_count": 1842
+        },
+        {
+          "filename": "favorite_movies.html",
+          "size_kb": 75.88,
+          "lines_of_code": 458,
+          "elements_count": 182
+        },
+        {
+          "filename": "ad-policy.html",
+          "size_kb": 81.07,
+          "lines_of_code": 498,
+          "elements_count": 243
+        },
+        {
+          "filename": "mix.html",
+          "size_kb": 130.1,
+          "lines_of_code": 1566,
+          "elements_count": 917
+        },
+        {
+          "filename": "login.html",
+          "size_kb": 75.88,
+          "lines_of_code": 458,
+          "elements_count": 182
+        },
+        {
+          "filename": "contactus.html",
+          "size_kb": 77.11,
+          "lines_of_code": 477,
+          "elements_count": 214
+        },
+        {
+          "filename": "logout.html",
+          "size_kb": 75.88,
+          "lines_of_code": 458,
+          "elements_count": 182
+        },
+        {
+          "filename": "movies.html",
+          "size_kb": 153.82,
+          "lines_of_code": 1916,
+          "elements_count": 1271
+        },
+        {
+          "filename": "old.html",
+          "size_kb": 92.13,
+          "lines_of_code": 580,
+          "elements_count": 288
+        },
+        {
+          "filename": "AKWAM-Notifications.html",
+          "size_kb": 77.7,
+          "lines_of_code": 471,
+          "elements_count": 200
+        },
+        {
+          "filename": "dmca.html",
+          "size_kb": 80.15,
+          "lines_of_code": 493,
+          "elements_count": 237
+        },
+        {
+          "filename": "series.html",
+          "size_kb": 140.94,
+          "lines_of_code": 1663,
+          "elements_count": 1106
+        },
+        {
+          "filename": "movie_9948_bulletproof-monk.html",
+          "size_kb": 134.48,
+          "lines_of_code": 1569,
+          "elements_count": 966
+        },
+        {
+          "filename": "movie_9964_gazer.html",
+          "size_kb": 132.79,
+          "lines_of_code": 1539,
+          "elements_count": 949
+        },
+        {
+          "filename": "movie_9969_الحب-مجرد-لحظة-مدبلج.html",
+          "size_kb": 136.27,
+          "lines_of_code": 1585,
+          "elements_count": 973
+        },
+        {
+          "filename": "movie_9982_your-monster.html",
+          "size_kb": 132.99,
+          "lines_of_code": 1541,
+          "elements_count": 950
+        }
+      ],
+      "css_files": [
+        {
+          "filename": "style.css",
+          "size_kb": 35.7,
+          "lines_of_code": 1,
+          "css_rules_count": 402
+        },
+        {
+          "filename": "new_style.css",
+          "size_kb": 23.94,
+          "lines_of_code": 796,
+          "css_rules_count": 305
+        },
+        {
+          "filename": "font-awesome.min.css",
+          "size_kb": 21.47,
+          "lines_of_code": 4,
+          "css_rules_count": 512
+        },
+        {
+          "filename": "TimeCircles.css",
+          "size_kb": 0.39,
+          "lines_of_code": 4,
+          "css_rules_count": 4
+        },
+        {
+          "filename": "tinycarousel.css",
+          "size_kb": 2.44,
+          "lines_of_code": 20,
+          "css_rules_count": 20
+        },
+        {
+          "filename": "tipsy.css",
+          "size_kb": 1.7,
+          "lines_of_code": 16,
+          "css_rules_count": 16
+        },
+        {
+          "filename": "jquery.fancybox.css",
+          "size_kb": 3.7,
+          "lines_of_code": 1,
+          "css_rules_count": 39
+        },
+        {
+          "filename": "plugins.css",
+          "size_kb": 131.63,
+          "lines_of_code": 1,
+          "css_rules_count": 2097
+        },
+        {
+          "filename": "jquery-bxslider-rtl.css",
+          "size_kb": 2.63,
+          "lines_of_code": 29,
+          "css_rules_count": 24
+        },
+        {
+          "filename": "reset.css",
+          "size_kb": 2.9,
+          "lines_of_code": 79,
+          "css_rules_count": 16
+        },
+        {
+          "filename": "home.css",
+          "size_kb": 2.46,
+          "lines_of_code": 107,
+          "css_rules_count": 18
+        },
+        {
+          "filename": "jquery.fancybox-buttons.css",
+          "size_kb": 1.94,
+          "lines_of_code": 1,
+          "css_rules_count": 15
+        },
+        {
+          "filename": "akwam.css",
+          "size_kb": 0.51,
+          "lines_of_code": 28,
+          "css_rules_count": 7
+        },
+        {
+          "filename": "flexslider.css",
+          "size_kb": 3.95,
+          "lines_of_code": 51,
+          "css_rules_count": 42
+        }
+      ],
+      "js_files": [
+        {
+          "filename": "jquery.fancybox-media.js",
+          "size_kb": 1.96,
+          "lines_of_code": 1,
+          "functions_count": 0
+        },
+        {
+          "filename": "ar.js",
+          "size_kb": 0.75,
+          "lines_of_code": 3,
+          "functions_count": 0
+        },
+        {
+          "filename": "adsbygoogle.js",
+          "size_kb": 160.76,
+          "lines_of_code": 245,
+          "functions_count": 928
+        },
+        {
+          "filename": "jquery-3.2.1.min.js",
+          "size_kb": 84.63,
+          "lines_of_code": 4,
+          "functions_count": 77
+        },
+        {
+          "filename": "jquery.cookie.js",
+          "size_kb": 3.07,
+          "lines_of_code": 114,
+          "functions_count": 5
+        },
+        {
+          "filename": "select2.full.min.js",
+          "size_kb": 73.56,
+          "lines_of_code": 2,
+          "functions_count": 61
+        },
+        {
+          "filename": "jquery.js",
+          "size_kb": 93.17,
+          "lines_of_code": 1,
+          "functions_count": 63
+        },
+        {
+          "filename": "jquery.fancybox-buttons.js",
+          "size_kb": 1.75,
+          "lines_of_code": 1,
+          "functions_count": 0
+        },
+        {
+          "filename": "pace.min.js",
+          "size_kb": 12.07,
+          "lines_of_code": 2,
+          "functions_count": 14
+        },
+        {
+          "filename": "akwam.js",
+          "size_kb": 7.62,
+          "lines_of_code": 208,
+          "functions_count": 3
+        },
+        {
+          "filename": "jquery-bxslider-rtl.js",
+          "size_kb": 18.38,
+          "lines_of_code": 1,
+          "functions_count": 0
+        },
+        {
+          "filename": "jquery.fancybox.pack.js",
+          "size_kb": 22.59,
+          "lines_of_code": 46,
+          "functions_count": 0
+        },
+        {
+          "filename": "modernizr.custom.97074.js",
+          "size_kb": 8.02,
+          "lines_of_code": 4,
+          "functions_count": 27
+        },
+        {
+          "filename": "jquery.tinycarousel.min.js",
+          "size_kb": 2.05,
+          "lines_of_code": 1,
+          "functions_count": 2
+        },
+        {
+          "filename": "jquery.tipsy.js",
+          "size_kb": 5.05,
+          "lines_of_code": 11,
+          "functions_count": 6
+        },
+        {
+          "filename": "jquery.fancybox.min.js",
+          "size_kb": 66.65,
+          "lines_of_code": 13,
+          "functions_count": 5
+        },
+        {
+          "filename": "jquery.validate.min.js",
+          "size_kb": 23.8,
+          "lines_of_code": 4,
+          "functions_count": 3
+        },
+        {
+          "filename": "messages_ar.min.js",
+          "size_kb": 1.14,
+          "lines_of_code": 4,
+          "functions_count": 0
+        },
+        {
+          "filename": "swiper.min.js",
+          "size_kb": 130.68,
+          "lines_of_code": 14,
+          "functions_count": 23
+        },
+        {
+          "filename": "jquery.lazy.min.js",
+          "size_kb": 4.91,
+          "lines_of_code": 2,
+          "functions_count": 15
+        },
+        {
+          "filename": "sweetalert.min.js",
+          "size_kb": 39.85,
+          "lines_of_code": 1,
+          "functions_count": 40
+        },
+        {
+          "filename": "email-decode.min.js",
+          "size_kb": 1.21,
+          "lines_of_code": 1,
+          "functions_count": 8
+        },
+        {
+          "filename": "jquery-ui.min.js",
+          "size_kb": 233.95,
+          "lines_of_code": 13,
+          "functions_count": 37
+        },
+        {
+          "filename": "jquery.flexslider-min.js",
+          "size_kb": 21.52,
+          "lines_of_code": 5,
+          "functions_count": 3
+        },
+        {
+          "filename": "typed.min.js",
+          "size_kb": 11.19,
+          "lines_of_code": 11,
+          "functions_count": 11
+        },
+        {
+          "filename": "newcustom.js",
+          "size_kb": 12.17,
+          "lines_of_code": 1,
+          "functions_count": 2
+        },
+        {
+          "filename": "iscroll.js",
+          "size_kb": 31.15,
+          "lines_of_code": 1,
+          "functions_count": 6
+        },
+        {
+          "filename": "jquery.mousewheel-3.0.6.pack.js",
+          "size_kb": 1.35,
+          "lines_of_code": 13,
+          "functions_count": 1
+        },
+        {
+          "filename": "idTabs.js",
+          "size_kb": 2.32,
+          "lines_of_code": 12,
+          "functions_count": 0
+        }
+      ],
+      "code_structure": {},
+      "programming_languages": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
+      "frameworks_detected": [],
+      "total_lines_of_code": 25320,
+      "code_quality_metrics": {
+        "total_files": 63,
+        "average_file_size_kb": 56.17,
+        "code_organization_score": 0
+      }
+    },
+    "interactions": {
+      "forms": [
+        {
+          "action": "https://ak.sv/search",
+          "method": "get",
+          "inputs_count": 1,
+          "has_validation": false
+        },
+        {
+          "action": "https://ak.sv/search",
+          "method": "get",
+          "inputs_count": 1,
+          "has_validation": false
+        },
+        {
+          "action": "https://ak.sv/search",
+          "method": "get",
+          "inputs_count": 1,
+          "has_validation": false
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit",
+          "text": "",
+          "has_onclick": false,
+          "has_id": false
+        },
+        {
+          "type": "button",
+          "text": "",
+          "has_onclick": false,
+          "has_id": false
+        },
+        {
+          "type": "submit",
+          "text": "بحث",
+          "has_onclick": false,
+          "has_id": false
+        }
+      ],
+      "links": [
+        {
+          "href": "https://ak.sv/movies",
+          "text": "أفلام",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/series",
+          "text": "مسلسلات",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/shows",
+          "text": "تلفزيون",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/mix",
+          "text": "منوعات",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://akw.to",
+          "text": "",
+          "target": "",
+          "is_external": true
+        },
+        {
+          "href": "https://www.facebook.com/akwamnet",
+          "text": "",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "https://www.facebook.com/groups/AKOAMweb",
+          "text": "",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "https://akw.net.in/",
+          "text": "",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "https://www.youtube.com/c/AKWAMnetwork",
+          "text": "",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "https://ak.sv/AKWAM-Notifications",
+          "text": "",
+          "target": "_blank",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/contactus",
+          "text": "",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/main",
+          "text": "",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "javascript:;",
+          "text": "الأقسام",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/recent",
+          "text": "أضيف حديثا",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "javascript:;",
+          "text": "",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/profile",
+          "text": "تعديل البروفايل",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/favorite/movies",
+          "text": "قائمتي المفضلة",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/logout",
+          "text": "تسجيل خروج",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/login",
+          "text": "",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/main",
+          "text": "",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/movies",
+          "text": "أفلام",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/series",
+          "text": "مسلسلات",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/shows",
+          "text": "تلفزيون",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/mix",
+          "text": "منوعات",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://akw.to",
+          "text": "",
+          "target": "",
+          "is_external": true
+        },
+        {
+          "href": "https://www.facebook.com/akwamnet",
+          "text": "",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "https://www.facebook.com/groups/AKOAMweb",
+          "text": "",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "https://akw.net.in/",
+          "text": "",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "https://www.youtube.com/c/AKWAMnetwork",
+          "text": "",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "https://ak.sv/AKWAM-Notifications",
+          "text": "",
+          "target": "_blank",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/contactus",
+          "text": "",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv",
+          "text": "اكوام",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/old",
+          "text": "الموقع القديم",
+          "target": "_blank",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/dmca",
+          "text": "DMCA",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak.sv/ad-policy",
+          "text": "AD-P",
+          "target": "",
+          "is_external": false
+        },
+        {
+          "href": "https://ak-news.com",
+          "text": "اكوام نيوز",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "https://akw.net.co",
+          "text": "شبكة اكوام",
+          "target": "_blank",
+          "is_external": true
+        },
+        {
+          "href": "/",
+          "text": "",
+          "target": "_blank",
+          "is_external": false
+        }
+      ],
+      "interactive_elements": [],
+      "javascript_events": [],
+      "user_input_fields": [
+        {
+          "type": "search",
+          "name": "q",
+          "required": false,
+          "placeholder": "ابحث هنا"
+        },
+        {
+          "type": "text",
+          "name": "q",
+          "required": false,
+          "placeholder": ""
+        },
+        {
+          "type": "text",
+          "name": "q",
+          "required": false,
+          "placeholder": ""
+        }
+      ],
+      "navigation_elements": [],
+      "interactivity_score": 60
+    },
+    "broken_links": [
+      "رابط مكسور: https://ak.sv/cdn-cgi/l/email-protection",
+      "رابط مكسور: https://ak.sv/cdn-cgi/l/email-protection",
+      "صورة مكسورة: https://img.akwam.link/uploads/qtpnt.png",
+      "رابط مكسور: https://play.google.com/store/apps/details?id=com.hexagonplay.AKWAMNotifications",
+      "رابط مكسور: https://ak.sv/cdn-cgi/l/email-protection",
+      "رابط مكسور: https://akw.to",
+      "رابط مكسور: https://akw.to",
+      "رابط مكسور: https://akw.to",
+      "رابط مكسور: https://akw.to",
+      "رابط مكسور: https://akw.to",
+      "رابط مكسور: https://akw.to",
+      "رابط مكسور: https://akw.to",
+      "رابط مكسور: https://akw.to",
+      "رابط مكسور: https://akw.to"
+    ],
+    "missing_assets": [],
+    "quality_score": {
+      "overall_score": 60.0,
+      "completeness": 100,
+      "accuracy": 100,
+      "performance": 0,
+      "functionality": 0
+    }
+  },
+  "errors": [],
+  "recommendations": []
+}
