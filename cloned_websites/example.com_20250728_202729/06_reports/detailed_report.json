@@ -1,0 +1,173 @@
+{
+  "metadata": {
+    "target_url": "https://example.com",
+    "extraction_date": "2025-07-28T20:27:58.168717",
+    "duration": 0.0,
+    "success": false
+  },
+  "statistics": {
+    "pages_extracted": 1,
+    "assets_downloaded": 0,
+    "total_size": 0,
+    "errors_count": 0
+  },
+  "technologies": {
+    "cms": "unknown",
+    "frameworks": [],
+    "libraries": [],
+    "analytics": [],
+    "server_technology": "unknown",
+    "hosting_provider": "unknown",
+    "ssl_info": {},
+    "performance_tools": [],
+    "cdn_usage": [],
+    "database_indicators": []
+  },
+  "security_analysis": {
+    "ssl_certificate": {
+      "enabled": true,
+      "protocol": "HTTPS",
+      "secure_connection": true
+    },
+    "security_headers": {
+      "Content-Security-Policy": null,
+      "X-Frame-Options": null,
+      "X-Content-Type-Options": null,
+      "Strict-Transport-Security": null,
+      "X-XSS-Protection": null,
+      "Referrer-Policy": null
+    },
+    "vulnerabilities_detected": [
+      "Missing Content-Security-Policy header",
+      "Missing X-Frame-Options header",
+      "Missing X-Content-Type-Options header",
+      "Missing Strict-Transport-Security header",
+      "Missing X-XSS-Protection header",
+      "Missing Referrer-Policy header"
+    ],
+    "authentication_methods": [],
+    "data_protection_measures": [],
+    "secure_practices": [],
+    "security_score": 30,
+    "recommendations": [
+      "إضافة Content-Security-Policy header للحماية",
+      "إضافة X-Frame-Options header للحماية",
+      "إضافة X-Content-Type-Options header للحماية",
+      "إضافة Strict-Transport-Security header للحماية",
+      "إضافة X-XSS-Protection header للحماية",
+      "إضافة Referrer-Policy header للحماية"
+    ]
+  },
+  "performance_metrics": {
+    "page_load_time": 0.07,
+    "page_size_kb": 1.23,
+    "total_requests": 0,
+    "asset_breakdown": {
+      "images": {
+        "count": 0,
+        "size_kb": 0
+      },
+      "css": {
+        "count": 0,
+        "size_kb": 0
+      },
+      "js": {
+        "count": 0,
+        "size_kb": 0
+      },
+      "other": {
+        "count": 0,
+        "size_kb": 0
+      }
+    },
+    "optimization_opportunities": [],
+    "performance_score": 100,
+    "loading_recommendations": [],
+    "comparison": {
+      "original_load_time": 0.0683135986328125,
+      "replica_load_time": 0,
+      "size_difference": 0,
+      "functionality_preservation": "unknown"
+    }
+  },
+  "ai_analysis": {},
+  "extracted_content": {
+    "site_type": "Business/Corporate Site",
+    "discovered_links": 0,
+    "robots_analysis": {
+      "exists": false
+    },
+    "sitemap_urls": [],
+    "structure_analysis": {
+      "total_pages": 1,
+      "navigation_structure": {},
+      "page_hierarchy": {},
+      "internal_links": [],
+      "external_links": [],
+      "broken_links": [],
+      "sitemap_exists": false,
+      "robots_txt_exists": false,
+      "main_sections": []
+    },
+    "api_endpoints": [],
+    "database_structure": {
+      "database_indicators": [],
+      "data_storage_methods": [],
+      "potential_tables": [],
+      "data_relationships": [],
+      "storage_technologies": [],
+      "data_patterns": []
+    },
+    "source_code_analysis": {
+      "html_files": [
+        {
+          "filename": "index.html",
+          "size_kb": 1.23,
+          "lines_of_code": 46,
+          "elements_count": 13
+        }
+      ],
+      "css_files": [],
+      "js_files": [],
+      "code_structure": {},
+      "programming_languages": [
+        "HTML"
+      ],
+      "frameworks_detected": [],
+      "total_lines_of_code": 46,
+      "code_quality_metrics": {
+        "total_files": 1,
+        "average_file_size_kb": 1.23,
+        "code_organization_score": 100
+      }
+    },
+    "interactions": {
+      "forms": [],
+      "buttons": [],
+      "links": [
+        {
+          "href": "https://www.iana.org/domains/example",
+          "text": "More information...",
+          "target": "",
+          "is_external": true
+        }
+      ],
+      "interactive_elements": [],
+      "javascript_events": [],
+      "user_input_fields": [],
+      "navigation_elements": [],
+      "interactivity_score": 0
+    },
+    "broken_links": [],
+    "missing_assets": [],
+    "quality_score": {
+      "overall_score": 33.0,
+      "completeness": 10.0,
+      "accuracy": 100,
+      "performance": 0,
+      "functionality": 0
+    }
+  },
+  "errors": [],
+  "recommendations": []
+}

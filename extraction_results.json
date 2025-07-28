@@ -1,0 +1,11 @@
+{
+  "extraction_id": 2,
+  "url": "https://example.com",
+  "extraction_type": "advanced",
+  "success": false,
+  "error": "'UnifiedMasterExtractor' object has no attribute 'extract_website_content'",
+  "duration": 33.24,
+  "timestamp": "2025-07-28T20:28:03.031159",
+  "extractor": "UnifiedWebsiteExtractor_Advanced",
+  "partial_results": {
+    "cloner_pro": 
