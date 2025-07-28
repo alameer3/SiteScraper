@@ -1,0 +1,7 @@
+{
+  "database_file": "cloned_site.db",
+  "type": "sqlite",
+  "tables_created": 1,
+  "setup_date": "2025-07-28T20:32:55.646172",
+  "connection_string": "sqlite:///cloned_websites/ak.sv_20250728_203147/07_databases/cloned_site.db"
+}

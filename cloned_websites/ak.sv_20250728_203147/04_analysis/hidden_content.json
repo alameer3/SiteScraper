@@ -1,0 +1,3008 @@
+[
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "index.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "index.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<p style=\"color:#fff\" class=\"text-center container\">\nالموقع الأصلي الوحيد  https://akwam.to الذي يستخدمه الجميع او ما يوجهك اليه هذا النطاق فقط\n<br />\nكن على علم ان هناك مواقع مزيفة اخرى مثل (info - online - vip) الخ التي تستخدم و تسرق تصميمنا و اسمنا.\n</p>",
+    "file": "index.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "index.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "index.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "index.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "index.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/4f2gT.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/92298.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Zupcj.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KogC3.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/S3ywr.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/TiYPC.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/J0AF8.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/gk2fl.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/bSO7K.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/vGVxu.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/1nPPx.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/eygQR.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/MYSXJ.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/9ZeGC.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/F41b1.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Yt2fR.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/5fl6g.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Z2Djf.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/iQofs.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/kML8m.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/SwV6F.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/NREAm.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/ji8IC.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/CpODl.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/t29Jg.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KjkyE.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/dxaq6.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/rbjKc.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/IAQGD.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Ak4WI.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/aTLJy.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/RDKaF.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/VzLhn.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/d2NsW.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/MeoMr.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/mEJy8.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/6rIzk.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/b2L2I.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/YkIEU.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/BO2bX.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Jz8aY.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/8Zsxa.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Qk03u.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/xyWLs.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/BPvzy.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/xaNzd.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KYALg.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Y6eKM.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/51yAS.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/wGggL.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/UUtXq.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/AeGDz.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KVFtC.jpg\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/weoEZ.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/oBFxA.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Eevtz.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/mKbBt.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/A0Bb9.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/DkFxA.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/jlrrn.webp\"/>\n      </svg>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "recent.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "profile.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/S3ywr.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/eygQR.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Ak4WI.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/d2NsW.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/xaNzd.webp\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/QCB9U.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/xX2pQ.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Oqekr.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/FXbHs.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/04oro.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/rhvia.jpeg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/4v9Hg.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/33eBI.webp\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/l82jq.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/BSUm7.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/87ptW.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/PXICk.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/lVhrm.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/UZaSw.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/3khnD.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/I7lL4.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/cZ79M.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/UZaSw.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/xlEZT.jpg\"/>\n      </svg>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "shows.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "الأقسامالبرامج التلفزيونيةالبرامج الوثائقيةالمسرحياتالمصارعة الحرة",
+    "file": "shows.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "التصنيفرمضانNETFLIXTalk showStand Upكوميديترفيهياجتماعيجريمةحواريدرامافنيدينيكاميرا خفيةسيرة ذاتيةتاريخيمسابقات",
+    "file": "shows.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "التقييم+1+2+3+4+5+6+7+8+9",
+    "file": "shows.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "سنة الإنتاج200212026202520242023202220212020201920182017201620152014201320122011201020092008200720062005200420032002200120001999199819971996199519941993199219911990198919881987198619851984198319821981",
+    "file": "shows.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "الجودةBluRayWebRipBRRIPDVDripDVDSCRHDHDTSHDTVCAMWEB-DLHDTCBDRIPHDRIPHC HDRIP",
+    "file": "shows.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "الدقة240p360p480p720p1080p3D4K",
+    "file": "shows.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/KrvOM.jpg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/KrvOM.jpg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/cU3Wm.webp\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/cU3Wm.webp\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/khj99.jpeg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/khj99.jpeg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/rbjKc.webp\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/rbjKc.webp\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/nQh6A.jpg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/nQh6A.jpg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/pWAc8.jpg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/pWAc8.jpg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/7qBEA.jpg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/7qBEA.jpg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/BgvPP.jpg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/BgvPP.jpg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/6ECRL.jpeg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/6ECRL.jpeg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/vg3hV.jpg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/vg3hV.jpg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/bGttw.jpg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/bGttw.jpg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/sapgq.jpg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/sapgq.jpg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/vqBxm.jpg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/vqBxm.jpg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n                      <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/270x400/uploads/etRvr.jpg\"/>\n                    </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<img src=\"https://img.downet.net/thumb/270x400/placeholder.png\" data-src=\"https://img.downet.net/thumb/270x400/uploads/etRvr.jpg\" class=\"lazy\" alt=\"\">",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/4f2gT.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/92298.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Zupcj.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KogC3.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/TiYPC.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/J0AF8.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/gk2fl.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/bSO7K.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/vGVxu.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/1nPPx.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/F41b1.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Z2Djf.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/iQofs.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/NREAm.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/ji8IC.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/CpODl.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/t29Jg.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KjkyE.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/BY6AP.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KVFtC.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/pnv2S.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/ZAzlj.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/p0gDg.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Jk27N.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KrvOM.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/MYSXJ.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/9ZeGC.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/kML8m.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/MIoGr.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Rvg5J.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/S3ywr.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/eygQR.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Ak4WI.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/d2NsW.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/xaNzd.webp\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/QCB9U.jpg\"/>\n      </svg>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "main.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "svg",
+    "content": "",
+    "file": "main.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "favorite_movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "ad-policy.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/VoxAs.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/1qeQA.png\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/V8z5i.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/LGKBK.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/eoRyn.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Vp09x.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/IMDCI.jpeg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/pWwpe.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/4eBla.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/af1vE.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/P12A9.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/EBGyw.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/aUvFt.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/t9Onz.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/lI7SE.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Q9tLz.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Cn7BM.png\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/QmKoX.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/gZn4q.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/f2z3M.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/oAVmD.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/jrxRh.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/gE95d.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/8whRe.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/838uQ.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/6cpXE.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/g6r60.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KZnRy.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/nx7Ib.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Hf3pE.jpg\"/>\n      </svg>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "mix.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "الأقسامالقران الكريماسلاميات و اناشيدالكتب و الابحاثرياضةالصور و الخلفياتفيديو كليبموسيقىالمسلسلات الاذاعية",
+    "file": "mix.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "التصنيف",
+    "file": "mix.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "سنة الإنتاج20232022202120202019201820172013201220102008200719901952",
+    "file": "mix.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "التقييم+1+2+3+4+5+6+7+8+9",
+    "file": "mix.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "الجودة240p360p480p720p1080p3D4KHD 720p480p360p",
+    "file": "mix.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "login.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "contactus.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "logout.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/4f2gT.jpg\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/92298.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Zupcj.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KogC3.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/TiYPC.jpg\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/J0AF8.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/gk2fl.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/bSO7K.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/vGVxu.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/1nPPx.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/F41b1.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Z2Djf.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/iQofs.jpg\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/NREAm.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/ji8IC.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/CpODl.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/t29Jg.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KjkyE.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/dxaq6.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/rbjKc.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/IAQGD.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/RDKaF.jpg\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/VzLhn.jpg\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/b2L2I.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/YkIEU.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/BO2bX.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Jz8aY.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/8Zsxa.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Qk03u.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/xyWLs.webp\"/>\n      </svg>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "movies.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "القسمعربياجنبيهنديتركياسيوي",
+    "file": "movies.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "التصنيفرمضانانمياكشنمدبلجNETFLIXكوميدياثارةغموضعائلياطفالحربيرياضيقصيرفانتازياخيال علميموسيقىسيرة ذاتيةوثائقيرومانسيتاريخيدرامارعبجريمةمغامرةغربي",
+    "file": "movies.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "التقييم+1+2+3+4+5+6+7+8+9",
+    "file": "movies.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "سنة الإنتاج202520242023202220212020201920182017201620152014201320122011201020092008200720062005200420032002200120001999199819971996199519941993199219911990198919881987198619851984198319821981198019791",
+    "file": "movies.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "اللغةالعربيةالإنجليزيةالهنديةالاسبانيةالصينيةالبرتغاليةالفرنسيةالروسيةاليابانيةالألمانيةالكوريةالفارسيةالفيتناميةالإيطاليةالتركيةالبولنديةالأوكرانيةالفلنديةالتايلانديةالدنماركيةالسويديةالإندونيسيةالما",
+    "file": "movies.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "الجودةBluRayWebRipBRRIPDVDripDVDSCRHDHDTSHDTVCAMWEB-DLHDTCBDRIPHDRIPHC HDRIP",
+    "file": "movies.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "الدقة240p360p480p720p1080p3D4K",
+    "file": "movies.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<meta name='revisit-after' content='1 hours'>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Twitter Card data",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Open Graph data",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Add Support For IE",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Make Page Responsive and not zoomable On Mobile Screens",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script src=\"https://ak.sv/old/scripts/site/js/custom.js\" type=\"text/javascript\"></script>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li class=\"community\"><a data-tipsy=\"tipsy-n\" data-title=\"مجتمع اكوام\" target=\"_blank\" href=\"http://community.akwam.org\"><h4>مجتمع اكوام</h4></a></li>\n                            <li class=\"news\"><a data-tipsy=\"tipsy-n\" data-title=\"الاخبار والدروس\" href=\"https://ak.sv/old/news\"><h4>اخبار اكوام</h4></a></li>\n                            <li class=\"live\"><a data-tipsy=\"tipsy-n\" data-title=\"بث مباشر\" href=\"https://ak.sv/old/live\"><h4>بث مباشر</h4></a></li>\n                            <li class=\"tv\"><a data-tipsy=\"tipsy-n\" data-title=\"تلفزيون اكوام\" href=\"https://ak.sv/old/tv\"><h4>تلفزيون اكوام</h4></a></li>\n                            <li class=\"radio\"><a data-tipsy=\"tipsy-n\" data-title=\"راديو اكوام\" href=\"https://ak.sv/old/radio\"><h4>راديو اكوام </h4></a></li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li class=\"header_add_sub\"><a data-tipsy=\"tipsy-n\" data-title=\"طلب اضافة مادة\" href=\"http://community.akwam.org/forum/%D8%A7%D9%82%D8%B3%D8%A7%D9%85-%D8%A7%D9%84%D8%B7%D9%84%D8%A8%D8%A7%D8%AA-%D9%88-%D8%A7%D9%84%D8%AF%D8%B9%D9%85-%D8%A7%D9%84%D9%81%D9%86%D9%8A/%D9%82%D8%B3%D9%85-%D8%B7%D9%84%D8%A8%D8%A7%D8%AA-%D9%88-%D8%A7%D9%82%D8%AA%D8%B1%D8%A7%D8%AD%D8%A7%D8%AA-%D8%A7%D9%84%D9%85%D9%88%D8%A7%D8%AF\"><h4>طلب موضوع</h4></a></li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li  class=\"bottom_community\"><a data-tipsy=\"tipsy-n\" data-title=\"مجتمع اكوام\" target=\"_blank\" href=\"http://community.akwam.org\"><h4>مجتمع اكوام</h4></a></li>\n                                    <li class=\"bottom_news\"><a data-tipsy=\"tipsy-n\" data-title=\"الاخبار والدروس\" href=\"< ?= base_url() ?>news\"><h4>اخبار اكوام</h4></a></li>\n                                    <li class=\"bottom_live\"><a data-tipsy=\"tipsy-n\" data-title=\"بث مباشر\" href=\"< ?= base_url() ?>live\"><h4>بث مباشر</h4></a></li>\n                                    <li class=\"bottm_tv\"><a data-tipsy=\"tipsy-n\" data-title=\"تلفزيون اكوام\" href=\"< ?= base_url() ?>tv\"><h4>تلفزيون اكوام</h4></a></li>\n                                    <li class=\"bottom_radio\"><a  data-tipsy=\"tipsy-n\" data-title=\"راديو اكوام\" href=\"< ?= base_url() ?>radio\"><h4>راديو اكوام</h4></a></li>\n                                    <li class=\"bottom_panorama\"><a  data-tipsy=\"tipsy-n\" data-title=\"بانوراما\" href=\"< ?= base_url() ?>panorama\"><h4>بانوراما</h4></a></li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<ul class=\"header_bottom_services\">\n                                    <li class=\"add_sub\"><a data-tipsy=\"tipsy-n\" data-title=\"طلب اضافة مادة\" href=\"http://community.akwam.org/forum/%D8%A7%D9%82%D8%B3%D8%A7%D9%85-%D8%A7%D9%84%D8%B7%D9%84%D8%A8%D8%A7%D8%AA-%D9%88-%D8%A7%D9%84%D8%AF%D8%B9%D9%85-%D8%A7%D9%84%D9%81%D9%86%D9%8A/%D9%82%D8%B3%D9%85-%D8%B7%D9%84%D8%A8%D8%A7%D8%AA-%D9%88-%D8%A7%D9%82%D8%AA%D8%B1%D8%A7%D8%AD%D8%A7%D8%AA-%D8%A7%D9%84%D9%85%D9%88%D8%A7%D8%AF\"><h4>طلب موضوع</h4></a></li>\n                                    <li class=\"channel_contact\"><a data-tipsy=\"tipsy-n\" data-title=\"قنوات الدعم الفني\" href=\"< ?= base_url() ?>support\"><h4>قنوات التواصل</h4></a></li>\n                                    <li class=\"callus\"><a data-tipsy=\"tipsy-n\" data-title=\"اتصل بنا\" href=\"< ?= base_url() ?>contactus\"><h4>اتصل بنا </h4></a></li>\n                                    <li class=\"advertiseoo\"><a data-tipsy=\"tipsy-n\" data-title=\"الاعلان بالموقع\" href=\"< ?= base_url() ?>ad\"><h4>اعلن معنا</h4></a></li>\n                                </ul>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<div id='fb-root'></div>\n            <script>(function(d, s, id) {\n                    var js, fjs = d.getElementsByTagName(s)[0];\n                    if (d.getElementById(id))\n                        return;\n                    js = d.createElement(s);\n                    js.id = id;\n                    js.src = '//connect.facebook.net/ar_AR/all.js#xfbml=1';\n                    fjs.parentNode.insertBefore(js, fjs);\n                }(document, 'script', 'facebook-jssdk'));</script>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<ul class=\"main_menu_partions\">\n<li class=\"main_community\">\n<a target=\"_blank\" href=\"http://community.akwam.org\">مجتمع اكوام\n</a>\n</li>\n<li class=\"main_tv\">\n<a href=\"https://ak.sv/old/tv\">اكوام TV\n</a>\n</li>\n<li class=\"main_news\">\n<a href=\"https://ak.sv/old/news\"> الأخبار والدروس\n</a>\n</li>\n<li class=\"main_radio\">\n<a href=\"https://ak.sv/old/radio\">راديو أكوام\n</a>\n</li>\n</ul>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li class=\"featured\">\n<a href=\"\" id='featured_anchor'>المميزة\n</a>\n</li>\n<script>$(\"#featured_anchor\").click(function(a){a.preventDefault();$(\"body\").animate({scrollTop:$(\".featured_title\").offset().top-50},500)});</script>\n<li class=\"movies\">\n<a href=\"\">الافلام\n</a>\n</li>\n<script>$(\".movies a\").click(function(a){a.preventDefault();$(\"body\").animate({scrollTop:$(\"#aflam_box\").offset().top-50},500)});</script>\n<li class=\"series\">\n<a href=\"\">المسلسلات\n</a>\n</li>\n<script>$(\".series a\").click(function(a){a.preventDefault();$(\"body\").animate({scrollTop:$(\"#series_box\").offset().top-50},500)});</script>\n<li class=\"tv_programs\">\n<a href=\"\">المسلسلات\n</a>\n</li>\n<script>$(\".tv_programs a\").click(function(a){a.preventDefault();$(\"body\").animate({scrollTop:$(\"#tv_programs_box\").offset().top-50},500)});</script>\n<li class=\"games\">\n<a href=\"\">الالعاب\n</a>\n</li>\n<script>$(\".games a\").click(function(a){a.preventDefault();$(\"body\").animate({scrollTop:$(\"#games_box\").offset().top-50},500)});</script>\n<li class=\"prgormas\">\n<a href=\"\">البرامج\n</a>\n</li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://khsm.io\" target=\"_blank\"><img src=\"https://akwam.link/uploads/KQ0h8.jpg\" alt=\"click\"></a>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "هنا تقوم بإضافة الكود",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<center>\n<a href=\"https://khsm.io\" target=\"_blank\"><img src=\"https://akwam.link/uploads/2X2Xn.jpg\" alt=\"click\"></a> \n\n</center>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<iframe width=\"65%\" height=\"65%\" src=\"https://www.youtube.com/embed/7lx0mTdleDM\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li  class=\"bottom_community\"><a data-tipsy=\"tipsy-n\" data-title=\"مجتمع اكوام\" target=\"_blank\" href=\"http://community.akwam.org\">مجتمع اكوام</a></li>\n            <li class=\"bottom_news\"><a data-tipsy=\"tipsy-n\" data-title=\"الاخبار والدروس\" href=\"< ?= base_url() ?>news\">اخبار اكوام</a></li>\n            <li class=\"bottom_live\"><a data-tipsy=\"tipsy-n\" data-title=\"بث مباشر\" href=\"< ?= base_url() ?>live\">بث مباشر</a></li>\n            <li class=\"bottm_tv\"><a data-tipsy=\"tipsy-n\" data-title=\"تلفزيون اكوام\" href=\"< ?= base_url() ?>tv\">تلفزيون اكوام</a></li>\n            <li class=\"bottom_radio\"><a data-tipsy=\"tipsy-n\" data-title=\"راديو اكوام\" href=\"< ?= base_url() ?>radio\">راديو اكوام</a></li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li class=\"add_sub\"><a data-tipsy=\"tipsy-n\" data-title=\"طلب اضافة مادة\" href=\"\">طلب موضوع</a></li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li class=\"channel_contact\"><a data-tipsy=\"tipsy-n\" data-title=\"قنوات الدعم الفني\" href=\"< ?= base_url() ?>support\">قنوات التواصل</a></li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li class=\"advertiseoo\"><a data-tipsy=\"tipsy-n\" data-title=\"الاعلان بالموقع\" href=\"< ?= base_url() ?>ad\">اعلن معنا</a></li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://facebook.com/AKWAM.NET\" target=\"_blank\">",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li class=\"footer_twitter\">\n                    <a href=\"https://twitter.com/AKOAMsocial\" target=\"_blank\">\n                        <span>اكوام تويتر  </span>\n                        <span> 44923 متابع</span>\n                    </a>\n                </li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li class=\"footer_youtube\">\n                    <a href=\"https://youtube.com/akoamdotcom\" target=\"_blank\">\n                        <span >اكوام يوتيوب </span>\n                        <span>3211 إشتراك</span>\n                    </a>\n                </li>\n                <li class=\"footer_sc\">\n                    <a href=\"https://soundcloud.com/AKOAMnetwork\" target=\"_blank\">\n                        <span>اكوام ساوند كلاود  </span>\n                        <span> 1996 متابع</span>\n                    </a>\n                </li>\n                <li class=\"footer_gplus\">\n                    <a href=\"https://plus.google.com/+akoamdotcom/posts\" target=\"_blank\">\n                        <span>اكوام جوجل بلس  </span>\n                        <span> 2930 متابع</span>\n                    </a>\n                </li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<div class=\"footer_statices\">\n            <ul>\n                <li class=\"footer_download\">\n                    <span>193886803</span>\n                    <span>عدد التحميلات</span>\n\n\n                </li>\n                <li class=\"footer_sub\">\n                    <span>68826</span>\n                    <span>عدد المواضيع</span>\n\n\n                </li>\n            </ul>\n        </div>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li><a data-tipsy=\"tipsy-n\" data-title=\"القران الكريم \" href=\"< ?= base_url() ?>quraan\">القران الكريم </a></li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<li><a data-tipsy=\"tipsy-n\" data-title=\"القران الكريم \" href=\"< ?= base_url() ?>quraan\">القران الكريم </a></li>\n                <li><a  href=\"< ?= base_url() ?>message\">رسالة الموقع</a></li>\n                <li><a href=\"< ?= base_url() ?>DMCA\">DMCA</a></li>\n                 <li><a href=\"< ?= base_url() ?>key\">مفتاح الموقع</a></li>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Global site tag (gtag.js) - Google Analytics",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "الكود الخاص",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php\nif($_SERVER['REMOTE_ADDR'] == '188.161.110.48'){\n     $this->output->enable_profiler(true);\n}  \n?>",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "monetag",
+    "file": "old.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "ul",
+    "content": "الأفلام العربيةالمسلسلات العربيةالأفلام الاجنبيةالمسلسلات الاجنبيةالافلام الهنديةالمسلسلات المدبلجةالبرامج التلفزيونيةالمسلسلات الاسيويةالمصارعة الحرةالانميمسرحياتاسلاميات و اناشيدافلام وثائقيةاخرى",
+    "file": "old.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "div",
+    "content": "",
+    "file": "old.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "h1",
+    "content": "اكوام - موقع التحميل و المشاهدة العربي الاول",
+    "file": "old.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "AKWAM-Notifications.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "dmca.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/BY6AP.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KVFtC.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/pnv2S.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/ZAzlj.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/p0gDg.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Jk27N.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KrvOM.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/MYSXJ.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/9ZeGC.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/kML8m.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/MIoGr.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Rvg5J.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Yt2fR.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/5fl6g.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/cU3Wm.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/SwV6F.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/khj99.jpeg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/e4TTL.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/fjiUb.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/CKe7n.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/qDtCA.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/aTLJy.webp\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/JJsFz.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/w4CQd.jpg\"/>\n      </svg>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "series.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "القسمعربياجنبيهنديتركياسيوي",
+    "file": "series.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "التصنيفرمضانانمياكشنمدبلجNETFLIXكوميدياثارةغموضعائلياطفالحربيرياضيقصيرفانتازياخيال علميموسيقىسيرة ذاتيةوثائقيرومانسيتاريخيدرامارعبجريمةمغامرةغربي",
+    "file": "series.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "التقييم+1+2+3+4+5+6+7+8+9",
+    "file": "series.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "سنة الإنتاج204520252024202320222021202020192018201720162015201420132012201120102009200820072006200520042003200220012000199919981997199619951994199319921991199019891988198719861985198419831982198119801",
+    "file": "series.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "اللغةالعربيةالإنجليزيةالهنديةالاسبانيةالصينيةالبرتغاليةالفرنسيةالروسيةاليابانيةالألمانيةالكوريةالإيطاليةالتركيةالبولنديةالأوكرانيةالفلنديةالتايلانديةالدنماركيةالإندونيسيةالنرويجيةالسويديةالهولنديةالمج",
+    "file": "series.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "الجودةBluRayWebRipBRRIPDVDripDVDSCRHDHDTSHDTVCAMWEB-DLHDTCBDRIPHDRIPHC HDRIP",
+    "file": "series.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "select",
+    "content": "الجودة240p360p480p720p1080p3D4K",
+    "file": "series.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/QAepL.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/DB8Qe.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/PwxNZ.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/icuMa.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/m2WrN.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/jMnP7.jpeg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/vDONf.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/dXwvz.webp\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/5Yr4N.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/inA7M.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/y4sre.jpeg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/iLtsK.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/C06dL.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/b0EO9.jpeg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/2MvoF.jpeg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/k0XRR.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/oScFw.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/FHgGK.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/aiJin.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/fP3QR.jpg\"/>\n      </svg>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "svg",
+    "content": "",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "div",
+    "content": "مشاهدةتحميل1.1 GB",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "div",
+    "content": "رابط الصفحةالبريد الإلكتروني (اختياري)السببمشكلة في رابط التحميل المباشرمشكلة في رابط المشاهدة المباشرةمشكلة عدم توافق الترجمةمشكلة تقنية في الصوت او الصورةمشكلة تحريرية في الموضوع او الصورطلب تحديث ج",
+    "file": "movie_9948_bulletproof-monk.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/ao4O3.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/fl0uW.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/4j2FU.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/O48zo.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/1dYmL.jpeg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/dH4pK.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/TfEzF.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/msF8M.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/OuK1a.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/HwDzU.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/wKYUU.jpeg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/iSJ3L.jpeg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/EHpL6.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/iszfG.jpeg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Ouu7M.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/IszQA.jpeg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/oHEBa.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/lI8bS.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/hhlYC.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/6vUAi.jpg\"/>\n      </svg>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "svg",
+    "content": "",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "div",
+    "content": "مشاهدةتحميل1.7 GB",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "div",
+    "content": "رابط الصفحةالبريد الإلكتروني (اختياري)السببمشكلة في رابط التحميل المباشرمشكلة في رابط المشاهدة المباشرةمشكلة عدم توافق الترجمةمشكلة تقنية في الصوت او الصورةمشكلة تحريرية في الموضوع او الصورطلب تحديث ج",
+    "file": "movie_9964_gazer.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/IIpOg.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/PvJ6Z.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/vUVXk.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/GNsMz.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Aq9Yd.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/XPQNn.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/HJu4b.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/t8oIf.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/BKAcw.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/rsRHu.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/EIi8L.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/QuZHl.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/fmlNt.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/KRvWy.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/ulnUx.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/paHDB.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/K4AhJ.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Otltb.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/SnOO6.jpg\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/DkFxA.webp\"/>\n      </svg>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "svg",
+    "content": "",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "div",
+    "content": "مشاهدةتحميل1.3 GB",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "div",
+    "content": "رابط الصفحةالبريد الإلكتروني (اختياري)السببمشكلة في رابط التحميل المباشرمشكلة في رابط المشاهدة المباشرةمشكلة عدم توافق الترجمةمشكلة تقنية في الصوت او الصورةمشكلة تحريرية في الموضوع او الصورطلب تحديث ج",
+    "file": "movie_9969_الحب-مجرد-لحظة-مدبلج.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<script type=\"application/ld+json\">\n    {\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"url\":\"https://ak.sv/main\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":\"https://ak.sv/search?q={search_term_string}\",\"query-input\":\"required name=search_term_string\"}]}\n  </script>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "#header",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/vvHRc.jpeg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/NlfZz.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/NCPnD.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Cybod.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/Cu4xH.jpeg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/55lCo.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/6gM6h.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/dyYtr.jpeg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/rdcvu.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/U9KxC.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/wgE6Q.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/ueVgm.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/zb5ok.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/sWG6l.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/LweWp.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/v41CK.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/m76cV.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/t2uMn.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/9FC4Y.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<svg>\n        <image x=\"0\" y=\"0\" filter=\"url(#blur-effect-1)\" xlink:href=\"https://img.downet.net/thumb/178x260/uploads/bL1GH.jpg\"/>\n      </svg>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://akwam.to/AKWAM-Notifications\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/AKWAM-Notifications.png\" class=\"img-fluid\" alt=\"إشعارات اكوام\">\n  </a>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "<a href=\"https://old.akwam.to\" target=\"_blankx\" class=\"akoam-old\">\n    <img src=\"/style/assets/images/akoam-old.png\" class=\"img-fluid\" alt=\"موقع اكوام القديم\">\n  </a>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/activerevenue.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/propellerads.txt');\n//require ('files/khsm1.txt');\n} \n?>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "[if lt IE 9]>\n<script src=\"https://ak.sv/style/assets/js/html5shiv.js\"></script>\n<![endif]",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Google tag (gtag.js)",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  START  (aync)",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "Histats.com  END",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "رسالة متصفح الفيس",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "html_comment",
+    "content": "< ?php \n$result_random = rand(1,8); \nif($result_random <= 2){ \nrequire ('files/propellerads.txt');\n} \nelse if($result_random <= 4){ \nrequire ('files/propellerads2.txt');\n}\nelse if($result_random <= 6){ \nrequire ('files/activerevenue.txt');\n}\nelse { \nrequire ('files/activerevenue.txt');\n} \n?>",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "svg",
+    "content": "",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "div",
+    "content": "مشاهدةتحميل1.2 GB",
+    "file": "movie_9982_your-monster.html"
+  },
+  {
+    "type": "hidden_element",
+    "tag": "div",
+    "content": "رابط الصفحةالبريد الإلكتروني (اختياري)السببمشكلة في رابط التحميل المباشرمشكلة في رابط المشاهدة المباشرةمشكلة عدم توافق الترجمةمشكلة تقنية في الصوت او الصورةمشكلة تحريرية في الموضوع او الصورطلب تحديث ج",
+    "file": "movie_9982_your-monster.html"
+  }
+]
