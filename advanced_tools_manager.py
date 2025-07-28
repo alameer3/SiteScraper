@@ -6,7 +6,7 @@ import asyncio
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 import requests
 from bs4 import BeautifulSoup
 
@@ -345,7 +345,7 @@ class AdvancedToolsManager:
             'status': 'ready'
         }
     
-    def extract_with_cloner_pro(self, url: str, config: Dict[str, Any] = None) -> Dict[str, Any]:
+    def extract_with_cloner_pro(self, url: str, config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """استخراج متقدم باستخدام Website Cloner Pro"""
         if config is None:
             config = {}
@@ -375,7 +375,7 @@ class AdvancedToolsManager:
                 'url': url
             }
     
-    def analyze_with_ai(self, url: str, content: str = None) -> Dict[str, Any]:
+    def analyze_with_ai(self, url: str, content: Optional[str] = None) -> Dict[str, Any]:
         """تحليل باستخدام الذكاء الاصطناعي"""
         try:
             if not content:
@@ -413,7 +413,7 @@ class AdvancedToolsManager:
                 'url': url
             }
     
-    def extract_with_spider(self, url: str, config: Dict[str, Any] = None) -> Dict[str, Any]:
+    def extract_with_spider(self, url: str, config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """استخراج باستخدام Spider Crawler"""
         if config is None:
             config = {'max_depth': 2, 'max_pages': 10}
@@ -450,11 +450,12 @@ class AdvancedToolsManager:
                     # العثور على روابط جديدة
                     if len(extracted_data) < config.get('max_pages', 10):
                         for link in soup.find_all('a', href=True):
-                            href = link['href']
-                            full_url = urljoin(current_url, href)
-                            if urlparse(full_url).netloc == urlparse(url).netloc:
-                                if full_url not in visited and full_url not in to_visit:
-                                    to_visit.append(full_url)
+                            href = link.get('href')
+                            if href and isinstance(href, str):
+                                full_url = urljoin(current_url, href)
+                                if urlparse(full_url).netloc == urlparse(url).netloc:
+                                    if full_url not in visited and full_url not in to_visit:
+                                        to_visit.append(full_url)
                                     
                 except Exception as e:
                     continue
@@ -473,7 +474,7 @@ class AdvancedToolsManager:
                 'url': url
             }
     
-    def download_assets(self, url: str, asset_types: list = None) -> Dict[str, Any]:
+    def download_assets(self, url: str, asset_types: Optional[List[str]] = None) -> Dict[str, Any]:
         """تحميل أصول الموقع (CSS, JS, Images)"""
         if asset_types is None:
             asset_types = ['css', 'js', 'images']
@@ -497,7 +498,7 @@ class AdvancedToolsManager:
             if 'css' in asset_types:
                 for link in soup.find_all('link', rel='stylesheet'):
                     href = link.get('href')
-                    if href:
+                    if href and isinstance(href, str):
                         full_url = urljoin(url, href)
                         assets['css'].append({
                             'url': full_url,
@@ -508,7 +509,7 @@ class AdvancedToolsManager:
             if 'js' in asset_types:
                 for script in soup.find_all('script', src=True):
                     src = script.get('src')
-                    if src:
+                    if src and isinstance(src, str):
                         full_url = urljoin(url, src)
                         assets['js'].append({
                             'url': full_url,
@@ -519,11 +520,14 @@ class AdvancedToolsManager:
             if 'images' in asset_types:
                 for img in soup.find_all('img', src=True):
                     src = img.get('src')
-                    if src:
+                    if src and isinstance(src, str):
                         full_url = urljoin(url, src)
+                        alt_text = img.get('alt', '')
+                        if not isinstance(alt_text, str):
+                            alt_text = ''
                         assets['images'].append({
                             'url': full_url,
-                            'alt': img.get('alt', ''),
+                            'alt': alt_text,
                             'size': 'unknown'
                         })
             

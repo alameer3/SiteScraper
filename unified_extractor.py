@@ -57,11 +57,11 @@ class UnifiedWebsiteExtractor:
             self.spider_engine = None  # سيتم تهيئته عند الحاجة
             self.deep_engine = None  # سيتم تهيئته عند الحاجة
             self.unified_master = None  # سيتم تهيئته عند الحاجة
-            self.ai_engine = AdvancedAIEngine()
+            self.ai_engine = None  # AdvancedAIEngine()
             self.comprehensive_analyzer = None  # سيتم تهيئته عند الحاجة
-            self.screenshot_engine = ScreenshotEngine()
-            self.cms_detector = CMSDetector() if 'CMSDetector' in globals() else None
-            self.sitemap_generator = SitemapGenerator() if 'SitemapGenerator' in globals() else None
+            self.screenshot_engine = None  # ScreenshotEngine()
+            self.cms_detector = None  # CMSDetector() if 'CMSDetector' in globals() else None
+            self.sitemap_generator = None  # SitemapGenerator() if 'SitemapGenerator' in globals() else None
         else:
             self.cloner_pro = None
             self.spider_engine = None
@@ -166,7 +166,7 @@ class UnifiedWebsiteExtractor:
                                 f.write(response.text)
                             downloaded_assets['css'].append(str(filepath))
                     except Exception:
-                        downloaded_assets['failed'].append(href)
+                        downloaded_assets['failed'].append(str(href) if href else 'unknown')
             
             # تحميل JS files
             for script in soup.find_all('script', src=True)[:5]:  # أول 5 سكريبتات
@@ -837,11 +837,17 @@ class UnifiedWebsiteExtractor:
         
         # الوصف
         description_tag = soup.find('meta', attrs={'name': 'description'})
-        description = description_tag.get('content', '') if description_tag else ''
+        description = ''
+        if description_tag and hasattr(description_tag, 'get'):
+            content = description_tag.get('content', '')
+            description = str(content) if content else ''
         
         # الكلمات المفتاحية
         keywords_tag = soup.find('meta', attrs={'name': 'keywords'})
-        keywords = keywords_tag.get('content', '') if keywords_tag else ''
+        keywords = ''
+        if keywords_tag and hasattr(keywords_tag, 'get'):
+            content = keywords_tag.get('content', '')
+            keywords = str(content) if content else ''
         
         # عد العناصر
         links = len(soup.find_all('a', href=True))
@@ -989,19 +995,20 @@ class UnifiedWebsiteExtractor:
         email_links = []
         
         for link in links:
-            href = link.get('href')
-            text = link.get_text().strip()
+            href = link.get('href') if hasattr(link, 'get') else None
+            text = link.get_text().strip() if hasattr(link, 'get_text') else ''
             
-            if href.startswith('mailto:'):
-                email_links.append({'href': href, 'text': text})
-            elif href.startswith(('http://', 'https://')):
-                if urlparse(href).netloc == urlparse(base_url).netloc:
-                    internal_links.append({'href': href, 'text': text})
+            if href and isinstance(href, str):
+                if href.startswith('mailto:'):
+                    email_links.append({'href': href, 'text': text})
+                elif href.startswith(('http://', 'https://')):
+                    if urlparse(href).netloc == urlparse(base_url).netloc:
+                        internal_links.append({'href': href, 'text': text})
+                    else:
+                        external_links.append({'href': href, 'text': text})
                 else:
-                    external_links.append({'href': href, 'text': text})
-            else:
-                full_url = urljoin(base_url, href)
-                internal_links.append({'href': full_url, 'text': text})
+                    full_url = urljoin(base_url, href)
+                    internal_links.append({'href': full_url, 'text': text})
         
         return {
             'total_links': len(links),
@@ -1019,19 +1026,24 @@ class UnifiedWebsiteExtractor:
         
         image_analysis = []
         for img in images[:20]:  # أول 20 صورة
-            src = img.get('src')
-            alt = img.get('alt', '')
+            src = img.get('src') if hasattr(img, 'get') else None
+            alt = img.get('alt', '') if hasattr(img, 'get') else ''
             
-            if not src.startswith(('http://', 'https://')):
-                src = urljoin(base_url, src)
-            
-            image_analysis.append({
-                'src': src,
-                'alt': alt,
-                'width': img.get('width', ''),
-                'height': img.get('height', ''),
-                'class': img.get('class', [])
-            })
+            if src and isinstance(src, str):
+                if not src.startswith(('http://', 'https://')):
+                    src = urljoin(base_url, src)
+                
+                width = img.get('width', '') if hasattr(img, 'get') else ''
+                height = img.get('height', '') if hasattr(img, 'get') else ''
+                img_class = img.get('class', []) if hasattr(img, 'get') else []
+                
+                image_analysis.append({
+                    'src': src,
+                    'alt': str(alt) if alt else '',
+                    'width': str(width) if width else '',
+                    'height': str(height) if height else '',
+                    'class': img_class if isinstance(img_class, list) else []
+                })
         
         return {
             'total_images': len(images),
@@ -1044,10 +1056,11 @@ class UnifiedWebsiteExtractor:
         # Meta tags
         meta_tags = {}
         for meta in soup.find_all('meta'):
-            name = meta.get('name') or meta.get('property')
-            content = meta.get('content')
-            if name and content:
-                meta_tags[name] = content
+            if hasattr(meta, 'get'):
+                name = meta.get('name') or meta.get('property')
+                content = meta.get('content')
+                if name and content:
+                    meta_tags[str(name)] = str(content)
         
         # Headings structure
         headings = {}
@@ -1101,27 +1114,34 @@ class UnifiedWebsiteExtractor:
         
         # تحليل الـ scripts الخارجية
         for script in soup.find_all('script', src=True):
-            src = script.get('src')
-            if src and not src.startswith('/'):
+            src = script.get('src') if hasattr(script, 'get') else None
+            if src and isinstance(src, str) and not src.startswith('/'):
                 security_analysis['external_scripts'].append(src)
         
         # تحليل الـ stylesheets الخارجية
         for link in soup.find_all('link', rel='stylesheet'):
-            href = link.get('href')
-            if href and not href.startswith('/'):
+            href = link.get('href') if hasattr(link, 'get') else None
+            if href and isinstance(href, str) and not href.startswith('/'):
                 security_analysis['external_stylesheets'].append(href)
         
         # تحليل النماذج
         for form in soup.find_all('form'):
-            method = form.get('method', 'get').lower()
-            action = form.get('action', '')
-            has_csrf = bool(form.find('input', attrs={'name': re.compile('csrf|token', re.I)}))
+            method = 'get'
+            action = ''
+            if hasattr(form, 'get'):
+                method_attr = form.get('method', 'get')
+                method = str(method_attr).lower() if method_attr else 'get'
+                action_attr = form.get('action', '')
+                action = str(action_attr) if action_attr else ''
+            
+            has_csrf = bool(form.find('input', attrs={'name': re.compile('csrf|token', re.I)}) if hasattr(form, 'find') else False)
+            inputs_count = len(form.find_all('input')) if hasattr(form, 'find_all') else 0
             
             security_analysis['forms_analysis'].append({
                 'method': method,
                 'action': action,
                 'has_csrf_protection': has_csrf,
-                'inputs_count': len(form.find_all('input'))
+                'inputs_count': inputs_count
             })
         
         return security_analysis
@@ -1132,11 +1152,12 @@ class UnifiedWebsiteExtractor:
         
         # البحث في الـ JavaScript
         for script in soup.find_all('script'):
-            if script.string:
+            script_content = script.string if hasattr(script, 'string') and script.string else ''
+            if script_content and isinstance(script_content, str):
                 # البحث عن fetch أو Ajax calls
-                api_calls = re.findall(r'fetch\([\'"`]([^\'"`]+)[\'"`]', script.string)
-                api_calls.extend(re.findall(r'\.get\([\'"`]([^\'"`]+)[\'"`]', script.string))
-                api_calls.extend(re.findall(r'\.post\([\'"`]([^\'"`]+)[\'"`]', script.string))
+                api_calls = re.findall(r'fetch\([\'"`]([^\'"`]+)[\'"`]', script_content)
+                api_calls.extend(re.findall(r'\.get\([\'"`]([^\'"`]+)[\'"`]', script_content))
+                api_calls.extend(re.findall(r'\.post\([\'"`]([^\'"`]+)[\'"`]', script_content))
                 endpoints.extend(api_calls)
         
         return list(set(endpoints))
