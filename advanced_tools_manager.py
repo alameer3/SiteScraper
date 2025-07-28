@@ -450,7 +450,7 @@ class AdvancedToolsManager:
                     # العثور على روابط جديدة
                     if len(extracted_data) < config.get('max_pages', 10):
                         for link in soup.find_all('a', href=True):
-                            href = link.get('href')
+                            href = link.get('href') if hasattr(link, 'get') else None
                             if href and isinstance(href, str):
                                 full_url = urljoin(current_url, href)
                                 if urlparse(full_url).netloc == urlparse(url).netloc:
@@ -497,7 +497,7 @@ class AdvancedToolsManager:
             # CSS files
             if 'css' in asset_types:
                 for link in soup.find_all('link', rel='stylesheet'):
-                    href = link.get('href')
+                    href = link.get('href') if hasattr(link, 'get') else None
                     if href and isinstance(href, str):
                         full_url = urljoin(url, href)
                         assets['css'].append({
@@ -508,7 +508,7 @@ class AdvancedToolsManager:
             # JavaScript files  
             if 'js' in asset_types:
                 for script in soup.find_all('script', src=True):
-                    src = script.get('src')
+                    src = script.get('src') if hasattr(script, 'get') else None
                     if src and isinstance(src, str):
                         full_url = urljoin(url, src)
                         assets['js'].append({
@@ -519,10 +519,10 @@ class AdvancedToolsManager:
             # Images
             if 'images' in asset_types:
                 for img in soup.find_all('img', src=True):
-                    src = img.get('src')
+                    src = img.get('src') if hasattr(img, 'get') else None
                     if src and isinstance(src, str):
                         full_url = urljoin(url, src)
-                        alt_text = img.get('alt', '')
+                        alt_text = img.get('alt', '') if hasattr(img, 'get') else ''
                         if not isinstance(alt_text, str):
                             alt_text = ''
                         assets['images'].append({

@@ -186,7 +186,8 @@ class UnifiedWebsiteExtractor:
                         downloaded_assets['failed'].append(str(src))
                         
         except Exception as e:
-            downloaded_assets['error'] = str(e)
+            if 'error' not in downloaded_assets:
+                downloaded_assets['error'] = str(e)
         
         return downloaded_assets
     
@@ -401,82 +402,116 @@ class UnifiedWebsiteExtractor:
             print(f"نوع الاستخراج: {extraction_type}")
             
             # المرحلة 1: Website Cloner Pro - الاستخراج الشامل والنسخ
-            if self.cloner_pro is None:
-                cloning_config = CloningConfig(
-                    target_url=url,
-                    handle_javascript=True,
-                    extract_media_files=True,
-                    max_depth=3,
-                    max_pages=50,
-                    analyze_with_ai=(extraction_type in ['complete', 'ultra'])
-                )
-                self.cloner_pro = WebsiteClonerPro(cloning_config)
+            try:
+                if self.cloner_pro is None:
+                    from tools_pro.website_cloner_pro import CloningConfig, WebsiteClonerPro
+                    cloning_config = CloningConfig(
+                        target_url=url,
+                        handle_javascript=True,
+                        extract_media_files=True,
+                        max_depth=3,
+                        max_pages=50,
+                        analyze_with_ai=(extraction_type in ['complete', 'ultra'])
+                    )
+                    self.cloner_pro = WebsiteClonerPro(cloning_config)
+            except ImportError:
+                self.cloner_pro = None
             
             print("تشغيل Website Cloner Pro...")
-            cloner_result = asyncio.run(self.cloner_pro.clone_website())
-            results['cloner_pro'] = cloner_result
+            if self.cloner_pro is not None:
+                cloner_result = asyncio.run(self.cloner_pro.clone_website())
+                results['cloner_pro'] = cloner_result
+            else:
+                results['cloner_pro'] = {'success': False, 'error': 'Cloner Pro not available'}
             
             # المرحلة 2: Deep Extraction Engine - الاستخراج العميق
-            if self.deep_engine is None:
-                deep_config = ExtractionConfig(
-                    mode=extraction_type,
-                    max_depth=3,
-                    max_pages=50,
-                    include_assets=True,
-                    extract_apis=True,
-                    analyze_behavior=True
-                )
-                self.deep_engine = DeepExtractionEngine(deep_config)
+            try:
+                if self.deep_engine is None:
+                    from tools_pro.extractors.deep_extraction_engine import ExtractionConfig, DeepExtractionEngine
+                    deep_config = ExtractionConfig(
+                        mode=extraction_type,
+                        max_depth=3,
+                        max_pages=50,
+                        include_assets=True,
+                        extract_apis=True,
+                        analyze_behavior=True
+                    )
+                    self.deep_engine = DeepExtractionEngine(deep_config)
+            except ImportError:
+                self.deep_engine = None
             
             print("تشغيل Deep Extraction Engine...")
-            try:
-                deep_result = asyncio.run(self.deep_engine.extract_complete_website(url))
-            except Exception as e:
-                deep_result = {'success': False, 'error': str(e), 'fallback': True}
+            if self.deep_engine is not None:
+                try:
+                    deep_result = asyncio.run(self.deep_engine.extract_complete_website(url))
+                except Exception as e:
+                    deep_result = {'success': False, 'error': str(e), 'fallback': True}
+            else:
+                deep_result = {'success': False, 'error': 'Deep Engine not available'}
             results['deep_extraction'] = deep_result
             
             # المرحلة 3: Spider Engine - الزحف الذكي
-            if self.spider_engine is None:
-                spider_config = SpiderConfig(
-                    max_depth=3,
-                    max_pages=50,
-                    respect_robots_txt=True,
-                    enable_javascript_discovery=True
-                )
-                self.spider_engine = SpiderEngine(spider_config)
+            try:
+                if self.spider_engine is None:
+                    from tools_pro.extractors.spider_engine import SpiderConfig, SpiderEngine
+                    spider_config = SpiderConfig(
+                        max_depth=3,
+                        max_pages=50,
+                        respect_robots_txt=True,
+                        enable_javascript_discovery=True
+                    )
+                    self.spider_engine = SpiderEngine(spider_config)
+            except ImportError:
+                self.spider_engine = None
             
             print("تشغيل Spider Engine...")
-            try:
-                spider_result = asyncio.run(self.spider_engine.crawl_website(url))
-            except Exception as e:
-                spider_result = {'success': False, 'error': str(e), 'fallback': True}
+            if self.spider_engine is not None:
+                try:
+                    spider_result = asyncio.run(self.spider_engine.crawl_website(url))
+                except Exception as e:
+                    spider_result = {'success': False, 'error': str(e), 'fallback': True}
+            else:
+                spider_result = {'success': False, 'error': 'Spider Engine not available'}
             results['spider_crawl'] = spider_result
             
             # المرحلة 4: Unified Master Extractor - الاستخراج الموحد
-            if self.unified_master is None:
-                unified_config = UnifiedExtractionConfig(
-                    mode=extraction_type,
-                    max_depth=3,
-                    max_pages=50,
-                    extract_content=True,
-                    extract_assets=True,
-                    extract_javascript=True,
-                    extract_css=True
-                )
-                self.unified_master = UnifiedMasterExtractor(unified_config)
+            try:
+                if self.unified_master is None:
+                    from tools_pro.extractors.unified_master_extractor import UnifiedExtractionConfig, UnifiedMasterExtractor
+                    unified_config = UnifiedExtractionConfig(
+                        mode=extraction_type,
+                        max_depth=3,
+                        max_pages=50,
+                        extract_content=True,
+                        extract_assets=True,
+                        extract_javascript=True,
+                        extract_css=True
+                    )
+                    self.unified_master = UnifiedMasterExtractor(unified_config)
+            except ImportError:
+                self.unified_master = None
             
             print("تشغيل Unified Master Extractor...")
-            unified_result = asyncio.run(self.unified_master.extract_website_content(url))
+            if self.unified_master is not None:
+                unified_result = asyncio.run(self.unified_master.extract_website_content(url))
+            else:
+                unified_result = {'success': False, 'error': 'Unified Master not available'}
             results['unified_extraction'] = unified_result
             
             # المرحلة 5: AI Analysis - التحليل الذكي
             print("تشغيل AI Analysis...")
-            ai_result = self.ai_engine.analyze_website_intelligence(url, results)
+            if self.ai_engine is not None:
+                ai_result = self.ai_engine.analyze_website_intelligence(url, results)
+            else:
+                ai_result = {'success': False, 'error': 'AI Engine not available'}
             results['ai_analysis'] = ai_result
             
             # المرحلة 6: Screenshots - لقطات الشاشة
             print("التقاط Screenshots...")
-            screenshots_result = self.screenshot_engine.capture_comprehensive_screenshots(url)
+            if self.screenshot_engine is not None:
+                screenshots_result = self.screenshot_engine.capture_comprehensive_screenshots(url)
+            else:
+                screenshots_result = {'success': False, 'error': 'Screenshot Engine not available'}
             results['screenshots'] = screenshots_result
             
             # المرحلة 7: CMS Detection - كشف نظام إدارة المحتوى
