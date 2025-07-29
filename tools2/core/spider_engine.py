@@ -81,10 +81,10 @@ class AdvancedSpiderEngine:
                 
             # المرحلة 3: بدء الزحف من الصفحة الرئيسية
             self._add_to_crawl_queue(start_url, 0, 'start_page')
-                
-                # المرحلة 4: زحف متوازي
-                semaphore = asyncio.Semaphore(self.config.max_concurrent_requests)
-                tasks = []
+            
+            # المرحلة 4: زحف متوازي
+            semaphore = asyncio.Semaphore(self.config.max_concurrent_requests)
+            tasks = []
                 
                 while self.crawl_queue and len(self.visited_urls) < self.config.max_pages:
                     current_batch = []
