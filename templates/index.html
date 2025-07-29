@@ -1,242 +1,115 @@
 {% extends "base.html" %}
 
-{% block title %}الصفحة الرئيسية - أداة استخراج المواقع المتقدمة{% endblock %}
+{% block title %}محلل المواقع المتطور{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="row justify-content-center mb-5">
-    <div class="col-lg-8 text-center">
-        <h1 class="display-4 fw-bold text-white mb-4">
-            أداة استخراج المواقع المتقدمة
+<div class="hero-section glass-card mb-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">
+            <i data-feather="globe" class="me-3"></i>
+            محلل المواقع المتطور
         </h1>
-        <p class="lead text-white-75 mb-4">
-            استخراج وتحليل شامل للمواقع الإلكترونية مع تقنيات الذكاء الاصطناعي المتقدمة
-        </p>
-        <div class="d-flex gap-3 justify-content-center flex-wrap">
-            <a href="{{ url_for('extract') }}" class="btn btn-primary btn-lg">
-                <i data-feather="search" class="me-2"></i>
-                ابدأ الاستخراج الآن
-            </a>
-            <a href="{{ url_for('results') }}" class="btn btn-outline-light btn-lg">
-                <i data-feather="list" class="me-2"></i>
-                عرض النتائج
-            </a>
+        <p class="lead mb-4">أداة شاملة لتحليل المواقع الإلكترونية بتقنيات متطورة</p>
+        <a href="{{ url_for('analyze') }}" class="btn btn-primary btn-lg">
+            <i data-feather="zap" class="me-2"></i>
+            بدء التحليل الآن
+        </a>
+    </div>
+</div>
+
+<!-- إحصائيات سريعة -->
+<div class="row mb-5">
+    <div class="col-md-3 mb-3">
+        <div class="glass-card text-center">
+            <i data-feather="activity" class="feature-icon text-primary mb-3"></i>
+            <h3>{{ stats.recent_count }}</h3>
+            <p class="text-muted">تحليلات حديثة</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="glass-card text-center">
+            <i data-feather="cpu" class="feature-icon text-success mb-3"></i>
+            <h3>{{ stats.total_analyses }}</h3>
+            <p class="text-muted">إجمالي التحليلات</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="glass-card text-center">
+            <i data-feather="shield" class="feature-icon text-warning mb-3"></i>
+            <h3>{{ stats.successful_analyses }}</h3>
+            <p class="text-muted">تحليلات ناجحة</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="glass-card text-center">
+            <i data-feather="clock" class="feature-icon text-info mb-3"></i>
+            <h3>24/7</h3>
+            <p class="text-muted">متاح دائماً</p>
         </div>
     </div>
 </div>
 
-<!-- Features Section -->
+<!-- أنواع التحليل المتاحة -->
 <div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">أنواع التحليل المتاحة</h2>
+    </div>
+    
     <div class="col-md-4 mb-4">
-        <div class="card h-100 text-center">
-            <div class="card-body">
-                <div class="feature-icon mx-auto">
-                    <i data-feather="zap"></i>
-                </div>
-                <h5 class="card-title">استخراج سريع ودقيق</h5>
-                <p class="card-text">تحليل شامل للمواقع مع استخراج المحتوى والبيانات التقنية في ثوانٍ معدودة</p>
+        <div class="glass-card h-100">
+            <div class="card-body text-center">
+                <i data-feather="search" class="feature-icon text-primary mb-3"></i>
+                <h5>تحليل أساسي</h5>
+                <p class="text-muted">تحليل سريع للمعلومات الأساسية والعناصر الرئيسية</p>
+                <a href="{{ url_for('analyze') }}" class="btn btn-outline-primary">جرب الآن</a>
             </div>
         </div>
     </div>
     
     <div class="col-md-4 mb-4">
-        <div class="card h-100 text-center">
-            <div class="card-body">
-                <div class="feature-icon mx-auto">
-                    <i data-feather="cpu"></i>
-                </div>
-                <h5 class="card-title">تحليل بالذكاء الاصطناعي</h5>
-                <p class="card-text">تحليل المحتوى والهيكل باستخدام تقنيات الذكاء الاصطناعي المتطورة</p>
+        <div class="glass-card h-100">
+            <div class="card-body text-center">
+                <i data-feather="layers" class="feature-icon text-success mb-3"></i>
+                <h5>تحليل قياسي</h5>
+                <p class="text-muted">تحليل شامل للتقنيات والأمان والـ SEO مع تفاصيل متوسطة</p>
+                <a href="{{ url_for('analyze') }}" class="btn btn-outline-success">استكشف</a>
             </div>
         </div>
     </div>
     
     <div class="col-md-4 mb-4">
-        <div class="card h-100 text-center">
-            <div class="card-body">
-                <div class="feature-icon mx-auto">
-                    <i data-feather="shield"></i>
-                </div>
-                <h5 class="card-title">آمن وموثوق</h5>
-                <p class="card-text">استخراج آمن للبيانات مع احترام سياسات المواقع وحماية الخصوصية</p>
+        <div class="glass-card h-100">
+            <div class="card-body text-center">
+                <i data-feather="cpu" class="feature-icon text-warning mb-3"></i>
+                <h5>تحليل متقدم</h5>
+                <p class="text-muted">تحليل عميق للأداء والبنية والمحتوى مع تقارير مفصلة</p>
+                <a href="{{ url_for('analyze') }}" class="btn btn-outline-warning">جرب</a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Statistics Section -->
-<div class="row mb-5">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title text-center mb-4">
-                    <i data-feather="bar-chart-2" class="me-2"></i>
-                    إحصائيات سريعة
-                </h5>
-                <div class="row text-center">
-                    <div class="col-md-3">
-                        <h3 class="text-primary fw-bold">{{ recent_results|length }}</h3>
-                        <p class="text-muted">عمليات استخراج حديثة</p>
-                    </div>
-                    <div class="col-md-3">
-                        <h3 class="text-primary fw-bold">5</h3>
-                        <p class="text-muted">أنواع استخراج</p>
-                    </div>
-                    <div class="col-md-3">
-                        <h3 class="text-primary fw-bold">99%</h3>
-                        <p class="text-muted">معدل النجاح</p>
-                    </div>
-                    <div class="col-md-3">
-                        <h3 class="text-primary fw-bold">24/7</h3>
-                        <p class="text-muted">متاح دائماً</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Available Tools Section -->
-<div class="row mb-5">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title text-center mb-4">
-                    <i data-feather="tool" class="me-2"></i>
-                    الأدوات والصفحات المتاحة
-                </h5>
-                <div class="row">
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <a href="{{ url_for('extract') }}" class="text-decoration-none">
-                            <div class="card border-primary h-100">
-                                <div class="card-body text-center">
-                                    <i data-feather="search" class="text-primary mb-2" style="width: 32px; height: 32px;"></i>
-                                    <h6 class="card-title text-primary">استخراج موقع جديد</h6>
-                                    <p class="card-text text-muted small">ابدأ عملية استخراج جديدة لأي موقع إلكتروني</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <a href="{{ url_for('results') }}" class="text-decoration-none">
-                            <div class="card border-success h-100">
-                                <div class="card-body text-center">
-                                    <i data-feather="list" class="text-success mb-2" style="width: 32px; height: 32px;"></i>
-                                    <h6 class="card-title text-success">عرض النتائج</h6>
-                                    <p class="card-text text-muted small">تصفح جميع عمليات الاستخراج السابقة</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <a href="{{ url_for('cloner_pro_page') }}" class="text-decoration-none">
-                            <div class="card border-info h-100">
-                                <div class="card-body text-center">
-                                    <i data-feather="copy" class="text-info mb-2" style="width: 32px; height: 32px;"></i>
-                                    <h6 class="card-title text-info">Website Cloner Pro</h6>
-                                    <p class="card-text text-muted small">أداة متقدمة لنسخ المواقع بالكامل</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <a href="{{ url_for('ai_analyzer_page') }}" class="text-decoration-none">
-                            <div class="card border-warning h-100">
-                                <div class="card-body text-center">
-                                    <i data-feather="cpu" class="text-warning mb-2" style="width: 32px; height: 32px;"></i>
-                                    <h6 class="card-title text-warning">محلل الذكاء الاصطناعي</h6>
-                                    <p class="card-text text-muted small">تحليل المواقع باستخدام الذكاء الاصطناعي</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <a href="{{ url_for('file_manager_page') }}" class="text-decoration-none">
-                            <div class="card border-secondary h-100">
-                                <div class="card-body text-center">
-                                    <i data-feather="folder" class="text-secondary mb-2" style="width: 32px; height: 32px;"></i>
-                                    <h6 class="card-title text-secondary">إدارة الملفات</h6>
-                                    <p class="card-text text-muted small">إدارة وتنظيم ملفات الاستخراج</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <a href="{{ url_for('advanced_tools_page') }}" class="text-decoration-none">
-                            <div class="card border-dark h-100">
-                                <div class="card-body text-center">
-                                    <i data-feather="tool" class="text-dark mb-2" style="width: 32px; height: 32px;"></i>
-                                    <h6 class="card-title text-dark">الأدوات المتقدمة</h6>
-                                    <p class="card-text text-muted small">مجموعة شاملة من أدوات الاستخراج المتطورة</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <a href="{{ url_for('unified_dashboard') }}" class="text-decoration-none">
-                            <div class="card border-primary h-100">
-                                <div class="card-body text-center">
-                                    <i data-feather="bar-chart-2" class="text-primary mb-2" style="width: 32px; height: 32px;"></i>
-                                    <h6 class="card-title text-primary">لوحة التحكم الموحدة</h6>
-                                    <p class="card-text text-muted small">مراقبة وإدارة جميع العمليات من مكان واحد</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <a href="{{ url_for('unified_extractor_page') }}" class="text-decoration-none">
-                            <div class="card border-success h-100">
-                                <div class="card-body text-center">
-                                    <i data-feather="layers" class="text-success mb-2" style="width: 32px; height: 32px;"></i>
-                                    <h6 class="card-title text-success">المستخرج الموحد</h6>
-                                    <p class="card-text text-muted small">واجهة موحدة لجميع أنواع الاستخراج</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <div class="card border-light h-100">
-                            <div class="card-body text-center">
-                                <i data-feather="settings" class="text-muted mb-2" style="width: 32px; height: 32px;"></i>
-                                <h6 class="card-title text-muted">أدوات إضافية</h6>
-                                <p class="card-text text-muted small">المزيد من الأدوات قريباً</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Recent Results Section -->
+<!-- آخر النتائج -->
 {% if recent_results %}
 <div class="row">
     <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <i data-feather="clock" class="me-2"></i>
-                    النتائج الحديثة
+        <div class="glass-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i data-feather="activity" class="me-2"></i>
+                    آخر النتائج
                 </h5>
+                <a href="{{ url_for('results') }}" class="btn btn-sm btn-outline-primary">عرض الكل</a>
+            </div>
+            <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>الموقع</th>
-                                <th>نوع الاستخراج</th>
+                                <th>نوع التحليل</th>
                                 <th>الحالة</th>
-                                <th>التاريخ</th>
+                                <th>تاريخ الإنشاء</th>
                                 <th>الإجراءات</th>
                             </tr>
                         </thead>
@@ -245,20 +118,32 @@
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <i data-feather="globe" class="me-2 text-primary" style="width: 16px; height: 16px;"></i>
-                                        <span>{{ result.url[:50] }}{% if result.url|length > 50 %}...{% endif %}</span>
+                                        <i data-feather="globe" class="me-2 text-muted"></i>
+                                        <div>
+                                            <div class="fw-bold">{{ result.title or 'بدون عنوان' }}</div>
+                                            <small class="text-muted">{{ result.url }}</small>
+                                        </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge bg-primary">{{ result.extraction_type }}</span>
+                                    <span class="badge bg-primary">{{ result.analysis_type }}</span>
                                 </td>
                                 <td>
-                                    <span class="badge bg-success">{{ result.status }}</span>
+                                    {% if result.status == 'completed' %}
+                                        <span class="badge bg-success">مكتمل</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">جاري المعالجة</span>
+                                    {% endif %}
                                 </td>
-                                <td>{{ result.created_at.strftime('%Y-%m-%d %H:%M') if result.created_at else 'غير محدد' }}</td>
                                 <td>
-                                    <a href="{{ url_for('result_detail', result_id=result.id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i data-feather="eye" style="width: 14px; height: 14px;"></i>
+                                    <small class="text-muted">
+                                        {{ result.created_at.strftime('%Y-%m-%d %H:%M') if result.created_at else 'غير محدد' }}
+                                    </small>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('result_detail', result_id=result.id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i data-feather="eye" class="me-1"></i>
                                         عرض
                                     </a>
                                 </td>
@@ -267,45 +152,25 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="text-center mt-3">
-                    <a href="{{ url_for('results') }}" class="btn btn-outline-primary">
-                        عرض جميع النتائج
-                        <i data-feather="arrow-left" class="ms-2"></i>
-                    </a>
-                </div>
             </div>
         </div>
     </div>
 </div>
-{% endif %}
-
-<!-- Quick Start Section -->
-<div class="row mt-5">
+{% else %}
+<div class="row">
     <div class="col-12">
-        <div class="card">
-            <div class="card-body text-center">
-                <h5 class="card-title">
-                    <i data-feather="play-circle" class="me-2"></i>
-                    البدء السريع
-                </h5>
-                <p class="card-text text-muted">
-                    أدخل رابط أي موقع إلكتروني واحصل على تحليل شامل في دقائق معدودة
-                </p>
-                <a href="{{ url_for('extract') }}" class="btn btn-primary btn-lg">
-                    جرب الآن مجاناً
-                    <i data-feather="arrow-left" class="ms-2"></i>
+        <div class="glass-card text-center">
+            <div class="card-body">
+                <i data-feather="inbox" class="feature-icon text-muted mb-3"></i>
+                <h5>لا توجد تحليلات سابقة</h5>
+                <p class="text-muted">ابدأ أول تحليل لك الآن</p>
+                <a href="{{ url_for('analyze') }}" class="btn btn-primary">
+                    <i data-feather="plus" class="me-2"></i>
+                    تحليل جديد
                 </a>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    // تحديث الأيقونات بعد تحميل المحتوى
-    document.addEventListener('DOMContentLoaded', function() {
-        feather.replace();
-    });
-</script>
+{% endif %}
 {% endblock %}

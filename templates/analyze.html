@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}تحليل موقع جديد{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-card">
+                <div class="card-header text-center">
+                    <h2 class="mb-0">
+                        <i data-feather="search" class="me-2"></i>
+                        تحليل موقع جديد
+                    </h2>
+                    <p class="text-muted mt-2">أدخل رابط الموقع الذي تريد تحليله</p>
+                </div>
+                
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('analyze') }}" id="analyzeForm">
+                        <div class="mb-4">
+                            <label for="url" class="form-label">
+                                <i data-feather="link" class="me-1"></i>
+                                رابط الموقع
+                            </label>
+                            <input type="url" 
+                                   class="form-control form-control-lg" 
+                                   id="url" 
+                                   name="url" 
+                                   placeholder="https://example.com"
+                                   required>
+                            <div class="form-text">يمكنك إدخال الرابط مع أو بدون https://</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="analysis_type" class="form-label">
+                                <i data-feather="settings" class="me-1"></i>
+                                نوع التحليل
+                            </label>
+                            <select class="form-select form-select-lg" id="analysis_type" name="analysis_type">
+                                <option value="basic">تحليل أساسي - سريع ومباشر</option>
+                                <option value="standard" selected>تحليل قياسي - شامل ومتوازن</option>
+                                <option value="advanced">تحليل متقدم - عميق ومفصل</option>
+                            </select>
+                        </div>
+                        
+                        <div class="analysis-types-info mb-4">
+                            <div class="analysis-type-basic" style="display: none;">
+                                <div class="alert alert-info">
+                                    <h6><i data-feather="zap" class="me-1"></i> التحليل الأساسي يشمل:</h6>
+                                    <ul class="mb-0">
+                                        <li>العنوان والمعلومات الأساسية</li>
+                                        <li>حالة الموقع والخادم</li>
+                                        <li>عدد العناصر الأساسية</li>
+                                        <li>Meta tags أساسية</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="analysis-type-standard">
+                                <div class="alert alert-primary">
+                                    <h6><i data-feather="layers" class="me-1"></i> التحليل القياسي يشمل:</h6>
+                                    <ul class="mb-0">
+                                        <li>جميع ميزات التحليل الأساسي</li>
+                                        <li>كشف التقنيات المستخدمة (CMS, Frameworks)</li>
+                                        <li>تحليل SEO شامل</li>
+                                        <li>تحليل الروابط والصور</li>
+                                        <li>فحص headers الأمان</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="analysis-type-advanced" style="display: none;">
+                                <div class="alert alert-warning">
+                                    <h6><i data-feather="cpu" class="me-1"></i> التحليل المتقدم يشمل:</h6>
+                                    <ul class="mb-0">
+                                        <li>جميع ميزات التحليل القياسي</li>
+                                        <li>تحليل الأداء والسرعة</li>
+                                        <li>تحليل البنية والهيكل</li>
+                                        <li>تحليل المحتوى واللغة</li>
+                                        <li>تحليل JavaScript متقدم</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" id="analyzeBtn">
+                                <i data-feather="play" class="me-2"></i>
+                                بدء التحليل
+                            </button>
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i data-feather="arrow-left" class="me-2"></i>
+                                العودة للرئيسية
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// إظهار/إخفاء معلومات نوع التحليل
+document.getElementById('analysis_type').addEventListener('change', function() {
+    const selectedType = this.value;
+    const allTypes = document.querySelectorAll('[class*="analysis-type-"]');
+    
+    allTypes.forEach(type => {
+        type.style.display = 'none';
+    });
+    
+    const selectedDiv = document.querySelector('.analysis-type-' + selectedType);
+    if (selectedDiv) {
+        selectedDiv.style.display = 'block';
+    }
+});
+
+// تحسين تجربة النموذج
+document.getElementById('analyzeForm').addEventListener('submit', function(e) {
+    const btn = document.getElementById('analyzeBtn');
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>جاري التحليل...';
+    btn.disabled = true;
+});
+</script>
+{% endblock %}
