@@ -135,3 +135,18 @@ The application follows a Flask-based web architecture with modular components f
 - **Organization**: Tool-specific subdirectories for different extraction types
 
 The application is designed to handle both simple website analysis tasks and complex extraction scenarios with graceful degradation when advanced tools are unavailable.
+
+## Recent Changes
+
+### 2025-07-29 - إعادة تنظيم بنية المشروع
+- ✅ نقل جميع الأدوات المتخصصة إلى مجلد `tools/`
+- ✅ تنظيم الأدوات في مجلدات فرعية:
+  - `tools/extractors/` - أدوات الاستخراج
+  - `tools/analyzers/` - أدوات التحليل  
+  - `tools/cloners/` - أدوات النسخ
+  - `tools/scrapers/` - أدوات الزحف
+  - `tools/ai/` - أدوات الذكاء الاصطناعي
+  - `tools/generators/` - مولدات الكود
+- ✅ إنشاء `tools/tools_manager.py` لإدارة الأدوات
+- ✅ نقل `website_cloner_pro.py` إلى `tools/cloners/`
+- ✅ إضافة دليل شامل للأدوات في `tools/README.md`
