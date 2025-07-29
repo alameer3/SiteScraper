@@ -6,7 +6,8 @@ Unified Advanced Extraction Interface
 from typing import Dict, List, Any, Optional
 from pathlib import Path
 
-from .core import AdvancedExtractorEngine, ExtractionConfig, get_preset_config
+from .core.extractor_engine import AdvancedExtractorEngine
+from .core.config import ExtractionConfig, get_preset_config
 
 
 class AdvancedWebsiteExtractor:
@@ -17,7 +18,7 @@ class AdvancedWebsiteExtractor:
         self.output_directory = output_directory
         self.engine = None
         
-    def extract(self, url: str, extraction_type: str = "standard", custom_config: Dict = None) -> Dict[str, Any]:
+    def extract(self, url: str, extraction_type: str = "standard", custom_config: Optional[Dict] = None) -> Dict[str, Any]:
         """
         استخراج شامل للموقع
         
@@ -40,9 +41,8 @@ class AdvancedWebsiteExtractor:
         config.output_directory = self.output_directory
         
         # تهيئة المحرك
-        with AdvancedExtractorEngine(config) as engine:
-            self.engine = engine
-            result = engine.extract_website(url, extraction_type)
+        self.engine = AdvancedExtractorEngine(config)
+        result = self.engine.extract_website(url, extraction_type)
             
         return result
     
@@ -77,7 +77,7 @@ class AdvancedWebsiteExtractor:
                            capture_screenshots: bool = False,
                            analyze_security: bool = True,
                            analyze_seo: bool = True,
-                           export_formats: List[str] = None) -> Dict[str, Any]:
+                           export_formats: Optional[List[str]] = None) -> Dict[str, Any]:
         """
         إنشاء إعدادات مخصصة
         

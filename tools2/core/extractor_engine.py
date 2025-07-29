@@ -16,6 +16,11 @@ from .file_manager import FileManager
 from .content_extractor import ContentExtractor
 from .security_analyzer import SecurityAnalyzer
 from .asset_downloader import AssetDownloader
+from .cms_detector import CMSDetector
+from .screenshot_engine import ScreenshotEngine
+from .database_analyzer import DatabaseAnalyzer
+from .spider_engine import AdvancedSpiderEngine, SpiderConfig
+from .ai_analyzer import BasicAIAnalyzer
 
 
 class AdvancedExtractorEngine:
@@ -33,6 +38,20 @@ class AdvancedExtractorEngine:
         self.content_extractor = ContentExtractor(self.config, self.session_manager)
         self.security_analyzer = SecurityAnalyzer(self.config, self.session_manager)
         self.asset_downloader = AssetDownloader(self.config, self.session_manager, self.file_manager)
+        
+        # تهيئة المحركات المتقدمة
+        self.cms_detector = CMSDetector(self.session_manager)
+        self.screenshot_engine = ScreenshotEngine(self.session_manager)
+        self.database_analyzer = DatabaseAnalyzer(self.session_manager)
+        self.ai_analyzer = BasicAIAnalyzer()
+        
+        # محرك الزحف (للاستخراج الشامل)
+        spider_config = SpiderConfig(
+            max_pages=self.config.max_pages,
+            max_depth=self.config.max_depth,
+            delay_between_requests=self.config.delay_between_requests
+        )
+        self.spider_engine = AdvancedSpiderEngine(spider_config)
         
     def extract_website(self, url: str, extraction_type: str = None) -> Dict[str, Any]:
         """استخراج شامل للموقع"""
@@ -101,6 +120,46 @@ class AdvancedExtractorEngine:
             # تحليلات شاملة للاستخراج الكامل
             if self.config.extraction_type in ['advanced', 'complete']:
                 result.update(self._perform_comprehensive_analysis(soup, url, response, extraction_folder))
+            
+            # اكتشاف CMS (لجميع الأنواع ما عدا basic)
+            if self.config.extraction_type != 'basic':
+                print("🔍 اكتشاف نظام إدارة المحتوى...")
+                cms_analysis = self.cms_detector.detect_cms(soup, url, dict(response.headers), response.text)
+                result['cms_analysis'] = cms_analysis
+            
+            # تحليل قواعد البيانات (للأنواع المتقدمة)
+            if self.config.extraction_type in ['advanced', 'complete']:
+                print("🗄️ تحليل هياكل قواعد البيانات...")
+                db_analysis = self.database_analyzer.analyze_database_structure(soup, url, response.text)
+                result['database_analysis'] = db_analysis
+                
+                # تحليل AI للمحتوى
+                print("🤖 تحليل ذكي للمحتوى...")
+                ai_analysis = self.ai_analyzer.analyze_content(soup, url, response.text)
+                result['ai_content_analysis'] = ai_analysis
+            
+            # لقطات الشاشة (إذا مُفعّلة)
+            if self.config.capture_screenshots:
+                print("📸 التقاط لقطات الشاشة...")
+                screenshots_result = self.screenshot_engine.capture_screenshots(
+                    url, extraction_folder,
+                    capture_mobile=True,
+                    capture_tablet=True,
+                    capture_full_page=True
+                )
+                result['screenshots'] = screenshots_result
+            
+            # الزحف المتعدد الصفحات (للاستخراج الشامل فقط)
+            if self.config.extraction_type == 'complete' and self.config.max_pages > 1:
+                print("🕷️ بدء الزحف متعدد الصفحات...")
+                crawl_result = self.spider_engine.crawl_website(url, self.config)
+                result['spider_crawl'] = crawl_result
+                
+                # معالجة النتائج الإضافية من الزحف
+                if crawl_result.get('pages_crawled'):
+                    result['total_pages_crawled'] = len(crawl_result['pages_crawled'])
+                    result['sitemap_discovered'] = crawl_result.get('sitemap_analysis', {})
+                    result['robots_analysis'] = crawl_result.get('robots_analysis', {})
             
             # تنزيل الأصول
             if self.config.extract_assets:

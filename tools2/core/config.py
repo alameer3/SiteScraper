@@ -57,8 +57,9 @@ class ExtractionConfig:
         if self.allowed_domains is None:
             self.allowed_domains = []
             
-        if not self.target_url:
-            raise ValueError("target_url is required")
+        # لا نتطلب target_url عند الإنشاء لأنه قد يتم تعيينه لاحقاً
+        # if not self.target_url:
+        #     raise ValueError("target_url is required")
             
         if self.max_file_size_mb <= 0:
             self.max_file_size_mb = 50
