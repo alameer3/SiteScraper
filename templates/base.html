@@ -91,6 +91,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('results') }}">النتائج</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold" href="{{ url_for('unified_extractor') }}" style="color: #667eea;">
+                            <i data-feather="layers" class="me-1"></i>
+                            النظام المطور
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown">
                             الأدوات المتقدمة
@@ -99,6 +105,11 @@
                             <li><a class="dropdown-item" href="{{ url_for('analyze') }}">تحليل أساسي</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('analyze') }}">تحليل قياسي</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('analyze') }}">تحليل متقدم</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-primary fw-bold" href="{{ url_for('unified_extractor') }}">
+                                <i data-feather="cpu" class="me-1"></i>
+                                النظام المطور 🚀
+                            </a></li>
                         </ul>
                     </li>
                 </ul>

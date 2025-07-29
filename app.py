@@ -44,6 +44,17 @@ db.init_app(app)
 from models import AnalysisResult
 from core import WebsiteAnalyzer
 
+# استيراد النظام المطور
+try:
+    from tools2.advanced_extractor import AdvancedWebsiteExtractor
+    ADVANCED_SYSTEM_AVAILABLE = True
+    advanced_extractor = AdvancedWebsiteExtractor("extracted_files")
+    logging.info("✅ تم دمج النظام المطور مع التطبيق الأساسي")
+except ImportError as e:
+    ADVANCED_SYSTEM_AVAILABLE = False
+    advanced_extractor = None
+    logging.warning(f"⚠️ النظام المطور غير متاح: {e}")
+
 # تهيئة المحلل الرئيسي
 analyzer = WebsiteAnalyzer()
 
@@ -159,6 +170,130 @@ def api_analyze():
         
     except Exception as e:
         app.logger.error(f"API تحليل خطأ: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+# ==================== النظام المطور ====================
+
+@app.route('/unified-extractor')
+def unified_extractor():
+    """صفحة نظام الاستخراج المتطور"""
+    if not ADVANCED_SYSTEM_AVAILABLE:
+        flash('النظام المطور غير متاح حالياً', 'warning')
+        return redirect(url_for('index'))
+    
+    return render_template('unified_extractor.html')
+
+@app.route('/extract-advanced', methods=['POST'])
+def extract_advanced():
+    """تشغيل نظام الاستخراج المتطور"""
+    if not ADVANCED_SYSTEM_AVAILABLE:
+        flash('النظام المطور غير متاح حالياً', 'error')
+        return redirect(url_for('index'))
+    
+    url = request.form.get('url', '').strip()
+    extraction_type = request.form.get('extraction_type', 'standard')
+    
+    if not url:
+        flash('يرجى إدخال رابط صحيح', 'error')
+        return redirect(url_for('unified_extractor'))
+    
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    try:
+        # تشغيل الاستخراج المتطور
+        result = advanced_extractor.extract(url, extraction_type)
+        
+        # حفظ النتيجة في قاعدة البيانات
+        analysis_result = AnalysisResult(
+            url=url,
+            title=result.get('title', 'بدون عنوان'),
+            analysis_type=f"advanced_{extraction_type}",
+            status='completed' if result.get('success') else 'failed',
+            result_data=json.dumps(result, ensure_ascii=False, indent=2, default=str)
+        )
+        
+        db.session.add(analysis_result)
+        db.session.commit()
+        
+        flash(f'تم الاستخراج بنجاح! نوع الاستخراج: {extraction_type}', 'success')
+        return redirect(url_for('result_detail', result_id=analysis_result.id))
+        
+    except Exception as e:
+        app.logger.error(f"خطأ في نظام الاستخراج المتطور: {str(e)}")
+        flash(f'خطأ في الاستخراج: {str(e)}', 'error')
+        return redirect(url_for('unified_extractor'))
+
+@app.route('/api/extract-advanced', methods=['POST'])
+def api_extract_advanced():
+    """API لنظام الاستخراج المتطور"""
+    if not ADVANCED_SYSTEM_AVAILABLE:
+        return jsonify({
+            'success': False,
+            'error': 'النظام المطور غير متاح'
+        }), 503
+    
+    data = request.get_json()
+    if not data or 'url' not in data:
+        return jsonify({
+            'success': False,
+            'error': 'URL مطلوب'
+        }), 400
+    
+    url = data['url']
+    extraction_type = data.get('extraction_type', 'standard')
+    
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    try:
+        result = advanced_extractor.extract(url, extraction_type)
+        
+        # حفظ في قاعدة البيانات
+        analysis_result = AnalysisResult(
+            url=url,
+            title=result.get('title', 'بدون عنوان'),
+            analysis_type=f"advanced_{extraction_type}",
+            status='completed' if result.get('success') else 'failed',
+            result_data=json.dumps(result, ensure_ascii=False, default=str)
+        )
+        
+        db.session.add(analysis_result)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'data': result,
+            'result_id': analysis_result.id,
+            'extraction_folder': result.get('extraction_folder')
+        })
+        
+    except Exception as e:
+        app.logger.error(f"API استخراج متطور خطأ: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/extraction-presets')
+def api_extraction_presets():
+    """API للحصول على أنواع الاستخراج المتاحة"""
+    if not ADVANCED_SYSTEM_AVAILABLE:
+        return jsonify({
+            'success': False,
+            'error': 'النظام المطور غير متاح'
+        }), 503
+    
+    try:
+        presets = advanced_extractor.get_available_presets()
+        return jsonify({
+            'success': True,
+            'presets': presets
+        })
+    except Exception as e:
         return jsonify({
             'success': False,
             'error': str(e)

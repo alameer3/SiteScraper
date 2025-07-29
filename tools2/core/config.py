@@ -14,7 +14,7 @@ class ExtractionConfig:
     
     # إعدادات أساسية
     target_url: str = ""
-    extraction_type: str = "standard"  # basic, standard, advanced, complete
+    extraction_type: str = "standard"  # basic, standard, advanced, complete, ai_powered
     output_directory: str = "extracted_files"
     
     # إعدادات الشبكة
@@ -184,6 +184,18 @@ PRESET_CONFIGS = {
         extraction_type='complete',
         max_depth=5,
         max_pages=500,
+        extract_assets=True,
+        capture_screenshots=True,
+        analyze_seo=True,
+        analyze_performance=True,
+        analyze_security=True,
+        export_pdf=True
+    ),
+    
+    'ai_powered': ExtractionConfig(
+        extraction_type='ai_powered',
+        max_depth=5,
+        max_pages=1000,
         extract_assets=True,
         capture_screenshots=True,
         analyze_seo=True,
