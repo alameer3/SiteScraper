@@ -74,13 +74,13 @@ class AdvancedSpiderEngine:
             if self.config.extract_sitemap:
                 sitemap_analysis = await self._extract_sitemap(start_url, session)
                 crawl_result['sitemap_analysis'] = sitemap_analysis
-                    
-                    # إضافة URLs من sitemap لقائمة الزحف
-                    for url in sitemap_analysis.get('urls', []):
-                        self._add_to_crawl_queue(url, 0, 'sitemap')
                 
-                # المرحلة 3: بدء الزحف من الصفحة الرئيسية
-                self._add_to_crawl_queue(start_url, 0, 'start_page')
+                # إضافة URLs من sitemap لقائمة الزحف
+                for url in sitemap_analysis.get('urls_found', []):
+                    self._add_to_crawl_queue(url, 0, 'sitemap')
+                
+            # المرحلة 3: بدء الزحف من الصفحة الرئيسية
+            self._add_to_crawl_queue(start_url, 0, 'start_page')
                 
                 # المرحلة 4: زحف متوازي
                 semaphore = asyncio.Semaphore(self.config.max_concurrent_requests)
