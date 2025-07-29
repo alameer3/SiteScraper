@@ -1,130 +1,161 @@
 """
-أداة الاستخراج المتطورة - الواجهة الرئيسية
-Advanced Extractor Tool - Main Interface
+واجهة الاستخراج المتطورة الموحدة
+Unified Advanced Extraction Interface
 """
 
+from typing import Dict, List, Any, Optional
+from pathlib import Path
+
 from .core import AdvancedExtractorEngine, ExtractionConfig, get_preset_config
-from typing import Dict, Any, Optional
 
 
-class AdvancedExtractor:
-    """الواجهة الرئيسية لأداة الاستخراج المتطورة"""
+class AdvancedWebsiteExtractor:
+    """واجهة مبسطة لاستخدام محرك الاستخراج المتطور"""
     
-    def __init__(self):
+    def __init__(self, output_directory: str = "extracted_files"):
         """تهيئة أداة الاستخراج"""
+        self.output_directory = output_directory
         self.engine = None
-        self.current_config = None
-    
-    def extract_website(self, 
-                       url: str, 
-                       extraction_type: str = "standard",
-                       custom_config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        
+    def extract(self, url: str, extraction_type: str = "standard", custom_config: Dict = None) -> Dict[str, Any]:
         """
-        استخراج موقع ويب بالإعدادات المحددة
+        استخراج شامل للموقع
         
         Args:
             url: رابط الموقع المراد استخراجه
             extraction_type: نوع الاستخراج (basic, standard, advanced, complete)
-            custom_config: إعدادات مخصصة (اختيارية)
-        
+            custom_config: إعدادات مخصصة اختيارية
+            
         Returns:
-            نتائج الاستخراج مع جميع البيانات المُحللة
+            Dict: نتائج الاستخراج الشاملة
         """
         
-        try:
-            # إعداد التكوين
-            if custom_config:
-                config = ExtractionConfig.from_dict(custom_config)
-            else:
-                config = get_preset_config(extraction_type)
+        # إعداد التكوين
+        if custom_config:
+            config = ExtractionConfig.from_dict(custom_config)
+        else:
+            config = get_preset_config(extraction_type)
+        
+        config.target_url = url
+        config.output_directory = self.output_directory
+        
+        # تهيئة المحرك
+        with AdvancedExtractorEngine(config) as engine:
+            self.engine = engine
+            result = engine.extract_website(url, extraction_type)
             
-            config.target_url = url
-            self.current_config = config
-            
-            # إنشاء محرك الاستخراج
-            with AdvancedExtractorEngine(config) as engine:
-                self.engine = engine
-                result = engine.extract_website(url, extraction_type)
-                
-                # إضافة معلومات إضافية للنتيجة
-                result['extractor_version'] = '1.0.0'
-                result['config_used'] = config.to_dict()
-                
-                return result
-                
-        except Exception as e:
-            return {
-                'success': False,
-                'error': str(e),
-                'url': url,
-                'extraction_type': extraction_type
-            }
+        return result
     
     def extract_basic(self, url: str) -> Dict[str, Any]:
         """استخراج أساسي سريع"""
-        return self.extract_website(url, "basic")
+        return self.extract(url, "basic")
     
     def extract_standard(self, url: str) -> Dict[str, Any]:
-        """استخراج قياسي مع تحليلات متوسطة"""
-        return self.extract_website(url, "standard")
+        """استخراج قياسي مع تحليلات متقدمة"""
+        return self.extract(url, "standard")
     
     def extract_advanced(self, url: str) -> Dict[str, Any]:
-        """استخراج متقدم مع تحليلات شاملة"""
-        return self.extract_website(url, "advanced")
+        """استخراج متقدم مع تحميل الأصول"""
+        return self.extract(url, "advanced")
     
     def extract_complete(self, url: str) -> Dict[str, Any]:
-        """استخراج كامل مع جميع الميزات"""
-        return self.extract_website(url, "complete")
+        """استخراج شامل مع جميع الميزات"""
+        return self.extract(url, "complete")
     
     def extract_with_custom_config(self, url: str, config: Dict[str, Any]) -> Dict[str, Any]:
-        """استخراج بإعدادات مخصصة"""
-        return self.extract_website(url, custom_config=config)
+        """استخراج مع إعدادات مخصصة"""
+        return self.extract(url, "custom", config)
     
-    def get_available_extraction_types(self) -> Dict[str, str]:
-        """قائمة أنواع الاستخراج المتاحة"""
-        return {
-            'basic': 'استخراج أساسي - معلومات عامة فقط',
-            'standard': 'استخراج قياسي - تحليل متوسط مع الأصول',
-            'advanced': 'استخراج متقدم - تحليل شامل مع الأمان',
-            'complete': 'استخراج كامل - جميع الميزات مع الأرشيف'
-        }
+    def get_available_presets(self) -> List[str]:
+        """الحصول على أنواع الاستخراج المتاحة"""
+        return ["basic", "standard", "advanced", "complete"]
     
     def create_custom_config(self, 
                            extraction_type: str = "standard",
-                           **kwargs) -> ExtractionConfig:
-        """إنشاء إعدادات مخصصة"""
+                           extract_assets: bool = True,
+                           extract_images: bool = True,
+                           capture_screenshots: bool = False,
+                           analyze_security: bool = True,
+                           analyze_seo: bool = True,
+                           export_formats: List[str] = None) -> Dict[str, Any]:
+        """
+        إنشاء إعدادات مخصصة
+        
+        Args:
+            extraction_type: نوع الاستخراج الأساسي
+            extract_assets: تحميل الأصول
+            extract_images: تحليل الصور
+            capture_screenshots: التقاط لقطات الشاشة
+            analyze_security: تحليل الأمان
+            analyze_seo: تحليل SEO
+            export_formats: صيغ التصدير ['json', 'csv', 'html', 'pdf']
+            
+        Returns:
+            Dict: إعدادات مخصصة
+        """
+        
+        if export_formats is None:
+            export_formats = ['json', 'html']
         
         config = get_preset_config(extraction_type)
         
-        # تطبيق التخصيصات
-        for key, value in kwargs.items():
-            if hasattr(config, key):
-                setattr(config, key, value)
+        # تحديث الإعدادات المخصصة
+        config.extract_assets = extract_assets
+        config.extract_images = extract_images
+        config.capture_screenshots = capture_screenshots
+        config.analyze_security = analyze_security
+        config.analyze_seo = analyze_seo
         
-        return config
-    
-    def get_statistics(self) -> Dict[str, Any]:
-        """إحصائيات الاستخراج"""
-        if self.engine:
-            return self.engine.get_statistics()
-        return {'message': 'لا توجد إحصائيات متاحة'}
+        # إعدادات التصدير
+        config.export_json = 'json' in export_formats
+        config.export_csv = 'csv' in export_formats
+        config.export_html = 'html' in export_formats
+        config.export_pdf = 'pdf' in export_formats
+        
+        return config.to_dict()
 
 
+# دوال مساعدة للاستخدام السريع
 def quick_extract(url: str, extraction_type: str = "standard") -> Dict[str, Any]:
-    """وظيفة سريعة للاستخراج"""
-    extractor = AdvancedExtractor()
-    return extractor.extract_website(url, extraction_type)
+    """استخراج سريع بإعدادات افتراضية"""
+    extractor = AdvancedWebsiteExtractor()
+    return extractor.extract(url, extraction_type)
 
 
-def extract_multiple_urls(urls: list, extraction_type: str = "standard") -> Dict[str, Any]:
-    """استخراج مواقع متعددة"""
-    results = {}
-    extractor = AdvancedExtractor()
+def extract_basic_info(url: str) -> Dict[str, Any]:
+    """استخراج المعلومات الأساسية فقط"""
+    return quick_extract(url, "basic")
+
+
+def extract_with_assets(url: str) -> Dict[str, Any]:
+    """استخراج مع تحميل جميع الأصول"""
+    return quick_extract(url, "advanced")
+
+
+def extract_complete_analysis(url: str) -> Dict[str, Any]:
+    """تحليل شامل مع جميع الميزات"""
+    return quick_extract(url, "complete")
+
+
+def batch_extract(urls: List[str], extraction_type: str = "standard") -> Dict[str, Any]:
+    """
+    استخراج متعدد المواقع
     
-    for i, url in enumerate(urls, 1):
-        print(f"استخراج الموقع {i}/{len(urls)}: {url}")
+    Args:
+        urls: قائمة بروابط المواقع
+        extraction_type: نوع الاستخراج
+        
+    Returns:
+        Dict: نتائج الاستخراج لجميع المواقع
+    """
+    
+    extractor = AdvancedWebsiteExtractor()
+    results = {}
+    
+    for i, url in enumerate(urls):
+        print(f"استخراج الموقع {i+1}/{len(urls)}: {url}")
         try:
-            result = extractor.extract_website(url, extraction_type)
+            result = extractor.extract(url, extraction_type)
             results[url] = result
         except Exception as e:
             results[url] = {
@@ -134,39 +165,30 @@ def extract_multiple_urls(urls: list, extraction_type: str = "standard") -> Dict
             }
     
     return {
-        'total_urls': len(urls),
+        'total_sites': len(urls),
         'successful_extractions': sum(1 for r in results.values() if r.get('success', False)),
+        'failed_extractions': sum(1 for r in results.values() if not r.get('success', False)),
         'results': results
     }
 
 
-# الكلاسات المُصدَّرة للاستيراد
-__all__ = [
-    'AdvancedExtractor',
-    'quick_extract', 
-    'extract_multiple_urls',
-    'ExtractionConfig',
-    'get_preset_config'
-]
-
-
+# مثال للاستخدام
 if __name__ == "__main__":
-    # مثال على الاستخدام
-    extractor = AdvancedExtractor()
+    # استخراج أساسي
+    result = extract_basic_info("https://example.com")
+    print(f"استخراج أساسي: {result.get('title', 'غير متوفر')}")
     
-    # اختبار الاستخراج الأساسي
-    test_url = "https://example.com"
-    print(f"اختبار استخراج: {test_url}")
+    # استخراج متقدم
+    result = extract_with_assets("https://example.com")
+    print(f"عدد الأصول المحملة: {len(result.get('assets', {}).get('images', []))}")
     
-    result = extractor.extract_basic(test_url)
+    # استخراج مخصص
+    extractor = AdvancedWebsiteExtractor()
+    custom_config = extractor.create_custom_config(
+        extraction_type="advanced",
+        capture_screenshots=True,
+        export_formats=['json', 'html', 'csv']
+    )
     
-    if result.get('success'):
-        print("✅ نجح الاستخراج!")
-        print(f"العنوان: {result.get('title', 'غير متوفر')}")
-        print(f"النطاق: {result.get('domain', 'غير متوفر')}")
-        print(f"عدد الروابط: {result.get('links_count', 0)}")
-        print(f"عدد الصور: {result.get('images_count', 0)}")
-        print(f"المدة: {result.get('duration', 0)} ثانية")
-    else:
-        print("❌ فشل الاستخراج:")
-        print(result.get('error', 'خطأ غير معروف'))
+    result = extractor.extract_with_custom_config("https://example.com", custom_config)
+    print(f"استخراج مخصص مكتمل: {result.get('success', False)}")
