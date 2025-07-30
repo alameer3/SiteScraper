@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+{% block title %}النظام الشامل للاستخراج والتحليل{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-download"></i>
+                        النظام الشامل للاستخراج والتحليل
+                    </h3>
+                    <p class="mb-0 mt-2">جميع المزايا المطلوبة حسب ملف 11.txt - تحليل شامل مع تحميل جميع المحتويات</p>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- شرح المزايا المتاحة -->
+                    <div class="alert alert-info mb-4">
+                        <h5><i class="fas fa-info-circle"></i> المزايا الشاملة المتاحة:</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>المحتوى الأساسي:</h6>
+                                <ul class="mb-2">
+                                    <li>جميع صفحات HTML</li>
+                                    <li>النصوص والمحتوى النصي</li>
+                                    <li>البيانات الوصفية (Meta tags)</li>
+                                    <li>البنية الهيكلية للموقع</li>
+                                </ul>
+                                
+                                <h6>الأصول والملفات:</h6>
+                                <ul class="mb-2">
+                                    <li>جميع الصور (PNG, JPG, SVG, WebP)</li>
+                                    <li>ملفات CSS وأكواد التنسيق</li>
+                                    <li>ملفات JavaScript والسكريبت</li>
+                                    <li>الخطوط (Fonts)</li>
+                                    <li>الفيديو والصوت</li>
+                                    <li>المستندات (PDF, DOC, etc.)</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>البنية التقنية:</h6>
+                                <ul class="mb-2">
+                                    <li>الكود المصدري الكامل</li>
+                                    <li>قواعد البيانات والAPI calls</li>
+                                    <li>نظام التوجيه (Routing)</li>
+                                    <li>التفاعلات والوظائف</li>
+                                    <li>أنظمة المصادقة</li>
+                                    <li>إعدادات الخادم</li>
+                                </ul>
+                                
+                                <h6>التصميم والتفاعل:</h6>
+                                <ul class="mb-2">
+                                    <li>التخطيطات (Layouts)</li>
+                                    <li>الأنماط المتجاوبة</li>
+                                    <li>التأثيرات والحركات</li>
+                                    <li>واجهات المستخدم</li>
+                                    <li>تجربة المستخدم</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- نموذج التحليل -->
+                    <form action="{{ url_for('extract_comprehensive') }}" method="POST" id="comprehensiveForm">
+                        
+                        <!-- رابط الموقع -->
+                        <div class="mb-3">
+                            <label for="url" class="form-label">
+                                <i class="fas fa-link"></i>
+                                رابط الموقع المراد تحليله
+                            </label>
+                            <input type="url" 
+                                   class="form-control form-control-lg" 
+                                   id="url" 
+                                   name="url" 
+                                   placeholder="https://example.com" 
+                                   required
+                                   dir="ltr">
+                            <div class="form-text">أدخل الرابط الكامل للموقع الذي تريد تحليله بشكل شامل</div>
+                        </div>
+
+                        <!-- نوع الاستخراج -->
+                        <div class="mb-4">
+                            <label for="extraction_type" class="form-label">
+                                <i class="fas fa-cogs"></i>
+                                مستوى التحليل الشامل
+                            </label>
+                            <select class="form-select form-select-lg" id="extraction_type" name="extraction_type">
+                                <option value="basic">أساسي - المحتوى والصور الأساسية</option>
+                                <option value="standard">قياسي - المحتوى + الأصول + التحليل الأساسي</option>
+                                <option value="advanced">متقدم - كل شيء + زحف الصفحات + التحليل التقني</option>
+                                <option value="complete" selected>شامل - جميع المزايا + الأمان + Screenshots</option>
+                                <option value="ultra">فائق - كل شيء + AJAX + تحليل عميق</option>
+                            </select>
+                            <div class="form-text">اختر مستوى التحليل حسب احتياجاتك</div>
+                        </div>
+
+                        <!-- معلومات إضافية -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="alert alert-warning">
+                                    <h6><i class="fas fa-clock"></i> الوقت المتوقع:</h6>
+                                    <ul class="mb-0">
+                                        <li><strong>أساسي:</strong> 30 ثانية - 2 دقيقة</li>
+                                        <li><strong>قياسي:</strong> 2-5 دقائق</li>
+                                        <li><strong>متقدم:</strong> 5-10 دقائق</li>
+                                        <li><strong>شامل:</strong> 10-20 دقيقة</li>
+                                        <li><strong>فائق:</strong> 20-30 دقيقة</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-success">
+                                    <h6><i class="fas fa-folder"></i> النتائج المحفوظة:</h6>
+                                    <ul class="mb-0">
+                                        <li>مجلدات منظمة حسب نوع المحتوى</li>
+                                        <li>تقارير HTML و JSON</li>
+                                        <li>لقطات شاشة للصفحات</li>
+                                        <li>تحليل شامل للأمان</li>
+                                        <li>خريطة كاملة للموقع</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- أزرار التحكم -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-outline-secondary me-md-2" onclick="window.location.href='{{ url_for('index') }}'">
+                                <i class="fas fa-arrow-left"></i> العودة للرئيسية
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                <i class="fas fa-rocket"></i>
+                                بدء التحليل الشامل
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- مؤشر التقدم -->
+                    <div id="progressSection" class="mt-4" style="display: none;">
+                        <div class="alert alert-info">
+                            <h5><i class="fas fa-spinner fa-spin"></i> جاري التحليل الشامل...</h5>
+                            <div class="progress mt-3">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                     role="progressbar" 
+                                     style="width: 0%" 
+                                     id="progressBar">
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <small id="progressText">بدء التحليل...</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- معلومات إضافية -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-question-circle"></i> كيفية استخدام النظام الشامل</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>📝 الخطوة 1: إدخال الرابط</h6>
+                            <p>أدخل رابط الموقع الذي تريد تحليله بالكامل. تأكد من أن الرابط صحيح ويعمل.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>⚙️ الخطوة 2: اختيار المستوى</h6>
+                            <p>اختر مستوى التحليل حسب احتياجاتك. المستوى الشامل موصى به للحصول على أفضل النتائج.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>🚀 الخطوة 3: بدء التحليل</h6>
+                            <p>اضغط على زر "بدء التحليل الشامل" وانتظر حتى اكتمال العملية.</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-check-circle text-success"></i> ما سيتم تحليله:</h6>
+                            <ul>
+                                <li>جميع الصفحات والروابط الداخلية</li>
+                                <li>كافة الأصول (صور، CSS، JS، خطوط)</li>
+                                <li>التقنيات المستخدمة ونظام إدارة المحتوى</li>
+                                <li>تحليل الأمان والثغرات المحتملة</li>
+                                <li>تحليل التصميم وتجربة المستخدم</li>
+                                <li>محتوى AJAX والتفاعلات الديناميكية</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-download text-primary"></i> ما سيتم حفظه:</h6>
+                            <ul>
+                                <li>مجلدات منظمة لكل نوع من المحتوى</li>
+                                <li>تقارير تفصيلية بصيغة HTML و JSON</li>
+                                <li>لقطات شاشة بأحجام مختلفة</li>
+                                <li>نسخ محلية من جميع الملفات</li>
+                                <li>خريطة كاملة لبنية الموقع</li>
+                                <li>تحليل شامل للتقنيات والأمان</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('comprehensiveForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const progressSection = document.getElementById('progressSection');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    
+    // إظهار مؤشر التقدم
+    progressSection.style.display = 'block';
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحليل...';
+    
+    // محاكاة التقدم
+    let progress = 0;
+    const progressMessages = [
+        'بدء التحليل الشامل...',
+        'استخراج المحتوى الأساسي...',
+        'تحميل الأصول والملفات...',
+        'تحليل البنية التقنية...',
+        'تحليل التصميم والتفاعل...',
+        'التقاط لقطات الشاشة...',
+        'إنشاء خريطة الموقع...',
+        'فحص الأمان والثغرات...',
+        'زحف الروابط الداخلية...',
+        'استخراج محتوى AJAX...',
+        'إنشاء التقارير النهائية...'
+    ];
+    
+    const interval = setInterval(() => {
+        if (progress < 90) {
+            progress += Math.random() * 15;
+            progressBar.style.width = progress + '%';
+            
+            const messageIndex = Math.floor((progress / 100) * progressMessages.length);
+            if (messageIndex < progressMessages.length) {
+                progressText.textContent = progressMessages[messageIndex];
+            }
+        }
+    }, 2000);
+    
+    // تنظيف عند اكتمال التحميل
+    setTimeout(() => {
+        clearInterval(interval);
+    }, 30000);
+});
+</script>
+{% endblock %}

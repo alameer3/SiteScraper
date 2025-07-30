@@ -274,6 +274,114 @@ def api_extract_advanced():
             'error': str(e)
         }), 500
 
+@app.route('/comprehensive-extractor')
+def comprehensive_extractor():
+    """صفحة النظام الشامل - جميع المزايا المطلوبة حسب 11.txt"""
+    if not ADVANCED_SYSTEM_AVAILABLE:
+        flash('النظام المطور غير متاح حالياً', 'warning')
+        return redirect(url_for('index'))
+    
+    return render_template('comprehensive_extractor.html')
+
+@app.route('/extract-comprehensive', methods=['POST'])
+def extract_comprehensive():
+    """تشغيل النظام الشامل مع جميع المزايا"""
+    if not ADVANCED_SYSTEM_AVAILABLE:
+        flash('النظام المطور غير متاح حالياً', 'error')
+        return redirect(url_for('index'))
+    
+    url = request.form.get('url', '').strip()
+    extraction_type = request.form.get('extraction_type', 'complete')
+    
+    if not url:
+        flash('يرجى إدخال رابط صحيح', 'error')
+        return redirect(url_for('comprehensive_extractor'))
+    
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    try:
+        # تشغيل النظام الشامل
+        app.logger.info(f"🚀 بدء التحليل الشامل للموقع: {url}")
+        result = advanced_extractor.comprehensive_website_download(url, extraction_type)
+        
+        # حفظ النتيجة في قاعدة البيانات
+        analysis_result = AnalysisResult()
+        analysis_result.url = url
+        analysis_result.title = result.get('basic_content', {}).get('basic_info', {}).get('title', 'بدون عنوان')
+        analysis_result.analysis_type = f"comprehensive_{extraction_type}"
+        analysis_result.status = 'completed' if result.get('extraction_info', {}).get('success') else 'failed'
+        analysis_result.result_data = json.dumps(result, ensure_ascii=False, indent=2, default=str)
+        
+        db.session.add(analysis_result)
+        db.session.commit()
+        
+        if result.get('extraction_info', {}).get('success'):
+            flash(f'✅ تم التحليل الشامل بنجاح! المدة: {result["extraction_info"]["duration"]} ثانية', 'success')
+            flash(f'📁 مجلد النتائج: {result["extraction_info"]["base_folder"]}', 'info')
+        else:
+            flash(f'❌ فشل التحليل: {result.get("error", "خطأ غير معروف")}', 'error')
+        
+        return redirect(url_for('result_detail', result_id=analysis_result.id))
+        
+    except Exception as e:
+        app.logger.error(f"خطأ في النظام الشامل: {str(e)}")
+        flash(f'خطأ في التحليل الشامل: {str(e)}', 'error')
+        return redirect(url_for('comprehensive_extractor'))
+
+@app.route('/api/extract-comprehensive', methods=['POST'])
+def api_extract_comprehensive():
+    """API للنظام الشامل"""
+    if not ADVANCED_SYSTEM_AVAILABLE:
+        return jsonify({
+            'success': False,
+            'error': 'النظام الشامل غير متاح'
+        }), 503
+    
+    data = request.get_json()
+    if not data or 'url' not in data:
+        return jsonify({
+            'success': False,
+            'error': 'URL مطلوب'
+        }), 400
+    
+    url = data['url']
+    extraction_type = data.get('extraction_type', 'complete')
+    
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    try:
+        result = advanced_extractor.comprehensive_website_download(url, extraction_type)
+        
+        # حفظ في قاعدة البيانات
+        analysis_result = AnalysisResult()
+        analysis_result.url = url
+        analysis_result.title = result.get('basic_content', {}).get('basic_info', {}).get('title', 'بدون عنوان')
+        analysis_result.analysis_type = f"comprehensive_{extraction_type}"
+        analysis_result.status = 'completed' if result.get('extraction_info', {}).get('success') else 'failed'
+        analysis_result.result_data = json.dumps(result, ensure_ascii=False, default=str)
+        
+        db.session.add(analysis_result)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'data': result,
+            'result_id': analysis_result.id,
+            'extraction_folder': result.get('extraction_info', {}).get('base_folder'),
+            'duration': result.get('extraction_info', {}).get('duration'),
+            'pages_crawled': result.get('crawl_results', {}).get('pages_crawled', 0),
+            'assets_downloaded': result.get('assets_download', {}).get('summary', {}).get('total_downloaded', 0)
+        })
+        
+    except Exception as e:
+        app.logger.error(f"API النظام الشامل خطأ: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/api/extraction-presets')
 def api_extraction_presets():
     """API للحصول على أنواع الاستخراج المتاحة"""

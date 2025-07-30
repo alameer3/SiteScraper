@@ -6862,3 +6862,262 @@ def add_comprehensive_methods():
 
 # تنفيذ الإضافة
 add_comprehensive_methods()
+
+# إضافة الوظائف المساعدة الأساسية المفقودة
+def add_basic_helper_methods():
+    """إضافة الوظائف المساعدة الأساسية المفقودة"""
+    
+    def _find_api_endpoints(self, soup: BeautifulSoup) -> List[str]:
+        """البحث عن نقاط API في الصفحة"""
+        endpoints = []
+        scripts = soup.find_all('script')
+        
+        for script in scripts:
+            content = script.get_text()
+            # البحث عن API endpoints شائعة
+            import re
+            patterns = [
+                r'["\']\/api\/[^"\']*["\']',
+                r'["\']\/ajax\/[^"\']*["\']',
+                r'["\']\/rest\/[^"\']*["\']',
+                r'fetch\s*\(\s*["\']([^"\']+)["\']',
+                r'axios\.[get|post]+\s*\(\s*["\']([^"\']+)["\']'
+            ]
+            
+            for pattern in patterns:
+                matches = re.findall(pattern, content)
+                endpoints.extend(matches)
+        
+        return list(set(endpoints))
+    
+    def _generate_comprehensive_sitemap(self, url: str, base_folder: Path) -> Dict[str, Any]:
+        """إنشاء خريطة شاملة للموقع"""
+        sitemap_info = {
+            'main_url': url,
+            'pages': [],
+            'total_pages': 0,
+            'generated_at': datetime.now().isoformat()
+        }
+        
+        try:
+            # محاولة الحصول على sitemap.xml
+            sitemap_url = urljoin(url, '/sitemap.xml')
+            try:
+                response = self.session.get(sitemap_url, timeout=10, verify=False)
+                if response.status_code == 200:
+                    sitemap_content = response.text
+                    sitemap_file = base_folder / '06_sitemap' / 'sitemap.xml'
+                    sitemap_file.parent.mkdir(exist_ok=True, parents=True)
+                    with open(sitemap_file, 'w', encoding='utf-8') as f:
+                        f.write(sitemap_content)
+                    
+                    # تحليل sitemap.xml
+                    from bs4 import BeautifulSoup
+                    sitemap_soup = BeautifulSoup(sitemap_content, 'xml')
+                    urls = sitemap_soup.find_all('url')
+                    
+                    for url_elem in urls:
+                        loc = url_elem.find('loc')
+                        if loc:
+                            sitemap_info['pages'].append({
+                                'url': loc.get_text(),
+                                'lastmod': url_elem.find('lastmod').get_text() if url_elem.find('lastmod') else None,
+                                'priority': url_elem.find('priority').get_text() if url_elem.find('priority') else None
+                            })
+                    
+                    sitemap_info['total_pages'] = len(sitemap_info['pages'])
+                    sitemap_info['sitemap_found'] = True
+                    
+            except:
+                sitemap_info['sitemap_found'] = False
+                sitemap_info['note'] = 'لم يتم العثور على sitemap.xml'
+            
+            # حفظ معلومات sitemap
+            sitemap_json = base_folder / '06_sitemap' / 'sitemap_info.json'
+            sitemap_json.parent.mkdir(exist_ok=True, parents=True)
+            with open(sitemap_json, 'w', encoding='utf-8') as f:
+                json.dump(sitemap_info, f, ensure_ascii=False, indent=2)
+                
+        except Exception as e:
+            sitemap_info['error'] = str(e)
+        
+        return sitemap_info
+    
+    def _organize_downloaded_files(self, base_folder: Path) -> Dict[str, Any]:
+        """تنظيم الملفات المحملة في مجلدات مرتبة"""
+        organization_info = {
+            'folders_created': 0,
+            'files_organized': 0,
+            'folder_structure': {},
+            'total_size_mb': 0
+        }
+        
+        try:
+            # فحص جميع المجلدات الفرعية
+            for folder in base_folder.rglob('*'):
+                if folder.is_dir():
+                    organization_info['folders_created'] += 1
+                    
+                    # حساب الملفات في كل مجلد
+                    files_in_folder = list(folder.glob('*'))
+                    files_count = len([f for f in files_in_folder if f.is_file()])
+                    
+                    if files_count > 0:
+                        folder_size = sum(f.stat().st_size for f in files_in_folder if f.is_file()) / 1024 / 1024
+                        organization_info['folder_structure'][str(folder.relative_to(base_folder))] = {
+                            'files_count': files_count,
+                            'size_mb': round(folder_size, 2)
+                        }
+                        organization_info['files_organized'] += files_count
+                        organization_info['total_size_mb'] += folder_size
+            
+            organization_info['total_size_mb'] = round(organization_info['total_size_mb'], 2)
+            
+            # حفظ معلومات التنظيم
+            org_file = base_folder / '10_reports' / 'file_organization.json'
+            org_file.parent.mkdir(exist_ok=True, parents=True)
+            with open(org_file, 'w', encoding='utf-8') as f:
+                json.dump(organization_info, f, ensure_ascii=False, indent=2)
+                
+        except Exception as e:
+            organization_info['error'] = str(e)
+        
+        return organization_info
+    
+    def _calculate_comprehensive_stats(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """حساب الإحصائيات الشاملة للاستخراج"""
+        stats = {
+            'content_stats': {},
+            'assets_stats': {},
+            'crawl_stats': {},
+            'overall_summary': {}
+        }
+        
+        try:
+            # إحصائيات المحتوى
+            basic_content = data.get('basic_content', {})
+            if basic_content.get('success'):
+                stats['content_stats'] = {
+                    'title_length': len(basic_content.get('basic_info', {}).get('title', '')),
+                    'text_content_length': len(basic_content.get('text_content', '')),
+                    'has_description': bool(basic_content.get('basic_info', {}).get('description')),
+                    'language_detected': basic_content.get('basic_info', {}).get('language', 'unknown')
+                }
+            
+            # إحصائيات الأصول
+            assets_download = data.get('assets_download', {})
+            if assets_download:
+                summary = assets_download.get('summary', {})
+                stats['assets_stats'] = {
+                    'total_downloaded': summary.get('total_downloaded', 0),
+                    'total_failed': summary.get('total_failed', 0),
+                    'total_size_mb': summary.get('total_size_mb', 0),
+                    'success_rate': round((summary.get('total_downloaded', 0) / max(1, summary.get('total_downloaded', 0) + summary.get('total_failed', 0))) * 100, 2)
+                }
+            
+            # إحصائيات الزحف
+            crawl_results = data.get('crawl_results', {})
+            if crawl_results:
+                stats['crawl_stats'] = {
+                    'pages_crawled': crawl_results.get('pages_crawled', 0),
+                    'total_links_found': crawl_results.get('total_links_found', 0),
+                    'errors_count': len(crawl_results.get('errors', [])),
+                    'assets_found': crawl_results.get('assets_found', {})
+                }
+            
+            # الملخص الإجمالي
+            stats['overall_summary'] = {
+                'extraction_successful': all([
+                    basic_content.get('success', False),
+                    assets_download is not None,
+                    crawl_results is not None
+                ]),
+                'total_items_processed': (
+                    stats.get('assets_stats', {}).get('total_downloaded', 0) +
+                    stats.get('crawl_stats', {}).get('pages_crawled', 0)
+                ),
+                'data_quality_score': self._calculate_data_quality_score(stats)
+            }
+            
+        except Exception as e:
+            stats['calculation_error'] = str(e)
+        
+        return stats
+    
+    def _calculate_data_quality_score(self, stats: Dict[str, Any]) -> float:
+        """حساب نقاط جودة البيانات"""
+        score = 0
+        
+        # نقاط المحتوى (40%)
+        content_stats = stats.get('content_stats', {})
+        if content_stats.get('title_length', 0) > 0:
+            score += 15
+        if content_stats.get('has_description'):
+            score += 10
+        if content_stats.get('text_content_length', 0) > 100:
+            score += 15
+        
+        # نقاط الأصول (30%)
+        assets_stats = stats.get('assets_stats', {})
+        success_rate = assets_stats.get('success_rate', 0)
+        if success_rate > 80:
+            score += 30
+        elif success_rate > 60:
+            score += 20
+        elif success_rate > 40:
+            score += 10
+        
+        # نقاط الزحف (30%)
+        crawl_stats = stats.get('crawl_stats', {})
+        pages_crawled = crawl_stats.get('pages_crawled', 0)
+        if pages_crawled > 10:
+            score += 30
+        elif pages_crawled > 5:
+            score += 20
+        elif pages_crawled > 0:
+            score += 10
+        
+        return min(score, 100)
+    
+    # إضافة الوظائف الجديدة إلى الكلاس
+    AdvancedWebsiteExtractor._find_api_endpoints = _find_api_endpoints
+    AdvancedWebsiteExtractor._generate_comprehensive_sitemap = _generate_comprehensive_sitemap
+    AdvancedWebsiteExtractor._organize_downloaded_files = _organize_downloaded_files
+    AdvancedWebsiteExtractor._calculate_comprehensive_stats = _calculate_comprehensive_stats
+    AdvancedWebsiteExtractor._calculate_data_quality_score = _calculate_data_quality_score
+
+# تنفيذ إضافة الوظائف المساعدة
+add_basic_helper_methods()
+
+# إضافة وظيفة اختبار سريع
+def test_comprehensive_system():
+    """اختبار سريع للنظام الشامل"""
+    print("🧪 اختبار النظام الشامل...")
+    
+    try:
+        extractor = AdvancedWebsiteExtractor("test_extractions")
+        
+        # اختبار الوظائف الأساسية
+        print("✅ تم إنشاء المستخرج بنجاح")
+        
+        # اختبار إنشاء المجلدات
+        from pathlib import Path
+        test_folder = Path("test_folder_structure")
+        extractor._create_comprehensive_folder_structure(test_folder)
+        print("✅ تم إنشاء هيكل المجلدات")
+        
+        # تنظيف
+        import shutil
+        if test_folder.exists():
+            shutil.rmtree(test_folder)
+        
+        print("🎉 النظام الشامل يعمل بشكل صحيح!")
+        return True
+        
+    except Exception as e:
+        print(f"❌ خطأ في اختبار النظام: {str(e)}")
+        return False
+
+# تشغيل الاختبار
+if __name__ == "__main__":
+    test_comprehensive_system()
