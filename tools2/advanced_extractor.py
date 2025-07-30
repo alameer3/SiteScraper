@@ -39,6 +39,14 @@ except ImportError:
     ASYNC_AVAILABLE = False
 
 try:
+    import cloudscraper
+    from fake_useragent import UserAgent
+    import httpx
+    ADVANCED_PROTECTION_BYPASS = True
+except ImportError:
+    ADVANCED_PROTECTION_BYPASS = False
+
+try:
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options as ChromeOptions
     from selenium.webdriver.common.by import By
@@ -1074,30 +1082,133 @@ class AdvancedWebsiteExtractor:
         for folder in folders:
             (base_folder / folder).mkdir(parents=True, exist_ok=True)
     
+    def _bypass_protection_request(self, url: str) -> Optional[requests.Response]:
+        """طلب متقدم مع تجاوز الحماية"""
+        methods_to_try = []
+        
+        # الطريقة 1: CloudScraper (الأقوى لتجاوز Cloudflare)
+        if ADVANCED_PROTECTION_BYPASS:
+            try:
+                scraper = cloudscraper.create_scraper(
+                    browser={
+                        'browser': 'chrome',
+                        'platform': 'windows',
+                        'mobile': False
+                    }
+                )
+                response = scraper.get(url, timeout=30)
+                if response.status_code == 200:
+                    return response
+            except Exception as e:
+                print(f"CloudScraper failed: {e}")
+        
+        # الطريقة 2: HttpX مع headers متقدمة
+        if ADVANCED_PROTECTION_BYPASS:
+            try:
+                ua = UserAgent()
+                headers = {
+                    'User-Agent': ua.random,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'DNT': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'none',
+                    'Sec-Fetch-User': '?1',
+                    'Cache-Control': 'max-age=0'
+                }
+                
+                with httpx.Client(follow_redirects=True, timeout=30) as client:
+                    response = client.get(url, headers=headers)
+                    if response.status_code == 200:
+                        # تحويل httpx response إلى requests response
+                        requests_response = requests.Response()
+                        requests_response.status_code = response.status_code
+                        requests_response._content = response.content
+                        requests_response.headers = response.headers
+                        requests_response.url = str(response.url)
+                        return requests_response
+            except Exception as e:
+                print(f"HttpX failed: {e}")
+        
+        # الطريقة 3: تجربة متعددة مع User Agents مختلفة
+        user_agents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/121.0'
+        ]
+        
+        for ua in user_agents:
+            try:
+                session = requests.Session()
+                # إعداد retry strategy
+                retry_strategy = Retry(
+                    total=3,
+                    backoff_factor=1,
+                    status_forcelist=[429, 500, 502, 503, 504],
+                )
+                adapter = HTTPAdapter(max_retries=retry_strategy)
+                session.mount("http://", adapter)
+                session.mount("https://", adapter)
+                
+                # إضافة headers إضافية لتجنب الكشف
+                referers = [
+                    'https://www.google.com/',
+                    'https://www.bing.com/',
+                    'https://duckduckgo.com/',
+                    'https://www.facebook.com/',
+                    'https://twitter.com/'
+                ]
+                
+                headers = {
+                    'User-Agent': ua,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.9,ar;q=0.8',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'DNT': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'cross-site',
+                    'Sec-Fetch-User': '?1',
+                    'Cache-Control': 'max-age=0',
+                    'Referer': random.choice(referers),
+                    'X-Forwarded-For': f"{random.randint(1,255)}.{random.randint(1,255)}.{random.randint(1,255)}.{random.randint(1,255)}",
+                    'X-Real-IP': f"{random.randint(1,255)}.{random.randint(1,255)}.{random.randint(1,255)}.{random.randint(1,255)}",
+                    'X-Forwarded-Proto': 'https'
+                }
+                
+                response = session.get(url, headers=headers, timeout=30, verify=False)
+                if response.status_code == 200:
+                    return response
+                elif response.status_code != 403:
+                    # إذا لم يكن 403، جرب التالي
+                    continue
+                    
+                # تأخير عشوائي بين المحاولات
+                time.sleep(random.uniform(1, 3))
+                
+            except Exception as e:
+                print(f"Method with UA {ua[:50]}... failed: {e}")
+                continue
+        
+        return None
+
     def _extract_comprehensive_basic_content(self, url: str, base_folder: Path) -> Dict[str, Any]:
         """استخراج المحتوى الأساسي الشامل"""
         try:
-            # إعداد headers متقدمة لتجنب الحظر
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.9,ar;q=0.8',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'DNT': '1',
-                'Connection': 'keep-alive',
-                'Upgrade-Insecure-Requests': '1',
-                'Sec-Fetch-Dest': 'document',
-                'Sec-Fetch-Mode': 'navigate',
-                'Sec-Fetch-Site': 'none',
-                'Sec-Fetch-User': '?1',
-                'Cache-Control': 'max-age=0',
-                'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"Windows"'
-            }
+            # محاولة الطلب مع تجاوز الحماية
+            response = self._bypass_protection_request(url)
             
-            response = self.session.get(url, timeout=30, verify=False, headers=headers)
-            response.raise_for_status()
+            if not response:
+                raise Exception("فشل في الوصول للموقع - جميع طرق تجاوز الحماية فشلت")
+            
             soup = BeautifulSoup(response.text, 'html.parser')
             
             # حفظ الصفحة الأساسية

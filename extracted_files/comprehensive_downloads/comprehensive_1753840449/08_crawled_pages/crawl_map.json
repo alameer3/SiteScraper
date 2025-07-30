@@ -1,0 +1,25 @@
+{
+  "pages_crawled": 1,
+  "total_links_found": 0,
+  "crawl_map": {
+    "https://jsonplaceholder.typicode.com": {
+      "title": "",
+      "depth": 0,
+      "file_path": "extracted_files/comprehensive_downloads/comprehensive_1753840449/08_crawled_pages/page_1_.html",
+      "links": [],
+      "assets": {
+        "images": 0,
+        "css": 0,
+        "js": 0
+      },
+      "forms": 0
+    }
+  },
+  "assets_found": {
+    "images": 0,
+    "css": 0,
+    "js": 0
+  },
+  "forms_found": 0,
+  "errors": []
+}

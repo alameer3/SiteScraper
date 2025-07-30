@@ -1,0 +1,25 @@
+{
+  "title": "بدون عنوان",
+  "description": "",
+  "keywords": "",
+  "language": "en",
+  "charset": "utf-8",
+  "canonical_url": "https://jsonplaceholder.typicode.com",
+  "og_data": {},
+  "twitter_data": {},
+  "structured_data": [],
+  "meta_tags": [],
+  "headings_structure": [],
+  "page_structure": {
+    "total_elements": 2,
+    "divs": 0,
+    "paragraphs": 0,
+    "links": 0,
+    "images": 0,
+    "forms": 0,
+    "scripts": 0,
+    "styles": 0,
+    "tables": 0,
+    "lists": 0
+  }
+}
