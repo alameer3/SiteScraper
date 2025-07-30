@@ -7,6 +7,7 @@ import os
 import json
 import logging
 from datetime import datetime
+from urllib.parse import urlparse
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
@@ -43,6 +44,7 @@ db.init_app(app)
 # استيراد النماذج والنظم الأساسية
 from models import AnalysisResult
 from core import WebsiteAnalyzer
+from enhanced_crawler import enhanced_crawler
 
 # استيراد أنظمة الحماية والأمان
 from ad_blocker import AdBlocker, ContentProtector, PrivacyFilter
@@ -101,13 +103,34 @@ def analyze():
         url = 'https://' + url
     
     try:
-        # تشغيل التحليل
-        result = analyzer.analyze_website(url, analysis_type)
+        # تشغيل التحليل المحسن أولاً
+        enhanced_result = enhanced_crawler.analyze_website_enhanced(url)
+        
+        if not enhanced_result['success']:
+            # إذا فشل التحليل المحسن، استخدم التحليل العادي
+            app.logger.warning(f"فشل التحليل المحسن: {enhanced_result['error']}")
+            result = analyzer.analyze_website(url, analysis_type)
+        else:
+            # استخدام النتيجة المحسنة
+            result = {
+                'success': True,
+                'data': enhanced_result['data'],
+                'execution_time': enhanced_result['execution_time'],
+                'method_used': enhanced_result['method_used'],
+                'enhanced': True
+            }
         
         # حفظ النتيجة
         analysis_result = AnalysisResult()
         analysis_result.url = url
-        analysis_result.title = result.get('title', 'بدون عنوان')
+        
+        # استخراج العنوان من البيانات
+        if result.get('enhanced'):
+            title = result['data'].get('title', 'بدون عنوان')
+        else:
+            title = result.get('data', {}).get('title', 'بدون عنوان')
+            
+        analysis_result.title = title
         analysis_result.analysis_type = analysis_type
         analysis_result.status = 'completed'
         analysis_result.result_data = json.dumps(result, ensure_ascii=False, indent=2)

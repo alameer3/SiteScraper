@@ -12,7 +12,8 @@ import logging
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from bs4 import BeautifulSoup, Tag, NavigableString
+from bs4 import BeautifulSoup, Tag
+from bs4.element import NavigableString
 import urllib3
 
 # تعطيل تحذيرات SSL
@@ -147,7 +148,7 @@ class WebsiteAnalyzer:
         data = {}
         
         # معلومات أساسية
-        data['title'] = soup.title.string.strip() if soup.title else 'بدون عنوان'
+        data['title'] = soup.title.string.strip() if soup.title and soup.title.string else 'بدون عنوان'
         data['status_code'] = response.status_code
         data['content_type'] = response.headers.get('content-type', '')
         data['server'] = response.headers.get('server', 'غير محدد')
@@ -156,10 +157,14 @@ class WebsiteAnalyzer:
         # Meta tags
         meta_tags = {}
         for meta in soup.find_all('meta'):
-            if meta.get('name'):
-                meta_tags[meta.get('name')] = meta.get('content', '')
-            elif meta.get('property'):
-                meta_tags[meta.get('property')] = meta.get('content', '')
+            if isinstance(meta, Tag):
+                name = meta.get('name')
+                prop = meta.get('property')
+                content = meta.get('content', '')
+                if name:
+                    meta_tags[str(name)] = str(content) if content else ''
+                elif prop:
+                    meta_tags[str(prop)] = str(content) if content else ''
         data['meta_tags'] = meta_tags
         
         # عدد العناصر
@@ -270,7 +275,7 @@ class WebsiteAnalyzer:
     def _analyze_seo(self, soup: BeautifulSoup) -> Dict[str, Any]:
         """تحليل SEO"""
         seo = {
-            'title_length': len(soup.title.string) if soup.title else 0,
+            'title_length': len(soup.title.string) if soup.title and soup.title.string else 0,
             'meta_description': None,
             'meta_keywords': None,
             'h1_count': len(soup.find_all('h1')),
@@ -281,17 +286,19 @@ class WebsiteAnalyzer:
         
         # Meta description
         meta_desc = soup.find('meta', attrs={'name': 'description'})
-        if meta_desc:
-            seo['meta_description'] = meta_desc.get('content', '')
+        if meta_desc and isinstance(meta_desc, Tag):
+            content = meta_desc.get('content', '')
+            seo['meta_description'] = str(content) if content else ''
         
         # Meta keywords
         meta_keywords = soup.find('meta', attrs={'name': 'keywords'})
-        if meta_keywords:
-            seo['meta_keywords'] = meta_keywords.get('content', '')
+        if meta_keywords and isinstance(meta_keywords, Tag):
+            content = meta_keywords.get('content', '')
+            seo['meta_keywords'] = str(content) if content else ''
         
         # الصور بدون alt text
         images = soup.find_all('img')
-        seo['alt_texts_missing'] = sum(1 for img in images if not img.get('alt'))
+        seo['alt_texts_missing'] = sum(1 for img in images if isinstance(img, Tag) and not img.get('alt'))
         
         # حساب نقاط SEO
         score = 0
@@ -315,14 +322,16 @@ class WebsiteAnalyzer:
         external_links = []
         
         for link in links:
-            href = link.get('href', '')
-            if href.startswith('http'):
-                if urlparse(base_url).netloc in href:
-                    internal_links.append(href)
-                else:
-                    external_links.append(href)
-            elif href.startswith('/'):
-                internal_links.append(urljoin(base_url, href))
+            if isinstance(link, Tag):
+                href = link.get('href', '')
+                href_str = str(href) if href else ''
+                if href_str.startswith('http'):
+                    if urlparse(base_url).netloc in href_str:
+                        internal_links.append(href_str)
+                    else:
+                        external_links.append(href_str)
+                elif href_str.startswith('/'):
+                    internal_links.append(urljoin(base_url, href_str))
         
         return {
             'total_links': len(links),
@@ -338,9 +347,9 @@ class WebsiteAnalyzer:
         
         return {
             'total_images': len(images),
-            'images_with_alt': sum(1 for img in images if img.get('alt')),
-            'images_without_alt': sum(1 for img in images if not img.get('alt')),
-            'lazy_loaded': sum(1 for img in images if 'lazy' in img.get('loading', '').lower()),
+            'images_with_alt': sum(1 for img in images if isinstance(img, Tag) and img.get('alt')),
+            'images_without_alt': sum(1 for img in images if isinstance(img, Tag) and not img.get('alt')),
+            'lazy_loaded': sum(1 for img in images if isinstance(img, Tag) and 'lazy' in str(img.get('loading', '')).lower()),
         }
     
     def _analyze_security_headers(self, response: requests.Response) -> Dict[str, Any]:
