@@ -78,6 +78,22 @@
                                    required
                                    dir="ltr">
                             <div class="form-text">أدخل الرابط الكامل للموقع الذي تريد تحليله بشكل شامل</div>
+                            
+                            <!-- اقتراحات للاختبار -->
+                            <div class="mt-2">
+                                <small class="text-muted">مواقع للاختبار:</small>
+                                <div class="btn-group-sm mt-1" role="group">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm me-1" onclick="document.getElementById('url').value='https://example.com'">
+                                        example.com
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm me-1" onclick="document.getElementById('url').value='https://httpbin.org'">
+                                        httpbin.org
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm me-1" onclick="document.getElementById('url').value='https://jsonplaceholder.typicode.com'">
+                                        jsonplaceholder
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- نوع الاستخراج -->
