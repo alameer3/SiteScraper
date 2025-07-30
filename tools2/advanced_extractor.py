@@ -931,6 +931,10 @@ class AdvancedWebsiteExtractor:
             print("📄 1. استخراج المحتوى الأساسي...")
             basic_content = self._extract_comprehensive_basic_content(url, base_folder)
             
+            # التحقق من نجاح المرحلة الأولى
+            if not basic_content.get('success'):
+                raise Exception(f"فشل في استخراج المحتوى الأساسي: {basic_content.get('error', 'خطأ غير معروف')}")
+            
             # مرحلة 2: تحميل جميع الأصول والملفات
             print("💾 2. تحميل جميع الأصول والملفات...")
             assets_download = self._download_all_website_assets(basic_content['soup'], url, base_folder)
@@ -1007,15 +1011,44 @@ class AdvancedWebsiteExtractor:
             return final_result
             
         except Exception as e:
+            print(f"❌ فشل التحميل الشامل: {str(e)}")
+            # محاولة حفظ تفاصيل الخطأ
+            try:
+                if 'base_folder' in locals():
+                    error_folder = base_folder / '99_errors'
+                    error_folder.mkdir(exist_ok=True, parents=True)
+                    error_file = error_folder / 'error_log.txt'
+                    with open(error_file, 'w', encoding='utf-8') as f:
+                        f.write(f"خطأ في التحليل الشامل:\n")
+                        f.write(f"الموقع: {url}\n")
+                        f.write(f"الوقت: {datetime.now().isoformat()}\n")
+                        f.write(f"نوع الخطأ: {type(e).__name__}\n")
+                        f.write(f"رسالة الخطأ: {str(e)}\n")
+                        
+                        import traceback
+                        f.write(f"\nتفاصيل الخطأ:\n{traceback.format_exc()}")
+            except:
+                pass
+            
             error_result = {
                 'extraction_id': extraction_id,
                 'url': url,
                 'success': False,
                 'error': str(e),
+                'error_type': type(e).__name__,
                 'duration': round(time.time() - start_time, 2),
-                'timestamp': datetime.now().isoformat()
+                'timestamp': datetime.now().isoformat(),
+                'extraction_info': {
+                    'success': False,
+                    'url': url,
+                    'extraction_type': extraction_type,
+                    'duration': round(time.time() - start_time, 2),
+                    'base_folder': str(base_folder) if 'base_folder' in locals() else '',
+                    'extraction_id': extraction_id,
+                    'error': str(e),
+                    'error_type': type(e).__name__
+                }
             }
-            print(f"❌ فشل التحميل الشامل: {str(e)}")
             return error_result
     
     def _create_comprehensive_folder_structure(self, base_folder: Path):
@@ -1092,7 +1125,137 @@ class AdvancedWebsiteExtractor:
             }
             
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            print(f"❌ خطأ في استخراج المحتوى الأساسي: {str(e)}")
+            return {'success': False, 'error': str(e), 'soup': None}
+    
+    def _get_meta_content(self, soup: BeautifulSoup, name: str) -> str:
+        """استخراج محتوى meta tag"""
+        tag = soup.find('meta', attrs={'name': name})
+        return tag.get('content', '') if tag else ''
+    
+    def _detect_content_language(self, text: str) -> str:
+        """كشف لغة المحتوى"""
+        # بسيط: كشف العربية
+        arabic_chars = len([c for c in text if '\u0600' <= c <= '\u06FF'])
+        total_chars = len([c for c in text if c.isalpha()])
+        
+        if total_chars > 0 and arabic_chars / total_chars > 0.3:
+            return 'ar'
+        return 'en'
+    
+    def _get_charset(self, soup: BeautifulSoup) -> str:
+        """استخراج ترميز الصفحة"""
+        charset_meta = soup.find('meta', attrs={'charset': True})
+        if charset_meta:
+            return charset_meta.get('charset', 'utf-8')
+        
+        content_type = soup.find('meta', attrs={'http-equiv': 'content-type'})
+        if content_type and content_type.get('content'):
+            content = content_type.get('content')
+            if 'charset=' in content:
+                return content.split('charset=')[1].strip()
+        
+        return 'utf-8'
+    
+    def _get_canonical_url(self, soup: BeautifulSoup, url: str) -> str:
+        """استخراج canonical URL"""
+        canonical = soup.find('link', rel='canonical')
+        return canonical.get('href', url) if canonical else url
+    
+    def _extract_og_data(self, soup: BeautifulSoup) -> Dict[str, str]:
+        """استخراج بيانات Open Graph"""
+        og_data = {}
+        og_tags = soup.find_all('meta', property=lambda x: x and x.startswith('og:'))
+        
+        for tag in og_tags:
+            property_name = tag.get('property', '').replace('og:', '')
+            content = tag.get('content', '')
+            if property_name:
+                og_data[property_name] = content
+        
+        return og_data
+    
+    def _extract_twitter_data(self, soup: BeautifulSoup) -> Dict[str, str]:
+        """استخراج بيانات Twitter Card"""
+        twitter_data = {}
+        twitter_tags = soup.find_all('meta', attrs={'name': lambda x: x and x.startswith('twitter:')})
+        
+        for tag in twitter_tags:
+            name = tag.get('name', '').replace('twitter:', '')
+            content = tag.get('content', '')
+            if name:
+                twitter_data[name] = content
+        
+        return twitter_data
+    
+    def _extract_structured_data(self, soup: BeautifulSoup) -> List[Dict]:
+        """استخراج البيانات المنظمة (JSON-LD)"""
+        structured_data = []
+        scripts = soup.find_all('script', type='application/ld+json')
+        
+        for script in scripts:
+            try:
+                data = json.loads(script.get_text())
+                structured_data.append(data)
+            except:
+                continue
+        
+        return structured_data
+    
+    def _extract_all_meta_tags(self, soup: BeautifulSoup) -> List[Dict]:
+        """استخراج جميع meta tags"""
+        meta_tags = []
+        for meta in soup.find_all('meta'):
+            tag_info = {}
+            for attr in ['name', 'property', 'http-equiv', 'charset', 'content']:
+                if meta.has_attr(attr):
+                    tag_info[attr] = meta.get(attr)
+            if tag_info:
+                meta_tags.append(tag_info)
+        
+        return meta_tags
+    
+    def _extract_headings_structure(self, soup: BeautifulSoup) -> List[Dict]:
+        """استخراج هيكل العناوين"""
+        headings = []
+        for level in range(1, 7):
+            for heading in soup.find_all(f'h{level}'):
+                headings.append({
+                    'level': level,
+                    'text': heading.get_text().strip(),
+                    'id': heading.get('id', ''),
+                    'class': heading.get('class', [])
+                })
+        
+        return headings
+    
+    def _analyze_page_structure(self, soup: BeautifulSoup) -> Dict[str, int]:
+        """تحليل هيكل الصفحة"""
+        return {
+            'total_elements': len(soup.find_all()),
+            'divs': len(soup.find_all('div')),
+            'paragraphs': len(soup.find_all('p')),
+            'links': len(soup.find_all('a')),
+            'images': len(soup.find_all('img')),
+            'forms': len(soup.find_all('form')),
+            'scripts': len(soup.find_all('script')),
+            'styles': len(soup.find_all('style')) + len(soup.find_all('link', rel='stylesheet')),
+            'tables': len(soup.find_all('table')),
+            'lists': len(soup.find_all(['ul', 'ol']))
+        }
+    
+    def _extract_comprehensive_text(self, soup: BeautifulSoup) -> str:
+        """استخراج النصوص الشامل"""
+        # إزالة العناصر غير المرغوبة
+        for element in soup(['script', 'style', 'nav', 'footer', 'header', 'aside']):
+            element.decompose()
+        
+        # استخراج النص
+        text = soup.get_text(separator='\n', strip=True)
+        
+        # تنظيف النص
+        lines = [line.strip() for line in text.split('\n') if line.strip()]
+        return '\n'.join(lines)
     
     def _download_all_website_assets(self, soup: BeautifulSoup, base_url: str, base_folder: Path) -> Dict[str, Any]:
         """تحميل جميع أصول الموقع بشكل شامل"""
