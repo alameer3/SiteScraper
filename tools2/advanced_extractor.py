@@ -1267,6 +1267,114 @@ class AdvancedWebsiteExtractor:
         lines = [line.strip() for line in text.split('\n') if line.strip()]
         return '\n'.join(lines)
     
+    def _extract_font_urls(self, soup: BeautifulSoup, base_url: str) -> List[str]:
+        """استخراج روابط الخطوط"""
+        font_urls = []
+        
+        # روابط الخطوط من link tags
+        for link in soup.find_all('link', rel='stylesheet'):
+            href = link.get('href')
+            if href and ('font' in href.lower() or 'googleapis.com/css' in href):
+                font_urls.append(urljoin(base_url, href))
+        
+        # روابط الخطوط من CSS
+        for style in soup.find_all('style'):
+            if style.string:
+                import re
+                font_matches = re.findall(r'@font-face[^}]*url\(["\']?([^"\']+)["\']?\)', style.string)
+                for match in font_matches:
+                    font_urls.append(urljoin(base_url, match))
+        
+        return list(set(font_urls))
+    
+    def _extract_video_urls(self, soup: BeautifulSoup, base_url: str) -> List[str]:
+        """استخراج روابط الفيديو"""
+        video_urls = []
+        
+        # فيديو مباشر
+        for video in soup.find_all('video'):
+            src = video.get('src')
+            if src:
+                video_urls.append(urljoin(base_url, src))
+            
+            # مصادر متعددة
+            for source in video.find_all('source'):
+                src = source.get('src')
+                if src:
+                    video_urls.append(urljoin(base_url, src))
+        
+        # فيديو مدمج
+        for iframe in soup.find_all('iframe'):
+            src = iframe.get('src')
+            if src and any(domain in src for domain in ['youtube', 'vimeo', 'dailymotion']):
+                video_urls.append(src)
+        
+        return list(set(video_urls))
+    
+    def _extract_audio_urls(self, soup: BeautifulSoup, base_url: str) -> List[str]:
+        """استخراج روابط الصوت"""
+        audio_urls = []
+        
+        for audio in soup.find_all('audio'):
+            src = audio.get('src')
+            if src:
+                audio_urls.append(urljoin(base_url, src))
+            
+            # مصادر متعددة
+            for source in audio.find_all('source'):
+                src = source.get('src')
+                if src:
+                    audio_urls.append(urljoin(base_url, src))
+        
+        return list(set(audio_urls))
+    
+    def _extract_document_urls(self, soup: BeautifulSoup, base_url: str) -> List[str]:
+        """استخراج روابط المستندات"""
+        document_urls = []
+        document_extensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.zip', '.rar']
+        
+        for link in soup.find_all('a', href=True):
+            href = link['href']
+            if any(ext in href.lower() for ext in document_extensions):
+                document_urls.append(urljoin(base_url, href))
+        
+        return list(set(document_urls))
+    
+    def _download_file_safe(self, url: str, filepath: Path, timeout: int = 30) -> Dict[str, Any]:
+        """تحميل ملف بأمان مع معالجة الأخطاء"""
+        try:
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+            
+            response = self.session.get(url, timeout=timeout, headers=headers, stream=True)
+            response.raise_for_status()
+            
+            # إنشاء المجلد إذا لم يكن موجود
+            filepath.parent.mkdir(parents=True, exist_ok=True)
+            
+            # تحميل الملف
+            with open(filepath, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+            
+            return {
+                'success': True,
+                'url': url,
+                'filepath': str(filepath),
+                'size': filepath.stat().st_size,
+                'content_type': response.headers.get('content-type', 'unknown')
+            }
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'url': url,
+                'error': str(e),
+                'filepath': str(filepath) if filepath else None
+            }
+    
     def _download_all_website_assets(self, soup: BeautifulSoup, base_url: str, base_folder: Path) -> Dict[str, Any]:
         """تحميل جميع أصول الموقع بشكل شامل"""
         assets_result = {
