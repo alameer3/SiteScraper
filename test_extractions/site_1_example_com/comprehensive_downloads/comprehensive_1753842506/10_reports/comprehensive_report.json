@@ -1,0 +1,280 @@
+{
+  "extraction_info": {
+    "extraction_id": "comprehensive_1753842506",
+    "url": "https://example.com",
+    "extraction_type": "standard",
+    "success": true,
+    "duration": 48.83,
+    "timestamp": "2025-07-30T02:29:15.767259",
+    "base_folder": "test_extractions/site_1_example_com/comprehensive_downloads/comprehensive_1753842506"
+  },
+  "basic_content": {
+    "success": true,
+    "response": "<Response [200]>",
+    "soup": "<!DOCTYPE html>\n\n<html>\n<head>\n<title>Example Domain</title>\n<meta charset=\"utf-8\"/>\n<meta content=\"text/html; charset=utf-8\" http-equiv=\"Content-type\"/>\n<meta content=\"width=device-width, initial-scale=1\" name=\"viewport\"/>\n\n</head>\n<body>\n<div>\n<h1>Example Domain</h1>\n<p>This domain is for use in illustrative examples in documents. You may use this\n    domain in literature without prior coordination or asking for permission.</p>\n<p><a href=\"https://www.iana.org/domains/example\">More information...</a></p>\n</div>\n</body>\n</html>\n",
+    "basic_info": {
+      "title": "Example Domain",
+      "description": "",
+      "keywords": "",
+      "language": "en",
+      "charset": "utf-8",
+      "canonical_url": "https://example.com",
+      "og_data": {},
+      "twitter_data": {},
+      "structured_data": [],
+      "meta_tags": [
+        {
+          "charset": "utf-8"
+        },
+        {
+          "http-equiv": "Content-type",
+          "content": "text/html; charset=utf-8"
+        },
+        {
+          "name": "viewport",
+          "content": "width=device-width, initial-scale=1"
+        }
+      ],
+      "headings_structure": [
+        {
+          "level": 1,
+          "text": "Example Domain",
+          "id": "",
+          "class": []
+        }
+      ],
+      "page_structure": {
+        "total_elements": 13,
+        "divs": 1,
+        "paragraphs": 2,
+        "links": 1,
+        "images": 0,
+        "forms": 0,
+        "scripts": 0,
+        "styles": 1,
+        "tables": 0,
+        "lists": 0
+      }
+    },
+    "text_content": "Example Domain\nExample Domain\nThis domain is for use in illustrative examples in documents. You may use this\ndomain in literature without prior coordination or asking for permission.\nMore information...",
+    "main_html_file": "test_extractions/site_1_example_com/comprehensive_downloads/comprehensive_1753842506/01_content/index.html",
+    "metadata_file": "test_extractions/site_1_example_com/comprehensive_downloads/comprehensive_1753842506/01_content/metadata.json",
+    "text_file": "test_extractions/site_1_example_com/comprehensive_downloads/comprehensive_1753842506/01_content/extracted_text.txt"
+  },
+  "assets_download": {
+    "images": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "css": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "js": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "fonts": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "media": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "documents": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "summary": {
+      "total_downloaded": 0,
+      "total_failed": 0,
+      "total_size_mb": 0
+    }
+  },
+  "technical_structure": {
+    "source_code": {
+      "html": "test_extractions/site_1_example_com/comprehensive_downloads/comprehensive_1753842506/03_technical/source_code/main.html",
+      "css": [],
+      "js": []
+    },
+    "api_endpoints": [],
+    "routing_system": {},
+    "authentication_systems": [],
+    "server_config": {},
+    "database_structure": {},
+    "interactive_features": {
+      "forms": 0,
+      "form_details": []
+    }
+  },
+  "design_analysis": {
+    "layouts": {
+      "has_grid": false,
+      "has_flexbox": false,
+      "main_containers": 1
+    },
+    "responsive_design": {
+      "has_viewport_meta": true,
+      "media_queries_detected": false
+    },
+    "animations": [],
+    "ui_components": {
+      "navigation": 0,
+      "buttons": 0,
+      "modals": 0,
+      "carousels": 0,
+      "tabs": 0
+    },
+    "user_experience": {
+      "accessibility_score": 35,
+      "loading_indicators": 0,
+      "error_handling": 0
+    }
+  },
+  "screenshots": {
+    "desktop": null,
+    "tablet": null,
+    "mobile": null,
+    "full_page": null,
+    "success": false,
+    "errors": [
+      "Selenium error: Message: Service /home/runner/.cache/selenium/chromedriver/linux64/138.0.7204.183/chromedriver unexpectedly exited. Status code was: 127\n"
+    ]
+  },
+  "sitemap": {
+    "main_url": "https://example.com",
+    "pages": [],
+    "total_pages": 0,
+    "generated_at": "2025-07-30T02:29:14.306473"
+  },
+  "file_organization": {
+    "folders_created": 17,
+    "files_organized": 7,
+    "folder_structure": {
+      "01_content": {
+        "files_count": 3,
+        "size_mb": 0.0
+      },
+      "03_technical": {
+        "files_count": 1,
+        "size_mb": 0.0
+      },
+      "04_design": {
+        "files_count": 1,
+        "size_mb": 0.0
+      },
+      "06_sitemap": {
+        "files_count": 1,
+        "size_mb": 0.0
+      },
+      "03_technical/source_code": {
+        "files_count": 1,
+        "size_mb": 0.0
+      }
+    },
+    "total_size_mb": 0.0
+  },
+  "cms_detection": {
+    "detected_cms": "غير محدد",
+    "confidence": 0,
+    "indicators": [],
+    "version": "غير معروف",
+    "plugins_detected": [],
+    "theme_info": {}
+  },
+  "security_test": {
+    "ssl_analysis": {
+      "uses_https": true
+    },
+    "headers_analysis": {
+      "Content-Security-Policy": "غير موجود",
+      "X-Frame-Options": "غير موجود",
+      "X-XSS-Protection": "غير موجود",
+      "X-Content-Type-Options": "غير موجود",
+      "Strict-Transport-Security": "غير موجود"
+    },
+    "vulnerability_scan": {
+      "forms_without_csrf": 0,
+      "external_scripts": 0,
+      "mixed_content_risk": false,
+      "sensitive_info_exposed": false
+    },
+    "broken_links": [],
+    "security_score": 25,
+    "recommendations": [
+      "CSP غير موجود",
+      "حماية من Clickjacking غير فعالة",
+      "حماية XSS غير فعالة",
+      "حماية MIME-Type غير فعالة",
+      "HSTS غير فعال"
+    ]
+  },
+  "crawl_results": {
+    "pages_crawled": 1,
+    "total_links_found": 0,
+    "crawl_map": {
+      "https://example.com": {
+        "title": "Example Domain",
+        "depth": 0,
+        "file_path": "test_extractions/site_1_example_com/comprehensive_downloads/comprehensive_1753842506/08_crawled_pages/page_1_.html",
+        "links": [],
+        "assets": {
+          "images": 0,
+          "css": 0,
+          "js": 0
+        },
+        "forms": 0
+      }
+    },
+    "assets_found": {
+      "images": 0,
+      "css": 0,
+      "js": 0
+    },
+    "forms_found": 0,
+    "errors": []
+  },
+  "ajax_content": {
+    "ajax_calls_detected": [],
+    "xhr_endpoints": [],
+    "dynamic_content_areas": [],
+    "api_calls": [],
+    "websocket_connections": []
+  },
+  "comprehensive_stats": {
+    "content_stats": {
+      "title_length": 14,
+      "text_content_length": 202,
+      "has_description": false,
+      "language_detected": "en"
+    },
+    "assets_stats": {
+      "total_downloaded": 0,
+      "total_failed": 0,
+      "total_size_mb": 0,
+      "success_rate": 0.0
+    },
+    "crawl_stats": {
+      "pages_crawled": 1,
+      "total_links_found": 0,
+      "errors_count": 0,
+      "assets_found": {
+        "images": 0,
+        "css": 0,
+        "js": 0
+      }
+    },
+    "overall_summary": {
+      "extraction_successful": true,
+      "total_items_processed": 1,
+      "data_quality_score": 40
+    }
+  }
+}

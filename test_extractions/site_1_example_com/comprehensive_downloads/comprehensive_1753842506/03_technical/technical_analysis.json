@@ -1,0 +1,16 @@
+{
+  "source_code": {
+    "html": "test_extractions/site_1_example_com/comprehensive_downloads/comprehensive_1753842506/03_technical/source_code/main.html",
+    "css": [],
+    "js": []
+  },
+  "api_endpoints": [],
+  "routing_system": {},
+  "authentication_systems": [],
+  "server_config": {},
+  "database_structure": {},
+  "interactive_features": {
+    "forms": 0,
+    "form_details": []
+  }
+}

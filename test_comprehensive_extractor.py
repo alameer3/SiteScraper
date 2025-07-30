@@ -1,86 +1,90 @@
 #!/usr/bin/env python3
 """
-اختبار أداة الاستخراج الشاملة المطورة
-Test script for the comprehensive website extraction tool
+اختبار شامل للنظام مع مواقع آمنة مختلفة
 """
 
-import sys
-import time
-from pathlib import Path
 from tools2.advanced_extractor import AdvancedWebsiteExtractor
+import json
+from pathlib import Path
 
-def test_extractor():
-    """اختبار أداة الاستخراج مع موقع تجريبي"""
+def test_safe_websites():
+    """اختبار النظام مع مواقع آمنة ومختلفة"""
     
-    print("🚀 بدء اختبار أداة الاستخراج الشاملة المطورة")
-    print("=" * 60)
-    
-    # تهيئة الأداة
-    extractor = AdvancedWebsiteExtractor(output_directory="test_extractions")
-    
-    # مواقع تجريبية للاختبار
+    # قائمة المواقع الآمنة للاختبار
     test_sites = [
         {
             'url': 'https://example.com',
-            'type': 'basic',
-            'description': 'موقع بسيط للاختبار الأساسي'
+            'name': 'Example.com - موقع اختبار كلاسيكي',
+            'expected': 'موقع بسيط مع محتوى أساسي'
         },
         {
             'url': 'https://httpbin.org',
-            'type': 'standard', 
-            'description': 'موقع اختبار HTTP للاستخراج المعياري'
+            'name': 'HTTPBin - أدوات اختبار HTTP',
+            'expected': 'موقع مع APIs وأدوات متنوعة'
+        },
+        {
+            'url': 'https://jsonplaceholder.typicode.com',
+            'name': 'JSONPlaceholder - API وهمي',
+            'expected': 'موقع API مع بيانات تجريبية'
         }
     ]
+    
+    print("🚀 بدء اختبار النظام الشامل مع مواقع آمنة متنوعة")
+    print("=" * 60)
     
     results = []
     
     for i, site in enumerate(test_sites, 1):
-        print(f"\n📝 اختبار {i}/{len(test_sites)}: {site['description']}")
-        print(f"🌐 الرابط: {site['url']}")
-        print(f"📋 النوع: {site['type']}")
+        print(f"\n{i}️⃣ اختبار: {site['name']}")
+        print(f"🔗 الرابط: {site['url']}")
+        print(f"📝 المتوقع: {site['expected']}")
         print("-" * 40)
         
-        start_time = time.time()
-        
         try:
-            result = extractor.extract(
-                url=site['url'],
-                extraction_type=site['type']
-            )
+            # إنشاء مجلد منفصل لكل موقع
+            site_name = site['url'].replace('https://', '').replace('/', '_').replace('.', '_')
+            output_dir = f"test_extractions/site_{i}_{site_name}"
             
-            duration = time.time() - start_time
+            # إنشاء مستخرج
+            extractor = AdvancedWebsiteExtractor(output_dir)
             
-            if result.get('extraction_info', {}).get('success'):
-                print(f"✅ نجح الاستخراج في {duration:.2f} ثانية")
+            # تشغيل الاستخراج الشامل
+            result = extractor.comprehensive_website_download(site['url'], 'standard')
+            
+            if result and result.get('extraction_info', {}).get('success'):
+                print("✅ نجح الاستخراج!")
                 
-                # عرض الإحصائيات
-                stats = result.get('statistics', {})
-                assets = result.get('downloaded_assets', {}).get('summary', {})
+                extraction_info = result.get('extraction_info', {})
+                basic_content = result.get('basic_content', {})
+                basic_info = basic_content.get('basic_info', {}) if basic_content else {}
                 
-                print(f"   📊 اكتمال الاستخراج: {stats.get('extraction_completeness', 0):.1f}%")
-                print(f"   📁 الملفات المحملة: {assets.get('total_images', 0)} صورة، {assets.get('total_css', 0)} CSS، {assets.get('total_js', 0)} JS")
-                print(f"   📏 حجم البيانات: {assets.get('total_size_mb', 0):.2f} MB")
-                print(f"   🔒 نقاط الأمان: {stats.get('security_score', 0):.1f}%")
-                print(f"   🔍 نقاط SEO: {stats.get('seo_score', 0):.1f}%")
+                print(f"⏱️ المدة: {extraction_info.get('duration', 'غير محدد')} ثانية")
+                print(f"📄 العنوان: {basic_info.get('title', 'بدون عنوان')}")
+                print(f"🔗 عدد الروابط: {basic_info.get('links_count', 0)}")
+                print(f"🖼️ عدد الصور: {basic_info.get('images_count', 0)}")
                 
-                # مسار النتائج
-                output_path = result.get('output_paths', {}).get('extraction_folder')
-                if output_path:
-                    print(f"   📂 النتائج محفوظة في: {output_path}")
+                # عرض الأصول المحملة
+                assets = result.get('assets', {})
+                total_assets = sum(len(files) for files in assets.values() if files)
+                print(f"📦 إجمالي الأصول: {total_assets}")
                 
                 results.append({
                     'site': site,
                     'success': True,
-                    'duration': duration,
-                    'result': result
+                    'result': result,
+                    'output_dir': output_dir
                 })
                 
             else:
-                print(f"❌ فشل الاستخراج: {result.get('error', 'خطأ غير محدد')}")
+                print("❌ فشل في الاستخراج")
+                error_msg = result.get('error', 'خطأ غير محدد') if result else 'لا توجد نتيجة'
+                print(f"🔍 السبب: {error_msg}")
+                
                 results.append({
                     'site': site,
                     'success': False,
-                    'error': result.get('error')
+                    'error': error_msg,
+                    'output_dir': output_dir
                 })
                 
         except Exception as e:
@@ -88,149 +92,37 @@ def test_extractor():
             results.append({
                 'site': site,
                 'success': False,
-                'error': str(e)
+                'error': str(e),
+                'output_dir': None
             })
     
-    # تقرير النتائج النهائي
+    # تلخيص النتائج
     print("\n" + "=" * 60)
-    print("📈 تقرير الاختبار النهائي")
+    print("📊 ملخص نتائج الاختبار:")
     print("=" * 60)
     
-    successful_tests = len([r for r in results if r['success']])
-    total_tests = len(results)
+    successful = sum(1 for r in results if r['success'])
+    total = len(results)
     
-    print(f"✅ الاختبارات الناجحة: {successful_tests}/{total_tests}")
-    print(f"📊 معدل النجاح: {(successful_tests/total_tests)*100:.1f}%")
+    print(f"✅ نجح: {successful}/{total} مواقع")
+    print(f"❌ فشل: {total - successful}/{total} مواقع")
     
-    if successful_tests > 0:
-        avg_duration = sum([r.get('duration', 0) for r in results if r['success']]) / successful_tests
-        print(f"⏱️ متوسط مدة الاستخراج: {avg_duration:.2f} ثانية")
-    
-    # تفاصيل كل اختبار
-    print("\n📋 تفاصيل الاختبارات:")
     for i, result in enumerate(results, 1):
         status = "✅ نجح" if result['success'] else "❌ فشل"
-        print(f"  {i}. {result['site']['url']} - {status}")
-        if not result['success']:
-            print(f"     خطأ: {result.get('error', 'غير محدد')}")
+        print(f"{i}. {result['site']['name']}: {status}")
+        if result['success'] and result['output_dir']:
+            print(f"   📁 المجلد: {result['output_dir']}")
     
-    print(f"\n🏁 انتهى الاختبار")
+    # حفظ تقرير شامل
+    report_path = Path("test_extractions") / "comprehensive_test_report.json"
+    report_path.parent.mkdir(exist_ok=True)
+    
+    with open(report_path, 'w', encoding='utf-8') as f:
+        json.dump(results, f, ensure_ascii=False, indent=2, default=str)
+    
+    print(f"\n📋 تم حفظ التقرير الشامل في: {report_path}")
+    
     return results
 
-def test_advanced_features():
-    """اختبار الميزات المتقدمة"""
-    
-    print("\n🔬 اختبار الميزات المتقدمة")
-    print("=" * 40)
-    
-    extractor = AdvancedWebsiteExtractor(output_directory="advanced_test")
-    
-    # اختبار استخراج متقدم
-    try:
-        print("🧪 اختبار الاستخراج المتقدم...")
-        result = extractor.extract(
-            url="https://example.com",
-            extraction_type="advanced"
-        )
-        
-        if result.get('extraction_info', {}).get('success'):
-            print("✅ نجح الاستخراج المتقدم")
-            
-            # فحص الميزات المتقدمة
-            extra_features = result.get('advanced_features', {})
-            
-            if extra_features.get('screenshots'):
-                print("  📸 تم التقاط لقطات الشاشة")
-            
-            if extra_features.get('crawl_results'):
-                crawl = extra_features['crawl_results']
-                print(f"  🕷️ تم زحف {crawl.get('pages_crawled', 0)} صفحة")
-            
-            if extra_features.get('sitemap'):
-                sitemap = extra_features['sitemap']
-                print(f"  🗺️ تم إنشاء خريطة موقع بـ {sitemap.get('urls_count', 0)} رابط")
-            
-            # تحليل الأمان
-            security = result.get('comprehensive_analysis', {}).get('security_analysis', {})
-            print(f"  🛡️ نقاط الأمان: {security.get('security_score', 0):.1f}%")
-            
-            # كشف CMS
-            cms = result.get('comprehensive_analysis', {}).get('cms_detection', {})
-            detected_cms = cms.get('primary_cms', 'غير محدد')
-            print(f"  ⚙️ نظام إدارة المحتوى: {detected_cms}")
-            
-        else:
-            print("❌ فشل الاستخراج المتقدم")
-            
-    except Exception as e:
-        print(f"❌ خطأ في اختبار الميزات المتقدمة: {str(e)}")
-
-def test_performance():
-    """اختبار الأداء"""
-    
-    print("\n⚡ اختبار الأداء")
-    print("=" * 30)
-    
-    extractor = AdvancedWebsiteExtractor(output_directory="performance_test")
-    
-    # اختبار مواقع مختلفة الأحجام
-    performance_sites = [
-        'https://example.com',  # موقع صغير
-        'https://httpbin.org'   # موقع متوسط
-    ]
-    
-    for url in performance_sites:
-        print(f"\n🎯 اختبار أداء: {url}")
-        
-        start_time = time.time()
-        
-        try:
-            result = extractor.extract(url, extraction_type="standard")
-            duration = time.time() - start_time
-            
-            if result.get('extraction_info', {}).get('success'):
-                assets = result.get('downloaded_assets', {}).get('summary', {})
-                total_assets = (assets.get('total_images', 0) + 
-                              assets.get('total_css', 0) + 
-                              assets.get('total_js', 0))
-                
-                print(f"  ⏱️ المدة: {duration:.2f} ثانية")
-                print(f"  📁 إجمالي الأصول: {total_assets}")
-                print(f"  💾 حجم البيانات: {assets.get('total_size_mb', 0):.2f} MB")
-                
-                if duration < 30:
-                    print("  🚀 أداء ممتاز")
-                elif duration < 60:
-                    print("  ✅ أداء جيد")
-                else:
-                    print("  ⚠️ أداء بطيء")
-                    
-            else:
-                print("  ❌ فشل في الاستخراج")
-                
-        except Exception as e:
-            print(f"  ❌ خطأ: {str(e)}")
-
 if __name__ == "__main__":
-    print("🧪 مجموعة اختبارات أداة الاستخراج الشاملة")
-    print("=" * 70)
-    
-    try:
-        # الاختبارات الأساسية
-        basic_results = test_extractor()
-        
-        # الاختبارات المتقدمة
-        test_advanced_features()
-        
-        # اختبارات الأداء
-        test_performance()
-        
-        print(f"\n🎉 انتهت جميع الاختبارات بنجاح!")
-        
-    except KeyboardInterrupt:
-        print(f"\n⏹️ تم إيقاف الاختبارات بواسطة المستخدم")
-        sys.exit(0)
-        
-    except Exception as e:
-        print(f"\n💥 خطأ عام في الاختبارات: {str(e)}")
-        sys.exit(1)
+    test_safe_websites()

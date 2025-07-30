@@ -1,0 +1,16 @@
+{
+  "source_code": {
+    "html": "test_extractions/site_3_jsonplaceholder_typicode_com/comprehensive_downloads/comprehensive_1753842556/03_technical/source_code/main.html",
+    "css": [],
+    "js": []
+  },
+  "api_endpoints": [],
+  "routing_system": {},
+  "authentication_systems": [],
+  "server_config": {},
+  "database_structure": {},
+  "interactive_features": {
+    "forms": 0,
+    "form_details": []
+  }
+}

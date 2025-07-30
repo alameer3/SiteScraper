@@ -1,0 +1,44 @@
+{
+  "title": "httpbin.org",
+  "description": "",
+  "keywords": "",
+  "language": "en",
+  "charset": "UTF-8",
+  "canonical_url": "https://httpbin.org",
+  "og_data": {},
+  "twitter_data": {},
+  "structured_data": [],
+  "meta_tags": [
+    {
+      "charset": "UTF-8"
+    }
+  ],
+  "headings_structure": [
+    {
+      "level": 2,
+      "text": "httpbin.org\n                                    \n0.9.2",
+      "id": "",
+      "class": [
+        "title"
+      ]
+    },
+    {
+      "level": 2,
+      "text": "Other Utilities",
+      "id": "",
+      "class": []
+    }
+  ],
+  "page_structure": {
+    "total_elements": 74,
+    "divs": 16,
+    "paragraphs": 1,
+    "links": 5,
+    "images": 0,
+    "forms": 0,
+    "scripts": 4,
+    "styles": 3,
+    "tables": 0,
+    "lists": 1
+  }
+}

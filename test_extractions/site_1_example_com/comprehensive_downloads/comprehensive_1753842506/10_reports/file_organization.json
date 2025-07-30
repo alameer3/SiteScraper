@@ -1,0 +1,27 @@
+{
+  "folders_created": 17,
+  "files_organized": 7,
+  "folder_structure": {
+    "01_content": {
+      "files_count": 3,
+      "size_mb": 0.0
+    },
+    "03_technical": {
+      "files_count": 1,
+      "size_mb": 0.0
+    },
+    "04_design": {
+      "files_count": 1,
+      "size_mb": 0.0
+    },
+    "06_sitemap": {
+      "files_count": 1,
+      "size_mb": 0.0
+    },
+    "03_technical/source_code": {
+      "files_count": 1,
+      "size_mb": 0.0
+    }
+  },
+  "total_size_mb": 0.0
+}

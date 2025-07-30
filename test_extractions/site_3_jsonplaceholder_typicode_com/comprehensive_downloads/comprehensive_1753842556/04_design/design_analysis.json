@@ -1,0 +1,24 @@
+{
+  "layouts": {
+    "has_grid": false,
+    "has_flexbox": false,
+    "main_containers": 0
+  },
+  "responsive_design": {
+    "has_viewport_meta": false,
+    "media_queries_detected": false
+  },
+  "animations": [],
+  "ui_components": {
+    "navigation": 0,
+    "buttons": 0,
+    "modals": 0,
+    "carousels": 0,
+    "tabs": 0
+  },
+  "user_experience": {
+    "accessibility_score": 20,
+    "loading_indicators": 0,
+    "error_handling": 0
+  }
+}

@@ -1,0 +1,15 @@
+خطأ في التحليل الشامل:
+الموقع: https://httpbin.org
+الوقت: 2025-07-30T02:29:15.992689
+نوع الخطأ: AttributeError
+رسالة الخطأ: 'AdvancedWebsiteExtractor' object has no attribute '_download_asset_comprehensive'
+
+تفاصيل الخطأ:
+Traceback (most recent call last):
+  File "/home/runner/workspace/tools2/advanced_extractor.py", line 949, in comprehensive_website_download
+    assets_download = self._download_all_website_assets(basic_content['soup'], url, base_folder)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/tools2/advanced_extractor.py", line 1575, in _download_all_website_assets
+    self._download_asset_comprehensive(css_url, base_folder / '02_assets/css', assets_result['css'])
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AdvancedWebsiteExtractor' object has no attribute '_download_asset_comprehensive'

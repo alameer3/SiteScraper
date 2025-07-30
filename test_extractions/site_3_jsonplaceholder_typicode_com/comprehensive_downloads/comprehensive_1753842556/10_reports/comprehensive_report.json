@@ -1,0 +1,261 @@
+{
+  "extraction_info": {
+    "extraction_id": "comprehensive_1753842556",
+    "url": "https://jsonplaceholder.typicode.com",
+    "extraction_type": "standard",
+    "success": true,
+    "duration": 1.62,
+    "timestamp": "2025-07-30T02:29:17.651536",
+    "base_folder": "test_extractions/site_3_jsonplaceholder_typicode_com/comprehensive_downloads/comprehensive_1753842556"
+  },
+  "basic_content": {
+    "success": true,
+    "response": "<Response [200]>",
+    "soup": "\u0003�\u0010\u0000�^5��m�1.����aCz$\u001d��x!�Đ�\u0004bh\u0000�]���*�XtW_U^ќ�o--��\u0015N��\u000b�\u0005�(\u0000�gv�ކ\u0010m\u0001�Wh\u0006��jt��T}\f-W�_�EP\u0001A{QS��\u0016�?\u001b$�o��U˦\f\r�\u0006\u0000�\fY\u0017\u0000 i����\u001d��u��K\u0006a\u0004pU��\u0010\u0019���\u0010t�����W�B�L�\u0011���\u0001�+��4\u001e���2��\u0013/�O\rAb\u0007�\\+s\u000fY���X���+�4�\u001cR� ����޷n\u001d��4w.(4u����%\u0002�B�8a��*��I2S�`\u0015D���]!���Q\u0006�\n\u0003ķ�W^cv~��Յ\u0016\u0005֤%Z�pl\u0011�X�#\\\u001d]��Ӌ���Hڭ�s8є\u000b\rNy\u0004/*ث���;�\u000f\u001cN�*� ؂8�ܜ\u0003\u0000�!�L��-\u0019bJ�n�A��΋j��^6�7ZyQ�w�\t?�\u001cLN\u000e.?��U�\"�$&lt;�x&lt;��\u0000`���I��\u000bѣ�K���\u001d|��i8��������mX\b\u0000�|A۹z��}�S����_8�s�\u0011\u0018�¡𸷿?��\n\u0005�RU�\u0011\f��=\u0004�OA������\u000b\u0004�kU\b-�\u000b\u0014����P`\u000e���(\u0013ܹ\u0012d���\u0000`vfZ�/�sx&amp;�A[��H�Ye�%+��\u000e�,�����\t\u0018�����}��._��B\u0019����&lt;Ŭ\u001a�\b���aX)_w9���GP�$��r��(P8�����Ȳ�\u001a�{h�\n`7b�@8��?���R9p}=\u0013����*�p���PPӒA�\u001dl��a\u0016}\u0002�;�� �I(�$Y\u0018F�\u0003'�A�ƣY������s_Z\u0006轜��-�����Ը��\u001d/($����,m�4#\u001dʞ_�\u0002\u000ew���d�0yr�k���\u0012h�褎��:�� lע\\NZ�!��T��XV\bl�Ĉ�!P�ѿԸ�\u0003��X�B����1Xc�\u0014\u0005a�\u001b|6�F���A\u000f\u0004H�W5���b�)�2�Z\r%Y���\u001aZ\u001a�Z9�l$\t�\u0011\u000b�`Fd|��k�\u0002\u000e�����a�\u000f=�Ta�\u00154=�sd�C�A��z�\u0015�����Wp\r�M\b�yVI��$$8\"�\u0002�&gt;\u0011idʖul;EKb�i��Aɔ�h��\"y�y\u0006D�I#hr��\u000ex�\u0013p��\r15%�\n�\u001e\u0006����;\r9iɲ��ׯ_�\u0007^r�V��Hu��x�$oCt%f�\t?P�\u001aa$X�J�\u001a���\u0019�da�+\u0001���o�iW�\np㬊��E79'��:�\u0005mѢ����q\"�1U\u0010��j�\u0001���`^R�V�,{A��gI(��x���I�,ɳ\u0019}.i*��\u0004r��\"\u0003\u0016磩���5��!��$̳ 5\u0015�AIH\u0014�ـZ(\u001fW�(�`��\u000fB-He�F�{\u001c�I\u0006��М\u0011 �D�߶�R�-F90\u0003̰\u0010j6�p�2U{�\u000e\t�Ё0rP]:B\u000fcvj�\u0001\u00198Q���G38\u0003Ћ�\u001a\u001b��Ç?��\u0017�J�<t#;hά�{4r \u0017=\"\" h�\u0003j=\"\" ¦a@�a)\u0006s��\u0015����ҝ'��v�\u0014]�\\\u001b��\u0015=\"\" �vs���'ӑ�-�(vq\u0013��ρ�\u0016ן=\"\" �лp�\u0012q\u0012�\\,�9�ηs�\u0012���rzf\u0013q���,�jx!�{��g�@�;=\"\">K���W�ASEP����ك����l%u�h��湱=(�Ϟ]u�=�\u0015$\u0011��\u0018�2 � �H#��5rG\b�\u001b+�5e�,fIR��);S\u0001/zf���)\u0011ʲ�D_�{�\"\u001cw�ȴڎ��\n=Ira�˗\u0001\b|�f�nvB��{1��#��\u001f9�#\u0003i�\u0017[�����~\u0012\u0016$1K���\u0007��\u001b�2��)��9\u0017�y��P�\u0005-�G���\u0000ԴA��+^Y��E\u0014\u00117R��'W�h�vmϧ�]i��hw|��a�3\u0012�\u0007���c��\f�l@T\u0004o�\nB\u000bg7𧑷�\u000b\u00078�\u0015\t;O\u0002g����@8H#3_��Le�w���\r7\b�o�\r{�,��:\u000f��\u001a&lt;\t�S\u0005�᏿�\u0016|��\u000f��\u0017��1\u000f\n\u001f�s�\u0003�\u0016\u001e.�F��(��H�\u0005G�϶�X�h�qe'\u00055ɨ�ی��s�\u0001}�{�d�KYQ���}���\r�J�%�Ox����\u001e�\"���9\u001a�.\u0017R\u001a^m\u001c��?��q�I#\u0014�_�eI=�&gt;]�\u0001O�9�殒6k�^J@i\u0011��V�'�\",��t=uP\b\u0003�C��ö�-/A�R\u0006Q��F\u0011rIᅝǗ\t/;�\u001bȋ\u0005���\u001e�<jخ�$\u000b\u0002$6\u0004d��$^\u000b#s�i\u0018�m*4��\u00032p�eq\u000f�7hkm�\u0011\u0004a@\u0016�jz݃'��b�ke*\u0007� !�=\"\" $5s�)k�\u0015�����f0\u0001�p��r�\u0001\u0004��s[���xro��e���㖜?�i̬�_=\"\" -�=\"\" :h�0uhx��;ȣ=\"\" a\bώ\u0016֖\u0016v����w�\"��\u0019�5}����=\"\" l�\u000e��?8ľ\u0001b�{e���\b��k�\be�5h�<ٷ��?���z����\u00054�k�\u000e�e}�}\u0000�����-��=\"\" p�j�cam��p\u0010d�i�cb�\u0006��'�h����%�����pk\u0018�\u0018�4�y�]9[rޱ�wb]yy�d\u0016g\u0011\u0004�7��\u0003������)\u0001�o\u0016e\u0010��uj�k=\"\" p������ѝ\\��f���h<�98}z�ã\u0017g7g��9fi�_�d�=\"\" t�4�(ښ���9߳��:=\"\" xli\u0004m!�(?6��b�il\u0019\u0017(\u0003ӱ2�ma#���z~\u0007\u000fc��4=\"\" y=\"\" ʶ�b.xd��k�\b�)e\u0018=\"\" �=\"\" �e�a�+=\"\" �u�h8�z��xv�\u0015���\u0006���=\"\" �~��lt=\"\" �ӱy�k�d�{�f��3*n=\"\" ��\b\u0002�_a�\u0007�l�k��\u0018g\u0011\u0004�c��sh=\"\">�%\u001f�I\u001f\u0000l�4Q\u0018����?�{��mZvi�ǝ\u001f��2\r�\u0003e�vw�\u001e���\u000e�\u0013�!���֪�=(�\u001a�x�bI\u0003T_IRm\b3��3�20\u0011�y�Y�q�\u001b:�y:k�z\u000e�$�V\u0018U�#LA�!��\b�#\u0018Z\u001b�!��μTv\r�Iub��6\u0006�m�=��f�\u001fĔi\u000fi6�R|#,8o!��8N�U�Re\u001f�T#0��#\u0018\u0002 \r�XyC8&amp;ۈZ灄\b�(n�\u0014.�rM0�h�\u00034/��v�Eb3+��\u000b�\n1Mà�C�\u001f�\r���,�J4\b)\f\u0013�{�?\u0000�\u001a4��\u0007e\u0003�\u001ap��\u0001�D~�Ż�3�g����ӕ��\u000b��y\u0019�%��\u000b\u0003�\u0002�~���j�XaL��Դ7A���\u0007{�H�CF=�߃��\u0015\u000eRad�HF�\u000fH������O\u0011ʠ\u001c����������.J\u0003=_�Ë�\u0018(3K��a\u001c���\u0005&amp;a�P\u001fb[Iz�\f�ۺ�8\u0018��V\u0011��#�H,�\u001e\u0004]�\u001bs�2NU�w՘+GQ�\u0019���\u000e7��gE���b\\NW�d�*�b���\u001c��x&lt;�\u0017�b�\\ŋy\u0014�\u0018(㱲��)s���c��ֽn�����*ZܜE����7��r�2F\u001c�]��r9�F\u001c]�7�ͧ7\u0017�o��˗��\u001e/��b|!�����g���O�����2M\u0019H�\u0005/J��(Ȥ÷̊�L�5[�\u0017�\\�\u0017�,'q&lt;+وm�:E���8\u001aςE\u0010�\u0011�l\u001d��C�A{�\u001ae*�~ˌh��߲�&lt;��\u000b����\u000eG�(�d�l�m�#V�����ako;\u001c��|1e���_���\u0015*Ή\u000eDQ�\u0017�s�/���\u0011�t���ٸ�f�\"/gK1��l��M\u0011��rZ�\u0016y&lt;��\u0011��:~?�sK�\tI��\u0010(@��'\f\u0000\u0000\b\n\u0003</jخ�$\u000b\u0002$6\u0004d��$^\u000b#s�i\u0018�m*4��\u00032p�eq\u000f�7hkm�\u0011\u0004a@\u0016�jz݃'��b�ke*\u0007�></t#;hά�{4r>",
+    "basic_info": {
+      "title": "بدون عنوان",
+      "description": "",
+      "keywords": "",
+      "language": "en",
+      "charset": "utf-8",
+      "canonical_url": "https://jsonplaceholder.typicode.com",
+      "og_data": {},
+      "twitter_data": {},
+      "structured_data": [],
+      "meta_tags": [],
+      "headings_structure": [],
+      "page_structure": {
+        "total_elements": 2,
+        "divs": 0,
+        "paragraphs": 0,
+        "links": 0,
+        "images": 0,
+        "forms": 0,
+        "scripts": 0,
+        "styles": 0,
+        "tables": 0,
+        "lists": 0
+      }
+    },
+    "text_content": "\u0003�\u0010\u0000�^5��m�1.����aCz$\u001d��x!�Đ�\u0004bh\u0000�]���*�XtW_U^ќ�o--��\u0015N��\u000b�\u0005�(\u0000�gv�ކ\u0010m\u0001�Wh\u0006��jt��T}\f-W�_�EP\u0001A{QS��\u0016�?\u001b$�o��U˦\f\r�\u0006\u0000�\fY\u0017\u0000 i����\u001d��u��K\u0006a\u0004pU��\u0010\u0019���\u0010t�����W�B�L�\u0011���\u0001�+��4\u001e���2��\u0013/�O\rAb\u0007�\\+s\u000fY���X���+�4�\u001cR� ����޷n\u001d��4w.(4u����%\u0002�B�8a��*��I2S�`\u0015D���]!���Q\u0006�\n\u0003ķ�W^cv~��Յ\u0016\u0005֤%Z�pl\u0011�X�#\\\u001d]��Ӌ���Hڭ�s8є\u000b\rNy\u0004/*ث���;�\u000f\u001cN�*� ؂8�ܜ\u0003\u0000�!�L��-\u0019bJ�n�A��΋j��^6�7ZyQ�w�\t?�\u001cLN\u000e.?��U�\"�$<�x<��\u0000`���I��\u000bѣ�K���\u001d|��i8��������mX\b\u0000�|A۹z��}�S����_8�s�\u0011\u0018�¡𸷿?��\n\u0005�RU�\u0011\f��=\u0004�OA������\u000b\u0004�kU\b-�\u000b\u0014����P`\u000e���(\u0013ܹ\u0012d���\u0000`vfZ�/�sx&�A[��H�Ye�%+��\u000e�,�����\t\u0018�����}��._��B\u0019����<Ŭ\u001a�\b���aX)_w9���GP�$��r��(P8�����Ȳ�\u001a�{h�\n`7b�@8��?���R9p}=\u0013����*�p���PPӒA�\u001dl��a\u0016}\u0002�;�� �I(�$Y\u0018F�\u0003'�A�ƣY������s_Z\u0006轜��-�����Ը��\u001d/($����,m�4#\u001dʞ_�\u0002\u000ew���d�0yr�k���\u0012h�褎��:�� lע\\NZ�!��T��XV\bl�Ĉ�!P�ѿԸ�\u0003��X�B����1Xc�\u0014\u0005a�\u001b|6�F���A\u000f\u0004H�W5���b�)�2�Z\r%Y���\u001aZ\u001a�Z9�l$\t�\u0011\u000b�`Fd|��k�\u0002\u000e�����a�\u000f=�Ta�\u00154=�sd�C�A��z�\u0015�����Wp\r�M\b�yVI��$$8\"�\u0002�>\u0011idʖul;EKb�i��Aɔ�h��\"y�y\u0006D�I#hr��\u000ex�\u0013p��\r15%�\n�\u001e\u0006����;\r9iɲ��ׯ_�\u0007^r�V��Hu��x�$oCt%f�\t?P�\u001aa$X�J�\u001a���\u0019�da�+\u0001���o�iW�\np㬊��E79'��:�\u0005mѢ����q\"�1U\u0010��j�\u0001���`^R�V�,{A��gI(��x���I�,ɳ\u0019}.i*��\u0004r��\"\u0003\u0016磩���5��!��$̳ 5\u0015�AIH\u0014�ـZ(\u001fW�(�`��\u000fB-He�F�{\u001c�I\u0006��М\u0011 �D�߶�R�-F90\u0003̰\u0010j6�p�2U{�\u000e\t�Ё0rP]:B\u000fcvj�\u0001\u00198Q���G38\u0003Ћ�\u001a\u001b��Ç?��\u0017�J�\nK���W�ASEP����ك����l%u�h��湱=(�Ϟ]u�=�\u0015$\u0011��\u0018�2 � �H#��5rG\b�\u001b+�5e�,fIR��);S\u0001/zf���)\u0011ʲ�D_�{�\"\u001cw�ȴڎ��\n=Ira�˗\u0001\b|�f�nvB��{1��#��\u001f9�#\u0003i�\u0017[�����~\u0012\u0016$1K���\u0007��\u001b�2��)��9\u0017�y��P�\u0005-�G���\u0000ԴA��+^Y��E\u0014\u00117R��'W�h�vmϧ�]i��hw|��a�3\u0012�\u0007���c��\f�l@T\u0004o�\nB\u000bg7𧑷�\u000b\u00078�\u0015\t;O\u0002g����@8H#3_��Le�w���\r7\b�o�\r{�,��:\u000f��\u001a<\t�S\u0005�᏿�\u0016|��\u000f��\u0017��1\u000f\n�s�\u0003�\u0016\u001e.�F��(��H�\u0005G�϶�X�h�qe'\u00055ɨ�ی��s�\u0001}�{�d�KYQ���}���\r�J�%�Ox����\u001e�\"���9\u001a�.\u0017R\u001a^m\u001c��?��q�I#\u0014�_�eI=�>]�\u0001O�9�殒6k�^J@i\u0011��V�'�\",��t=uP\b\u0003�C��ö�-/A�R\u0006Q��F\u0011rIᅝǗ\t/;�\u001bȋ\u0005���\u001e�\n�%\u001f�I\u001f\u0000l�4Q\u0018����?�{��mZvi�ǝ\u001f��2\r�\u0003e�vw�\u001e���\u000e�\u0013�!���֪�=(�\u001a�x�bI\u0003T_IRm\b3��3�20\u0011�y�Y�q�\u001b:�y:k�z\u000e�$�V\u0018U�#LA�!��\b�#\u0018Z\u001b�!��μTv\r�Iub��6\u0006�m�=��f�\u001fĔi\u000fi6�R|#,8o!��8N�U�Re\u001f�T#0��#\u0018\u0002 \r�XyC8&ۈZ灄\b�(n�\u0014.�rM0�h�\u00034/��v�Eb3+��\u000b�\n1Mà�C�\u001f�\r���,�J4\b)\f\u0013�{�?\u0000�\u001a4��\u0007e\u0003�\u001ap��\u0001�D~�Ż�3�g����ӕ��\u000b��y\u0019�%��\u000b\u0003�\u0002�~���j�XaL��Դ7A���\u0007{�H�CF=�߃��\u0015\u000eRad�HF�\u000fH������O\u0011ʠ\u001c����������.J\u0003=_�Ë�\u0018(3K��a\u001c���\u0005&a�P\u001fb[Iz�\f�ۺ�8\u0018��V\u0011��#�H,�\u001e\u0004]�\u001bs�2NU�w՘+GQ�\u0019���\u000e7��gE���b\\NW�d�*�b���\u001c��x<�\u0017�b�\\ŋy\u0014�\u0018(㱲��)s���c��ֽn�����*ZܜE����7��r�2F\u001c�]��r9�F\u001c]�7�ͧ7\u0017�o��˗��\u001e/��b|!�����g���O�����2M\u0019H�\u0005/J��(Ȥ÷̊�L�5[�\u0017�\\�\u0017�,'q<+وm�:E���8\u001aςE\u0010�\u0011�l\u001d��C�A{�\u001ae*�~ˌh��߲�<��\u000b����\u000eG�(�d�l�m�#V�����ako;\u001c��|1e���_���\u0015*Ή\u000eDQ�\u0017�s�/���\u0011�t���ٸ�f�\"/gK1��l��M\u0011��rZ�\u0016y<��\u0011��:~?�sK�\tI��\u0010(@��'\f\u0000\u0000\b\n\u0003",
+    "main_html_file": "test_extractions/site_3_jsonplaceholder_typicode_com/comprehensive_downloads/comprehensive_1753842556/01_content/index.html",
+    "metadata_file": "test_extractions/site_3_jsonplaceholder_typicode_com/comprehensive_downloads/comprehensive_1753842556/01_content/metadata.json",
+    "text_file": "test_extractions/site_3_jsonplaceholder_typicode_com/comprehensive_downloads/comprehensive_1753842556/01_content/extracted_text.txt"
+  },
+  "assets_download": {
+    "images": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "css": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "js": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "fonts": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "media": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "documents": {
+      "downloaded": [],
+      "failed": [],
+      "total": 0
+    },
+    "summary": {
+      "total_downloaded": 0,
+      "total_failed": 0,
+      "total_size_mb": 0
+    }
+  },
+  "technical_structure": {
+    "source_code": {
+      "html": "test_extractions/site_3_jsonplaceholder_typicode_com/comprehensive_downloads/comprehensive_1753842556/03_technical/source_code/main.html",
+      "css": [],
+      "js": []
+    },
+    "api_endpoints": [],
+    "routing_system": {},
+    "authentication_systems": [],
+    "server_config": {},
+    "database_structure": {},
+    "interactive_features": {
+      "forms": 0,
+      "form_details": []
+    }
+  },
+  "design_analysis": {
+    "layouts": {
+      "has_grid": false,
+      "has_flexbox": false,
+      "main_containers": 0
+    },
+    "responsive_design": {
+      "has_viewport_meta": false,
+      "media_queries_detected": false
+    },
+    "animations": [],
+    "ui_components": {
+      "navigation": 0,
+      "buttons": 0,
+      "modals": 0,
+      "carousels": 0,
+      "tabs": 0
+    },
+    "user_experience": {
+      "accessibility_score": 20,
+      "loading_indicators": 0,
+      "error_handling": 0
+    }
+  },
+  "screenshots": {
+    "desktop": null,
+    "tablet": null,
+    "mobile": null,
+    "full_page": null,
+    "success": false,
+    "errors": [
+      "Selenium error: Message: Service /home/runner/.cache/selenium/chromedriver/linux64/138.0.7204.183/chromedriver unexpectedly exited. Status code was: 127\n"
+    ]
+  },
+  "sitemap": {
+    "main_url": "https://jsonplaceholder.typicode.com",
+    "pages": [],
+    "total_pages": 0,
+    "generated_at": "2025-07-30T02:29:16.415190"
+  },
+  "file_organization": {
+    "folders_created": 17,
+    "files_organized": 7,
+    "folder_structure": {
+      "01_content": {
+        "files_count": 3,
+        "size_mb": 0.01
+      },
+      "03_technical": {
+        "files_count": 1,
+        "size_mb": 0.0
+      },
+      "04_design": {
+        "files_count": 1,
+        "size_mb": 0.0
+      },
+      "06_sitemap": {
+        "files_count": 1,
+        "size_mb": 0.0
+      },
+      "03_technical/source_code": {
+        "files_count": 1,
+        "size_mb": 0.01
+      }
+    },
+    "total_size_mb": 0.02
+  },
+  "cms_detection": {
+    "detected_cms": "غير محدد",
+    "confidence": 0,
+    "indicators": [],
+    "version": "غير معروف",
+    "plugins_detected": [],
+    "theme_info": {}
+  },
+  "security_test": {
+    "ssl_analysis": {
+      "uses_https": true
+    },
+    "headers_analysis": {
+      "Content-Security-Policy": "غير موجود",
+      "X-Frame-Options": "غير موجود",
+      "X-XSS-Protection": "غير موجود",
+      "X-Content-Type-Options": "غير موجود",
+      "Strict-Transport-Security": "غير موجود"
+    },
+    "vulnerability_scan": {
+      "forms_without_csrf": 0,
+      "external_scripts": 0,
+      "mixed_content_risk": false,
+      "sensitive_info_exposed": false
+    },
+    "broken_links": [],
+    "security_score": 25,
+    "recommendations": [
+      "CSP غير موجود",
+      "حماية من Clickjacking غير فعالة",
+      "حماية XSS غير فعالة",
+      "حماية MIME-Type غير فعالة",
+      "HSTS غير فعال"
+    ]
+  },
+  "crawl_results": {
+    "pages_crawled": 1,
+    "total_links_found": 0,
+    "crawl_map": {
+      "https://jsonplaceholder.typicode.com": {
+        "title": "",
+        "depth": 0,
+        "file_path": "test_extractions/site_3_jsonplaceholder_typicode_com/comprehensive_downloads/comprehensive_1753842556/08_crawled_pages/page_1_.html",
+        "links": [],
+        "assets": {
+          "images": 0,
+          "css": 0,
+          "js": 0
+        },
+        "forms": 0
+      }
+    },
+    "assets_found": {
+      "images": 0,
+      "css": 0,
+      "js": 0
+    },
+    "forms_found": 0,
+    "errors": []
+  },
+  "ajax_content": {
+    "ajax_calls_detected": [],
+    "xhr_endpoints": [],
+    "dynamic_content_areas": [],
+    "api_calls": [],
+    "websocket_connections": []
+  },
+  "comprehensive_stats": {
+    "content_stats": {
+      "title_length": 10,
+      "text_content_length": 2340,
+      "has_description": false,
+      "language_detected": "en"
+    },
+    "assets_stats": {
+      "total_downloaded": 0,
+      "total_failed": 0,
+      "total_size_mb": 0,
+      "success_rate": 0.0
+    },
+    "crawl_stats": {
+      "pages_crawled": 1,
+      "total_links_found": 0,
+      "errors_count": 0,
+      "assets_found": {
+        "images": 0,
+        "css": 0,
+        "js": 0
+      }
+    },
+    "overall_summary": {
+      "extraction_successful": true,
+      "total_items_processed": 1,
+      "data_quality_score": 40
+    }
+  }
+}

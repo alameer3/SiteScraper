@@ -1,0 +1,44 @@
+{
+  "title": "Example Domain",
+  "description": "",
+  "keywords": "",
+  "language": "en",
+  "charset": "utf-8",
+  "canonical_url": "https://example.com",
+  "og_data": {},
+  "twitter_data": {},
+  "structured_data": [],
+  "meta_tags": [
+    {
+      "charset": "utf-8"
+    },
+    {
+      "http-equiv": "Content-type",
+      "content": "text/html; charset=utf-8"
+    },
+    {
+      "name": "viewport",
+      "content": "width=device-width, initial-scale=1"
+    }
+  ],
+  "headings_structure": [
+    {
+      "level": 1,
+      "text": "Example Domain",
+      "id": "",
+      "class": []
+    }
+  ],
+  "page_structure": {
+    "total_elements": 13,
+    "divs": 1,
+    "paragraphs": 2,
+    "links": 1,
+    "images": 0,
+    "forms": 0,
+    "scripts": 0,
+    "styles": 1,
+    "tables": 0,
+    "lists": 0
+  }
+}
