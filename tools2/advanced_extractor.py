@@ -31,6 +31,14 @@ import random
 # تعطيل تحذيرات SSL
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# إضافة استيراد النظام المحسن
+try:
+    from enhanced_crawler import enhanced_crawler
+    ENHANCED_CRAWLER_AVAILABLE = True
+except ImportError:
+    ENHANCED_CRAWLER_AVAILABLE = False
+    print("⚠️ Enhanced crawler not available")
+
 # Advanced dependencies (conditional imports)
 try:
     import aiohttp
@@ -1086,6 +1094,21 @@ class AdvancedWebsiteExtractor:
     def _bypass_protection_request(self, url: str) -> Optional[requests.Response]:
         """طلب متقدم مع تجاوز الحماية"""
         
+        # استخدام النظام المحسن إذا كان متوفراً
+        if ENHANCED_CRAWLER_AVAILABLE:
+            try:
+                print(f"🚀 استخدام النظام المحسن للموقع: {url}")
+                enhanced_result = enhanced_crawler.fetch_with_protection_bypass(url)
+                
+                if enhanced_result['success']:
+                    print(f"✅ نجح النظام المحسن: {enhanced_result['method']}")
+                    return enhanced_result['response']
+                else:
+                    print(f"⚠️ فشل النظام المحسن: {enhanced_result['error']}")
+                    # استكمال بالطرق التقليدية
+            except Exception as e:
+                print(f"❌ خطأ في النظام المحسن: {str(e)}")
+        
         # الطريقة 1: CloudScraper مع إعدادات محسنة (الأقوى لـ Cloudflare)
         if ADVANCED_PROTECTION_BYPASS:
             try:
@@ -1240,6 +1263,9 @@ class AdvancedWebsiteExtractor:
                 print(f"Method with UA {ua[:50]}... failed: {e}")
                 continue
         
+        # آخر محاولة: اقتراح مواقع آمنة
+        safe_sites = ['https://httpbin.org/', 'https://example.com/', 'https://jsonplaceholder.typicode.com/']
+        print(f"❌ جميع الطرق فشلت. المواقع الآمنة للاختبار: {', '.join(safe_sites[:2])}")
         return None
 
     def _extract_comprehensive_basic_content(self, url: str, base_folder: Path) -> Dict[str, Any]:
@@ -1249,7 +1275,9 @@ class AdvancedWebsiteExtractor:
             response = self._bypass_protection_request(url)
             
             if not response:
-                raise Exception("فشل في الوصول للموقع - جميع طرق تجاوز الحماية فشلت")
+                safe_sites = ['https://httpbin.org/', 'https://example.com/', 'https://jsonplaceholder.typicode.com/']
+                suggestion = f"المواقع الآمنة للاختبار: {', '.join(safe_sites[:2])}"
+                raise Exception(f"فشل في الوصول للموقع - جميع طرق تجاوز الحماية فشلت. {suggestion}")
             
             soup = BeautifulSoup(response.text, 'html.parser')
             
