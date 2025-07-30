@@ -203,6 +203,8 @@ def extract_advanced():
     
     try:
         # تشغيل الاستخراج المتطور
+        if advanced_extractor is None:
+            raise Exception("النظام المتطور غير متاح")
         result = advanced_extractor.extract(url, extraction_type)
         
         # حفظ النتيجة في قاعدة البيانات
@@ -247,6 +249,8 @@ def api_extract_advanced():
         url = 'https://' + url
     
     try:
+        if advanced_extractor is None:
+            raise Exception("النظام المتطور غير متاح")
         result = advanced_extractor.extract(url, extraction_type)
         
         # حفظ في قاعدة البيانات
@@ -312,6 +316,8 @@ def extract_comprehensive():
     try:
         # تشغيل النظام الشامل
         app.logger.info(f"🚀 بدء التحليل الشامل للموقع: {url}")
+        if advanced_extractor is None:
+            raise Exception("النظام الشامل غير متاح")
         result = advanced_extractor.comprehensive_website_download(url, extraction_type)
         
         # حفظ النتيجة في قاعدة البيانات
@@ -361,6 +367,8 @@ def api_extract_comprehensive():
         url = 'https://' + url
     
     try:
+        if advanced_extractor is None:
+            raise Exception("النظام الشامل غير متاح")
         result = advanced_extractor.comprehensive_website_download(url, extraction_type)
         
         # حفظ في قاعدة البيانات
@@ -401,7 +409,16 @@ def api_extraction_presets():
         }), 503
     
     try:
-        presets = advanced_extractor.get_available_presets()
+        if advanced_extractor is None:
+            raise Exception("النظام المتطور غير متاح")
+        # استخدام قائمة ثابتة للأنماط المتاحة بدلاً من get_available_presets
+        presets = {
+            'basic': 'استخراج أساسي - محتوى النص والروابط',
+            'standard': 'استخراج قياسي - محتوى + صور + ملفات CSS/JS',
+            'advanced': 'استخراج متقدم - تحليل شامل + أدوات متطورة',
+            'complete': 'استخراج كامل - جميع المزايا + تحليل عميق',
+            'ultra': 'استخراج فائق - نسخ كامل + ذكاء اصطناعي'
+        }
         return jsonify({
             'success': True,
             'presets': presets

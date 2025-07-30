@@ -108,14 +108,39 @@ class WebsiteAnalyzer:
         return analysis_result
     
     def _fetch_page(self, url: str) -> Optional[requests.Response]:
-        """جلب محتوى الصفحة"""
+        """جلب محتوى الصفحة مع معالجة محسنة للأخطاء"""
         try:
             response = self.session.get(url, timeout=15, verify=False)
+            
+            # معالجة خاصة لكودات الخطأ الشائعة
+            if response.status_code == 403:
+                logger.warning(f"وصول محظور للموقع {url} - 403 Forbidden")
+                raise Exception(f"الوصول محظور للموقع {url}. قد يكون الموقع محمياً أو يحظر البرامج الآلية")
+            elif response.status_code == 404:
+                logger.warning(f"الصفحة غير موجودة {url} - 404 Not Found")
+                raise Exception(f"الصفحة غير موجودة: {url}")
+            elif response.status_code == 429:
+                logger.warning(f"طلبات كثيرة جداً {url} - 429 Too Many Requests")
+                raise Exception(f"طلبات كثيرة جداً من الموقع {url}. حاول مرة أخرى لاحقاً")
+            elif response.status_code >= 500:
+                logger.warning(f"خطأ في خادم الموقع {url} - {response.status_code}")
+                raise Exception(f"خطأ في خادم الموقع {url}")
+            
             response.raise_for_status()
             return response
+            
+        except requests.exceptions.SSLError as e:
+            logger.error(f"خطأ SSL في {url}: {str(e)}")
+            raise Exception(f"خطأ في شهادة الأمان للموقع {url}")
+        except requests.exceptions.Timeout as e:
+            logger.error(f"انتهت مهلة الاتصال بـ {url}: {str(e)}")
+            raise Exception(f"انتهت مهلة الاتصال بالموقع {url}")
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"خطأ في الاتصال بـ {url}: {str(e)}")
+            raise Exception(f"فشل الاتصال بالموقع {url}")
         except Exception as e:
             logger.error(f"خطأ في جلب الصفحة {url}: {str(e)}")
-            return None
+            raise Exception(f"فشل في استخراج المحتوى الأساسي: {str(e)}")
     
     def _analyze_basic(self, soup: BeautifulSoup, response: requests.Response, url: str) -> Dict[str, Any]:
         """التحليل الأساسي"""
