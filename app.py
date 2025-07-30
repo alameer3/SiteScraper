@@ -45,6 +45,7 @@ db.init_app(app)
 from models import AnalysisResult
 from core import WebsiteAnalyzer
 from enhanced_crawler import enhanced_crawler
+from optimized_extractor import optimized_extractor
 
 # استيراد أنظمة الحماية والأمان
 from ad_blocker import AdBlocker, ContentProtector, PrivacyFilter
@@ -103,29 +104,45 @@ def analyze():
         url = 'https://' + url
     
     try:
-        # تشغيل التحليل المحسن أولاً
-        enhanced_result = enhanced_crawler.analyze_website_enhanced(url)
+        # تشغيل النظام المحسن السريع أولاً
+        optimized_result = optimized_extractor.extract_comprehensive_fast(url)
         
-        if not enhanced_result['success']:
-            # إذا فشل التحليل المحسن، استخدم التحليل العادي
-            app.logger.warning(f"فشل التحليل المحسن: {enhanced_result['error']}")
-            result = analyzer.analyze_website(url, analysis_type)
-        else:
-            # استخدام النتيجة المحسنة
+        if optimized_result['success']:
+            # استخدام النتيجة المحسنة السريعة
             result = {
                 'success': True,
-                'data': enhanced_result['data'],
-                'execution_time': enhanced_result['execution_time'],
-                'method_used': enhanced_result['method_used'],
-                'enhanced': True
+                'data': optimized_result['data'],
+                'execution_time': optimized_result['execution_time'],
+                'method_used': optimized_result['method_used'],
+                'optimized': True
             }
+        else:
+            # إذا فشل النظام المحسن، جرب النظام العادي
+            app.logger.warning(f"فشل النظام المحسن: {optimized_result['error']}")
+            try:
+                enhanced_result = enhanced_crawler.analyze_website_enhanced(url)
+                if enhanced_result['success']:
+                    result = {
+                        'success': True,
+                        'data': enhanced_result['data'],
+                        'execution_time': enhanced_result['execution_time'],
+                        'method_used': enhanced_result['method_used'],
+                        'enhanced': True
+                    }
+                else:
+                    result = analyzer.analyze_website(url, analysis_type)
+            except Exception as e:
+                app.logger.error(f"خطأ في النظام الاحتياطي: {str(e)}")
+                result = analyzer.analyze_website(url, analysis_type)
         
         # حفظ النتيجة
         analysis_result = AnalysisResult()
         analysis_result.url = url
         
         # استخراج العنوان من البيانات
-        if result.get('enhanced'):
+        if result.get('optimized'):
+            title = result['data']['basic_info'].get('title', 'بدون عنوان')
+        elif result.get('enhanced'):
             title = result['data'].get('title', 'بدون عنوان')
         else:
             title = result.get('data', {}).get('title', 'بدون عنوان')
