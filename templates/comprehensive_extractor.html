@@ -81,17 +81,23 @@
                             
                             <!-- اقتراحات للاختبار -->
                             <div class="mt-2">
-                                <small class="text-muted">مواقع للاختبار:</small>
+                                <small class="text-muted">مواقع آمنة للاختبار:</small>
                                 <div class="btn-group-sm mt-1" role="group">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm me-1" onclick="document.getElementById('url').value='https://example.com'">
-                                        example.com
+                                    <button type="button" class="btn btn-outline-success btn-sm me-1" onclick="document.getElementById('url').value='https://example.com'">
+                                        ✓ example.com
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm me-1" onclick="document.getElementById('url').value='https://httpbin.org'">
-                                        httpbin.org
+                                    <button type="button" class="btn btn-outline-success btn-sm me-1" onclick="document.getElementById('url').value='https://httpbin.org'">
+                                        ✓ httpbin.org
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm me-1" onclick="document.getElementById('url').value='https://jsonplaceholder.typicode.com'">
-                                        jsonplaceholder
+                                    <button type="button" class="btn btn-outline-success btn-sm me-1" onclick="document.getElementById('url').value='https://jsonplaceholder.typicode.com'">
+                                        ✓ jsonplaceholder
                                     </button>
+                                </div>
+                                <div class="alert alert-warning mt-2 p-2">
+                                    <small>
+                                        <strong>تنبيه:</strong> بعض المواقع محمية بأنظمة أمان تمنع التحليل التلقائي. 
+                                        استخدم المواقع المقترحة أعلاه للحصول على أفضل النتائج.
+                                    </small>
                                 </div>
                             </div>
                         </div>

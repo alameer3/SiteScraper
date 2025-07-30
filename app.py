@@ -300,6 +300,15 @@ def extract_comprehensive():
     if not url.startswith(('http://', 'https://')):
         url = 'https://' + url
     
+    # التحقق من المواقع المحظورة
+    blocked_domains = ['ak.sv', 'localhost', '127.0.0.1']
+    from urllib.parse import urlparse
+    parsed_url = urlparse(url)
+    
+    if any(domain in parsed_url.netloc for domain in blocked_domains):
+        flash('⚠️ هذا الموقع محظور أو محمي. جرب المواقع المقترحة للاختبار', 'warning')
+        return redirect(url_for('comprehensive_extractor'))
+    
     try:
         # تشغيل النظام الشامل
         app.logger.info(f"🚀 بدء التحليل الشامل للموقع: {url}")
