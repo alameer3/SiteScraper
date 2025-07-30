@@ -26,6 +26,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import urllib3
 import re
+import random
 
 # تعطيل تحذيرات SSL
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -1084,9 +1085,16 @@ class AdvancedWebsiteExtractor:
     
     def _bypass_protection_request(self, url: str) -> Optional[requests.Response]:
         """طلب متقدم مع تجاوز الحماية"""
-        methods_to_try = []
         
-        # الطريقة 1: CloudScraper (الأقوى لتجاوز Cloudflare)
+        # الطريقة 1: الطلب العادي أولاً (أسرع وأكثر استقراراً)
+        try:
+            response = self.session.get(url, timeout=15, allow_redirects=True)
+            if response.status_code == 200:
+                return response
+        except Exception as e:
+            print(f"Standard request failed: {e}")
+        
+        # الطريقة 2: CloudScraper (مع timeout قصير)
         if ADVANCED_PROTECTION_BYPASS:
             try:
                 scraper = cloudscraper.create_scraper(
@@ -1096,7 +1104,7 @@ class AdvancedWebsiteExtractor:
                         'mobile': False
                     }
                 )
-                response = scraper.get(url, timeout=30)
+                response = scraper.get(url, timeout=10)  # تقليل timeout
                 if response.status_code == 200:
                     return response
             except Exception as e:
@@ -1121,7 +1129,7 @@ class AdvancedWebsiteExtractor:
                     'Cache-Control': 'max-age=0'
                 }
                 
-                with httpx.Client(follow_redirects=True, timeout=30) as client:
+                with httpx.Client(follow_redirects=True, timeout=10) as client:
                     response = client.get(url, headers=headers)
                     if response.status_code == 200:
                         # تحويل httpx response إلى requests response
@@ -1134,13 +1142,10 @@ class AdvancedWebsiteExtractor:
             except Exception as e:
                 print(f"HttpX failed: {e}")
         
-        # الطريقة 3: تجربة متعددة مع User Agents مختلفة
+        # الطريقة 3: تجربة متعددة مع User Agents مختلفة (كأسلوب احتياطي)
         user_agents = [
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/121.0'
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         ]
         
         for ua in user_agents:
@@ -1184,7 +1189,7 @@ class AdvancedWebsiteExtractor:
                     'X-Forwarded-Proto': 'https'
                 }
                 
-                response = session.get(url, headers=headers, timeout=30, verify=False)
+                response = session.get(url, headers=headers, timeout=10, verify=False)
                 if response.status_code == 200:
                     return response
                 elif response.status_code != 403:
