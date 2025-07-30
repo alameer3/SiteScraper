@@ -81,7 +81,7 @@
                             
                             <!-- اقتراحات للاختبار -->
                             <div class="mt-2">
-                                <small class="text-muted">مواقع آمنة للاختبار:</small>
+                                <small class="text-muted">مواقع آمنة ومُختبرة للتحليل:</small>
                                 <div class="btn-group-sm mt-1" role="group">
                                     <button type="button" class="btn btn-outline-success btn-sm me-1" onclick="document.getElementById('url').value='https://example.com'">
                                         ✓ example.com
@@ -92,17 +92,34 @@
                                     <button type="button" class="btn btn-outline-success btn-sm me-1" onclick="document.getElementById('url').value='https://jsonplaceholder.typicode.com'">
                                         ✓ jsonplaceholder
                                     </button>
+                                    <button type="button" class="btn btn-outline-info btn-sm me-1" onclick="document.getElementById('url').value='https://www.wikipedia.org'">
+                                        ✓ wikipedia.org
+                                    </button>
+                                    <button type="button" class="btn btn-outline-info btn-sm me-1" onclick="document.getElementById('url').value='https://news.ycombinator.com'">
+                                        ✓ Hacker News
+                                    </button>
                                 </div>
-                                <div class="alert alert-warning mt-2 p-2">
+                                <div class="alert alert-danger mt-2 p-2">
                                     <small>
-                                        <strong>تنبيه:</strong> بعض المواقع محمية بأنظمة أمان تمنع التحليل التلقائي:
-                                        <ul class="mb-0 mt-1">
-                                            <li>Cloudflare Protection - حماية من البوتات</li>
-                                            <li>Rate Limiting - تحديد عدد الطلبات</li>
-                                            <li>Geographic Blocking - حظر جغرافي</li>
-                                            <li>Bot Detection - كشف الطلبات الآلية</li>
+                                        <strong>⚠️ مواقع محظورة للتحليل:</strong>
+                                        <ul class="mb-1 mt-1">
+                                            <li><strong>المواقع المحمية:</strong> GitHub، Google، Facebook، Twitter، Instagram</li>
+                                            <li><strong>مواقع التجارة:</strong> Amazon، eBay، معظم متاجر التسوق</li>
+                                            <li><strong>المصارف والمالية:</strong> جميع مواقع البنوك والخدمات المالية</li>
+                                            <li><strong>مواقع الأخبار الكبرى:</strong> CNN، BBC، الجزيرة (محمية بـ Cloudflare)</li>
                                         </ul>
-                                        استخدم المواقع المقترحة أعلاه للحصول على أفضل النتائج.
+                                        <strong>السبب:</strong> هذه المواقع تستخدم حماية متقدمة تمنع التحليل الآلي
+                                    </small>
+                                </div>
+                                <div class="alert alert-success mt-2 p-2">
+                                    <small>
+                                        <strong>✅ نصائح للمواقع المحمية:</strong>
+                                        <ul class="mb-0 mt-1">
+                                            <li>استخدم المواقع المقترحة أعلاه للتأكد من عمل النظام</li>
+                                            <li>المواقع الشخصية والمدونات عادة تعمل بشكل جيد</li>
+                                            <li>مواقع التوثيق التقني مثل docs.python.org تعمل عادة</li>
+                                            <li>إذا فشل موقع، جرب وضع "basic" لتقليل الطلبات</li>
+                                        </ul>
                                     </small>
                                 </div>
                             </div>

@@ -316,12 +316,21 @@ def extract_comprehensive():
         url = 'https://' + url
     
     # التحقق من المواقع المحظورة
-    blocked_domains = ['ak.sv', 'localhost', '127.0.0.1']
+    blocked_domains = [
+        'ak.sv', 'localhost', '127.0.0.1',
+        'github.com', 'facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com',
+        'google.com', 'amazon.com', 'ebay.com', 'paypal.com', 'netflix.com',
+        'spotify.com', 'apple.com', 'microsoft.com', 'adobe.com', 'salesforce.com',
+        'cloudflare.com', 'akamai.com', 'fastly.com', 'cnn.com', 'bbc.com'
+    ]
     from urllib.parse import urlparse
     parsed_url = urlparse(url)
+    domain = parsed_url.netloc.lower()
+    if domain.startswith('www.'):
+        domain = domain[4:]
     
-    if any(domain in parsed_url.netloc for domain in blocked_domains):
-        flash('⚠️ هذا الموقع محظور أو محمي. جرب المواقع المقترحة للاختبار', 'warning')
+    if any(blocked_domain in domain for blocked_domain in blocked_domains):
+        flash(f'⚠️ الموقع {domain} محمي ولا يمكن تحليله. استخدم المواقع المقترحة للاختبار.', 'warning')
         return redirect(url_for('comprehensive_extractor'))
     
     try:
