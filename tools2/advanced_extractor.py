@@ -99,16 +99,25 @@ try:
 except ImportError:
     DOCX_AVAILABLE = False
 
-try:
-    from .core.extractor_engine import AdvancedExtractorEngine
-    from .core.config import ExtractionConfig, get_preset_config
-except ImportError:
-    # معالجة مشكلة الاستيراد النسبي
-    import sys
-    import os
-    sys.path.append(os.path.dirname(__file__))
-    from core.extractor_engine import AdvancedExtractorEngine
-    from core.config import ExtractionConfig, get_preset_config
+# تم تعطيل الاستيراد المتقدم مؤقتاً - سيتم إنشاء الكلاسات محلياً
+# try:
+#     from .core.extractor_engine import AdvancedExtractorEngine
+#     from .core.config import ExtractionConfig, get_preset_config
+# except ImportError:
+#     from core.extractor_engine import AdvancedExtractorEngine
+#     from core.config import ExtractionConfig, get_preset_config
+
+# إنشاء إعدادات أساسية محلياً
+@dataclass
+class ExtractionConfig:
+    """إعدادات الاستخراج"""
+    max_depth: int = 5
+    max_pages: int = 100
+    timeout: int = 30
+    delay: float = 1.0
+    extract_media: bool = True
+    extract_documents: bool = True
+    bypass_protection: bool = True
 
 
 @dataclass
