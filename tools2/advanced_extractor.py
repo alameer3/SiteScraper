@@ -6098,3 +6098,767 @@ if __name__ == "__main__":
     
     result = extractor.extract_with_custom_config("https://example.com", custom_config)
     print(f"استخراج مخصص مكتمل: {result.get('success', False)}")
+
+
+# =====================================
+# الوظائف المساعدة الشاملة المطلوبة
+# =====================================
+
+def _download_asset_comprehensive(self, url: str, folder: Path, result_dict: Dict):
+    """تحميل أصل واحد بشكل شامل"""
+    try:
+        folder.mkdir(exist_ok=True, parents=True)
+        response = self.session.get(url, timeout=15, verify=False, stream=True)
+        response.raise_for_status()
+        
+        # تحديد اسم الملف
+        filename = url.split('/')[-1].split('?')[0] or f"asset_{len(result_dict['downloaded'])}"
+        
+        # تحديد الامتداد حسب نوع المحتوى
+        content_type = response.headers.get('content-type', '').lower()
+        if not '.' in filename:
+            if 'image' in content_type:
+                if 'jpeg' in content_type or 'jpg' in content_type:
+                    filename += '.jpg'
+                elif 'png' in content_type:
+                    filename += '.png'
+                elif 'svg' in content_type:
+                    filename += '.svg'
+                elif 'webp' in content_type:
+                    filename += '.webp'
+                else:
+                    filename += '.img'
+            elif 'css' in content_type:
+                filename += '.css'
+            elif 'javascript' in content_type:
+                filename += '.js'
+            elif 'font' in content_type:
+                if 'woff2' in content_type:
+                    filename += '.woff2'
+                elif 'woff' in content_type:
+                    filename += '.woff'
+                elif 'ttf' in content_type:
+                    filename += '.ttf'
+                else:
+                    filename += '.font'
+            elif 'video' in content_type:
+                filename += '.mp4'
+            elif 'audio' in content_type:
+                filename += '.mp3'
+            elif 'pdf' in content_type:
+                filename += '.pdf'
+        
+        file_path = folder / filename
+        
+        # تحميل الملف
+        with open(file_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        
+        file_size = file_path.stat().st_size / 1024 / 1024  # MB
+        result_dict['downloaded'].append({
+            'url': url,
+            'file_path': str(file_path),
+            'filename': filename,
+            'size_mb': round(file_size, 3),
+            'content_type': content_type
+        })
+        
+    except Exception as e:
+        result_dict['failed'].append({'url': url, 'error': str(e)})
+
+# الآن سأضيف الوظائف المفقودة مباشرة إلى الكلاس
+def add_missing_methods_to_extractor():
+    """إضافة الوظائف المفقودة إلى كلاس AdvancedWebsiteExtractor"""
+    
+    def _extract_technical_structure(self, soup: BeautifulSoup, url: str, base_folder: Path) -> Dict[str, Any]:
+        """استخراج البنية التقنية الشاملة"""
+        technical_info = {
+            'source_code': {'html': '', 'css': [], 'js': []},
+            'api_endpoints': [],
+            'routing_system': {},
+            'authentication_systems': [],
+            'server_config': {},
+            'database_structure': {},
+            'interactive_features': {}
+        }
+        
+        try:
+            # حفظ الكود المصدري الكامل
+            source_folder = base_folder / '03_technical' / 'source_code'
+            source_folder.mkdir(exist_ok=True, parents=True)
+            
+            # HTML الأساسي
+            html_file = source_folder / 'main.html'
+            with open(html_file, 'w', encoding='utf-8') as f:
+                f.write(str(soup.prettify()))
+            technical_info['source_code']['html'] = str(html_file)
+            
+            # استخراج جميع ملفات CSS
+            css_links = soup.find_all('link', rel='stylesheet')
+            for i, link in enumerate(css_links[:10]):
+                href = link.get('href')
+                if href:
+                    try:
+                        css_url = urljoin(url, href)
+                        css_response = self.session.get(css_url, timeout=10, verify=False)
+                        css_file = source_folder / f'style_{i}.css'
+                        with open(css_file, 'w', encoding='utf-8') as f:
+                            f.write(css_response.text)
+                        technical_info['source_code']['css'].append(str(css_file))
+                    except:
+                        pass
+            
+            # استخراج جميع ملفات JavaScript
+            js_scripts = soup.find_all('script', src=True)
+            for i, script in enumerate(js_scripts[:10]):
+                src = script.get('src')
+                if src:
+                    try:
+                        js_url = urljoin(url, src)
+                        js_response = self.session.get(js_url, timeout=10, verify=False)
+                        js_file = source_folder / f'script_{i}.js'
+                        with open(js_file, 'w', encoding='utf-8') as f:
+                            f.write(js_response.text)
+                        technical_info['source_code']['js'].append(str(js_file))
+                    except:
+                        pass
+            
+            # كشف API endpoints
+            technical_info['api_endpoints'] = self._find_api_endpoints(soup)
+            
+            # تحليل النماذج والتفاعلات
+            forms = soup.find_all('form')
+            technical_info['interactive_features']['forms'] = len(forms)
+            technical_info['interactive_features']['form_details'] = []
+            
+            for form in forms:
+                form_info = {
+                    'action': form.get('action', ''),
+                    'method': form.get('method', 'GET').upper(),
+                    'inputs': []
+                }
+                
+                inputs = form.find_all(['input', 'select', 'textarea'])
+                for inp in inputs:
+                    form_info['inputs'].append({
+                        'name': inp.get('name', ''),
+                        'type': inp.get('type', inp.name),
+                        'required': inp.has_attr('required')
+                    })
+                
+                technical_info['interactive_features']['form_details'].append(form_info)
+            
+            # حفظ التحليل التقني
+            tech_file = base_folder / '03_technical' / 'technical_analysis.json'
+            with open(tech_file, 'w', encoding='utf-8') as f:
+                json.dump(technical_info, f, ensure_ascii=False, indent=2)
+            
+            return technical_info
+            
+        except Exception as e:
+            return {'error': str(e), 'success': False}
+    
+    def _analyze_design_and_interaction(self, soup: BeautifulSoup, url: str, base_folder: Path) -> Dict[str, Any]:
+        """تحليل التصميم والتفاعل"""
+        design_info = {
+            'layouts': {},
+            'responsive_design': {},
+            'animations': [],
+            'ui_components': {},
+            'user_experience': {}
+        }
+        
+        try:
+            # تحليل التخطيطات
+            design_info['layouts']['has_grid'] = bool(soup.find(class_=re.compile(r'grid|row|col')))
+            design_info['layouts']['has_flexbox'] = bool(soup.find(attrs={'style': re.compile(r'flex|display:\s*flex')}))
+            design_info['layouts']['main_containers'] = len(soup.find_all(['div', 'section', 'article', 'main']))
+            
+            # كشف التصميم المتجاوب
+            viewport_meta = soup.find('meta', attrs={'name': 'viewport'})
+            design_info['responsive_design']['has_viewport_meta'] = bool(viewport_meta)
+            design_info['responsive_design']['media_queries_detected'] = False
+            
+            # البحث عن media queries في CSS
+            for style in soup.find_all('style'):
+                if '@media' in style.get_text():
+                    design_info['responsive_design']['media_queries_detected'] = True
+                    break
+            
+            # كشف المكونات الشائعة
+            design_info['ui_components']['navigation'] = len(soup.find_all(['nav', 'menu']))
+            design_info['ui_components']['buttons'] = len(soup.find_all(['button', 'input[type="submit"]', 'input[type="button"]']))
+            design_info['ui_components']['modals'] = len(soup.find_all(class_=re.compile(r'modal|popup|dialog')))
+            design_info['ui_components']['carousels'] = len(soup.find_all(class_=re.compile(r'carousel|slider|swiper')))
+            design_info['ui_components']['tabs'] = len(soup.find_all(class_=re.compile(r'tab|tabpanel')))
+            
+            # تحليل تجربة المستخدم
+            design_info['user_experience']['accessibility_score'] = self._calculate_accessibility_score(soup)
+            design_info['user_experience']['loading_indicators'] = len(soup.find_all(class_=re.compile(r'loading|spinner|progress')))
+            design_info['user_experience']['error_handling'] = len(soup.find_all(class_=re.compile(r'error|alert|warning')))
+            
+            # حفظ تحليل التصميم
+            design_file = base_folder / '04_design' / 'design_analysis.json'
+            design_file.parent.mkdir(exist_ok=True, parents=True)
+            with open(design_file, 'w', encoding='utf-8') as f:
+                json.dump(design_info, f, ensure_ascii=False, indent=2)
+            
+            return design_info
+            
+        except Exception as e:
+            return {'error': str(e), 'success': False}
+    
+    def _capture_automatic_screenshots(self, url: str, base_folder: Path) -> Dict[str, Any]:
+        """التقاط screenshots تلقائي للصفحة"""
+        screenshots_result = {
+            'desktop': None,
+            'tablet': None,
+            'mobile': None,
+            'full_page': None,
+            'success': False,
+            'errors': []
+        }
+        
+        screenshots_folder = base_folder / '05_screenshots'
+        timestamps = int(time.time())
+        
+        try:
+            # محاولة استخدام Selenium إذا كان متاحاً
+            if SELENIUM_AVAILABLE:
+                from selenium.webdriver.chrome.options import Options
+                
+                chrome_options = Options()
+                chrome_options.add_argument('--headless')
+                chrome_options.add_argument('--no-sandbox')
+                chrome_options.add_argument('--disable-dev-shm-usage')
+                chrome_options.add_argument('--disable-gpu')
+                
+                try:
+                    driver = webdriver.Chrome(options=chrome_options)
+                    driver.get(url)
+                    time.sleep(3)  # انتظار تحميل الصفحة
+                    
+                    # سطح المكتب (1920x1080)
+                    driver.set_window_size(1920, 1080)
+                    desktop_file = screenshots_folder / f'desktop_{timestamps}.png'
+                    driver.save_screenshot(str(desktop_file))
+                    screenshots_result['desktop'] = str(desktop_file)
+                    
+                    # اللوحي (768x1024)
+                    driver.set_window_size(768, 1024)
+                    tablet_file = screenshots_folder / f'tablet_{timestamps}.png'
+                    driver.save_screenshot(str(tablet_file))
+                    screenshots_result['tablet'] = str(tablet_file)
+                    
+                    # الهاتف (375x667)
+                    driver.set_window_size(375, 667)
+                    mobile_file = screenshots_folder / f'mobile_{timestamps}.png'
+                    driver.save_screenshot(str(mobile_file))
+                    screenshots_result['mobile'] = str(mobile_file)
+                    
+                    # الصفحة الكاملة
+                    driver.set_window_size(1920, driver.execute_script("return document.body.scrollHeight"))
+                    full_page_file = screenshots_folder / f'full_page_{timestamps}.png'
+                    driver.save_screenshot(str(full_page_file))
+                    screenshots_result['full_page'] = str(full_page_file)
+                    
+                    driver.quit()
+                    screenshots_result['success'] = True
+                    
+                except Exception as e:
+                    screenshots_result['errors'].append(f'Selenium error: {str(e)}')
+                    
+            else:
+                # محاولة استخدام طريقة بديلة
+                screenshots_result['errors'].append('لا يوجد محرك لقطات شاشة متاح')
+                
+                # إنشاء ملف نصي يحتوي على معلومات الصفحة بدلاً من الصورة
+                info_file = screenshots_folder / f'page_info_{timestamps}.txt'
+                with open(info_file, 'w', encoding='utf-8') as f:
+                    f.write(f"معلومات الصفحة: {url}\n")
+                    f.write(f"وقت الاستخراج: {datetime.now().isoformat()}\n")
+                    f.write("ملاحظة: لم يتم التقاط لقطة شاشة بسبب عدم توفر المكتبات المطلوبة\n")
+                screenshots_result['info_file'] = str(info_file)
+                
+        except Exception as e:
+            screenshots_result['errors'].append(str(e))
+        
+        return screenshots_result
+    
+    def _calculate_accessibility_score(self, soup: BeautifulSoup) -> float:
+        """حساب نقاط إمكانية الوصول"""
+        score = 0
+        total_checks = 10
+        
+        # فحص وجود alt في الصور
+        images = soup.find_all('img')
+        images_with_alt = sum(1 for img in images if img.get('alt'))
+        if images:
+            score += (images_with_alt / len(images)) * 10
+        else:
+            score += 10
+        
+        # فحص وجود labels للنماذج
+        inputs = soup.find_all('input')
+        labeled_inputs = sum(1 for inp in inputs if inp.get('id') and soup.find('label', attrs={'for': inp.get('id')}))
+        if inputs:
+            score += (labeled_inputs / len(inputs)) * 10
+        else:
+            score += 10
+        
+        # فحص هيكل العناوين
+        headings = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+        if headings:
+            score += 15
+        
+        # فحص وجود lang attribute
+        if soup.find('html', attrs={'lang': True}):
+            score += 15
+        
+        # فحص وجود معرفات ARIA
+        aria_elements = soup.find_all(attrs={'aria-label': True})
+        if aria_elements:
+            score += 10
+        
+        return min(score, 100)
+    
+    # إضافة الوظائف إلى الكلاس
+    AdvancedWebsiteExtractor._extract_technical_structure = _extract_technical_structure
+    AdvancedWebsiteExtractor._analyze_design_and_interaction = _analyze_design_and_interaction
+    AdvancedWebsiteExtractor._capture_automatic_screenshots = _capture_automatic_screenshots
+    AdvancedWebsiteExtractor._calculate_accessibility_score = _calculate_accessibility_score
+
+# تنفيذ الإضافة
+add_missing_methods_to_extractor()
+
+# إضافة المزيد من الوظائف المطلوبة
+def add_comprehensive_methods():
+    """إضافة الوظائف الشاملة المتبقية"""
+    
+    def _detect_comprehensive_cms(self, soup: BeautifulSoup, response) -> Dict[str, Any]:
+        """كشف شامل لنظام إدارة المحتوى المستخدم"""
+        cms_info = {
+            'detected_cms': 'غير محدد',
+            'confidence': 0,
+            'indicators': [],
+            'version': 'غير معروف',
+            'plugins_detected': [],
+            'theme_info': {}
+        }
+        
+        content_lower = response.text.lower()
+        
+        # WordPress
+        wp_indicators = [
+            'wp-content', 'wp-includes', 'wordpress', 'wp-admin',
+            'wp_enqueue_script', 'wp-json', 'wp-emoji'
+        ]
+        wp_score = sum(1 for indicator in wp_indicators if indicator in content_lower)
+        
+        if wp_score >= 2:
+            cms_info['detected_cms'] = 'WordPress'
+            cms_info['confidence'] = min(wp_score * 20, 100)
+            cms_info['indicators'] = [ind for ind in wp_indicators if ind in content_lower]
+            
+            # كشف الإضافات
+            import re
+            plugins = re.findall(r'wp-content/plugins/([^/]+)', response.text)
+            cms_info['plugins_detected'] = list(set(plugins))
+            
+            # كشف القالب
+            theme_match = re.search(r'wp-content/themes/([^/]+)', response.text)
+            if theme_match:
+                cms_info['theme_info']['name'] = theme_match.group(1)
+        
+        # Joomla
+        joomla_indicators = ['joomla', 'components/com_', 'modules/mod_', 'templates/']
+        joomla_score = sum(1 for indicator in joomla_indicators if indicator in content_lower)
+        
+        if joomla_score >= 2 and joomla_score > wp_score:
+            cms_info['detected_cms'] = 'Joomla'
+            cms_info['confidence'] = min(joomla_score * 25, 100)
+            cms_info['indicators'] = [ind for ind in joomla_indicators if ind in content_lower]
+        
+        # Drupal
+        drupal_indicators = ['drupal', 'sites/default', 'misc/drupal.js', 'modules/', 'sites/all']
+        drupal_score = sum(1 for indicator in drupal_indicators if indicator in content_lower)
+        
+        if drupal_score >= 2 and drupal_score > max(wp_score, joomla_score):
+            cms_info['detected_cms'] = 'Drupal'
+            cms_info['confidence'] = min(drupal_score * 25, 100)
+            cms_info['indicators'] = [ind for ind in drupal_indicators if ind in content_lower]
+        
+        return cms_info
+    
+    def _comprehensive_security_test(self, url: str, soup: BeautifulSoup) -> Dict[str, Any]:
+        """اختبار شامل للحماية والثغرات"""
+        security_result = {
+            'ssl_analysis': {},
+            'headers_analysis': {},
+            'vulnerability_scan': {},
+            'broken_links': [],
+            'security_score': 0,
+            'recommendations': []
+        }
+        
+        try:
+            # تحليل SSL
+            if url.startswith('https://'):
+                security_result['ssl_analysis']['uses_https'] = True
+                security_result['security_score'] += 25
+            else:
+                security_result['ssl_analysis']['uses_https'] = False
+                security_result['recommendations'].append('استخدم HTTPS للحماية')
+            
+            # فحص Headers الأمنية
+            try:
+                response = self.session.head(url, timeout=10, verify=False)
+                headers = response.headers
+                
+                security_headers = {
+                    'Content-Security-Policy': 'CSP غير موجود',
+                    'X-Frame-Options': 'حماية من Clickjacking غير فعالة',
+                    'X-XSS-Protection': 'حماية XSS غير فعالة',
+                    'X-Content-Type-Options': 'حماية MIME-Type غير فعالة',
+                    'Strict-Transport-Security': 'HSTS غير فعال'
+                }
+                
+                security_result['headers_analysis'] = {}
+                for header, warning in security_headers.items():
+                    if header in headers:
+                        security_result['headers_analysis'][header] = headers[header]
+                        security_result['security_score'] += 10
+                    else:
+                        security_result['headers_analysis'][header] = 'غير موجود'
+                        security_result['recommendations'].append(warning)
+                
+            except Exception as e:
+                security_result['headers_analysis']['error'] = str(e)
+            
+            # فحص الروابط المعطلة
+            links = soup.find_all('a', href=True)
+            for link in links[:20]:  # فحص أول 20 رابط
+                href = link.get('href')
+                if href and href.startswith(('http://', 'https://')):
+                    try:
+                        link_response = self.session.head(href, timeout=5, verify=False)
+                        if link_response.status_code >= 400:
+                            security_result['broken_links'].append({
+                                'url': href,
+                                'status_code': link_response.status_code,
+                                'text': link.get_text().strip()[:50]
+                            })
+                    except:
+                        security_result['broken_links'].append({
+                            'url': href,
+                            'status_code': 'timeout/error',
+                            'text': link.get_text().strip()[:50]
+                        })
+            
+            # فحص الثغرات الأساسية
+            security_result['vulnerability_scan'] = {
+                'forms_without_csrf': len([f for f in soup.find_all('form') if not f.find('input', attrs={'name': re.compile(r'csrf|token')})]),
+                'external_scripts': len([s for s in soup.find_all('script', src=True) if not urlparse(s.get('src')).netloc in ['', urlparse(url).netloc]]),
+                'mixed_content_risk': 'https' in url and bool(soup.find_all(src=re.compile(r'^http://'))),
+                'sensitive_info_exposed': bool(re.search(r'(password|api[_-]?key|secret|token)\s*[:=]\s*["\'][^"\']+["\']', str(soup), re.IGNORECASE))
+            }
+            
+            # حساب النقاط النهائية
+            max_score = 100
+            if security_result['vulnerability_scan']['forms_without_csrf'] > 0:
+                security_result['security_score'] -= 15
+                security_result['recommendations'].append('أضف حماية CSRF للنماذج')
+            
+            if security_result['vulnerability_scan']['external_scripts'] > 0:
+                security_result['security_score'] -= 10
+                security_result['recommendations'].append('راجع السكريبت الخارجية')
+            
+            security_result['security_score'] = max(0, min(security_result['security_score'], max_score))
+            
+        except Exception as e:
+            security_result['error'] = str(e)
+        
+        return security_result
+    
+    def _crawl_internal_links(self, start_url: str, base_folder: Path, max_depth: int = 3, max_pages: int = 50) -> Dict[str, Any]:
+        """زحف شامل للروابط الداخلية"""
+        crawl_result = {
+            'pages_crawled': 0,
+            'total_links_found': 0,
+            'crawl_map': {},
+            'assets_found': {'images': 0, 'css': 0, 'js': 0},
+            'forms_found': 0,
+            'errors': []
+        }
+        
+        visited_urls = set()
+        urls_to_visit = [(start_url, 0)]  # (url, depth)
+        crawled_folder = base_folder / '08_crawled_pages'
+        crawled_folder.mkdir(exist_ok=True, parents=True)
+        
+        base_domain = urlparse(start_url).netloc
+        
+        while urls_to_visit and crawl_result['pages_crawled'] < max_pages:
+            current_url, depth = urls_to_visit.pop(0)
+            
+            if current_url in visited_urls or depth > max_depth:
+                continue
+                
+            try:
+                print(f"🕷️ زحف الصفحة: {current_url} (عمق: {depth})")
+                response = self.session.get(current_url, timeout=15, verify=False)
+                response.raise_for_status()
+                
+                soup = BeautifulSoup(response.text, 'html.parser')
+                visited_urls.add(current_url)
+                
+                # حفظ الصفحة
+                page_filename = f"page_{crawl_result['pages_crawled'] + 1}_{urlparse(current_url).path.replace('/', '_')}.html"
+                page_file = crawled_folder / page_filename
+                with open(page_file, 'w', encoding='utf-8') as f:
+                    f.write(response.text)
+                
+                # تحليل الصفحة
+                page_info = {
+                    'title': soup.find('title').get_text().strip() if soup.find('title') else '',
+                    'depth': depth,
+                    'file_path': str(page_file),
+                    'links': [],
+                    'assets': {'images': 0, 'css': 0, 'js': 0},
+                    'forms': len(soup.find_all('form'))
+                }
+                
+                # استخراج الروابط الداخلية
+                for link in soup.find_all('a', href=True):
+                    href = link.get('href')
+                    if href:
+                        full_url = urljoin(current_url, href)
+                        parsed_url = urlparse(full_url)
+                        
+                        # روابط داخلية فقط
+                        if parsed_url.netloc == base_domain and full_url not in visited_urls:
+                            page_info['links'].append(full_url)
+                            crawl_result['total_links_found'] += 1
+                            
+                            if depth < max_depth:
+                                urls_to_visit.append((full_url, depth + 1))
+                
+                # إحصاء الأصول
+                page_info['assets']['images'] = len(soup.find_all('img'))
+                page_info['assets']['css'] = len(soup.find_all('link', rel='stylesheet'))
+                page_info['assets']['js'] = len(soup.find_all('script', src=True))
+                
+                # تحديث الإحصائيات الإجمالية
+                for asset_type in page_info['assets']:
+                    crawl_result['assets_found'][asset_type] += page_info['assets'][asset_type]
+                
+                crawl_result['forms_found'] += page_info['forms']
+                crawl_result['crawl_map'][current_url] = page_info
+                crawl_result['pages_crawled'] += 1
+                
+                # تأخير بين الطلبات
+                time.sleep(1)
+                
+            except Exception as e:
+                crawl_result['errors'].append({
+                    'url': current_url,
+                    'error': str(e),
+                    'depth': depth
+                })
+        
+        # حفظ خريطة الزحف
+        crawl_map_file = crawled_folder / 'crawl_map.json'
+        with open(crawl_map_file, 'w', encoding='utf-8') as f:
+            json.dump(crawl_result, f, ensure_ascii=False, indent=2)
+        
+        return crawl_result
+    
+    def _extract_ajax_content(self, url: str, soup: BeautifulSoup, base_folder: Path) -> Dict[str, Any]:
+        """استخراج المحتوى من AJAX والـXHR"""
+        ajax_result = {
+            'ajax_calls_detected': [],
+            'xhr_endpoints': [],
+            'dynamic_content_areas': [],
+            'api_calls': [],
+            'websocket_connections': []
+        }
+        
+        try:
+            # البحث عن jQuery AJAX calls
+            scripts = soup.find_all('script')
+            for script in scripts:
+                script_content = script.get_text()
+                
+                # البحث عن $.ajax, $.get, $.post
+                ajax_patterns = [
+                    r'\$\.ajax\s*\(\s*{[^}]*url\s*:\s*["\']([^"\']+)["\']',
+                    r'\$\.get\s*\(\s*["\']([^"\']+)["\']',
+                    r'\$\.post\s*\(\s*["\']([^"\']+)["\']',
+                    r'fetch\s*\(\s*["\']([^"\']+)["\']',
+                    r'XMLHttpRequest.*open\s*\(\s*["\'][^"\']*["\'],\s*["\']([^"\']+)["\']'
+                ]
+                
+                for pattern in ajax_patterns:
+                    matches = re.findall(pattern, script_content, re.IGNORECASE)
+                    for match in matches:
+                        full_url = urljoin(url, match)
+                        ajax_result['ajax_calls_detected'].append({
+                            'url': full_url,
+                            'type': 'detected_in_script'
+                        })
+            
+            # البحث عن WebSocket connections
+            websocket_pattern = r'new\s+WebSocket\s*\(\s*["\']([^"\']+)["\']'
+            for script in scripts:
+                ws_matches = re.findall(websocket_pattern, script.get_text())
+                ajax_result['websocket_connections'].extend(ws_matches)
+            
+            # البحث عن data-* attributes التي قد تشير إلى AJAX
+            elements_with_data = soup.find_all(attrs={'data-url': True})
+            for element in elements_with_data:
+                data_url = element.get('data-url')
+                if data_url:
+                    full_url = urljoin(url, data_url)
+                    ajax_result['xhr_endpoints'].append({
+                        'url': full_url,
+                        'element': element.name,
+                        'classes': element.get('class', [])
+                    })
+            
+            # البحث عن المناطق التي يتم تحديثها ديناميكياً
+            dynamic_indicators = soup.find_all(class_=re.compile(r'dynamic|ajax|load|update|refresh'))
+            for element in dynamic_indicators:
+                ajax_result['dynamic_content_areas'].append({
+                    'tag': element.name,
+                    'classes': element.get('class', []),
+                    'id': element.get('id', ''),
+                    'content_preview': element.get_text()[:100]
+                })
+            
+            # حفظ نتائج AJAX
+            ajax_folder = base_folder / '09_ajax_content'
+            ajax_folder.mkdir(exist_ok=True, parents=True)
+            
+            ajax_file = ajax_folder / 'ajax_analysis.json'
+            with open(ajax_file, 'w', encoding='utf-8') as f:
+                json.dump(ajax_result, f, ensure_ascii=False, indent=2)
+            
+        except Exception as e:
+            ajax_result['error'] = str(e)
+        
+        return ajax_result
+    
+    def _save_comprehensive_report(self, final_result: Dict[str, Any], base_folder: Path):
+        """حفظ التقرير الشامل"""
+        reports_folder = base_folder / '10_reports'
+        reports_folder.mkdir(exist_ok=True, parents=True)
+        
+        # تقرير JSON كامل
+        json_report = reports_folder / 'comprehensive_report.json'
+        with open(json_report, 'w', encoding='utf-8') as f:
+            json.dump(final_result, f, ensure_ascii=False, indent=2, default=str)
+        
+        # تقرير HTML مبسط
+        html_report = reports_folder / 'summary_report.html'
+        with open(html_report, 'w', encoding='utf-8') as f:
+            f.write(self._generate_html_report(final_result))
+        
+        # ملخص نصي
+        text_summary = reports_folder / 'extraction_summary.txt'
+        with open(text_summary, 'w', encoding='utf-8') as f:
+            f.write(self._generate_text_summary(final_result))
+    
+    def _generate_html_report(self, result: Dict[str, Any]) -> str:
+        """إنشاء تقرير HTML"""
+        html = f"""
+        <!DOCTYPE html>
+        <html dir="rtl" lang="ar">
+        <head>
+            <meta charset="UTF-8">
+            <title>تقرير الاستخراج الشامل</title>
+            <style>
+                body {{ font-family: Arial, sans-serif; margin: 20px; }}
+                .header {{ background: #2c3e50; color: white; padding: 20px; border-radius: 8px; }}
+                .section {{ margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }}
+                .success {{ color: #27ae60; }}
+                .error {{ color: #e74c3c; }}
+                .stats {{ display: flex; flex-wrap: wrap; gap: 15px; }}
+                .stat-item {{ background: #f8f9fa; padding: 10px; border-radius: 5px; }}
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>تقرير الاستخراج الشامل</h1>
+                <p>الموقع: {result.get('extraction_info', {}).get('url', 'غير محدد')}</p>
+                <p>التاريخ: {result.get('extraction_info', {}).get('timestamp', 'غير محدد')}</p>
+            </div>
+            
+            <div class="section">
+                <h2>الإحصائيات العامة</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <strong>الوقت المستغرق:</strong> {result.get('extraction_info', {}).get('duration', 0)} ثانية
+                    </div>
+                    <div class="stat-item">
+                        <strong>الصفحات المزحوفة:</strong> {result.get('crawl_results', {}).get('pages_crawled', 0)}
+                    </div>
+                    <div class="stat-item">
+                        <strong>الأصول المحملة:</strong> {result.get('assets_download', {}).get('summary', {}).get('total_downloaded', 0)}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>تحليل الأمان</h2>
+                <p><strong>نقاط الأمان:</strong> {result.get('security_test', {}).get('security_score', 0)}/100</p>
+                <p><strong>نظام إدارة المحتوى:</strong> {result.get('cms_detection', {}).get('detected_cms', 'غير محدد')}</p>
+            </div>
+        </body>
+        </html>
+        """
+        return html
+    
+    def _generate_text_summary(self, result: Dict[str, Any]) -> str:
+        """إنشاء ملخص نصي"""
+        summary = f"""
+تقرير الاستخراج الشامل
+======================
+
+الموقع: {result.get('extraction_info', {}).get('url', 'غير محدد')}
+نوع الاستخراج: {result.get('extraction_info', {}).get('extraction_type', 'غير محدد')}
+التاريخ: {result.get('extraction_info', {}).get('timestamp', 'غير محدد')}
+الوقت المستغرق: {result.get('extraction_info', {}).get('duration', 0)} ثانية
+
+الإحصائيات:
+-----------
+- الصفحات المزحوفة: {result.get('crawl_results', {}).get('pages_crawled', 0)}
+- الأصول المحملة: {result.get('assets_download', {}).get('summary', {}).get('total_downloaded', 0)}
+- الروابط المكتشفة: {result.get('crawl_results', {}).get('total_links_found', 0)}
+- النماذج الموجودة: {result.get('crawl_results', {}).get('forms_found', 0)}
+
+التحليل التقني:
+---------------
+- نظام إدارة المحتوى: {result.get('cms_detection', {}).get('detected_cms', 'غير محدد')}
+- نقاط الأمان: {result.get('security_test', {}).get('security_score', 0)}/100
+- استخدام HTTPS: {'نعم' if result.get('security_test', {}).get('ssl_analysis', {}).get('uses_https') else 'لا'}
+
+الملفات المحفوظة:
+-----------------
+- مجلد الاستخراج: {result.get('extraction_info', {}).get('base_folder', 'غير محدد')}
+- تم إنشاء هيكل مجلدات منظم مع جميع الأصول والتحليلات
+
+        """
+        return summary
+    
+    # إضافة الوظائف الجديدة
+    AdvancedWebsiteExtractor._detect_comprehensive_cms = _detect_comprehensive_cms
+    AdvancedWebsiteExtractor._comprehensive_security_test = _comprehensive_security_test
+    AdvancedWebsiteExtractor._crawl_internal_links = _crawl_internal_links
+    AdvancedWebsiteExtractor._extract_ajax_content = _extract_ajax_content
+    AdvancedWebsiteExtractor._save_comprehensive_report = _save_comprehensive_report
+    AdvancedWebsiteExtractor._generate_html_report = _generate_html_report
+    AdvancedWebsiteExtractor._generate_text_summary = _generate_text_summary
+
+# تنفيذ الإضافة
+add_comprehensive_methods()
