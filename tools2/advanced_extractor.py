@@ -1086,29 +1086,66 @@ class AdvancedWebsiteExtractor:
     def _bypass_protection_request(self, url: str) -> Optional[requests.Response]:
         """طلب متقدم مع تجاوز الحماية"""
         
-        # الطريقة 1: الطلب العادي أولاً (أسرع وأكثر استقراراً)
-        try:
-            response = self.session.get(url, timeout=15, allow_redirects=True)
-            if response.status_code == 200:
-                return response
-        except Exception as e:
-            print(f"Standard request failed: {e}")
-        
-        # الطريقة 2: CloudScraper (مع timeout قصير)
+        # الطريقة 1: CloudScraper مع إعدادات محسنة (الأقوى لـ Cloudflare)
         if ADVANCED_PROTECTION_BYPASS:
             try:
+                print(f"🔄 محاولة تجاوز حماية Cloudflare للموقع: {url}")
                 scraper = cloudscraper.create_scraper(
                     browser={
                         'browser': 'chrome',
                         'platform': 'windows',
                         'mobile': False
+                    },
+                    delay=10,  # انتظار أطول لـ Cloudflare
+                    captcha={
+                        'provider': '2captcha'  # في حالة وجود captcha
                     }
                 )
-                response = scraper.get(url, timeout=10)  # تقليل timeout
-                if response.status_code == 200:
+                
+                # headers إضافية لتجنب الكشف
+                headers = {
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Cache-Control': 'max-age=0',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'none',
+                    'Upgrade-Insecure-Requests': '1'
+                }
+                
+                response = scraper.get(url, headers=headers, timeout=30)
+                print(f"📊 CloudScraper response: {response.status_code}")
+                
+                # حتى لو كان 403، أحياناً يحتوي على محتوى مفيد
+                if response.status_code in [200, 403] and len(response.text) > 100:
                     return response
+                    
             except Exception as e:
                 print(f"CloudScraper failed: {e}")
+        
+        # الطريقة 2: الطلب العادي مع headers متقدمة
+        try:
+            session = requests.Session()
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'DNT': '1',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1'
+            }
+            
+            response = session.get(url, headers=headers, timeout=15, allow_redirects=True, verify=False)
+            print(f"📊 Standard request response: {response.status_code}")
+            
+            # قبول حتى 403 إذا كان هناك محتوى
+            if response.status_code in [200, 403] and len(response.text) > 100:
+                return response
+                
+        except Exception as e:
+            print(f"Standard request failed: {e}")
         
         # الطريقة 2: HttpX مع headers متقدمة
         if ADVANCED_PROTECTION_BYPASS:

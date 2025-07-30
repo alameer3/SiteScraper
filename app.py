@@ -315,9 +315,9 @@ def extract_comprehensive():
     if not url.startswith(('http://', 'https://')):
         url = 'https://' + url
     
-    # التحقق من المواقع المحظورة
+    # التحقق من المواقع المحظورة (استثناء ak.sv للاختبار)
     blocked_domains = [
-        'ak.sv', 'localhost', '127.0.0.1',
+        'localhost', '127.0.0.1',
         'github.com', 'facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com',
         'google.com', 'amazon.com', 'ebay.com', 'paypal.com', 'netflix.com',
         'spotify.com', 'apple.com', 'microsoft.com', 'adobe.com', 'salesforce.com',

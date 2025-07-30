@@ -1,0 +1,59 @@
+{
+  "url": "https://ak.sv/",
+  "status_code": 403,
+  "headers": {
+    "Date": "Wed, 30 Jul 2025 02:26:44 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "Transfer-Encoding": "chunked",
+    "Connection": "close",
+    "Accept-Ch": "Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA",
+    "Cf-Mitigated": "challenge",
+    "Critical-Ch": "Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA",
+    "Cross-Origin-Embedder-Policy": "require-corp",
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Resource-Policy": "same-origin",
+    "Origin-Agent-Cluster": "?1",
+    "Permissions-Policy": "accelerometer=(),autoplay=(),browsing-topics=(),camera=(),clipboard-read=(),clipboard-write=(),geolocation=(),gyroscope=(),hid=(),interest-cohort=(),magnetometer=(),microphone=(),payment=(),publickey-credentials-get=(),screen-wake-lock=(),serial=(),sync-xhr=(),usb=()",
+    "Referrer-Policy": "same-origin",
+    "Server-Timing": "chlray;desc=\"967169b69de961a2\"",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "SAMEORIGIN, SAMEORIGIN",
+    "Cache-Control": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
+    "Expires": "Thu, 01 Jan 1970 00:00:01 GMT",
+    "Vary": "accept-encoding",
+    "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=dzXmlJfYtlHZ73%2BiFC%2F3hTesDkPH9V5LDjqv28pcrI11RL%2FFqZ32fByqmxwDbtzeNlh4o%2BAPSky%2BseSOm1ZWyGwlsHzC\"}]}",
+    "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+    "Content-Encoding": "gzip",
+    "Server": "cloudflare",
+    "CF-RAY": "967169b69de961a2-ORD",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  },
+  "protection_detected": true,
+  "protection_type": "Cloudflare",
+  "content_size": 4515,
+  "title": "Just a moment...",
+  "meta_tags": [
+    {
+      "content": "text/html; charset=UTF-8",
+      "http-equiv": "Content-Type"
+    },
+    {
+      "content": "IE=Edge",
+      "http-equiv": "X-UA-Compatible"
+    },
+    {
+      "name": "robots",
+      "content": "noindex,nofollow"
+    },
+    {
+      "name": "viewport",
+      "content": "width=device-width,initial-scale=1"
+    },
+    {
+      "content": "360",
+      "http-equiv": "refresh"
+    }
+  ],
+  "links": [],
+  "scripts": []
+}
