@@ -1,0 +1,23 @@
+{
+  "basic_info": {
+    "title": "بدون عنوان",
+    "description": "",
+    "keywords": "",
+    "url": "https://httpbin.org/html",
+    "status_code": 200,
+    "content_length": 3739,
+    "headers": {
+      "Date": "Wed, 30 Jul 2025 00:18:18 GMT",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "3741",
+      "Connection": "keep-alive",
+      "Server": "gunicorn/19.9.0",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": "true"
+    },
+    "extraction_time": "2025-07-30T00:18:18.195396"
+  },
+  "links": [],
+  "images": [],
+  "downloaded_images": []
+}

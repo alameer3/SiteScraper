@@ -15,7 +15,7 @@ class ExtractionConfig:
     # إعدادات أساسية
     target_url: str = ""
     extraction_type: str = "standard"  # basic, standard, advanced, complete, ai_powered
-    output_directory: str = "extracted_files"
+    output_directory: str = "11"  # تم تغييره إلى مجلد 11
     
     # إعدادات الشبكة
     timeout: int = 30
@@ -56,10 +56,6 @@ class ExtractionConfig:
         """التحقق من صحة الإعدادات بعد التهيئة"""
         if self.allowed_domains is None:
             self.allowed_domains = []
-            
-        # لا نتطلب target_url عند الإنشاء لأنه قد يتم تعيينه لاحقاً
-        # if not self.target_url:
-        #     raise ValueError("target_url is required")
             
         if self.max_file_size_mb <= 0:
             self.max_file_size_mb = 50
@@ -110,7 +106,7 @@ class ExtractionConfig:
         # الإعدادات الأساسية
         config.target_url = data.get('target_url', '')
         config.extraction_type = data.get('extraction_type', 'standard')
-        config.output_directory = data.get('output_directory', 'extracted_files')
+        config.output_directory = data.get('output_directory', '11')
         config.timeout = data.get('timeout', 30)
         config.max_retries = data.get('max_retries', 3)
         config.delay_between_requests = data.get('delay_between_requests', 1.0)
@@ -144,71 +140,61 @@ class ExtractionConfig:
         return config
 
 
-# إعدادات مُعرَّفة مسبقاً
-PRESET_CONFIGS = {
-    'basic': ExtractionConfig(
-        extraction_type='basic',
-        max_depth=1,
-        max_pages=10,
-        extract_assets=False,
-        capture_screenshots=False,
-        analyze_seo=False,
-        analyze_performance=False,
-        analyze_security=False
-    ),
-    
-    'standard': ExtractionConfig(
-        extraction_type='standard',
-        max_depth=2,
-        max_pages=50,
-        extract_assets=True,
-        capture_screenshots=False,
-        analyze_seo=True,
-        analyze_performance=True,
-        analyze_security=True
-    ),
-    
-    'advanced': ExtractionConfig(
-        extraction_type='advanced',
-        max_depth=3,
-        max_pages=100,
-        extract_assets=True,
-        capture_screenshots=True,
-        analyze_seo=True,
-        analyze_performance=True,
-        analyze_security=True,
-        export_pdf=True
-    ),
-    
-    'complete': ExtractionConfig(
-        extraction_type='complete',
-        max_depth=5,
-        max_pages=500,
-        extract_assets=True,
-        capture_screenshots=True,
-        analyze_seo=True,
-        analyze_performance=True,
-        analyze_security=True,
-        export_pdf=True
-    ),
-    
-    'ai_powered': ExtractionConfig(
-        extraction_type='ai_powered',
-        max_depth=5,
-        max_pages=1000,
-        extract_assets=True,
-        capture_screenshots=True,
-        analyze_seo=True,
-        analyze_performance=True,
-        analyze_security=True,
-        export_pdf=True
-    )
-}
-
-
-def get_preset_config(preset_name: str) -> ExtractionConfig:
+def get_preset_config(extraction_type: str) -> ExtractionConfig:
     """الحصول على إعدادات مُعرَّفة مسبقاً"""
-    if preset_name not in PRESET_CONFIGS:
-        raise ValueError(f"Unknown preset: {preset_name}. Available: {list(PRESET_CONFIGS.keys())}")
     
-    return PRESET_CONFIGS[preset_name]
+    base_config = ExtractionConfig()
+    base_config.extraction_type = extraction_type
+    
+    if extraction_type == "basic":
+        base_config.extract_assets = False
+        base_config.extract_images = False
+        base_config.extract_css = False
+        base_config.extract_js = False
+        base_config.capture_screenshots = False
+        base_config.analyze_seo = False
+        base_config.analyze_performance = False
+        base_config.analyze_security = False
+        base_config.detect_technologies = False
+        base_config.max_pages = 1
+        
+    elif extraction_type == "standard":
+        base_config.extract_assets = True
+        base_config.extract_images = True
+        base_config.capture_screenshots = False
+        base_config.analyze_seo = True
+        base_config.analyze_performance = True
+        base_config.analyze_security = False
+        base_config.max_pages = 10
+        
+    elif extraction_type == "advanced":
+        base_config.extract_assets = True
+        base_config.extract_images = True
+        base_config.extract_css = True
+        base_config.extract_js = True
+        base_config.capture_screenshots = True
+        base_config.analyze_seo = True
+        base_config.analyze_performance = True
+        base_config.analyze_security = True
+        base_config.detect_technologies = True
+        base_config.max_pages = 50
+        
+    elif extraction_type == "complete":
+        base_config.extract_assets = True
+        base_config.extract_images = True
+        base_config.extract_css = True
+        base_config.extract_js = True
+        base_config.capture_screenshots = True
+        base_config.analyze_seo = True
+        base_config.analyze_performance = True
+        base_config.analyze_security = True
+        base_config.detect_technologies = True
+        base_config.export_pdf = True
+        base_config.max_pages = 100
+        base_config.max_depth = 5
+    
+    return base_config
+
+
+# إعدادات افتراضية للاستخدام العام
+DEFAULT_CONFIG = ExtractionConfig()

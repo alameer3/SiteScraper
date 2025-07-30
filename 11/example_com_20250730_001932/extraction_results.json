@@ -1,0 +1,34 @@
+{
+  "basic_info": {
+    "title": "Example Domain",
+    "description": "",
+    "keywords": "",
+    "url": "https://example.com",
+    "status_code": 200,
+    "content_length": 1256,
+    "headers": {
+      "Accept-Ranges": "bytes",
+      "Content-Type": "text/html",
+      "ETag": "\"84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134\"",
+      "Last-Modified": "Mon, 13 Jan 2025 20:11:20 GMT",
+      "Vary": "Accept-Encoding",
+      "Content-Encoding": "gzip",
+      "Cache-Control": "max-age=1225",
+      "Date": "Wed, 30 Jul 2025 00:19:32 GMT",
+      "Alt-Svc": "h3=\":443\"; ma=93600,h3-29=\":443\"; ma=93600",
+      "Content-Length": "648",
+      "Connection": "keep-alive"
+    },
+    "extraction_time": "2025-07-30T00:19:32.926005"
+  },
+  "links": [
+    {
+      "href": "https://www.iana.org/domains/example",
+      "absolute_url": "https://www.iana.org/domains/example",
+      "text": "More information...",
+      "is_internal": false
+    }
+  ],
+  "images": [],
+  "downloaded_images": []
+}

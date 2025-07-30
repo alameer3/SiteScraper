@@ -1,0 +1,40 @@
+{
+  "test_timestamp": "2025-07-30T00:19:32.209851",
+  "output_directory": "/home/runner/workspace/11",
+  "tools_tested": {
+    "simple_extractor": {
+      "status": "نجح",
+      "extraction_folder": "11/example_com_20250730_001932",
+      "title": "Example Domain",
+      "links_count": 1,
+      "images_count": 0,
+      "test_time": "2025-07-30T00:19:32.930155"
+    },
+    "core_modules": {
+      "config": "نجح",
+      "session_manager": "نجح",
+      "file_manager": "نجح"
+    },
+    "advanced_extractor": {
+      "status": "موجود (يحتاج إصلاح)",
+      "found_classes": [
+        "AdvancedWebsiteExtractor",
+        "CloningConfig"
+      ],
+      "file_size": 146934,
+      "test_time": "2025-07-30T00:19:53.590840"
+    },
+    "flask_app": {
+      "status": "يعمل",
+      "status_code": 200,
+      "response_length": 11096,
+      "test_time": "2025-07-30T00:19:53.598342"
+    }
+  },
+  "summary": {
+    "total_tests": 4,
+    "successful_tests": 3,
+    "success_rate": "75.0%",
+    "overall_status": "ممتاز"
+  }
+}

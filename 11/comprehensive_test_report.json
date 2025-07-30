@@ -1,0 +1,66 @@
+{
+  "test_timestamp": "2025-07-30T00:16:11.867869",
+  "output_directory": "/home/runner/workspace/11",
+  "tests_performed": {
+    "imports": {
+      "basic_imports": {
+        "requests": "✅ متاح",
+        "bs4": "✅ متاح",
+        "urllib3": "✅ متاح",
+        "pathlib": "✅ متاح",
+        "json": "✅ متاح",
+        "time": "✅ متاح",
+        "datetime": "✅ متاح",
+        "csv": "✅ متاح",
+        "sqlite3": "✅ متاح"
+      },
+      "advanced_imports": {
+        "selenium": "✅ متاح",
+        "playwright": "✅ متاح",
+        "trafilatura": "✅ متاح",
+        "builtwith": "✅ متاح",
+        "reportlab": "✅ متاح",
+        "docx": "✅ متاح",
+        "aiohttp": "✅ متاح",
+        "aiofiles": "✅ متاح"
+      },
+      "core_modules": {
+        "tools2.core.config": "✅ متاح",
+        "tools2.core.session_manager": "✅ متاح",
+        "tools2.core.file_manager": "✅ متاح",
+        "tools2.core.content_extractor": "✅ متاح"
+      }
+    },
+    "simple_extraction": {
+      "url": "https://example.com",
+      "status_code": 200,
+      "title": "Example Domain",
+      "content_length": 1256,
+      "test_time": "2025-07-30T00:16:12.864968",
+      "success": true
+    },
+    "core_modules": {
+      "session_manager": "✅ يعمل",
+      "file_manager": "✅ يعمل",
+      "content_extractor": "❌ خطأ: 'MockResponse' object has no attribute 'headers'"
+    },
+    "advanced_extractor": {
+      "success": false,
+      "error": "'AdvancedWebsiteExtractor' object has no attribute 'extract'"
+    },
+    "unified_tools": {
+      "success": false,
+      "error": "[Errno 2] No such file or directory: 'tools2/unified_tools.py'"
+    }
+  },
+  "summary": {
+    "total_tests": 5,
+    "successful_tests": 1,
+    "success_rate": "20.0%",
+    "overall_status": "يحتاج تحسين"
+  },
+  "recommendations": [
+    "إصلاح الأخطاء في الملفات",
+    "تحديث dependencies المفقودة"
+  ]
+}
