@@ -94,13 +94,12 @@ def analyze():
         result = analyzer.analyze_website(url, analysis_type)
         
         # حفظ النتيجة
-        analysis_result = AnalysisResult(
-            url=url,
-            title=result.get('title', 'بدون عنوان'),
-            analysis_type=analysis_type,
-            status='completed',
-            result_data=json.dumps(result, ensure_ascii=False, indent=2)
-        )
+        analysis_result = AnalysisResult()
+        analysis_result.url = url
+        analysis_result.title = result.get('title', 'بدون عنوان')
+        analysis_result.analysis_type = analysis_type
+        analysis_result.status = 'completed'
+        analysis_result.result_data = json.dumps(result, ensure_ascii=False, indent=2)
         
         db.session.add(analysis_result)
         db.session.commit()
@@ -151,13 +150,12 @@ def api_analyze():
         result = analyzer.analyze_website(url, analysis_type)
         
         # حفظ في قاعدة البيانات
-        analysis_result = AnalysisResult(
-            url=url,
-            title=result.get('title', 'بدون عنوان'),
-            analysis_type=analysis_type,
-            status='completed',
-            result_data=json.dumps(result, ensure_ascii=False)
-        )
+        analysis_result = AnalysisResult()
+        analysis_result.url = url
+        analysis_result.title = result.get('title', 'بدون عنوان')
+        analysis_result.analysis_type = analysis_type
+        analysis_result.status = 'completed'
+        analysis_result.result_data = json.dumps(result, ensure_ascii=False)
         
         db.session.add(analysis_result)
         db.session.commit()
@@ -208,13 +206,12 @@ def extract_advanced():
         result = advanced_extractor.extract(url, extraction_type)
         
         # حفظ النتيجة في قاعدة البيانات
-        analysis_result = AnalysisResult(
-            url=url,
-            title=result.get('title', 'بدون عنوان'),
-            analysis_type=f"advanced_{extraction_type}",
-            status='completed' if result.get('success') else 'failed',
-            result_data=json.dumps(result, ensure_ascii=False, indent=2, default=str)
-        )
+        analysis_result = AnalysisResult()
+        analysis_result.url = url
+        analysis_result.title = result.get('title', 'بدون عنوان')
+        analysis_result.analysis_type = f"advanced_{extraction_type}"
+        analysis_result.status = 'completed' if result.get('success') else 'failed'
+        analysis_result.result_data = json.dumps(result, ensure_ascii=False, indent=2, default=str)
         
         db.session.add(analysis_result)
         db.session.commit()
@@ -253,13 +250,12 @@ def api_extract_advanced():
         result = advanced_extractor.extract(url, extraction_type)
         
         # حفظ في قاعدة البيانات
-        analysis_result = AnalysisResult(
-            url=url,
-            title=result.get('title', 'بدون عنوان'),
-            analysis_type=f"advanced_{extraction_type}",
-            status='completed' if result.get('success') else 'failed',
-            result_data=json.dumps(result, ensure_ascii=False, default=str)
-        )
+        analysis_result = AnalysisResult()
+        analysis_result.url = url
+        analysis_result.title = result.get('title', 'بدون عنوان')
+        analysis_result.analysis_type = f"advanced_{extraction_type}"
+        analysis_result.status = 'completed' if result.get('success') else 'failed'
+        analysis_result.result_data = json.dumps(result, ensure_ascii=False, default=str)
         
         db.session.add(analysis_result)
         db.session.commit()
