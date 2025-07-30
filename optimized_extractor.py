@@ -189,8 +189,8 @@ class OptimizedExtractor:
                 },
                 'elements': {
                     'links': len(links),
-                    'internal_links': len([l for l in links if isinstance(l, Tag) and self.is_internal_link(l.get('href', ''), url)]),
-                    'external_links': len([l for l in links if isinstance(l, Tag) and not self.is_internal_link(l.get('href', ''), url)]),
+                    'internal_links': len([l for l in links if isinstance(l, Tag) and self.is_internal_link(str(l.get('href', '')), url)]),
+                    'external_links': len([l for l in links if isinstance(l, Tag) and not self.is_internal_link(str(l.get('href', '')), url)]),
                     'images': len(images),
                     'images_with_alt': len([img for img in images if isinstance(img, Tag) and img.get('alt')]),
                     'scripts': len(scripts),

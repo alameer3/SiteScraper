@@ -402,8 +402,34 @@ def extract_comprehensive():
         
         app.logger.info(f"✅ تم تنظيف المحتوى بنسبة {reduction_percentage:.1f}%")
         
-        # تشغيل الاستخراج الشامل على المحتوى المنظف
-        result = advanced_extractor.comprehensive_website_download(url, extraction_type)
+        # استخدام النظام المحسن السريع بدلاً من comprehensive download
+        app.logger.info("🚀 تشغيل النظام المحسن السريع...")
+        optimized_result = optimized_extractor.extract_comprehensive_fast(url)
+        
+        if optimized_result['success']:
+            result = {
+                'extraction_info': {
+                    'success': True,
+                    'duration': optimized_result['execution_time'],
+                    'base_folder': f"النظام السريع - {datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                },
+                'basic_content': {
+                    'basic_info': optimized_result['data']['basic_info']
+                },
+                'optimized_extraction': True,
+                'data': optimized_result['data']
+            }
+        else:
+            # إذا فشل النظام المحسن، جرب النظام العادي
+            app.logger.warning(f"فشل النظام المحسن: {optimized_result['error']}")
+            result = {
+                'extraction_info': {
+                    'success': False,
+                    'duration': 0,
+                    'error': optimized_result['error']
+                },
+                'error': optimized_result['error']
+            }
         
         # إضافة معلومات الحماية إلى النتائج
         if isinstance(result, dict):

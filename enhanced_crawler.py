@@ -164,7 +164,7 @@ class EnhancedCrawler:
     
     def _method_basic_request(self, url: str) -> requests.Response:
         """طريقة الطلب الأساسي"""
-        return self.session.get(url, timeout=15, verify=False)
+        return self.session.get(url, timeout=8, verify=False)  # timeout أقصر
     
     def _method_browser_simulation(self, url: str) -> requests.Response:
         """محاكاة متصفح متطورة"""
@@ -179,7 +179,7 @@ class EnhancedCrawler:
             'Upgrade-Insecure-Requests': '1',
         }
         
-        return self.session.get(url, headers=headers, timeout=20, verify=False)
+        return self.session.get(url, headers=headers, timeout=10, verify=False)
     
     def _method_mobile_simulation(self, url: str) -> requests.Response:
         """محاكاة جهاز محمول"""
@@ -191,7 +191,7 @@ class EnhancedCrawler:
             'Connection': 'keep-alive',
         }
         
-        return self.session.get(url, headers=mobile_headers, timeout=25, verify=False)
+        return self.session.get(url, headers=mobile_headers, timeout=8, verify=False)
     
     def _method_slow_request(self, url: str) -> requests.Response:
         """طلب بطيء لتجنب rate limiting"""
@@ -205,7 +205,7 @@ class EnhancedCrawler:
             'Cache-Control': 'no-cache',
         }
         
-        return self.session.get(url, headers=slow_headers, timeout=30, verify=False)
+        return self.session.get(url, headers=slow_headers, timeout=12, verify=False)
     
     def analyze_website_enhanced(self, url: str) -> dict:
         """تحليل موقع مع نظام الحماية المحسن"""
