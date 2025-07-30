@@ -1,0 +1,135 @@
+{
+  "title": "Example Domain",
+  "description": "",
+  "keywords": "",
+  "author": "",
+  "viewport": "width=device-width, initial-scale=1",
+  "charset": "utf-8",
+  "language": "",
+  "favicon": "",
+  "canonical": "",
+  "content_length": 1256,
+  "status_code": 200,
+  "server": "",
+  "last_modified": "Mon, 13 Jan 2025 20:11:20 GMT",
+  "content_type": "text/html",
+  "response_time": 0.706647,
+  "structure_analysis": {
+    "total_elements": 13,
+    "divs_count": 1,
+    "paragraphs_count": 2,
+    "links_count": 1,
+    "images_count": 0,
+    "forms_count": 0,
+    "tables_count": 0,
+    "lists_count": 0,
+    "scripts_count": 0,
+    "stylesheets_count": 0,
+    "headings": {
+      "h1": 1,
+      "h2": 0,
+      "h3": 0,
+      "h4": 0,
+      "h5": 0,
+      "h6": 0
+    }
+  },
+  "technologies": [],
+  "api_endpoints": [],
+  "security_analysis": {
+    "https_used": true,
+    "forms_analysis": [],
+    "external_scripts": [],
+    "inline_scripts": 0,
+    "mixed_content": [],
+    "security_headers": {}
+  },
+  "interactive_elements": {
+    "buttons": 0,
+    "forms": 0,
+    "inputs": 0,
+    "dropdown_menus": 0,
+    "checkboxes": 0,
+    "radio_buttons": 0,
+    "file_uploads": 0,
+    "modals": 0,
+    "tabs": 0,
+    "accordions": 0
+  },
+  "database_structure": {
+    "forms_analysis": [],
+    "data_attributes": [],
+    "ajax_endpoints": [],
+    "database_indicators": []
+  },
+  "content_analysis": {
+    "word_count": 0,
+    "character_count": 0,
+    "estimated_reading_time": 1,
+    "language": "unknown",
+    "topics": [],
+    "quality_score": 65,
+    "keywords": [
+      "example",
+      "domain"
+    ],
+    "content_structure": {
+      "has_headings": false,
+      "has_paragraphs": false,
+      "has_lists": false,
+      "has_images": false,
+      "has_links": false
+    }
+  },
+  "performance_metrics": {
+    "response_time": 0.706647,
+    "content_size": 1256,
+    "scripts_count": 0,
+    "stylesheets_count": 0,
+    "images_count": 0,
+    "performance_score": 100
+  },
+  "seo_analysis": {
+    "title": "Example Domain",
+    "title_length": 14,
+    "description": "",
+    "description_length": 0,
+    "keywords": "",
+    "headings_structure": {
+      "h1": 1,
+      "h2": 0,
+      "h3": 0,
+      "h4": 0,
+      "h5": 0,
+      "h6": 0
+    },
+    "internal_links_count": 0,
+    "external_links_count": 1,
+    "images_without_alt": 0,
+    "canonical_url": "",
+    "open_graph": {},
+    "twitter_cards": {},
+    "schema_markup": [],
+    "robots_meta": "",
+    "lang_attribute": "",
+    "seo_score": 45
+  },
+  "accessibility_analysis": {
+    "accessibility_score": 100,
+    "issues_found": [],
+    "images_without_alt": 0,
+    "empty_links": 0,
+    "form_issues": 0,
+    "aria_elements": 0,
+    "recommendations": [
+      "استخدام ARIA labels لتحسين الوصولية"
+    ]
+  },
+  "extraction_id": "extract_1_1753838580",
+  "url": "https://example.com",
+  "extraction_type": "advanced",
+  "success": true,
+  "duration": 0.71,
+  "timestamp": "2025-07-30T01:23:01.514720",
+  "extractor": "AdvancedWebsiteExtractor"
+}

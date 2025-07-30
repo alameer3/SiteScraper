@@ -1,0 +1,68 @@
+{
+  "title": "httpbin.org",
+  "description": "",
+  "keywords": "",
+  "author": "",
+  "viewport": "",
+  "charset": "UTF-8",
+  "language": "",
+  "favicon": "https://httpbin.org/static/favicon.ico",
+  "canonical": "",
+  "content_length": 9591,
+  "status_code": 200,
+  "server": "gunicorn/19.9.0",
+  "last_modified": "",
+  "content_type": "text/html; charset=utf-8",
+  "response_time": 0.952849,
+  "structure_analysis": {
+    "total_elements": 74,
+    "divs_count": 16,
+    "paragraphs_count": 1,
+    "links_count": 5,
+    "images_count": 0,
+    "forms_count": 0,
+    "tables_count": 0,
+    "lists_count": 1,
+    "scripts_count": 4,
+    "stylesheets_count": 2,
+    "headings": {
+      "h1": 0,
+      "h2": 2,
+      "h3": 0,
+      "h4": 0,
+      "h5": 0,
+      "h6": 0
+    }
+  },
+  "technologies": [],
+  "api_endpoints": [
+    "/spec.json"
+  ],
+  "security_analysis": {
+    "https_used": true,
+    "forms_analysis": [],
+    "external_scripts": [],
+    "inline_scripts": 1,
+    "mixed_content": [],
+    "security_headers": {}
+  },
+  "interactive_elements": {
+    "buttons": 0,
+    "forms": 0,
+    "inputs": 0,
+    "dropdown_menus": 0,
+    "checkboxes": 0,
+    "radio_buttons": 0,
+    "file_uploads": 0,
+    "modals": 0,
+    "tabs": 0,
+    "accordions": 0
+  },
+  "extraction_id": "extract_2_1753838579",
+  "url": "https://httpbin.org",
+  "extraction_type": "standard",
+  "success": true,
+  "duration": 0.96,
+  "timestamp": "2025-07-30T01:23:00.793987",
+  "extractor": "AdvancedWebsiteExtractor"
+}

@@ -1,0 +1,44 @@
+{
+  "domain": "example.com",
+  "title": "Example Domain",
+  "description": "",
+  "keywords": "",
+  "content_length": 1256,
+  "status_code": 200,
+  "content_type": "text/html",
+  "server": "",
+  "links_count": 1,
+  "images_count": 0,
+  "scripts_count": 0,
+  "stylesheets_count": 0,
+  "response_time": 0.7777,
+  "internal_links": [],
+  "external_links": [
+    "https://www.iana.org/domains/example"
+  ],
+  "images_info": [],
+  "headings": {
+    "h1": [
+      "Example Domain"
+    ],
+    "h2": [],
+    "h3": []
+  },
+  "technologies": [],
+  "seo_analysis": {
+    "has_title": true,
+    "has_description": false,
+    "has_keywords": false,
+    "h1_count": 1,
+    "img_without_alt": 0
+  },
+  "security_analysis": {
+    "uses_https": true,
+    "has_csp": false,
+    "has_hsts": false,
+    "external_scripts": 0
+  },
+  "total_words": 30,
+  "forms_count": 0,
+  "inputs_count": 0
+}
