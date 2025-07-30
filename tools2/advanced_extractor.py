@@ -880,6 +880,322 @@ class AdvancedWebsiteExtractor:
         
         return list(set(technologies))
     
+    # =====================================
+    # الوظائف الشاملة المطلوبة حسب 11.txt
+    # =====================================
+    
+    def comprehensive_website_download(self, url: str, extraction_type: str = "complete") -> Dict[str, Any]:
+        """
+        تحميل شامل للموقع مع جميع المتطلبات المذكورة في 11.txt
+        
+        المحتوى الأساسي:
+        • جميع صفحات HTML
+        • النصوص والمحتوى النصي
+        • البيانات الوصفية (Meta tags)
+        • البنية الهيكلية للموقع
+        
+        الأصول والملفات:
+        • جميع الصور (PNG, JPG, SVG, WebP)
+        • ملفات CSS وأكواد التنسيق
+        • ملفات JavaScript والسكريبت
+        • الخطوط (Fonts)
+        • الفيديو والصوت
+        • المستندات (PDF, DOC, etc.)
+        
+        البنية التقنية:
+        • الكود المصدري الكامل
+        • قواعد البيانات والAPI calls
+        • نظام التوجيه (Routing)
+        • التفاعلات والوظائف
+        • أنظمة المصادقة
+        • إعدادات الخادم
+        
+        التصميم والتفاعل:
+        • التخطيطات (Layouts)
+        • الأنماط المتجاوبة
+        • التأثيرات والحركات
+        • واجهات المستخدم
+        • تجربة المستخدم
+        """
+        start_time = time.time()
+        extraction_id = f"comprehensive_{int(time.time())}"
+        
+        print(f"🚀 بدء التحميل الشامل للموقع: {url}")
+        
+        try:
+            # إنشاء هيكل مجلدات منظم
+            base_folder = self.output_directory / 'comprehensive_downloads' / extraction_id
+            self._create_comprehensive_folder_structure(base_folder)
+            
+            # مرحلة 1: استخراج المحتوى الأساسي
+            print("📄 1. استخراج المحتوى الأساسي...")
+            basic_content = self._extract_comprehensive_basic_content(url, base_folder)
+            
+            # مرحلة 2: تحميل جميع الأصول والملفات
+            print("💾 2. تحميل جميع الأصول والملفات...")
+            assets_download = self._download_all_website_assets(basic_content['soup'], url, base_folder)
+            
+            # مرحلة 3: استخراج البنية التقنية
+            print("🔧 3. استخراج البنية التقنية...")
+            technical_structure = self._extract_technical_structure(basic_content['soup'], url, base_folder)
+            
+            # مرحلة 4: تحليل التصميم والتفاعل
+            print("🎨 4. تحليل التصميم والتفاعل...")
+            design_analysis = self._analyze_design_and_interaction(basic_content['soup'], url, base_folder)
+            
+            # مرحلة 5: التقاط screenshots تلقائي
+            print("📸 5. التقاط screenshots تلقائي...")
+            screenshots = self._capture_automatic_screenshots(url, base_folder)
+            
+            # مرحلة 6: إنشاء خريطة الموقع
+            print("🗺️ 6. إنشاء خريطة الموقع...")
+            sitemap = self._generate_comprehensive_sitemap(url, base_folder)
+            
+            # مرحلة 7: تنظيم الملفات في مجلدات مرتبة
+            print("📁 7. تنظيم الملفات...")
+            file_organization = self._organize_downloaded_files(base_folder)
+            
+            # مرحلة 8: كشف CMS المستخدم
+            print("🧪 8. كشف CMS المستخدم...")
+            cms_detection = self._detect_comprehensive_cms(basic_content['soup'], basic_content['response'])
+            
+            # مرحلة 9: اختبار الحماية
+            print("🛡️ 9. اختبار الحماية...")
+            security_test = self._comprehensive_security_test(url, basic_content['soup'])
+            
+            # مرحلة 10: دعم crawl للروابط الداخلية
+            print("🕸️ 10. زحف الروابط الداخلية...")
+            crawl_results = self._crawl_internal_links(url, base_folder, max_depth=3, max_pages=50)
+            
+            # مرحلة 11: تنزيل المحتوى من AJAX
+            print("💬 11. تنزيل المحتوى من AJAX...")
+            ajax_content = self._extract_ajax_content(url, basic_content['soup'], base_folder)
+            
+            # تجميع النتائج النهائية
+            final_result = {
+                'extraction_info': {
+                    'extraction_id': extraction_id,
+                    'url': url,
+                    'extraction_type': extraction_type,
+                    'success': True,
+                    'duration': round(time.time() - start_time, 2),
+                    'timestamp': datetime.now().isoformat(),
+                    'base_folder': str(base_folder)
+                },
+                'basic_content': basic_content,
+                'assets_download': assets_download,
+                'technical_structure': technical_structure,
+                'design_analysis': design_analysis,
+                'screenshots': screenshots,
+                'sitemap': sitemap,
+                'file_organization': file_organization,
+                'cms_detection': cms_detection,
+                'security_test': security_test,
+                'crawl_results': crawl_results,
+                'ajax_content': ajax_content,
+                'comprehensive_stats': self._calculate_comprehensive_stats({
+                    'basic_content': basic_content,
+                    'assets_download': assets_download,
+                    'crawl_results': crawl_results
+                })
+            }
+            
+            # حفظ التقرير الشامل
+            self._save_comprehensive_report(final_result, base_folder)
+            
+            print(f"✅ اكتمل التحميل الشامل في {final_result['extraction_info']['duration']} ثانية")
+            return final_result
+            
+        except Exception as e:
+            error_result = {
+                'extraction_id': extraction_id,
+                'url': url,
+                'success': False,
+                'error': str(e),
+                'duration': round(time.time() - start_time, 2),
+                'timestamp': datetime.now().isoformat()
+            }
+            print(f"❌ فشل التحميل الشامل: {str(e)}")
+            return error_result
+    
+    def _create_comprehensive_folder_structure(self, base_folder: Path):
+        """إنشاء هيكل مجلدات شامل ومنظم"""
+        folders = [
+            '01_content',           # المحتوى الأساسي
+            '02_assets/images',     # الصور
+            '02_assets/css',        # ملفات CSS
+            '02_assets/js',         # ملفات JavaScript
+            '02_assets/fonts',      # الخطوط
+            '02_assets/media',      # الفيديو والصوت
+            '02_assets/documents',  # المستندات
+            '03_technical',         # البنية التقنية
+            '04_design',            # التصميم والتفاعل
+            '05_screenshots',       # لقطات الشاشة
+            '06_sitemap',           # خريطة الموقع
+            '07_security',          # تحليل الأمان
+            '08_crawled_pages',     # الصفحات المزحوفة
+            '09_ajax_content',      # محتوى AJAX
+            '10_reports'            # التقارير الشاملة
+        ]
+        
+        for folder in folders:
+            (base_folder / folder).mkdir(parents=True, exist_ok=True)
+    
+    def _extract_comprehensive_basic_content(self, url: str, base_folder: Path) -> Dict[str, Any]:
+        """استخراج المحتوى الأساسي الشامل"""
+        try:
+            response = self.session.get(url, timeout=30, verify=False)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            # حفظ الصفحة الأساسية
+            main_html_file = base_folder / '01_content' / 'index.html'
+            with open(main_html_file, 'w', encoding='utf-8') as f:
+                f.write(response.text)
+            
+            # استخراج المعلومات الأساسية
+            basic_info = {
+                'title': soup.find('title').get_text().strip() if soup.find('title') else 'بدون عنوان',
+                'description': self._get_meta_content(soup, 'description'),
+                'keywords': self._get_meta_content(soup, 'keywords'),
+                'language': soup.get('lang') or self._detect_content_language(soup.get_text()[:1000]),
+                'charset': self._get_charset(soup),
+                'canonical_url': self._get_canonical_url(soup, url),
+                'og_data': self._extract_og_data(soup),
+                'twitter_data': self._extract_twitter_data(soup),
+                'structured_data': self._extract_structured_data(soup),
+                'meta_tags': self._extract_all_meta_tags(soup),
+                'headings_structure': self._extract_headings_structure(soup),
+                'page_structure': self._analyze_page_structure(soup)
+            }
+            
+            # حفظ البيانات الوصفية
+            metadata_file = base_folder / '01_content' / 'metadata.json'
+            with open(metadata_file, 'w', encoding='utf-8') as f:
+                json.dump(basic_info, f, ensure_ascii=False, indent=2)
+            
+            # استخراج النصوص
+            text_content = self._extract_comprehensive_text(soup)
+            text_file = base_folder / '01_content' / 'extracted_text.txt'
+            with open(text_file, 'w', encoding='utf-8') as f:
+                f.write(text_content)
+            
+            return {
+                'success': True,
+                'response': response,
+                'soup': soup,
+                'basic_info': basic_info,
+                'text_content': text_content,
+                'main_html_file': str(main_html_file),
+                'metadata_file': str(metadata_file),
+                'text_file': str(text_file)
+            }
+            
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+    
+    def _download_all_website_assets(self, soup: BeautifulSoup, base_url: str, base_folder: Path) -> Dict[str, Any]:
+        """تحميل جميع أصول الموقع بشكل شامل"""
+        assets_result = {
+            'images': {'downloaded': [], 'failed': [], 'total': 0},
+            'css': {'downloaded': [], 'failed': [], 'total': 0},
+            'js': {'downloaded': [], 'failed': [], 'total': 0},
+            'fonts': {'downloaded': [], 'failed': [], 'total': 0},
+            'media': {'downloaded': [], 'failed': [], 'total': 0},
+            'documents': {'downloaded': [], 'failed': [], 'total': 0},
+            'summary': {'total_downloaded': 0, 'total_failed': 0, 'total_size_mb': 0}
+        }
+        
+        # تحميل الصور (جميع الأنواع)
+        image_selectors = [
+            'img[src]',
+            'img[data-src]',
+            'img[data-lazy-src]',
+            'source[srcset]',
+            '[style*="background-image"]'
+        ]
+        
+        for selector in image_selectors:
+            elements = soup.select(selector)
+            for element in elements[:50]:  # حد أقصى 50 صورة
+                image_urls = self._extract_image_urls(element, base_url)
+                for img_url in image_urls:
+                    self._download_asset_comprehensive(img_url, base_folder / '02_assets/images', assets_result['images'])
+        
+        # تحميل ملفات CSS
+        css_elements = soup.find_all(['link', 'style'])
+        for element in css_elements:
+            if element.name == 'link' and element.get('rel') == ['stylesheet']:
+                href = element.get('href')
+                if href:
+                    css_url = urljoin(base_url, href)
+                    self._download_asset_comprehensive(css_url, base_folder / '02_assets/css', assets_result['css'])
+            elif element.name == 'style':
+                # حفظ CSS المدمج
+                css_content = element.get_text()
+                if css_content:
+                    inline_css_file = base_folder / '02_assets/css' / f'inline_style_{len(assets_result["css"]["downloaded"])}.css'
+                    with open(inline_css_file, 'w', encoding='utf-8') as f:
+                        f.write(css_content)
+                    assets_result['css']['downloaded'].append({
+                        'type': 'inline',
+                        'file_path': str(inline_css_file),
+                        'size_mb': len(css_content.encode()) / 1024 / 1024
+                    })
+        
+        # تحميل ملفات JavaScript
+        js_elements = soup.find_all('script')
+        for element in js_elements:
+            src = element.get('src')
+            if src:
+                js_url = urljoin(base_url, src)
+                self._download_asset_comprehensive(js_url, base_folder / '02_assets/js', assets_result['js'])
+            else:
+                # حفظ JavaScript المدمج
+                js_content = element.get_text()
+                if js_content and len(js_content) > 50:
+                    inline_js_file = base_folder / '02_assets/js' / f'inline_script_{len(assets_result["js"]["downloaded"])}.js'
+                    with open(inline_js_file, 'w', encoding='utf-8') as f:
+                        f.write(js_content)
+                    assets_result['js']['downloaded'].append({
+                        'type': 'inline',
+                        'file_path': str(inline_js_file),
+                        'size_mb': len(js_content.encode()) / 1024 / 1024
+                    })
+        
+        # تحميل الخطوط
+        font_urls = self._extract_font_urls(soup, base_url)
+        for font_url in font_urls:
+            self._download_asset_comprehensive(font_url, base_folder / '02_assets/fonts', assets_result['fonts'])
+        
+        # تحميل ملفات الوسائط (فيديو وصوت)
+        media_elements = soup.find_all(['video', 'audio', 'source'])
+        for element in media_elements:
+            src = element.get('src')
+            if src:
+                media_url = urljoin(base_url, src)
+                self._download_asset_comprehensive(media_url, base_folder / '02_assets/media', assets_result['media'])
+        
+        # تحميل المستندات
+        document_links = soup.find_all('a', href=True)
+        for link in document_links:
+            href = link.get('href')
+            if href and any(ext in href.lower() for ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx']):
+                doc_url = urljoin(base_url, href)
+                self._download_asset_comprehensive(doc_url, base_folder / '02_assets/documents', assets_result['documents'])
+        
+        # حساب الإحصائيات الإجمالية
+        for category in assets_result:
+            if category != 'summary':
+                assets_result['summary']['total_downloaded'] += len(assets_result[category]['downloaded'])
+                assets_result['summary']['total_failed'] += len(assets_result[category]['failed'])
+                assets_result['summary']['total_size_mb'] += sum(
+                    item.get('size_mb', 0) for item in assets_result[category]['downloaded']
+                )
+                assets_result[category]['total'] = len(assets_result[category]['downloaded']) + len(assets_result[category]['failed'])
+        
+        return assets_result
+    
     def _download_comprehensive_assets(self, soup: BeautifulSoup, base_url: str, output_folder: Path) -> Dict[str, Any]:
         """تحميل شامل للأصول"""
         assets_folder = output_folder / 'assets'
