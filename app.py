@@ -44,6 +44,10 @@ db.init_app(app)
 from models import AnalysisResult
 from core import WebsiteAnalyzer
 
+# استيراد أنظمة الحماية والأمان
+from ad_blocker import AdBlocker, ContentProtector, PrivacyFilter
+from security_scanner import SecurityScanner, ThreatDetector
+
 # استيراد النظام المطور
 try:
     from tools2.advanced_extractor import AdvancedWebsiteExtractor
@@ -57,6 +61,13 @@ except ImportError as e:
 
 # تهيئة المحلل الرئيسي
 analyzer = WebsiteAnalyzer()
+
+# تهيئة أنظمة الحماية والأمان
+ad_blocker = AdBlocker()
+content_protector = ContentProtector()
+privacy_filter = PrivacyFilter()
+security_scanner = SecurityScanner()
+threat_detector = ThreatDetector()
 
 @app.route('/')
 def index():
@@ -453,8 +464,273 @@ def health():
         'status': 'healthy',
         'app': 'website-analyzer-pro',
         'database': 'connected',
-        'version': '2.0.0'
+        'version': '2.0.0',
+        'security_systems': {
+            'ad_blocker': 'enabled',
+            'content_protector': 'enabled',
+            'privacy_filter': 'enabled',
+            'security_scanner': 'enabled',
+            'threat_detector': 'enabled'
+        }
     })
+
+# ==================== أنظمة الحماية والأمان ====================
+
+@app.route('/security-scan')
+def security_scan_page():
+    """صفحة فحص الأمان"""
+    return render_template('security_scan.html')
+
+@app.route('/scan-security', methods=['POST'])
+def scan_security():
+    """تشغيل فحص أمني شامل"""
+    url = request.form.get('url', '').strip()
+    
+    if not url:
+        flash('يرجى إدخال رابط صحيح للفحص', 'error')
+        return redirect(url_for('security_scan_page'))
+    
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    try:
+        # تشغيل الفحص الأمني الشامل
+        scan_results = security_scanner.comprehensive_security_scan(url)
+        
+        # حفظ النتيجة في قاعدة البيانات
+        analysis_result = AnalysisResult()
+        analysis_result.url = url
+        from urllib.parse import urlparse
+        analysis_result.title = f"فحص أمني - {urlparse(url).netloc}"
+        analysis_result.analysis_type = "security_scan"
+        analysis_result.status = 'completed'
+        analysis_result.result_data = json.dumps(scan_results, ensure_ascii=False, indent=2, default=str)
+        
+        db.session.add(analysis_result)
+        db.session.commit()
+        
+        # عرض النتائج
+        security_score = scan_results.get('overall_security_score', 0)
+        if security_score >= 80:
+            flash(f'✅ الموقع آمن! نقاط الأمان: {security_score}/100', 'success')
+        elif security_score >= 60:
+            flash(f'⚠️ الموقع آمن نسبياً. نقاط الأمان: {security_score}/100', 'warning')
+        else:
+            flash(f'❌ تحذير أمني! نقاط الأمان: {security_score}/100', 'error')
+        
+        return redirect(url_for('result_detail', result_id=analysis_result.id))
+        
+    except Exception as e:
+        app.logger.error(f"خطأ في الفحص الأمني: {str(e)}")
+        flash(f'خطأ في الفحص الأمني: {str(e)}', 'error')
+        return redirect(url_for('security_scan_page'))
+
+@app.route('/ad-block-analysis')
+def ad_block_analysis_page():
+    """صفحة تحليل الإعلانات"""
+    return render_template('ad_block_analysis.html')
+
+@app.route('/analyze-ads', methods=['POST'])
+def analyze_ads():
+    """تحليل وإزالة الإعلانات"""
+    url = request.form.get('url', '').strip()
+    remove_ads = request.form.get('remove_ads', 'off') == 'on'
+    
+    if not url:
+        flash('يرجى إدخال رابط صحيح', 'error')
+        return redirect(url_for('ad_block_analysis_page'))
+    
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    try:
+        # جلب محتوى الصفحة
+        response = analyzer.session.get(url, timeout=15)
+        original_content = response.text
+        
+        # كشف التهديدات
+        threats = threat_detector.detect_threats(original_content, url)
+        
+        # تحليل البيانات الحساسة
+        sensitive_data = privacy_filter.detect_sensitive_data(original_content)
+        
+        # تنظيف المحتوى إذا طُلب ذلك
+        cleaned_content = original_content
+        if remove_ads:
+            # إزالة الإعلانات
+            cleaned_content = ad_blocker.clean_html(cleaned_content, url)
+            # إزالة المتتبعات
+            cleaned_content = content_protector.remove_trackers(cleaned_content)
+            # تعقيم المحتوى
+            cleaned_content = content_protector.sanitize_content(cleaned_content)
+            # إخفاء البيانات الحساسة
+            cleaned_content = privacy_filter.mask_sensitive_data(cleaned_content)
+        
+        # إحصائيات التنظيف
+        original_size = len(original_content)
+        cleaned_size = len(cleaned_content)
+        reduction_percentage = ((original_size - cleaned_size) / original_size) * 100 if original_size > 0 else 0
+        
+        analysis_results = {
+            'url': url,
+            'original_size': original_size,
+            'cleaned_size': cleaned_size,
+            'reduction_percentage': round(reduction_percentage, 2),
+            'threats_detected': threats,
+            'sensitive_data': sensitive_data,
+            'ad_blocker_stats': ad_blocker.get_blocked_stats(),
+            'content_cleaned': remove_ads,
+            'cleaned_content': cleaned_content if remove_ads else None
+        }
+        
+        # حفظ النتيجة
+        analysis_result = AnalysisResult()
+        analysis_result.url = url
+        analysis_result.title = f"تحليل الإعلانات - {urlparse(url).netloc}"
+        analysis_result.analysis_type = "ad_block_analysis"
+        analysis_result.status = 'completed'
+        analysis_result.result_data = json.dumps(analysis_results, ensure_ascii=False, indent=2, default=str)
+        
+        db.session.add(analysis_result)
+        db.session.commit()
+        
+        # رسائل النتائج
+        if threats['threat_score'] > 0:
+            flash(f'⚠️ تم اكتشاف {len(threats["threats_found"])} تهديد محتمل', 'warning')
+        
+        if any(len(data) > 0 for data in sensitive_data.values()):
+            flash('🔐 تم اكتشاف بيانات حساسة في الموقع', 'info')
+        
+        if remove_ads and reduction_percentage > 10:
+            flash(f'✅ تم تنظيف المحتوى! تم تقليل الحجم بـ {reduction_percentage:.1f}%', 'success')
+        
+        return redirect(url_for('result_detail', result_id=analysis_result.id))
+        
+    except Exception as e:
+        app.logger.error(f"خطأ في تحليل الإعلانات: {str(e)}")
+        flash(f'خطأ في التحليل: {str(e)}', 'error')
+        return redirect(url_for('ad_block_analysis_page'))
+
+@app.route('/api/security-scan', methods=['POST'])
+def api_security_scan():
+    """API للفحص الأمني"""
+    data = request.get_json()
+    if not data or 'url' not in data:
+        return jsonify({
+            'success': False,
+            'error': 'URL مطلوب'
+        }), 400
+    
+    url = data['url']
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    try:
+        scan_results = security_scanner.comprehensive_security_scan(url)
+        
+        return jsonify({
+            'success': True,
+            'data': scan_results,
+            'security_score': scan_results.get('overall_security_score', 0),
+            'recommendations': scan_results.get('recommendations', [])
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/ad-block', methods=['POST'])
+def api_ad_block():
+    """API لتخطي الإعلانات"""
+    data = request.get_json()
+    if not data or 'url' not in data:
+        return jsonify({
+            'success': False,
+            'error': 'URL مطلوب'
+        }), 400
+    
+    url = data['url']
+    remove_ads = data.get('remove_ads', True)
+    
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    try:
+        # جلب المحتوى
+        response = analyzer.session.get(url, timeout=15)
+        content = response.text
+        
+        results = {
+            'url': url,
+            'original_size': len(content),
+            'threats': threat_detector.detect_threats(content, url),
+            'sensitive_data': privacy_filter.detect_sensitive_data(content)
+        }
+        
+        if remove_ads:
+            # تنظيف المحتوى
+            cleaned = ad_blocker.clean_html(content, url)
+            cleaned = content_protector.remove_trackers(cleaned)
+            cleaned = content_protector.sanitize_content(cleaned)
+            
+            results.update({
+                'cleaned_size': len(cleaned),
+                'reduction_percentage': ((len(content) - len(cleaned)) / len(content)) * 100,
+                'cleaned_content': cleaned
+            })
+        
+        return jsonify({
+            'success': True,
+            'data': results
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/threat-detection', methods=['POST'])
+def api_threat_detection():
+    """API لكشف التهديدات"""
+    data = request.get_json()
+    if not data:
+        return jsonify({
+            'success': False,
+            'error': 'بيانات مطلوبة'
+        }), 400
+    
+    content = data.get('content', '')
+    url = data.get('url', '')
+    
+    if not content and not url:
+        return jsonify({
+            'success': False,
+            'error': 'محتوى أو رابط مطلوب'
+        }), 400
+    
+    try:
+        if url and not content:
+            # جلب المحتوى من الرابط
+            response = analyzer.session.get(url, timeout=15)
+            content = response.text
+        
+        threats = threat_detector.detect_threats(content, url)
+        
+        return jsonify({
+            'success': True,
+            'threats': threats,
+            'threat_level': threats.get('threat_level', 'Low'),
+            'threat_score': threats.get('threat_score', 0)
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 # معالج الأخطاء
 @app.errorhandler(404)
