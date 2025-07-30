@@ -46,6 +46,7 @@ from models import AnalysisResult
 from core import WebsiteAnalyzer
 from enhanced_crawler import enhanced_crawler
 from optimized_extractor import optimized_extractor
+from fast_extractor import ultra_fast_extractor
 
 # استيراد أنظمة الحماية والأمان
 from ad_blocker import AdBlocker, ContentProtector, PrivacyFilter
@@ -104,43 +105,58 @@ def analyze():
         url = 'https://' + url
     
     try:
-        # تشغيل النظام المحسن السريع أولاً
-        optimized_result = optimized_extractor.extract_comprehensive_fast(url)
+        # تشغيل النظام فائق السرعة أولاً
+        ultra_result = ultra_fast_extractor.extract_lightning_fast(url)
         
-        if optimized_result['success']:
-            # استخدام النتيجة المحسنة السريعة
+        if ultra_result['success']:
+            # استخدام النتيجة فائقة السرعة
             result = {
                 'success': True,
-                'data': optimized_result['data'],
-                'execution_time': optimized_result['execution_time'],
-                'method_used': optimized_result['method_used'],
-                'optimized': True
+                'data': ultra_result['data'],
+                'execution_time': ultra_result['total_time'],
+                'method_used': 'ultra_fast',
+                'ultra_fast': True,
+                'performance': ultra_result['performance']
             }
         else:
-            # إذا فشل النظام المحسن، جرب النظام العادي
-            app.logger.warning(f"فشل النظام المحسن: {optimized_result['error']}")
-            try:
-                enhanced_result = enhanced_crawler.analyze_website_enhanced(url)
-                if enhanced_result['success']:
-                    result = {
-                        'success': True,
-                        'data': enhanced_result['data'],
-                        'execution_time': enhanced_result['execution_time'],
-                        'method_used': enhanced_result['method_used'],
-                        'enhanced': True
-                    }
-                else:
+            # إذا فشل النظام فائق السرعة، جرب المحسن
+            app.logger.info(f"تجربة النظام المحسن: {ultra_result['error']}")
+            optimized_result = optimized_extractor.extract_comprehensive_fast(url)
+            
+            if optimized_result['success']:
+                result = {
+                    'success': True,
+                    'data': optimized_result['data'],
+                    'execution_time': optimized_result['execution_time'],
+                    'method_used': optimized_result['method_used'],
+                    'optimized': True
+                }
+            else:
+                # النظام الاحتياطي الأخير
+                try:
+                    enhanced_result = enhanced_crawler.analyze_website_enhanced(url)
+                    if enhanced_result['success']:
+                        result = {
+                            'success': True,
+                            'data': enhanced_result['data'],
+                            'execution_time': enhanced_result['execution_time'],
+                            'method_used': enhanced_result['method_used'],
+                            'enhanced': True
+                        }
+                    else:
+                        result = analyzer.analyze_website(url, analysis_type)
+                except Exception as e:
+                    app.logger.error(f"خطأ في النظام الاحتياطي: {str(e)}")
                     result = analyzer.analyze_website(url, analysis_type)
-            except Exception as e:
-                app.logger.error(f"خطأ في النظام الاحتياطي: {str(e)}")
-                result = analyzer.analyze_website(url, analysis_type)
         
         # حفظ النتيجة
         analysis_result = AnalysisResult()
         analysis_result.url = url
         
         # استخراج العنوان من البيانات
-        if result.get('optimized'):
+        if result.get('ultra_fast'):
+            title = result['data']['basic_info'].get('title', 'بدون عنوان')
+        elif result.get('optimized'):
             title = result['data']['basic_info'].get('title', 'بدون عنوان')
         elif result.get('enhanced'):
             title = result['data'].get('title', 'بدون عنوان')
@@ -402,34 +418,51 @@ def extract_comprehensive():
         
         app.logger.info(f"✅ تم تنظيف المحتوى بنسبة {reduction_percentage:.1f}%")
         
-        # استخدام النظام المحسن السريع بدلاً من comprehensive download
-        app.logger.info("🚀 تشغيل النظام المحسن السريع...")
-        optimized_result = optimized_extractor.extract_comprehensive_fast(url)
+        # استخدام النظام فائق السرعة أولاً
+        app.logger.info("⚡ تشغيل النظام فائق السرعة...")
+        ultra_result = ultra_fast_extractor.extract_lightning_fast(url)
         
-        if optimized_result['success']:
+        if ultra_result['success']:
             result = {
                 'extraction_info': {
                     'success': True,
-                    'duration': optimized_result['execution_time'],
-                    'base_folder': f"النظام السريع - {datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                    'duration': ultra_result['total_time'],
+                    'base_folder': f"النظام فائق السرعة - {datetime.now().strftime('%Y%m%d_%H%M%S')}"
                 },
                 'basic_content': {
-                    'basic_info': optimized_result['data']['basic_info']
+                    'basic_info': ultra_result['data']['basic_info']
                 },
-                'optimized_extraction': True,
-                'data': optimized_result['data']
+                'ultra_fast_extraction': True,
+                'performance': ultra_result['performance'],
+                'data': ultra_result['data']
             }
         else:
-            # إذا فشل النظام المحسن، جرب النظام العادي
-            app.logger.warning(f"فشل النظام المحسن: {optimized_result['error']}")
-            result = {
-                'extraction_info': {
-                    'success': False,
-                    'duration': 0,
-                    'error': optimized_result['error']
-                },
-                'error': optimized_result['error']
-            }
+            # إذا فشل النظام فائق السرعة، جرب المحسن
+            app.logger.info(f"تجربة النظام المحسن: {ultra_result['error']}")
+            optimized_result = optimized_extractor.extract_comprehensive_fast(url)
+            
+            if optimized_result['success']:
+                result = {
+                    'extraction_info': {
+                        'success': True,
+                        'duration': optimized_result['execution_time'],
+                        'base_folder': f"النظام المحسن - {datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                    },
+                    'basic_content': {
+                        'basic_info': optimized_result['data']['basic_info']
+                    },
+                    'optimized_extraction': True,
+                    'data': optimized_result['data']
+                }
+            else:
+                result = {
+                    'extraction_info': {
+                        'success': False,
+                        'duration': 0,
+                        'error': ultra_result['error']
+                    },
+                    'error': ultra_result['error']
+                }
         
         # إضافة معلومات الحماية إلى النتائج
         if isinstance(result, dict):
@@ -770,6 +803,24 @@ def analyze_ads():
         app.logger.error(f"خطأ في تحليل الإعلانات: {str(e)}")
         flash(f'خطأ في التحليل: {str(e)}', 'error')
         return redirect(url_for('ad_block_analysis_page'))
+
+@app.route('/api/health')
+def api_health():
+    """فحص سريع لحالة النظام"""
+    try:
+        health_result = ultra_fast_extractor.health_check()
+        return jsonify({
+            'status': 'healthy' if health_result['system_healthy'] else 'degraded',
+            'response_time': health_result['response_time'],
+            'timestamp': health_result['timestamp'],
+            'version': 'ultra_fast_v2.0'
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
 
 @app.route('/api/security-scan', methods=['POST'])
 def api_security_scan():
