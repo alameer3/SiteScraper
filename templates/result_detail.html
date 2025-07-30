@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}تفاصيل التحليل - {{ result.title or result.url }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="glass-card p-4 mb-4">
+            <h2 class="text-white mb-3">
+                <i data-feather="file-text" class="me-2"></i>
+                تفاصيل التحليل
+            </h2>
+            
+            <div class="row mb-3">
+                <div class="col-sm-3"><strong class="text-white">الموقع:</strong></div>
+                <div class="col-sm-9">
+                    <a href="{{ result.url }}" target="_blank" class="text-info text-decoration-none">
+                        {{ result.url }}
+                        <i data-feather="external-link" class="ms-1" style="width: 16px; height: 16px;"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-sm-3"><strong class="text-white">العنوان:</strong></div>
+                <div class="col-sm-9 text-white">{{ result.title or 'بدون عنوان' }}</div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-sm-3"><strong class="text-white">نوع التحليل:</strong></div>
+                <div class="col-sm-9">
+                    <span class="badge bg-secondary">{{ result.analysis_type }}</span>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-sm-3"><strong class="text-white">الحالة:</strong></div>
+                <div class="col-sm-9">
+                    {% if result.status == 'completed' %}
+                        <span class="badge bg-success">مكتمل</span>
+                    {% elif result.status == 'failed' %}
+                        <span class="badge bg-danger">فشل</span>
+                    {% else %}
+                        <span class="badge bg-warning">قيد المعالجة</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-sm-3"><strong class="text-white">التاريخ:</strong></div>
+                <div class="col-sm-9 text-white">{{ result.created_at.strftime('%Y-%m-%d %H:%M:%S') if result.created_at else 'غير محدد' }}</div>
+            </div>
+        </div>
+        
+        {% if result.result_data %}
+        <div class="glass-card p-4">
+            <h3 class="text-white mb-3">
+                <i data-feather="database" class="me-2"></i>
+                بيانات التحليل
+            </h3>
+            
+            {% set data = result.get_data() %}
+            {% if data %}
+                <div class="accordion" id="analysisAccordion">
+                    {% for key, value in data.items() %}
+                    <div class="accordion-item bg-transparent border-light">
+                        <h2 class="accordion-header" id="heading{{ loop.index }}">
+                            <button class="accordion-button collapsed bg-transparent text-white border-0" type="button" 
+                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}">
+                                {{ key|title }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" 
+                             data-bs-parent="#analysisAccordion">
+                            <div class="accordion-body text-white-50">
+                                {% if value is mapping %}
+                                    <dl class="row">
+                                        {% for k, v in value.items() %}
+                                        <dt class="col-sm-3">{{ k }}:</dt>
+                                        <dd class="col-sm-9">{{ v if v is not none else 'غير متوفر' }}</dd>
+                                        {% endfor %}
+                                    </dl>
+                                {% elif value is iterable and value is not string %}
+                                    <ul class="list-unstyled">
+                                        {% for item in value %}
+                                        <li class="mb-1">• {{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>{{ value if value is not none else 'غير متوفر' }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-white-50">لا توجد بيانات متاحة للعرض</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <div class="glass-card p-4 mb-4">
+            <h3 class="text-white mb-3">
+                <i data-feather="settings" class="me-2"></i>
+                إجراءات
+            </h3>
+            
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('results') }}" class="btn btn-outline-light">
+                    <i data-feather="arrow-right" class="me-2"></i>
+                    العودة للنتائج
+                </a>
+                
+                <a href="{{ url_for('analyze') }}" class="btn btn-primary">
+                    <i data-feather="plus" class="me-2"></i>
+                    تحليل جديد
+                </a>
+                
+                {% if result.result_data %}
+                <button class="btn btn-outline-info" onclick="exportData()">
+                    <i data-feather="download" class="me-2"></i>
+                    تصدير البيانات
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if result.result_data %}
+        <div class="glass-card p-4">
+            <h4 class="text-white mb-3">
+                <i data-feather="bar-chart" class="me-2"></i>
+                ملخص سريع
+            </h4>
+            {% set data = result.get_data() %}
+            {% if data %}
+                {% if data.get('title') %}
+                <p class="text-white-50 mb-2">
+                    <strong>العنوان:</strong> {{ data.title[:50] }}{% if data.title|length > 50 %}...{% endif %}
+                </p>
+                {% endif %}
+                
+                {% if data.get('description') %}
+                <p class="text-white-50 mb-2">
+                    <strong>الوصف:</strong> {{ data.description[:100] }}{% if data.description|length > 100 %}...{% endif %}
+                </p>
+                {% endif %}
+                
+                {% if data.get('language') %}
+                <p class="text-white-50 mb-2">
+                    <strong>اللغة:</strong> {{ data.language }}
+                </p>
+                {% endif %}
+                
+                {% if data.get('status_code') %}
+                <p class="text-white-50 mb-2">
+                    <strong>حالة الاستجابة:</strong> 
+                    <span class="badge {% if data.status_code == 200 %}bg-success{% else %}bg-warning{% endif %}">
+                        {{ data.status_code }}
+                    </span>
+                </p>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if result.result_data %}
+<script>
+function exportData() {
+    const data = {{ result.result_data|safe }};
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'analysis_{{ result.id }}.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
+{% endif %}
+{% endblock %}

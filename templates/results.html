@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}نتائج التحليل - محلل المواقع المتطور{% endblock %}
+
+{% block content %}
+<div class="glass-card p-4">
+    <h2 class="text-white mb-4">
+        <i data-feather="list" class="me-2"></i>
+        نتائج التحليل
+    </h2>
+    
+    {% if results.items %}
+    <div class="table-responsive">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th>الموقع</th>
+                    <th>العنوان</th>
+                    <th>نوع التحليل</th>
+                    <th>الحالة</th>
+                    <th>التاريخ</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results.items %}
+                <tr>
+                    <td>
+                        <a href="{{ result.url }}" target="_blank" class="text-info text-decoration-none">
+                            {{ result.url[:40] }}{% if result.url|length > 40 %}...{% endif %}
+                        </a>
+                    </td>
+                    <td>{{ result.title or 'بدون عنوان' }}</td>
+                    <td>
+                        <span class="badge bg-secondary">{{ result.analysis_type }}</span>
+                    </td>
+                    <td>
+                        {% if result.status == 'completed' %}
+                            <span class="badge bg-success">مكتمل</span>
+                        {% elif result.status == 'failed' %}
+                            <span class="badge bg-danger">فشل</span>
+                        {% else %}
+                            <span class="badge bg-warning">قيد المعالجة</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ result.created_at.strftime('%Y-%m-%d %H:%M') if result.created_at else 'غير محدد' }}</td>
+                    <td>
+                        <a href="{{ url_for('result_detail', result_id=result.id) }}" class="btn btn-sm btn-outline-light">
+                            <i data-feather="eye" class="me-1"></i>
+                            عرض
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if results.pages > 1 %}
+    <nav aria-label="صفحات النتائج" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if results.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('results', page=results.prev_num) }}">السابق</a>
+                </li>
+            {% endif %}
+            
+            {% for page_num in results.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num != results.page %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('results', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">…</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if results.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('results', page=results.next_num) }}">التالي</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+    {% else %}
+    <div class="text-center py-5">
+        <i data-feather="inbox" class="text-white-50 mb-3" style="width: 48px; height: 48px;"></i>
+        <h4 class="text-white-50">لا توجد نتائج بعد</h4>
+        <p class="text-white-50">ابدأ بتحليل موقع جديد لرؤية النتائج هنا</p>
+        <a href="{{ url_for('analyze') }}" class="btn btn-primary">
+            <i data-feather="plus" class="me-2"></i>
+            تحليل موقع جديد
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

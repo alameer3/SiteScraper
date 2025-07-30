@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}تحليل موقع جديد - محلل المواقع المتطور{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="glass-card p-4">
+            <h2 class="text-white mb-4">
+                <i data-feather="search" class="me-2"></i>
+                تحليل موقع جديد
+            </h2>
+            
+            <form method="POST" action="{{ url_for('analyze') }}">
+                <div class="mb-3">
+                    <label for="url" class="form-label text-white">رابط الموقع</label>
+                    <input type="url" class="form-control" id="url" name="url" 
+                           placeholder="https://example.com" required>
+                    <div class="form-text text-white-50">
+                        أدخل الرابط الكامل للموقع المراد تحليله
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="analysis_type" class="form-label text-white">نوع التحليل</label>
+                    <select class="form-select" id="analysis_type" name="analysis_type">
+                        <option value="standard">تحليل قياسي</option>
+                        <option value="comprehensive">تحليل شامل</option>
+                        <option value="quick">تحليل سريع</option>
+                    </select>
+                    <div class="form-text text-white-50">
+                        اختر نوع التحليل المناسب لاحتياجاتك
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-light me-md-2">
+                        <i data-feather="arrow-right" class="me-2"></i>
+                        العودة
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="play" class="me-2"></i>
+                        بدء التحليل
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="glass-card p-4">
+            <h3 class="text-white mb-3">
+                <i data-feather="info" class="me-2"></i>
+                أنواع التحليل المتاحة
+            </h3>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-transparent border-light">
+                        <div class="card-body">
+                            <h5 class="card-title text-white">
+                                <i data-feather="zap" class="me-2"></i>
+                                تحليل سريع
+                            </h5>
+                            <p class="card-text text-white-50">
+                                تحليل أساسي سريع يشمل العنوان والوصف والمعلومات الأساسية
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-transparent border-light">
+                        <div class="card-body">
+                            <h5 class="card-title text-white">
+                                <i data-feather="target" class="me-2"></i>
+                                تحليل قياسي
+                            </h5>
+                            <p class="card-text text-white-50">
+                                تحليل متوسط يشمل التقنيات والأمان والمحتوى والروابط
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-transparent border-light">
+                        <div class="card-body">
+                            <h5 class="card-title text-white">
+                                <i data-feather="layers" class="me-2"></i>
+                                تحليل شامل
+                            </h5>
+                            <p class="card-text text-white-50">
+                                تحليل كامل يشمل جميع الجوانب التقنية والأمنية والمحتوى
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

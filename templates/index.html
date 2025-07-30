@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}محلل المواقع المتطور - الصفحة الرئيسية{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="glass-card p-4 mb-4">
+            <h1 class="text-white mb-4">
+                <i data-feather="globe" class="me-2"></i>
+                مرحباً بك في محلل المواقع المتطور
+            </h1>
+            <p class="text-white-50 lead">
+                أداة شاملة لتحليل واستخراج محتوى المواقع الإلكترونية بتقنيات متطورة
+            </p>
+            <div class="row mt-4">
+                <div class="col-md-6 mb-3">
+                    <a href="{{ url_for('analyze') }}" class="btn btn-primary btn-lg w-100">
+                        <i data-feather="search" class="me-2"></i>
+                        تحليل موقع جديد
+                    </a>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <a href="{{ url_for('unified_extractor') }}" class="btn btn-outline-light btn-lg w-100">
+                        <i data-feather="download" class="me-2"></i>
+                        الاستخراج المتطور
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="glass-card p-4 mb-4">
+            <h3 class="text-white mb-3">إحصائيات النظام</h3>
+            <div class="row text-center">
+                <div class="col-12 mb-3">
+                    <div class="text-white">
+                        <i data-feather="bar-chart-2" class="d-block mx-auto mb-2"></i>
+                        <h4>{{ stats.total_analyses }}</h4>
+                        <small class="text-white-50">إجمالي التحليلات</small>
+                    </div>
+                </div>
+                <div class="col-12 mb-3">
+                    <div class="text-white">
+                        <i data-feather="check-circle" class="d-block mx-auto mb-2"></i>
+                        <h4>{{ stats.successful_analyses }}</h4>
+                        <small class="text-white-50">تحليلات ناجحة</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if recent_results %}
+<div class="glass-card p-4">
+    <h3 class="text-white mb-4">
+        <i data-feather="clock" class="me-2"></i>
+        آخر التحليلات
+    </h3>
+    <div class="table-responsive">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th>الموقع</th>
+                    <th>العنوان</th>
+                    <th>نوع التحليل</th>
+                    <th>الحالة</th>
+                    <th>التاريخ</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in recent_results %}
+                <tr>
+                    <td>
+                        <a href="{{ result.url }}" target="_blank" class="text-info text-decoration-none">
+                            {{ result.url[:30] }}{% if result.url|length > 30 %}...{% endif %}
+                        </a>
+                    </td>
+                    <td>{{ result.title or 'بدون عنوان' }}</td>
+                    <td>
+                        <span class="badge bg-secondary">{{ result.analysis_type }}</span>
+                    </td>
+                    <td>
+                        {% if result.status == 'completed' %}
+                            <span class="badge bg-success">مكتمل</span>
+                        {% elif result.status == 'failed' %}
+                            <span class="badge bg-danger">فشل</span>
+                        {% else %}
+                            <span class="badge bg-warning">قيد المعالجة</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ result.created_at.strftime('%Y-%m-%d %H:%M') if result.created_at else 'غير محدد' }}</td>
+                    <td>
+                        <a href="{{ url_for('result_detail', result_id=result.id) }}" class="btn btn-sm btn-outline-light">
+                            <i data-feather="eye" class="me-1"></i>
+                            عرض
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center mt-3">
+        <a href="{{ url_for('results') }}" class="btn btn-outline-light">
+            <i data-feather="list" class="me-2"></i>
+            عرض جميع النتائج
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
