@@ -1,0 +1,15 @@
+خطأ في التحليل الشامل:
+الموقع: https://example.com
+الوقت: 2025-07-30T01:46:33.718332
+نوع الخطأ: AttributeError
+رسالة الخطأ: 'AdvancedWebsiteExtractor' object has no attribute '_extract_font_urls'
+
+تفاصيل الخطأ:
+Traceback (most recent call last):
+  File "/home/runner/workspace/tools2/advanced_extractor.py", line 940, in comprehensive_website_download
+    assets_download = self._download_all_website_assets(basic_content['soup'], url, base_folder)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/tools2/advanced_extractor.py", line 1340, in _download_all_website_assets
+    font_urls = self._extract_font_urls(soup, base_url)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AdvancedWebsiteExtractor' object has no attribute '_extract_font_urls'

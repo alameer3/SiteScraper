@@ -1,0 +1,11 @@
+خطأ في التحليل الشامل:
+الموقع: https://ak.sv/
+الوقت: 2025-07-30T01:46:08.036576
+نوع الخطأ: Exception
+رسالة الخطأ: فشل في استخراج المحتوى الأساسي: 403 Client Error: Forbidden for url: https://ak.sv/
+
+تفاصيل الخطأ:
+Traceback (most recent call last):
+  File "/home/runner/workspace/tools2/advanced_extractor.py", line 936, in comprehensive_website_download
+    raise Exception(f"فشل في استخراج المحتوى الأساسي: {basic_content.get('error', 'خطأ غير معروف')}")
+Exception: فشل في استخراج المحتوى الأساسي: 403 Client Error: Forbidden for url: https://ak.sv/
