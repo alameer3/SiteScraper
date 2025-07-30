@@ -1,299 +1,0 @@
-{% extends "base.html" %}
-
-{% block title %}الاستخراج المتطور - محلل المواقع{% endblock %}
-
-{% block content %}
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card glass-effect border-0 shadow-lg">
-                <div class="card-body text-center">
-                    <h1 class="display-6 mb-3 gradient-text">
-                        <i data-feather="layers" class="me-2"></i>
-                        نظام الاستخراج المتطور
-                    </h1>
-                    <p class="lead text-muted">
-                        أداة شاملة لاستخراج وتحليل المواقع مع ميزات الذكاء الاصطناعي والتحليل المتقدم
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Extraction Form -->
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="card glass-effect border-0 shadow-lg">
-                <div class="card-header bg-transparent border-0">
-                    <h4 class="card-title mb-0">
-                        <i data-feather="search" class="me-2"></i>
-                        تشغيل عملية الاستخراج
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('extract_advanced') }}" id="extractionForm">
-                        <!-- URL Input -->
-                        <div class="mb-4">
-                            <label for="url" class="form-label fw-bold">
-                                <i data-feather="link" class="me-1"></i>
-                                رابط الموقع
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i data-feather="globe" class="text-muted"></i>
-                                </span>
-                                <input type="url" class="form-control border-start-0" id="url" name="url" 
-                                       placeholder="https://example.com" required>
-                            </div>
-                            <div class="form-text">أدخل الرابط الكامل للموقع المراد تحليله واستخراجه</div>
-                        </div>
-
-                        <!-- Extraction Type -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">
-                                <i data-feather="settings" class="me-1"></i>
-                                نوع الاستخراج
-                            </label>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="card h-100 extraction-option" data-type="basic">
-                                        <div class="card-body text-center">
-                                            <div class="mb-2">
-                                                <i data-feather="file-text" class="text-primary" style="width: 32px; height: 32px;"></i>
-                                            </div>
-                                            <h6 class="card-title">أساسي</h6>
-                                            <p class="card-text small text-muted">
-                                                استخراج المعلومات الأساسية والمحتوى النصي
-                                            </p>
-                                            <input type="radio" name="extraction_type" value="basic" id="basic" class="form-check-input">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 extraction-option" data-type="standard">
-                                        <div class="card-body text-center">
-                                            <div class="mb-2">
-                                                <i data-feather="layout" class="text-info" style="width: 32px; height: 32px;"></i>
-                                            </div>
-                                            <h6 class="card-title">قياسي</h6>
-                                            <p class="card-text small text-muted">
-                                                تحليل شامل مع SEO والأمان
-                                            </p>
-                                            <input type="radio" name="extraction_type" value="standard" id="standard" class="form-check-input" checked>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 extraction-option" data-type="advanced">
-                                        <div class="card-body text-center">
-                                            <div class="mb-2">
-                                                <i data-feather="layers" class="text-warning" style="width: 32px; height: 32px;"></i>
-                                            </div>
-                                            <h6 class="card-title">متقدم</h6>
-                                            <p class="card-text small text-muted">
-                                                تحليل متقدم مع لقطات الشاشة والأصول
-                                            </p>
-                                            <input type="radio" name="extraction_type" value="advanced" id="advanced" class="form-check-input">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 extraction-option" data-type="complete">
-                                        <div class="card-body text-center">
-                                            <div class="mb-2">
-                                                <i data-feather="database" class="text-success" style="width: 32px; height: 32px;"></i>
-                                            </div>
-                                            <h6 class="card-title">كامل</h6>
-                                            <p class="card-text small text-muted">
-                                                استخراج شامل مع تحليل قواعد البيانات
-                                            </p>
-                                            <input type="radio" name="extraction_type" value="complete" id="complete" class="form-check-input">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="card h-100 extraction-option bg-gradient-primary text-white" data-type="ai_powered">
-                                        <div class="card-body text-center">
-                                            <div class="mb-2">
-                                                <i data-feather="cpu" class="text-white" style="width: 32px; height: 32px;"></i>
-                                            </div>
-                                            <h6 class="card-title text-white">🤖 بالذكاء الاصطناعي</h6>
-                                            <p class="card-text small">
-                                                تحليل ذكي مع التعرف على الأنماط والنسخ الذكي - الأكثر تطوراً
-                                            </p>
-                                            <input type="radio" name="extraction_type" value="ai_powered" id="ai_powered" class="form-check-input">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg" id="extractBtn">
-                                <i data-feather="play-circle" class="me-2"></i>
-                                بدء الاستخراج
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Features Section -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <h3 class="text-center mb-4">ميزات النظام المتطور</h3>
-            <div class="row g-4">
-                <div class="col-md-3">
-                    <div class="card glass-effect border-0 h-100 text-center">
-                        <div class="card-body">
-                            <i data-feather="zap" class="text-warning mb-3" style="width: 48px; height: 48px;"></i>
-                            <h5>سرعة عالية</h5>
-                            <p class="text-muted small">معالجة متوازية وتحليل سريع</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card glass-effect border-0 h-100 text-center">
-                        <div class="card-body">
-                            <i data-feather="shield-check" class="text-success mb-3" style="width: 48px; height: 48px;"></i>
-                            <h5>تحليل أمني</h5>
-                            <p class="text-muted small">فحص شامل للثغرات الأمنية</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card glass-effect border-0 h-100 text-center">
-                        <div class="card-body">
-                            <i data-feather="download" class="text-info mb-3" style="width: 48px; height: 48px;"></i>
-                            <h5>تحميل الأصول</h5>
-                            <p class="text-muted small">حفظ الصور والملفات تلقائياً</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card glass-effect border-0 h-100 text-center">
-                        <div class="card-body">
-                            <i data-feather="file-text" class="text-primary mb-3" style="width: 48px; height: 48px;"></i>
-                            <h5>تقارير شاملة</h5>
-                            <p class="text-muted small">تصدير متعدد الصيغ</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Loading Modal -->
-<div class="modal fade" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-effect border-0">
-            <div class="modal-body text-center p-4">
-                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
-                    <span class="visually-hidden">جاري التحميل...</span>
-                </div>
-                <h5>جاري الاستخراج...</h5>
-                <p class="text-muted">يرجى الانتظار، سيتم إعادة توجيهك إلى النتائج عند الانتهاء</p>
-                <div class="progress mt-3">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-.extraction-option {
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
-
-.extraction-option:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-}
-
-.extraction-option.selected {
-    border-color: var(--bs-primary);
-    background: linear-gradient(135deg, rgba(13, 110, 253, 0.1), rgba(13, 110, 253, 0.05));
-}
-
-.extraction-option input[type="radio"] {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-.glass-effect {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.bg-gradient-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.gradient-text {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // تفعيل feather icons
-    feather.replace();
-    
-    // إدارة اختيار نوع الاستخراج
-    const extractionOptions = document.querySelectorAll('.extraction-option');
-    const radioInputs = document.querySelectorAll('input[name="extraction_type"]');
-    
-    extractionOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            const type = this.dataset.type;
-            const radio = document.getElementById(type);
-            
-            // إزالة التحديد من جميع الخيارات
-            extractionOptions.forEach(opt => opt.classList.remove('selected'));
-            
-            // تحديد الخيار الحالي
-            this.classList.add('selected');
-            radio.checked = true;
-        });
-    });
-    
-    // تحديد الخيار الافتراضي
-    document.querySelector('.extraction-option[data-type="standard"]').classList.add('selected');
-    
-    // إدارة إرسال النموذج
-    const form = document.getElementById('extractionForm');
-    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
-    
-    form.addEventListener('submit', function(e) {
-        const url = document.getElementById('url').value.trim();
-        
-        if (!url) {
-            e.preventDefault();
-            alert('يرجى إدخال رابط صحيح');
-            return;
-        }
-        
-        // عرض مؤشر التحميل
-        loadingModal.show();
-        
-        // تعطيل زر الإرسال
-        const submitBtn = document.getElementById('extractBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>جاري المعالجة...';
-    });
-});
-</script>
-{% endblock %}
