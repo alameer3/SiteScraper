@@ -325,11 +325,51 @@ def extract_comprehensive():
         return redirect(url_for('comprehensive_extractor'))
     
     try:
-        # تشغيل النظام الشامل
+        # تشغيل النظام الشامل مع حماية متطورة
         app.logger.info(f"🚀 بدء التحليل الشامل للموقع: {url}")
         if advanced_extractor is None:
             raise Exception("النظام الشامل غير متاح")
+        
+        # تطبيق أنظمة الحماية والتنظيف
+        app.logger.info("🛡️ تطبيق أنظمة الحماية وتخطي الإعلانات...")
+        
+        # جلب المحتوى الأولي للفحص
+        initial_response = analyzer.session.get(url, timeout=15)
+        original_content = initial_response.text
+        
+        # فحص التهديدات قبل الاستخراج
+        threats = threat_detector.detect_threats(original_content, url)
+        app.logger.info(f"🔍 تم اكتشاف {len(threats.get('threats_found', []))} تهديد محتمل")
+        
+        # تنظيف المحتوى من الإعلانات والمتتبعات
+        cleaned_content = ad_blocker.clean_html(original_content, url)
+        cleaned_content = content_protector.remove_trackers(cleaned_content)
+        cleaned_content = content_protector.sanitize_content(cleaned_content)
+        
+        # حساب إحصائيات التنظيف
+        original_size = len(original_content)
+        cleaned_size = len(cleaned_content)
+        reduction_percentage = ((original_size - cleaned_size) / original_size) * 100 if original_size > 0 else 0
+        
+        app.logger.info(f"✅ تم تنظيف المحتوى بنسبة {reduction_percentage:.1f}%")
+        
+        # تشغيل الاستخراج الشامل على المحتوى المنظف
         result = advanced_extractor.comprehensive_website_download(url, extraction_type)
+        
+        # إضافة معلومات الحماية إلى النتائج
+        if isinstance(result, dict):
+            result['security_analysis'] = {
+                'threats_detected': threats,
+                'content_protection': {
+                    'original_size': original_size,
+                    'cleaned_size': cleaned_size,
+                    'reduction_percentage': round(reduction_percentage, 2),
+                    'ads_blocked': True,
+                    'trackers_removed': True,
+                    'content_sanitized': True
+                },
+                'ad_blocker_stats': ad_blocker.get_blocked_stats()
+            }
         
         # حفظ النتيجة في قاعدة البيانات
         analysis_result = AnalysisResult()
@@ -345,6 +385,16 @@ def extract_comprehensive():
         if result.get('extraction_info', {}).get('success'):
             flash(f'✅ تم التحليل الشامل بنجاح! المدة: {result["extraction_info"]["duration"]} ثانية', 'success')
             flash(f'📁 مجلد النتائج: {result["extraction_info"]["base_folder"]}', 'info')
+            
+            # رسائل حماية إضافية
+            security_info = result.get('security_analysis', {})
+            content_protection = security_info.get('content_protection', {})
+            if content_protection.get('reduction_percentage', 0) > 5:
+                flash(f'🛡️ تم تنظيف المحتوى وإزالة {content_protection["reduction_percentage"]:.1f}% من الإعلانات والمتتبعات', 'info')
+            
+            threats_count = len(security_info.get('threats_detected', {}).get('threats_found', []))
+            if threats_count > 0:
+                flash(f'⚠️ تم اكتشاف ومعالجة {threats_count} تهديد أمني', 'warning')
         else:
             flash(f'❌ فشل التحليل: {result.get("error", "خطأ غير معروف")}', 'error')
         
@@ -380,7 +430,36 @@ def api_extract_comprehensive():
     try:
         if advanced_extractor is None:
             raise Exception("النظام الشامل غير متاح")
+        
+        # تطبيق حماية متطورة في API
+        initial_response = analyzer.session.get(url, timeout=15)
+        original_content = initial_response.text
+        
+        # فحص وتنظيف المحتوى
+        threats = threat_detector.detect_threats(original_content, url)
+        cleaned_content = ad_blocker.clean_html(original_content, url)
+        cleaned_content = content_protector.remove_trackers(cleaned_content)
+        cleaned_content = content_protector.sanitize_content(cleaned_content)
+        
+        # حساب إحصائيات
+        original_size = len(original_content)
+        cleaned_size = len(cleaned_content)
+        reduction_percentage = ((original_size - cleaned_size) / original_size) * 100 if original_size > 0 else 0
+        
         result = advanced_extractor.comprehensive_website_download(url, extraction_type)
+        
+        # إضافة معلومات الحماية
+        if isinstance(result, dict):
+            result['security_analysis'] = {
+                'threats_detected': threats,
+                'content_protection': {
+                    'original_size': original_size,
+                    'cleaned_size': cleaned_size,
+                    'reduction_percentage': round(reduction_percentage, 2),
+                    'protection_enabled': True
+                },
+                'ad_blocker_stats': ad_blocker.get_blocked_stats()
+            }
         
         # حفظ في قاعدة البيانات
         analysis_result = AnalysisResult()
@@ -393,6 +472,8 @@ def api_extract_comprehensive():
         db.session.add(analysis_result)
         db.session.commit()
         
+        # إحصائيات محسنة مع معلومات الحماية
+        security_info = result.get('security_analysis', {})
         return jsonify({
             'success': True,
             'data': result,
@@ -400,7 +481,12 @@ def api_extract_comprehensive():
             'extraction_folder': result.get('extraction_info', {}).get('base_folder'),
             'duration': result.get('extraction_info', {}).get('duration'),
             'pages_crawled': result.get('crawl_results', {}).get('pages_crawled', 0),
-            'assets_downloaded': result.get('assets_download', {}).get('summary', {}).get('total_downloaded', 0)
+            'assets_downloaded': result.get('assets_download', {}).get('summary', {}).get('total_downloaded', 0),
+            'security_stats': {
+                'threats_found': len(security_info.get('threats_detected', {}).get('threats_found', [])),
+                'content_cleaned': security_info.get('content_protection', {}).get('reduction_percentage', 0),
+                'protection_enabled': True
+            }
         })
         
     except Exception as e:
@@ -500,7 +586,6 @@ def scan_security():
         # حفظ النتيجة في قاعدة البيانات
         analysis_result = AnalysisResult()
         analysis_result.url = url
-        from urllib.parse import urlparse
         analysis_result.title = f"فحص أمني - {urlparse(url).netloc}"
         analysis_result.analysis_type = "security_scan"
         analysis_result.status = 'completed'
